@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Description;
@@ -152,14 +153,28 @@ public abstract class AbstractType implements Type {
 	@Override
 	public void addImport(String targetPackageName, String classname) {
 		if (!classname.endsWith("." + getJavaName())) {
+
+			// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
+			boolean useJakartaEE9 = false;
+			if (configuration instanceof GenerateCodeCommonConfiguration) {
+				useJakartaEE9 = ((GenerateCodeCommonConfiguration) configuration).isUseJakartaEE9();
+			}
+
 			// We only import if it's another simple classname
-			GraphqlUtils.graphqlUtils.addImport(imports, targetPackageName, classname);
+			GraphqlUtils.graphqlUtils.addImport(imports, targetPackageName, classname, useJakartaEE9);
 		}
 	}
 
 	@Override
 	public void addImportForUtilityClasses(String targetPackageName, String classname) {
-		GraphqlUtils.graphqlUtils.addImport(importsForUtilityClasses, targetPackageName, classname);
+
+		// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
+		boolean useJakartaEE9 = false;
+		if (configuration instanceof GenerateCodeCommonConfiguration) {
+			useJakartaEE9 = ((GenerateCodeCommonConfiguration) configuration).isUseJakartaEE9();
+		}
+
+		GraphqlUtils.graphqlUtils.addImport(importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
 	}
 
 	/**

@@ -50,8 +50,6 @@ package ${packageUtilName};
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +109,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
+	@Autowired
 #if ($configuration.queryMutationExecutionProtocol == "http")
-	@Resource(name = "httpGraphQlClient${springBeanSuffix}")
+	@Qualifier("httpGraphQlClient${springBeanSuffix}")
 #else
-	@Resource(name = "webSocketGraphQlClient${springBeanSuffix}")
+	@Qualifier("webSocketGraphQlClient${springBeanSuffix}")
 #end
 	GraphQlClient graphQlClient;
 	

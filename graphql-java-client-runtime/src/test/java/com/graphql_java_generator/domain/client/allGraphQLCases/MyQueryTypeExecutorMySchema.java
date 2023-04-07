@@ -59,12 +59,6 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	GraphqlClientUtils graphqlClientUtils;
 
 	public MyQueryTypeExecutorMySchema() {
-		if (!"local-SNAPSHOT".equals(graphqlUtils.getRuntimeVersion())) {
-			throw new RuntimeException(
-					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-							+ graphqlUtils.getRuntimeVersion()
-							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
-		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}

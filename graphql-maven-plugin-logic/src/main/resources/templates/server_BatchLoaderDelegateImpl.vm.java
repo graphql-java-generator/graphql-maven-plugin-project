@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import javax.annotation.Resource;
-
 #if($configuration.generateBatchLoaderEnvironment)
 import org.dataloader.BatchLoaderEnvironment;
 #end
 import org.dataloader.DataLoaderRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.server.util.BatchLoaderDelegate#if($configuration.generateBatchLoaderEnvironment)WithContext#end;	
@@ -45,7 +44,8 @@ import com.graphql_java_generator.server.util.BatchLoaderDelegate#if($configurat
 public class BatchLoaderDelegate${batchLoader.type.name}Impl implements BatchLoaderDelegate#if($configuration.generateBatchLoaderEnvironment)WithContext#end<${batchLoader.type.identifier.type.classFullName}, ${batchLoader.type.classFullName}> {
 
 	/** The DataFetcherDelegates contain the requests to the data */
-	@Resource
+	@Autowired
+	@Qualifier("${batchLoader.dataFetchersDelegate.camelCaseName}")
 	${batchLoader.dataFetchersDelegate.pascalCaseName} ${batchLoader.dataFetchersDelegate.camelCaseName};
 
 	/**

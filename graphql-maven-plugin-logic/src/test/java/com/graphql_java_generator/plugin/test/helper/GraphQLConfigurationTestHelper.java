@@ -64,6 +64,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public File targetResourceFolder = null;
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
+	public boolean useJakartaEE9 = false;
 
 	public String typePrefix = "";
 	public String typeSuffix = "";

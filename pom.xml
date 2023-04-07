@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.6</version>
+		<version>2.7.10</version>
 		<relativePath />
 	</parent>
 
@@ -83,11 +83,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<java.release>8</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.dependency.version>3.6.3</maven.dependency.version>
-
-		<spring-graphql.version>1.0.4-SNAPSHOT</spring-graphql.version>
 		
 		<!-- The lastReleasedVersion is the version displayed in the site. The default value is the project version, which is Ok 
 			when actually doing a release. It can also be defined on the command line with -DlastReleasedVersion=version when building 
@@ -114,7 +113,7 @@
 					<configuration>
 						<source>${java.version}</source>
 						<target>${java.version}</target>
-						<release>8</release>
+						<release>${java.release}</release>
 					</configuration>
 				</plugin>
 				<plugin>

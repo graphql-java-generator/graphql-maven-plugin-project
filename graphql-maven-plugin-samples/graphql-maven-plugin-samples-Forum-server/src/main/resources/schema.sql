@@ -1,6 +1,11 @@
 
--- This sequence allows Hibernate to generate id values, thanks to the @GeneratedValue annotation 
-CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000 INCREMENT BY 1;
+-- This sequence allows Hibernate to generate id values, thanks to the @GeneratedValue annotation
+CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000 INCREMENT BY 1; --useless since Hibernate 6
+CREATE SEQUENCE MEMBER_SEQ START WITH 1000 INCREMENT BY 50;
+CREATE SEQUENCE BOARD_SEQ START WITH 1000 INCREMENT BY 50;
+CREATE SEQUENCE TOPIC_SEQ START WITH 1000 INCREMENT BY 50;
+CREATE SEQUENCE POST_SEQ START WITH 1000 INCREMENT BY 50;
+
 
 create table member (
 	id long not null,

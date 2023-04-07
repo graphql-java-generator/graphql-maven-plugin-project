@@ -85,6 +85,12 @@
 			<type>pom</type>
 		</dependency>
 
+		<!-- Mandatory to enable Web Sockets for Spring-mvc application (mandatory for subscription) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

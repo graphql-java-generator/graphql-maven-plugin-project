@@ -3,16 +3,37 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.graphql-java-generator</groupId>
-		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>local-SNAPSHOT</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.0.5</version>
+		<relativePath />
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
+	<version>local-SNAPSHOT</version>
+
+	<properties>
+		<maven-javadoc-plugin>3.2.0</maven-javadoc-plugin>
+		<h2.version>2.1.214</h2.version>
+
+		<java.version>1.8</java.version>
+		<java.release>8</java.release>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
 
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<release>${java.release}</release>
+				</configuration>
+			</plugin>
 			<plugin>
 				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
 				<groupId>org.springframework.boot</groupId>
@@ -22,6 +43,7 @@
 				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
+				<version>local-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
@@ -39,6 +61,7 @@
 					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code </scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 					<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+					<useJakartaEE9>true</useJakartaEE9>
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
@@ -93,9 +116,16 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-server-dependencies</artifactId>
+			<version>local-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
+		<!-- Mandatory to enable Web Sockets for Spring-mvc application (mandatory for subscription) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -105,6 +135,7 @@
 			<!-- Only here for the tests, to load the data in an in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>

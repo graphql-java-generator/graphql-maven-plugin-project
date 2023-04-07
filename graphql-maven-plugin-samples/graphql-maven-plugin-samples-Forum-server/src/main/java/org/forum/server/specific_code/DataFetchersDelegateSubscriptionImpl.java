@@ -3,9 +3,6 @@
  */
 package org.forum.server.specific_code;
 
-import javax.annotation.Resource;
-import javax.security.auth.Subject;
-
 import org.forum.server.graphql.DataFetchersDelegateSubscription;
 import org.forum.server.graphql.Post;
 import org.slf4j.Logger;
@@ -13,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 import reactor.core.publisher.Flux;
 
 /**
@@ -25,8 +23,8 @@ public class DataFetchersDelegateSubscriptionImpl implements DataFetchersDelegat
 	static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateSubscriptionImpl.class);
 
 	/**
-	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>
-	 * subscription
+	 * This {@link PostPublisher} will be notified for each Post creation. This is the basis for the
+	 * <I>subscribeToNewPost</I> subscription
 	 */
 	@Resource
 	PostPublisher postPublisher;

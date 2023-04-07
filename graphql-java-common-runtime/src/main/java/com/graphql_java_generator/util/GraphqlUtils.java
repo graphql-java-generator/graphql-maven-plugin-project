@@ -792,9 +792,15 @@ public class GraphqlUtils {
 	 *            The package in which is the class that will contain this import
 	 * @param classname
 	 *            the full classname of the class to import
+	 * @param useJakartaEE9
+	 *            If true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
 	 * @return
 	 */
-	public void addImport(Set<String> imports, String targetPackageName, String classname) {
+	public void addImport(Set<String> imports, String targetPackageName, String classname, boolean useJakartaEE9) {
+
+		if (useJakartaEE9 && classname.startsWith("javax.")) {
+			classname = "jakarta" + classname.substring(5);
+		}
 
 		// For inner class, the classname is "MainClassname$InnerClassname". And the
 		// inner class must be imported, even

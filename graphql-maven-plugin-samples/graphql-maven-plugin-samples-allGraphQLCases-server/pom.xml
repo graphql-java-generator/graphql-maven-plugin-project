@@ -64,20 +64,20 @@
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
-                            <!-- ServerINputPrefix -->
-                            <inputPrefix>SINP_</inputPrefix>
-                            <!-- ServerINputSuffix -->
-                            <inputSuffix>_SINS</inputSuffix>
-                            <!-- ServerTypePrefix -->
-                            <typePrefix>STP_</typePrefix>
-                            <!-- ServerTypeSuffix etc. -->
-                            <typeSuffix>_STS</typeSuffix>
-                            <interfacePrefix>SIP_</interfacePrefix>
-                            <interfaceSuffix>_SIS</interfaceSuffix>
-                            <unionPrefix>SUP_</unionPrefix>
-                            <unionSuffix>_SUS</unionSuffix>
-                            <enumPrefix>SEP_</enumPrefix>
-                            <enumSuffix>_SES</enumSuffix>
+							<!-- ServerINputPrefix -->
+							<inputPrefix>SINP_</inputPrefix>
+							<!-- ServerINputSuffix -->
+							<inputSuffix>_SINS</inputSuffix>
+							<!-- ServerTypePrefix -->
+							<typePrefix>STP_</typePrefix>
+							<!-- ServerTypeSuffix etc. -->
+							<typeSuffix>_STS</typeSuffix>
+							<interfacePrefix>SIP_</interfacePrefix>
+							<interfaceSuffix>_SIS</interfaceSuffix>
+							<unionPrefix>SUP_</unionPrefix>
+							<unionSuffix>_SUS</unionSuffix>
+							<enumPrefix>SEP_</enumPrefix>
+							<enumSuffix>_SES</enumSuffix>
 						</configuration>
 					</execution>
 				</executions>
@@ -152,23 +152,21 @@
 			<artifactId>graphql-java-server-runtime</artifactId>
 		</dependency>
 
+		<!-- Mandatory to enable Web Sockets for Spring-mvc application (mandatory for subscription) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
 		<!-- Dependencies for the generated code -->
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		<!--dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-config</artifactId>
-		</dependency -->		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
-		<!--dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-client</artifactId>
-		</dependency -->		
 
 		<!-- Dependencies for the custom scalars -->
 		<dependency>

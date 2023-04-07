@@ -82,6 +82,10 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * (only for server mode) Indicates whether the plugin should generate the JPA annotations, for generated objects.
 	 * </P>
 	 * <P>
+	 * Note: if the generated code must be used with Spring 3, you must set the <i>useJakartaEE9</i> plugin parameter to
+	 * <i>true</i>.
+	 * </P>
+	 * <P>
 	 * <B><I>Default value is false</I></B>
 	 * </P>
 	 */

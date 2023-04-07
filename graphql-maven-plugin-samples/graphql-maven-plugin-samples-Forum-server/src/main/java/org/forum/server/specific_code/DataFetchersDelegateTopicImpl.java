@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;

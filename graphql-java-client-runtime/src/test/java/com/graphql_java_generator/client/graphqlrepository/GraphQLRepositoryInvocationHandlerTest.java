@@ -82,6 +82,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	ApplicationContext applicationContext;
 	@Mock
 	GraphQlClient httpGraphQlClientMySchema;
+	@Mock
+	GraphQlClient webSocketGraphQlClientMySchema;
 	@Spy
 	protected MyQueryTypeExecutorMySchema spyQueryExecutor;
 	@Spy
@@ -96,6 +98,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 
 		when(applicationContext.getBean("httpGraphQlClientMySchema", GraphQlClient.class))
 				.thenReturn(httpGraphQlClientMySchema);
+		when(applicationContext.getBean("webSocketGraphQlClientMySchema", GraphQlClient.class))
+				.thenReturn(webSocketGraphQlClientMySchema);
 
 		Map<String, GraphQLQueryExecutor> queries = new HashMap<>();
 		queries.put("a bean name", spyQueryExecutor);

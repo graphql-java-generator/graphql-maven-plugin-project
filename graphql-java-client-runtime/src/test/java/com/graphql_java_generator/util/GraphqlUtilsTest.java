@@ -167,32 +167,38 @@ class GraphqlUtilsTest {
 		Set<String> imports = new TreeSet<>();
 
 		// Same package
-		graphqlUtils.addImport(imports, getClass().getPackage().getName(), getClass().getName());
+		graphqlUtils.addImport(imports, getClass().getPackage().getName(), getClass().getName(), false);
 		assertEquals(0, imports.size(), "Same package: import not added");
 
 		// primitive type
-		graphqlUtils.addImport(imports, getClass().getPackage().getName(), "byte[]");
+		graphqlUtils.addImport(imports, getClass().getPackage().getName(), "byte[]", false);
 		assertEquals(0, imports.size(), "primitive type: import not added");
 
 		// java.lang
-		graphqlUtils.addImport(imports, getClass().getPackage().getName(), java.lang.String.class.getName());
+		graphqlUtils.addImport(imports, getClass().getPackage().getName(), java.lang.String.class.getName(), false);
 		assertEquals(0, imports.size(), "java.lang: import not added");
 
 		// java.util
-		graphqlUtils.addImport(imports, getClass().getPackage().getName(), java.util.Date.class.getName());
+		graphqlUtils.addImport(imports, getClass().getPackage().getName(), java.util.Date.class.getName(), false);
 		assertEquals(1, imports.size(), "java.util: import added");
 		assertEquals("java.util.Date", imports.toArray(new String[0])[0]);
 
 		imports = new TreeSet<>();
-		graphqlUtils.addImport(imports, "another.target.package", AnInnerClass.class.getName());
+		graphqlUtils.addImport(imports, "another.target.package", AnInnerClass.class.getName(), false);
 		assertEquals(1, imports.size(), "import added");
 		assertEquals("com.graphql_java_generator.util.GraphqlUtilsTest.AnInnerClass",
 				imports.toArray(new String[0])[0]);
 
 		imports = new TreeSet<>();
-		graphqlUtils.addImport(imports, "another.target.package", Type.class.getName());
+		graphqlUtils.addImport(imports, "another.target.package", Type.class.getName(), false);
 		assertEquals(1, imports.size(), "import added");
 		assertEquals("com.fasterxml.jackson.annotation.JsonSubTypes.Type", imports.toArray(new String[0])[0]);
+
+		// Check of useJakartaEE9
+		imports = new TreeSet<>();
+		graphqlUtils.addImport(imports, "another.target.package", "javax.test", true);
+		assertEquals(1, imports.size(), "import added");
+		assertEquals("jakarta.test", imports.toArray(new String[0])[0]);
 	}
 
 	@Test
@@ -518,7 +524,7 @@ class GraphqlUtilsTest {
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
 	}
-	
+
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_getDirectiveParameters() throws NoSuchFieldException, SecurityException, NoSuchMethodException {

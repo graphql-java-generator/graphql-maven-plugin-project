@@ -98,8 +98,8 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	String packageName;
 
 	/**
-	 * The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not subscriptions). The
-	 * allowed values are: http and webSocket.<br/>
+	 * (since 2.0RC1) The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not
+	 * subscriptions). The allowed values are: http and webSocket.<br/>
 	 * The default value is http.
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.queryMutationExecutionProtocol", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_QUERY_MUTATION_EXECUTION_PROTOCOL)
@@ -145,6 +145,13 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	/** The folder where source code for the generated classes will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	File targetSourceFolder;
+
+	/**
+	 * (since 2.0RC1) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8
+	 * imports (that begins by jakarta.).
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.useJakartaEE9", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_USE_JAKARTA_EE9)
+	boolean useJakartaEE9;
 
 	@Override
 	public List<CustomScalarDefinition> getCustomScalars() {
@@ -203,6 +210,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	public boolean isAddRelayConnections() {
 		return addRelayConnections;
+	}
+
+	@Override
+	public boolean isUseJakartaEE9() {
+		return useJakartaEE9;
 	}
 
 	protected AbstractGenerateCodeCommonMojo(Class<?> springConfigurationClass) {

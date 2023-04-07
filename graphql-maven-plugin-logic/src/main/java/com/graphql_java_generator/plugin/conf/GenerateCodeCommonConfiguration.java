@@ -28,6 +28,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
 	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "./target/generated-resources/graphql-maven-plugin";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "./target/generated-sources/graphql-maven-plugin";
+	public final String DEFAULT_USE_JAKARTA_EE9 = "false";
 
 	/**
 	 * Determines the package that contains the Spring auto configuration class, that is generated for each GraphQL
@@ -194,6 +195,8 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * @return
 	 */
 	public boolean isSeparateUtilityClasses();
+
+	public boolean isUseJakartaEE9();
 
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override

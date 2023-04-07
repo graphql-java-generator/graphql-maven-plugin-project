@@ -30,9 +30,9 @@ package ${packageUtilName};
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
+import jakarta.net.ssl.HostnameVerifier;
+import jakarta.net.ssl.SSLContext;
+import jakarta.ws.rs.client.Client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

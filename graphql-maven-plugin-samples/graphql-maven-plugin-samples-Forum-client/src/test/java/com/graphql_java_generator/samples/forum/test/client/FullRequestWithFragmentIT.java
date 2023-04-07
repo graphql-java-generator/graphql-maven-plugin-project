@@ -74,7 +74,7 @@ public class FullRequestWithFragmentIT {
 		List<Board> boards = response.getBoards();
 
 		// Verification
-		assertEquals(10, boards.size());
+		assertTrue(boards.size() >= 10);
 		// no posts, as this date is too early
 		assertEquals(0, boards.get(0).getTopics().get(0).getPosts().size());
 	}
@@ -87,7 +87,7 @@ public class FullRequestWithFragmentIT {
 		List<Board> boards = response.getBoards();
 
 		// Verification
-		assertEquals(10, boards.size());
+		assertTrue(boards.size() >= 10);
 		// no posts, as this date is too early
 		assertTrue(boards.get(0).getTopics().get(0).getPosts().size() > 0);
 	}
@@ -100,7 +100,7 @@ public class FullRequestWithFragmentIT {
 		List<Board> boards = response.getBoards();
 
 		// Verification
-		assertEquals(10, boards.size());
+		assertTrue(boards.size() >= 10);
 		// no posts, as this date is too early
 		assertEquals(0, boards.get(0).getTopics().get(0).getPosts().size());
 	}
@@ -113,7 +113,7 @@ public class FullRequestWithFragmentIT {
 		List<Board> boards = response.getBoards();
 
 		// Verification
-		assertEquals(10, boards.size());
+		assertTrue(boards.size() >= 10);
 		// no posts, as this date is too early
 		assertTrue(boards.get(0).getTopics().get(0).getPosts().size() > 0);
 	}

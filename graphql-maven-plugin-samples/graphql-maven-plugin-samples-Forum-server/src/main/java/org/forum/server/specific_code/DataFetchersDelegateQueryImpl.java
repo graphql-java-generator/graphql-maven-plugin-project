@@ -5,7 +5,7 @@ package org.forum.server.specific_code;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateQuery;
