@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-Forum-client</artifactId>
-	<version>2.0RC1</version>
+	<version>local-SNAPSHOT</version>
 
 	<properties>
 		<process-exec-maven-plugin.version>0.9</process-exec-maven-plugin.version>
@@ -35,7 +35,7 @@
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
-				<version>2.0RC1</version>
+				<version>local-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
@@ -155,7 +155,7 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-runtime</artifactId>
-			<version>2.0RC1</version>
+			<version>local-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
@@ -183,6 +183,9 @@
 
 
   <scm>
-    <tag>graphql-maven-plugin-project-2.0RC1</tag>
+    <tag>graphql-maven-plugin-project-1.18.9</tag>
+    <connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+    <developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
+    <url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
   </scm>
 </project>
