@@ -25,6 +25,9 @@ You can check these pages for more information on how to migrate from 1.x versio
 * [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]]
 * [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]]
 
+Know issues:
+* All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
+
 
 # 1.18.11
 

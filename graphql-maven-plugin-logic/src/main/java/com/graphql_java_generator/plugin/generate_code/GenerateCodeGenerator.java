@@ -747,7 +747,7 @@ public class GenerateCodeGenerator implements Generator {
 						f.getAbsolutePath());
 
 				f.getParentFile().mkdirs();
-				try (BufferedWriter writer = new BufferedWriter(new FileWriter(f, true))) {
+				try (BufferedWriter writer = new BufferedWriter(new FileWriter(f, false))) {
 					writer.append(resourceSchemaStringProvider.readSchema(r));
 				}
 			}
