@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque.config"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque.web"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.oauth_authorization_server"}];updateSearchResults();

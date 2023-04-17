@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.graphql_java_generator.server.util"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.server.util"}];updateSearchResults();
