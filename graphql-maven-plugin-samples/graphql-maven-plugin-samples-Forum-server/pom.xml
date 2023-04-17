@@ -12,14 +12,28 @@
 	<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
 	<version>local-SNAPSHOT</version>
 
+	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<site>
+			<id>www.graphql-java-generator.com</id>
+			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
+		</site>
+	</distributionManagement>
+
 	<properties>
-		<maven-javadoc-plugin>3.2.0</maven-javadoc-plugin>
 		<h2.version>2.1.214</h2.version>
 
 		<java.version>1.8</java.version>
 		<java.release>8</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+
+		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
+		<maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
+		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
 	</properties>
 
 
@@ -96,6 +110,22 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -125,7 +155,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		
+
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -135,7 +165,6 @@
 			<!-- Only here for the tests, to load the data in an in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
@@ -145,6 +174,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<reportSets>
 					<reportSet>
 						<id>non-aggregate</id>
@@ -154,17 +184,18 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>8</source>
+					<doclint>none</doclint>
+					<source>17</source>
 				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
 
 
-  <scm>
-    <tag>graphql-maven-plugin-project-2.0RC1</tag>
-    <connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
-    <developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-    <url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-  </scm>
+	<scm>
+		<tag>graphql-maven-plugin-project-2.0RC1</tag>
+		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
+		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
+	</scm>
 </project>

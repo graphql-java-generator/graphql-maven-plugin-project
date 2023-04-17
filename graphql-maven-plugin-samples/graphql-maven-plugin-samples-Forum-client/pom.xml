@@ -11,14 +11,28 @@
 	<artifactId>graphql-maven-plugin-samples-Forum-client</artifactId>
 	<version>local-SNAPSHOT</version>
 
+	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<site>
+			<id>www.graphql-java-generator.com</id>
+			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
+		</site>
+	</distributionManagement>
+
 	<properties>
 		<process-exec-maven-plugin.version>0.9</process-exec-maven-plugin.version>
-		<maven-javadoc-plugin>3.2.0</maven-javadoc-plugin>
 
 		<java.version>1.8</java.version>
 		<java.release>8</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+
+		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
+		<maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
+		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
 	</properties>
 
 	<build>
@@ -139,6 +153,22 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
 		</plugins>
 
 	</build>
@@ -165,7 +195,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin}</version>
+				<version>${maven-javadoc-plugin.version}</version>
 				<reportSets>
 					<reportSet>
 						<id>non-aggregate</id>
@@ -175,6 +205,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
+					<doclint>none</doclint>
 					<source>8</source>
 				</configuration>
 			</plugin>

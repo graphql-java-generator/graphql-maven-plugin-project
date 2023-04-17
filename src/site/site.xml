@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="GraphQL Java Generator - Maven Plugin" combine.self="override">
+	
+	  <skin>
+	    <groupId>org.apache.maven.skins</groupId>
+	    <artifactId>maven-fluido-skin</artifactId>
+	    <version>2.0.0-M5</version>
+	  </skin>
 
 	<publishDate position="right" />
 
-	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src>
-		<href>http://maven.apache.org/</href> </bannerLeft> <bannerRight> <src>http://maven.apache.org/images/maven-small.gif</src>
+	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src> 
+		<href>http://maven.apache.org/</href> </bannerLeft> <bannerRight> <src>http://maven.apache.org/images/maven-small.gif</src> 
 		</bannerRight -->
 
 	<poweredBy>
-		<logo name="Maven" href="https://maven.apache.org/" img="https://maven.apache.org/images/logos/maven-feather.png" />
+		<logo name="Maven" href="https://maven.apache.org/"
+			img="https://maven.apache.org/images/logos/maven-feather.png" />
 	</poweredBy>
 
 	<body>
@@ -20,37 +27,50 @@
 			<item name="Introduction" href="README.html" />
 			<item name="Change Log" href="usage_change_log.html" />
 			<item name="Custom Scalars" href="usage_customscalars.html" />
-			<item name="Custom Code Templates" href="usage_customtemplates.html" />
-			<item name="FAQ (for both client and server mode)" href="usage_faq.html"/>
+			<item name="Custom Code Templates"
+				href="usage_customtemplates.html" />
+			<item name="FAQ (for both client and server mode)"
+				href="usage_faq.html" />
 		</menu>
 
 		<menu name="Client mode">
-			<item name="Creating a first app (spring)" href="client_spring.html" />
-			<item name="Creating a first app (non spring)" href="client_non_spring.html" />
-			<item name="Execute GraphQL requests" href="client_exec_graphql_requests.html" />
+			<item name="Creating a first app (spring)"
+				href="client_spring.html" />
+			<item name="Creating a first app (non spring)"
+				href="client_non_spring.html" />
+			<item name="Execute GraphQL requests"
+				href="client_exec_graphql_requests.html" />
 			<item name="Client Tutorial" href="client_tutorial.html" />
 			<item name="Subscription" href="client_subscription.html" />
 			<item name="Introspection" href="client_introspection.html" />
-			<item name="Relay Connections" href="client_add_relay_connection.html" />
+			<item name="Relay Connections"
+				href="client_add_relay_connection.html" />
 			<item name="Runtime Classes" href="client_runtimeclasses.html" />
-			<item name="Access to an OAuth2 GraphQL server" href="client_oauth2.html" />
-			<item name="How to personalize the client app" href="client_personalization.html" />
-			<item name="FAQ (client mode)" href="client_faq.html"/>
+			<item name="Access to an OAuth2 GraphQL server"
+				href="client_oauth2.html" />
+			<item name="How to personalize the client app"
+				href="client_personalization.html" />
+			<item name="FAQ (client mode)" href="client_faq.html" />
 		</menu>
 
 		<menu name="Server mode">
 			<item name="Server usage" href="server.html" />
 			<item name="Server Tutorial" href="server_tutorial.html" />
 			<item name="Subscription" href="server_subscription.html" />
-			<item name="Relay Connections" href="server_add_relay_connection.html" />
-			<item name="Implement an OAuth2 GraphQL server" href="server_oauth2.html" />
-			<item name="Howto personalize the generated code" href="server_schema_personalization.html" />
+			<item name="Relay Connections"
+				href="server_add_relay_connection.html" />
+			<item name="Implement an OAuth2 GraphQL server"
+				href="server_oauth2.html" />
+			<item name="Howto personalize the generated code"
+				href="server_schema_personalization.html" />
 		</menu>
 
 		<menu name="Project internal">
 			<item name="How to build?" href="internal_howto_build.html" />
-			<item name="How to contribute?" href="internal_howto_contribute.html" />
-			<item name="How to create a PGP key?" href="internal_howto_pgp_key.html" />
+			<item name="How to contribute?"
+				href="internal_howto_contribute.html" />
+			<item name="How to create a PGP key?"
+				href="internal_howto_pgp_key.html" />
 			<item name="How to release?" href="internal_howto_release.html" />
 		</menu>
 

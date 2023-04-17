@@ -87,7 +87,9 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.dependency.version>3.6.3</maven.dependency.version>
-		
+		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
+		<maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
+
 		<!-- The lastReleasedVersion is the version displayed in the site. The default value is the project version, which is Ok 
 			when actually doing a release. It can also be defined on the command line with -DlastReleasedVersion=version when building 
 			the site afterward -->
@@ -182,7 +184,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>4.0.0-M6</version>
+					<version>${maven-site-plugin.version}</version>
 					<configuration>
 						<skipDeploy>true</skipDeploy>
 					</configuration>
@@ -226,6 +228,14 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+			</plugin>
+		</plugins>
 
 	</build>
 
@@ -484,9 +494,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
 				<configuration>
 					<skipDeploy>true</skipDeploy>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>

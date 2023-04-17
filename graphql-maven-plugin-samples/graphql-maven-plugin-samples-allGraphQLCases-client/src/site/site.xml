@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="GraphQL Java Generator - Maven Plugin">
+	
+	  <skin>
+	    <groupId>org.apache.maven.skins</groupId>
+	    <artifactId>maven-fluido-skin</artifactId>
+	    <version>2.0.0-M5</version>
+	  </skin>
 
 	<publishDate position="right" />
 

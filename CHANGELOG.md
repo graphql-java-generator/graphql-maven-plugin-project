@@ -27,7 +27,7 @@ You can check these pages for more information on how to migrate from 1.x versio
 
 Know issues:
 * All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
-
+* For Spring 3, in client mode, copyRuntimeSources should be manually to false, to avoid compilation errors
 
 # 1.18.11
 
