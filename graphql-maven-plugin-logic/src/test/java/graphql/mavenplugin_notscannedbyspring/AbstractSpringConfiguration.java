@@ -5,8 +5,7 @@ package graphql.mavenplugin_notscannedbyspring;
 
 import java.io.File;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,7 @@ public abstract class AbstractSpringConfiguration {
 	@Setter
 	private String schemaFileSubFolder;
 
-	@Resource
+	@Autowired
 	MavenTestHelper mavenTestHelper;
 
 	@Bean

@@ -41,7 +41,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 		generateCodeDocumentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 
-		generateCodeDocumentParser.postConstruct();
+		generateCodeDocumentParser.afterPropertiesSet();
 		generateCodeDocumentParser.parseGraphQLSchemas();
 	}
 

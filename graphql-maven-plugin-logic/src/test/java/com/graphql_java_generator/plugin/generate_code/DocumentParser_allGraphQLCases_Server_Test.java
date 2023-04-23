@@ -730,7 +730,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		EnumTypeDefinition def = (EnumTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to read the directives first
-		generateCodeDocumentParser.postConstruct();
+		generateCodeDocumentParser.afterPropertiesSet();
 		typeDefinitionRegistry.getDirectiveDefinitions().values().stream()//
 				.forEach(node -> generateCodeDocumentParser.getDirectives()
 						.add(generateCodeDocumentParser.readDirectiveDefinition(node)));

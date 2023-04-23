@@ -8,13 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import javax.annotation.Resource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
@@ -35,7 +34,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	GenerateCodeJsonSchemaPersonalization jsonSchemaPersonalization;
 	DocumentParser documentParser;
 
-	@Resource
+	@Autowired
 	MavenTestHelper mavenTestHelper;
 
 	File userJsonFile;

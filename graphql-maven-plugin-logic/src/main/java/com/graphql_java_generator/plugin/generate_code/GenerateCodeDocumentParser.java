@@ -10,12 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,15 +126,15 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	/** The configuration for the code generation must implement the {@link GenerateCodeCommonConfiguration} */
 	GenerateCodeCommonConfiguration configuration;
 
-	@PostConstruct
-	void initConfiguration() {
+	@Override
+	public void afterPropertiesSet() {
 		if (!(super.configuration instanceof GenerateCodeCommonConfiguration)) {
 			throw new RuntimeException(
 					"[Internal error] The plugin configuration must implement the GenerateCodeCommonConfiguration interface, but is '"
 							+ super.configuration.getClass().getName() + "'");
 		}
 		configuration = (GenerateCodeCommonConfiguration) super.configuration;
-
+		super.afterPropertiesSet();
 	}
 
 	/**
@@ -149,9 +143,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	@Override
 	protected void initScalarTypes(Class<?> notUsed) {
-
-		initConfiguration();
-
 		// Let's load the standard Scalar types
 		if (configuration.getMode().equals(PluginMode.server)) {
 			try {
@@ -382,8 +373,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	}
 
 	/**
-	 * This method add the needed annotation(s) to the given type when in server mode. This typically add the
-	 * JPA @{@link Entity} annotation.
+	 * This method add the needed annotation(s) to the given type when in server mode. This typically add the JPA
+	 * &amp;Entity annotation.
 	 * 
 	 * @param o
 	 */
@@ -397,7 +388,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				&& ((GenerateServerCodeConfiguration) configuration).isGenerateJPAAnnotation()
 				&& o instanceof ObjectType && !(o instanceof InterfaceType) && !(o instanceof UnionType)
 				&& !((ObjectType) o).isInputType() && ((ObjectType) o).getRequestType() == null) {
-			o.addImport(configuration.getPackageName(), Entity.class.getName());
+			o.addImport(configuration.getPackageName(), "javax.persistence.Entity");
 			((AbstractType) o).addAnnotation("@Entity");
 		}
 
@@ -513,13 +504,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				&& !field.getOwningType().isInputType()) {
 			if (field.isId()) {
 				// We have found the identifier
-				field.getOwningType().addImport(configuration.getPackageName(), Id.class.getName());
+				field.getOwningType().addImport(configuration.getPackageName(), "javax.persistence.Id");
 				((FieldImpl) field).addAnnotation("@Id");
-				field.getOwningType().addImport(configuration.getPackageName(), GeneratedValue.class.getName());
+				field.getOwningType().addImport(configuration.getPackageName(), "javax.persistence.GeneratedValue");
 				((FieldImpl) field).addAnnotation("@GeneratedValue");
 			} else if (field.getRelation() != null || field.getFieldTypeAST().getListDepth() > 0) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
-				field.getOwningType().addImport(configuration.getPackageName(), Transient.class.getName());
+				field.getOwningType().addImport(configuration.getPackageName(), "javax.persistence.Transient");
 				((FieldImpl) field).addAnnotation("@Transient");
 			}
 		}
