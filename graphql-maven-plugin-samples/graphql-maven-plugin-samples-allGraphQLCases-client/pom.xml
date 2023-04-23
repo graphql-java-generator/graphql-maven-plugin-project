@@ -31,7 +31,6 @@
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/allGraphQLCases/</schemaFileFolder>
-							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<targetFolder>${basedir}/target/generated-resources/graphql-merge</targetFolder>
 							<targetSchemaFileName>merged_schemas.graphqls</targetSchemaFileName>
 						</configuration>
@@ -42,15 +41,9 @@
 							<goal>generateClientCode</goal>
 						</goals>
 						<configuration>
-							<!-- In this pom, we choose not to copy the runtime. It allows to 
-								replace it by another one, for instance one updated for your needs. You then 
-								need to add this runtime as a dependency -->
-							<copyRuntimeSources>false</copyRuntimeSources>
-							<generateDeprecatedRequestResponse>false</generateDeprecatedRequestResponse>
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
-							<separateUtilityClasses>true</separateUtilityClasses>
-							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+							<separateUtilityClasses>false</separateUtilityClasses>
 							<springBeanSuffix>AllGraphQLCases</springBeanSuffix>
 							<customScalars>
 								<customScalar>

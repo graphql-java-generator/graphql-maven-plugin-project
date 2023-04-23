@@ -3,7 +3,6 @@ package com.graphql_java_generator.plugin.generate_code;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -279,45 +277,6 @@ class CodeGeneratorTest {
 	}
 
 	/**
-	 * Test to validate the code generation process copies runtime sources if
-	 * {@link GraphQLConfiguration#isCopyRuntimeSources()} is set to true
-	 *
-	 * @throws IOException
-	 */
-	@Test
-	@Execution(ExecutionMode.CONCURRENT)
-	void testGenerateCode_copyRuntimeSources() throws IOException {
-		// Preparation
-		pluginConfiguration.mode = PluginMode.client;
-		pluginConfiguration.packageName = "test.generatecode.enabled";
-		pluginConfiguration.copyRuntimeSources = true;
-		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
-		pluginConfiguration.schemaFilePattern = "basic.graphqls";
-		pluginConfiguration.targetResourceFolder = targetResourceFolder;
-		pluginConfiguration.targetSourceFolder = targetSourceFolder;
-		pluginConfiguration.targetClassFolder = targetSourceFolder;
-
-		if (Objects.isNull(getClass().getResourceAsStream("/graphql-java-runtime-sources.jar"))) {
-			createRuntimeSourcesJar();
-		}
-
-		// Go, go, go
-		codeGenerator.generateCode();
-
-		// Verification
-		assertTrue(targetRuntimeClassesSourceFolder.exists());
-		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
-		assertTrue(targetResourceFolder.exists());
-		assertTrue(targetResourceFolder.isDirectory());
-		assertTrue(targetRuntimeClassesSourceFolder.exists());
-		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
-		//
-		File javaRuntimeFile = new File(targetResourceFolder, "graphql-java-runtime.properties");
-		assertTrue(javaRuntimeFile.exists(), "graphql-java-runtime should exist");
-		assertTrue(javaRuntimeFile.isFile(), "graphql-java-runtime should be a file");
-	}
-
-	/**
 	 * Test to validate the code generation process does not copy runtime sources if
 	 * {@link GraphQLConfiguration#isCopyRuntimeSources()} is set to false
 	 *
@@ -325,11 +284,10 @@ class CodeGeneratorTest {
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testGenerateCode_skipCopyRuntimeSources() throws IOException {
+	void testGenerateCode_noCopyOfRuntimeSources() throws IOException {
 
 		pluginConfiguration.mode = PluginMode.client;
 		pluginConfiguration.packageName = "test.generatecode.enabled";
-		pluginConfiguration.copyRuntimeSources = false;
 		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
 		pluginConfiguration.schemaFilePattern = "basic.graphqls";
 		pluginConfiguration.targetResourceFolder = targetResourceFolder;

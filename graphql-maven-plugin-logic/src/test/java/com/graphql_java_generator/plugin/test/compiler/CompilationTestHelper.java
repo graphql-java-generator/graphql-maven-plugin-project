@@ -2,10 +2,9 @@ package com.graphql_java_generator.plugin.test.compiler;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -15,7 +14,7 @@ public class CompilationTestHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompilationTestHelper.class);
 
-	@Resource
+	@Autowired
 	GraphQLConfiguration pluginConfiguration;
 
 	/**

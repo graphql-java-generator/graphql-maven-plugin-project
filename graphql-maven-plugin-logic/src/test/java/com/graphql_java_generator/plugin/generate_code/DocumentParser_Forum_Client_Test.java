@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -235,35 +232,6 @@ class DocumentParser_Forum_Client_Test {
 				"expecting com.graphql_java_generator.annotation.GraphQLObjectType");
 		assertTrue(post.getImports().contains("com.graphql_java_generator.annotation.GraphQLScalar"),
 				"expecting com.graphql_java_generator.annotation.GraphQLScalar");
-	}
-
-	/**
-	 * Checks that the spring Autoconfiguration and META-INF/spring.factories are properly copied with the runtime
-	 * sources
-	 * 
-	 * @throws IOException
-	 */
-	@Test
-	void check_GraphQLJavaRuntimeProperties() throws IOException {
-		// Preparation
-		// We need to activate the copy of the runtime sources
-		configuration.copyRuntimeSources = true;
-		// Let's copy these file in a dedicated folder
-		File parentFile = new File(configuration.targetSourceFolder.getParentFile().getParentFile(),
-				"DocumentParser_Forum_Client_Test");
-		File targetParentFolder = new File(parentFile, "autoconfiguration_test");
-		File targetSourceFolder = new File(targetParentFolder, "java");
-		configuration.targetSourceFolder = targetSourceFolder;
-		File targetResourceFolder = new File(targetParentFolder, "resources");
-		configuration.targetResourceFolder = targetResourceFolder;
-
-		// Go, go, go
-		codeGenerator.copyRuntimeSources();
-
-		// Verification
-		File javaRuntimeFile = new File(targetResourceFolder, "graphql-java-runtime.properties");
-		assertTrue(javaRuntimeFile.exists(), "graphql-java-runtime should exist");
-		assertTrue(javaRuntimeFile.isFile(), "graphql-java-runtime should be a file");
 	}
 
 	private void checkField(ObjectType type, int j, String name, int list, boolean mandatory, Boolean itemMandatory,

@@ -24,7 +24,7 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "false";
+	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "true";
 	public final String DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS = "false";
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_JAVA_TYPE_FOR_ID_TYPE = "java.util.UUID";

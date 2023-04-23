@@ -31,12 +31,11 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public Logger logger;
 
 	public boolean addRelayConnections = false;
-	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
-	// to load several generated source folders in the IDE.
+	private boolean copyRuntimeSources = false; // Since 2.0, this value may not be overriden
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
-	public boolean generateBatchLoaderEnvironment = false;
+	private boolean generateBatchLoaderEnvironment = true; // Since 2.0, this value may not be overriden
 	public boolean generateDataLoaderForLists = false;
-	public boolean generateDeprecatedRequestResponse = true;
+	private boolean generateDeprecatedRequestResponse = false; // Since 2.0, this value may not be overriden
 	private Boolean generateJacksonAnnotations = null; // See below: isGenerateJacksonAnnotations() either
 														// generateJacksonAnnotations if it is not null, or true id
 														// client mode, or false if server mode. Because of this rule,
@@ -56,8 +55,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
 	public boolean separateUtilityClasses = false;
-	// As the GraphQL schema won't change, and we always want to regenerate the sources, we won't skip it
-	public boolean skipGenerationIfSchemaHasNotChanged = false;
+	private boolean skipGenerationIfSchemaHasNotChanged = true; // Since 2.0, this value may not be overriden
 	public String sourceEncoding = "UTF-8";
 	public String springBeanSuffix = "MySchema";
 	public File targetClassFolder = null;

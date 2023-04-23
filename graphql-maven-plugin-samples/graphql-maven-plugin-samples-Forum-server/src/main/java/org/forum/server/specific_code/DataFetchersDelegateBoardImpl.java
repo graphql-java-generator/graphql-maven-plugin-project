@@ -8,13 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import jakarta.annotation.Resource;
-
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.Board;
-import org.forum.server.graphql.DataFetchersDelegateBoard;
 import org.forum.server.graphql.Topic;
+import org.forum.server.graphql.util.DataFetchersDelegateBoard;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
 import org.slf4j.Logger;
@@ -22,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still

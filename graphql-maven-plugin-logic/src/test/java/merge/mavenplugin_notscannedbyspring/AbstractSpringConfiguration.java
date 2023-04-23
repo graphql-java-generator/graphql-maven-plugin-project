@@ -5,8 +5,6 @@ package merge.mavenplugin_notscannedbyspring;
 
 import java.io.File;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
@@ -23,7 +21,7 @@ public abstract class AbstractSpringConfiguration {
 
 	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_merge/";
 
-	@Resource
+	@Autowired
 	MavenTestHelper mavenTestHelper;
 	@Autowired
 	GenerateGraphQLSchemaConfigurationTestHelper configuration;

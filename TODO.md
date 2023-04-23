@@ -2,6 +2,9 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
 * Document it, then release it
+* [Client mode] Remove the deprecated request response
+* Remove the GraphQL goal/task
+
 
 ## TODO list for the 1.x branch
 * Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)

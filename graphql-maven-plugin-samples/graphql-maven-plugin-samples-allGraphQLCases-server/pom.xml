@@ -26,12 +26,9 @@
 								interfaces or objects), for fields marked with the RelayConnection directive. 
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
-							<copyRuntimeSources>false</copyRuntimeSources>
-							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 							<packageName>org.allGraphQLCases.server</packageName>
+							<separateUtilityClasses>false</separateUtilityClasses>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
-							<separateUtilityClasses>true</separateUtilityClasses>
-							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Base64String</graphQLTypeName>

@@ -13,15 +13,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -91,7 +92,7 @@ import lombok.Setter;
  * @author etienne-sf
  */
 @Getter
-public abstract class DocumentParser {
+public abstract class DocumentParser implements InitializingBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentParser.class);
 
@@ -224,10 +225,14 @@ public abstract class DocumentParser {
 	@Setter
 	protected Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
 
-	@PostConstruct
-	public void postConstruct() {
+	@Override
+	public void afterPropertiesSet() {
 
 		logger.debug("Starting DocumentParser's PostConstruct intialization");
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// Check that the configuration is valid
+		validateConfiguration();
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL scalars: standard and customs depending on the use case
@@ -287,6 +292,41 @@ public abstract class DocumentParser {
 
 		logger.debug("Finished DocumentParser's PostConstruct intialization");
 
+	}
+
+	/**
+	 * This method validates the plugin configuration.
+	 */
+	@SuppressWarnings("deprecation")
+	public void validateConfiguration() {
+
+		// General parameters
+		checkConfigurationParameter(true, configuration.isSkipGenerationIfSchemaHasNotChanged(),
+				"skipGenerationIfSchemaHasNotChanged");
+
+		// parameters common to the generateClientCode and generateServerCode goal/task
+		if (configuration instanceof GenerateCodeCommonConfiguration) {
+			GenerateCodeCommonConfiguration conf = (GenerateCodeCommonConfiguration) configuration;
+			checkConfigurationParameter(false, conf.isCopyRuntimeSources(), "copyRuntimeSources");
+		}
+
+		// parameters specific to the generateClientCode goal/task
+		if (configuration instanceof GenerateClientCodeConfiguration) {
+			GenerateClientCodeConfiguration conf = (GenerateClientCodeConfiguration) configuration;
+			checkConfigurationParameter(false, conf.isGenerateDeprecatedRequestResponse(),
+					"generateDeprecatedRequestResponse");
+		}
+		// parameters specific to the generateServerCode goal/task
+		if (configuration instanceof GenerateServerCodeConfiguration) {
+			GenerateServerCodeConfiguration conf = (GenerateServerCodeConfiguration) configuration;
+			checkConfigurationParameter(true, conf.isGenerateBatchLoaderEnvironment(),
+					"generateBatchLoaderEnvironment");
+		}
+	}
+
+	private void checkConfigurationParameter(boolean expectedValue, Boolean value, String parameterName) {
+		if (expectedValue != value)
+			throw new IllegalArgumentException(parameterName + " must be set to " + expectedValue);
 	}
 
 	/**

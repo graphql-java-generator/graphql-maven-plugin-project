@@ -24,8 +24,6 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -38,6 +36,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -66,7 +65,7 @@ import com.graphql_java_generator.util.VelocityUtils;
  * @author etienne-sf
  */
 @Component
-public class GenerateCodeGenerator implements Generator {
+public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeGenerator.class);
 
@@ -98,8 +97,8 @@ public class GenerateCodeGenerator implements Generator {
 	/** The context for server mode. Stored here, so that it is calculated only once */
 	VelocityContext serverContext = null;
 
-	@PostConstruct
-	void init() {
+	@Override
+	public void afterPropertiesSet() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath, file");

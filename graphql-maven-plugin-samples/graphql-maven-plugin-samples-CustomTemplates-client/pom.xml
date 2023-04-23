@@ -159,8 +159,7 @@
 		<!-- Dependencies for GraphQL -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client-dependencies</artifactId>
-			<type>pom</type>
+			<artifactId>graphql-java-client-runtime</artifactId>
 		</dependency>
 	</dependencies>
 

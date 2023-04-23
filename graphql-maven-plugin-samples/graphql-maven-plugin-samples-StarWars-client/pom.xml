@@ -17,13 +17,11 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>graphql</goal>
+							<goal>generateClientCode</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<mode>client</mode>
-				</configuration>
+				<!-- No configuration: this execution tests all default values -->
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -151,8 +149,7 @@
 		<!-- Dependencies for graphql-java-generator -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client-dependencies</artifactId>
-			<type>pom</type>
+			<artifactId>graphql-java-client-runtime</artifactId>
 		</dependency>
 
 	</dependencies>

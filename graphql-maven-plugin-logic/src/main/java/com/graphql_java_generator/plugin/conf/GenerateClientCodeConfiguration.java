@@ -15,7 +15,7 @@ public interface GenerateClientCodeConfiguration extends GenerateCodeCommonConfi
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
-	public final String DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE = "true";
+	public final String DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE = "false";
 
 	/**
 	 * <P>

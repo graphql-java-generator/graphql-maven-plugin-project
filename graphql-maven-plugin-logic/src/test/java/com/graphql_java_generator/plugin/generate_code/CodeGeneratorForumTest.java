@@ -1,9 +1,8 @@
 package com.graphql_java_generator.plugin.generate_code;
 
-import javax.annotation.Resource;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -15,12 +14,12 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 @SpringJUnitConfig(classes = { Forum_Server_SpringConfiguration.class })
 class CodeGeneratorForumTest {
 
-	@Resource
+	@Autowired
 	MavenTestHelper mavenTestHelper;
 
-	@javax.annotation.Resource
+	@Autowired
 	protected GenerateCodeDocumentParser documentParser;
-	@javax.annotation.Resource
+	@Autowired
 	protected GenerateCodeGenerator codeGenerator;
 
 	@BeforeEach

@@ -26,7 +26,6 @@
 							<mode>client</mode>
 							<packageName>org.allGraphQLCases.client.pojo</packageName>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
-							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Base64String</graphQLTypeName>

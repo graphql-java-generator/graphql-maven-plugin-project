@@ -61,21 +61,18 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>graphql</goal>
+							<goal>generateServerCode</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<mode>server</mode>
-					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 					<generateDataLoaderForLists>true</generateDataLoaderForLists>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>
 					<packageName>org.forum.server.graphql</packageName>
 					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code </scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
-					<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
-					<useJakartaEE9>true</useJakartaEE9>
+					<useJakartaEE9>true</useJakartaEE9><!-- This is mandatory for Spring Boot 3 -->
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
@@ -145,9 +142,8 @@
 		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-server-dependencies</artifactId>
+			<artifactId>graphql-java-server-runtime</artifactId>
 			<version>local-SNAPSHOT</version>
-			<type>pom</type>
 		</dependency>
 
 		<!-- Mandatory to enable Web Sockets for Spring-mvc application (mandatory for subscription) -->
