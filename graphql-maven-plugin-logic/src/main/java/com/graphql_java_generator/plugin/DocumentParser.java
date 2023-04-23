@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
