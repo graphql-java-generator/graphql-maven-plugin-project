@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.allGraphQLCases.server.SIP_IFoo1_SIS;
 import org.allGraphQLCases.server.SIP_IList_SIS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateIList;
+import org.allGraphQLCases.server.DataFetchersDelegateIList;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

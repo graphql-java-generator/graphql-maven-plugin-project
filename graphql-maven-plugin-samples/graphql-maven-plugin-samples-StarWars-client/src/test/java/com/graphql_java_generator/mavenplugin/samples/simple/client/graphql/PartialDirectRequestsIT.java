@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.generated.graphql.QueryTypeExecutor;
+import com.generated.graphql.util.QueryTypeExecutor;
 import com.graphql_java_generator.mavenplugin.samples.SpringTestConfig;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
 

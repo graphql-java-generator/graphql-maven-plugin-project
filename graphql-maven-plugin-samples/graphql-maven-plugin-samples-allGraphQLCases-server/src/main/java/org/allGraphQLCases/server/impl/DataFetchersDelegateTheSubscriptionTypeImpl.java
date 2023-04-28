@@ -21,7 +21,7 @@ import org.allGraphQLCases.server.STP_AllFieldCasesWithoutIdSubtype_STS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.config.GraphQlException;
-import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
+import org.allGraphQLCases.server.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

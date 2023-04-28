@@ -43,19 +43,18 @@ import graphql.ThreadSafe;
  * </P>
  * <UL>
  * <LI><B>server</B>: In the server mode, only the GraphQL annotation are added. You can add the JPA annotation, with
- * the <I>generateJPAAnnotation</I> plugin parameter set to true. In this mode, as with the <I>generateServerCode</I>,
- * you need to either add the <I>graphql-java-server-dependencies</I> dependencies, or set the <I>copyRuntimeSources</I>
- * plugin parameter to false and add the <I>graphql-java-runtime</I>.</LI>
+ * the <I>generateJPAAnnotation</I> plugin parameter set to true.</LI>
  * <LI><B>client</B>: The client mode is the default one. This mode generates the same POJO as in server mode, with the
  * addition of the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations. These annotations allows to
  * serialize and unserialize the GraphQL POJO to and from JSON. And the <I>CustomJacksonDeserializers</I> utility class
- * is generated, that allows to deserialize custom scalars and arrays. In this mode, as with the
- * <I>generateServerCode</I>, you need to either add the <I>graphql-java-client-dependencies</I> dependencies, or set
- * the <I>copyRuntimeSources</I> plugin parameter to false and add the <I>graphql-java-runtime</I>.</LI>
+ * is generated, that allows to deserialize custom scalars and arrays.</LI>
  * </UL>
  * <P>
- * <U>Note:</U> in this mode, <I>copyRuntimeSources</I> must be set to false. Some dependencies must be copied for the
- * code to compile (exceptions, annotations...)
+ * To avoid to add plugin dependencies, the recommended value for copyRuntimeSources is true. Please note that the
+ * default value changed from true to false since 2.0.
+ * </P>
+ * <P>
+ * In other word, since 2.0, it is a recommended to set the copyRuntimeSources plugin parameter to true.
  * </P>
  * 
  * @author etienne-sf

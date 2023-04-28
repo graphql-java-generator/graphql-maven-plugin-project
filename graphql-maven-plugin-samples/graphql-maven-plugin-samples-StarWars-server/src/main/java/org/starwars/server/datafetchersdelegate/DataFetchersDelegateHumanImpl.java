@@ -12,12 +12,11 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.starwars.server.jpa.HumanRepository;
-
 import org.starwars.server.Character;
-import org.starwars.server.DataFetchersDelegateHuman;
 import org.starwars.server.Episode;
 import org.starwars.server.Human;
+import org.starwars.server.jpa.HumanRepository;
+import org.starwars.server.util.DataFetchersDelegateHuman;
 
 import graphql.schema.DataFetchingEnvironment;
 

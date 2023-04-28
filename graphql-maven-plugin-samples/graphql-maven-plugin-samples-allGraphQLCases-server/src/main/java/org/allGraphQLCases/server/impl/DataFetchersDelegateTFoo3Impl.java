@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.allGraphQLCases.server.STP_TBar12_STS;
 import org.allGraphQLCases.server.STP_TFoo3_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateTFoo3;
+import org.allGraphQLCases.server.DataFetchersDelegateTFoo3;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;

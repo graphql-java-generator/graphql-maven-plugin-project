@@ -13,7 +13,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.subscription.SubscriptionRequests;
 
 /**

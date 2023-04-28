@@ -27,10 +27,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.generated.graphql.Character;
-import com.generated.graphql.GraphQLRequest;
 import com.generated.graphql.Human;
-import com.generated.graphql.MutationTypeExecutor;
-import com.generated.graphql.SubscriptionTypeExecutor;
+import com.generated.graphql.util.GraphQLRequest;
+import com.generated.graphql.util.MutationTypeExecutor;
+import com.generated.graphql.util.SubscriptionTypeExecutor;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;

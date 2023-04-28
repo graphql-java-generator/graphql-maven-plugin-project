@@ -16,7 +16,7 @@ import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.CTP___Field_CTS;
 import org.allGraphQLCases.client.CTP___Schema_CTS;
 import org.allGraphQLCases.client.CTP___Type_CTS;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;

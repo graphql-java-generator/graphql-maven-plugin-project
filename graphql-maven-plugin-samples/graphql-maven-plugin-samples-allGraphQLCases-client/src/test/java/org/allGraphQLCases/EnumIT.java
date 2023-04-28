@@ -16,8 +16,8 @@ import java.util.function.BooleanSupplier;
 
 import org.allGraphQLCases.AliasesIT.HumanSubscriptionCallback;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;

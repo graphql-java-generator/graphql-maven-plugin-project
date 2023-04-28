@@ -9,7 +9,7 @@ import org.allGraphQLCases.server.SIP_WithID_SIS;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateReservedJavaKeywordAllFieldCases;
+import org.allGraphQLCases.server.DataFetchersDelegateReservedJavaKeywordAllFieldCases;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

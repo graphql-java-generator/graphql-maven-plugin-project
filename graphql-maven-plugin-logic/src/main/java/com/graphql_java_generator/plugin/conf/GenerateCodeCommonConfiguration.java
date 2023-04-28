@@ -142,22 +142,23 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 
 	/**
 	 * <P>
-	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory. It allows to
-	 * control whether the runtime code is embedded in the generated code or not.
+	 * Flag to enable (or not) the copy of the sources from the graphql-java-runtime library to target source code
+	 * directory. That is: it allows to control whether the runtime code is embedded in the generated code or not.
 	 * </P>
 	 * <P>
-	 * The default behavior is the old one, that is: the runtime code is embedded. This means that when you upgrade the
-	 * plugin version, just build the project and everything is coherent.
+	 * <b>Caution:</b> the default value changed since the 2.0 version. In 1.x version, the default value is true. Since
+	 * 2.0 version, the default value is false.
 	 * </P>
-	 * <P>
-	 * If you set this parameter to false, the runtime is no more copied with the generated code. You then have to add
-	 * the runtime dependency in the pom dependencies: it's the com.graphql-java-generator:graphql-java-runtime
-	 * dependency, with the exact same version as the plugin version.
-	 * </P>
-	 * <P>
-	 * This also allows you to create your own runtime, and change the "standard" behavior. But of course, you'll have
-	 * to check the compatibility with all the next versions.
-	 * </P>
+	 * <UL>
+	 * <LI>If copyRuntimeSources=true: the runtime is copied along with the generated code. The project configuration
+	 * (pom.xml or build.gradle) must contain the <code>com.graphql-java-generator:graphql-java-dependencies</code>
+	 * dependency, with the same version as the GraphQL plugin</LI>
+	 * <LI>If copyRuntimeSources=false: the runtime is NOT copied along with the generated code. The project
+	 * configuration (pom.xml or build.gradle) must contain the
+	 * <code>com.graphql-java-generator:graphql-java-runtime</code> dependency, with the same version as the GraphQL
+	 * plugin</LI>
+	 * <LI></LI>
+	 * </UL>
 	 *
 	 * @return
 	 */
@@ -180,17 +181,14 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * generated in the same package than the classes that matches the GraphQL schema.
 	 * </P>
 	 * <P>
-	 * That is: internal technical classes, java classes that contain the method to execute the
-	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...
+	 * The classes that map the GraphQL schema (type, input type, interfaces, unions...) are <b>generated</b> in the
+	 * package defined in the <I>packageName</I> plugin parameter, then:
 	 * </P>
-	 * <P>
-	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
-	 * <I>packageName</I>, or the default package if this parameter is not defined.
-	 * </P>
-	 * <P>
-	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
-	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
-	 * </P>
+	 * <ul>
+	 * <li>If false <i>(default for versions 1.x)</i>, the utility classes are generated in the the same package</li>
+	 * <li>If true <i>(default for version 2.0 and after)</i>, the utility classes are generated in the <I>util</I>
+	 * subpackage of this package</li>
+	 * </ul>
 	 * 
 	 * @return
 	 */

@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_ReservedJavaKeywordAsObjectField_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateReservedJavaKeywordAsObjectField;
+import org.allGraphQLCases.server.DataFetchersDelegateReservedJavaKeywordAsObjectField;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

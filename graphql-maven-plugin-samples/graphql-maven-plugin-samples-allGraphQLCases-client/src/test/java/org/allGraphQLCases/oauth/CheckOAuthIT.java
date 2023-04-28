@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

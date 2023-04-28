@@ -154,6 +154,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 		if (configuration.isCopyRuntimeSources()) {
 			copyRuntimeSources();
+		} else if (configuration instanceof GeneratePojoConfiguration) {
+			logger.info("You're using the generatePojo goal/task with copyRuntimeSources set to false. "
+					+ "To avoid adding plugin dependencies, the recommended value for the plugin parameter 'copyRuntimeSources' is true. "
+					+ "Please note that the default value changed from true to false since 2.0.");
 		}
 		logger.info(i + " java classes have been generated from the schema(s) '" + configuration.getSchemaFilePattern()
 				+ "' in the package '" + configuration.getPackageName() + "'");

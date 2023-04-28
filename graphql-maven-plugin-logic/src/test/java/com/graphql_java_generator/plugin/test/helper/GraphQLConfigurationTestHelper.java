@@ -31,11 +31,11 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public Logger logger;
 
 	public boolean addRelayConnections = false;
-	private boolean copyRuntimeSources = false; // Since 2.0, this value may not be overriden
+	public boolean copyRuntimeSources = false;
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
-	private boolean generateBatchLoaderEnvironment = true; // Since 2.0, this value may not be overriden
+	public boolean generateBatchLoaderEnvironment = true; 
 	public boolean generateDataLoaderForLists = false;
-	private boolean generateDeprecatedRequestResponse = false; // Since 2.0, this value may not be overriden
+	public boolean generateDeprecatedRequestResponse = false; 
 	private Boolean generateJacksonAnnotations = null; // See below: isGenerateJacksonAnnotations() either
 														// generateJacksonAnnotations if it is not null, or true id
 														// client mode, or false if server mode. Because of this rule,
@@ -55,7 +55,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
 	public boolean separateUtilityClasses = false;
-	private boolean skipGenerationIfSchemaHasNotChanged = true; // Since 2.0, this value may not be overriden
+	public boolean skipGenerationIfSchemaHasNotChanged = true;
 	public String sourceEncoding = "UTF-8";
 	public String springBeanSuffix = "MySchema";
 	public File targetClassFolder = null;

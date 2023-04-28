@@ -11,7 +11,7 @@ import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.SINP_HumanInput_SINS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateHuman;
+import org.allGraphQLCases.server.DataFetchersDelegateHuman;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;

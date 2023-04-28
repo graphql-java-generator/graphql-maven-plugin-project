@@ -12,12 +12,12 @@ import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
 
 /**
  * This class implements the simplest way to call GraphQl queries, with the GraphQL Java Generator

@@ -18,7 +18,7 @@ import org.allGraphQLCases.client.CTP_TBar12_CTS;
 import org.allGraphQLCases.client.CTP_TBar2_CTS;
 import org.allGraphQLCases.client.CTP_TFoo1_CTS;
 import org.allGraphQLCases.client.CTP_TFoo12_CTS;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;

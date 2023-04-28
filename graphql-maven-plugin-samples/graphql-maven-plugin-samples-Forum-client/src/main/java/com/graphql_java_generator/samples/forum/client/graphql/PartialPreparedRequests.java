@@ -3,8 +3,6 @@ package com.graphql_java_generator.samples.forum.client.graphql;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,15 +11,17 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.GraphQLRequest;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.allGraphQLCases.server.STP_TBar2_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateTBar2;
+import org.allGraphQLCases.server.DataFetchersDelegateTBar2;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 

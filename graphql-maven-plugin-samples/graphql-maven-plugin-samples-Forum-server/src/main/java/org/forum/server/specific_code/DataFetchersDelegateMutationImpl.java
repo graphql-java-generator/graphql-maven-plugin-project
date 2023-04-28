@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Random;
 
 import org.forum.server.graphql.Board;
-import org.forum.server.graphql.DataFetchersDelegateMutation;
 import org.forum.server.graphql.Member;
 import org.forum.server.graphql.MemberInput;
 import org.forum.server.graphql.Post;
 import org.forum.server.graphql.PostInput;
 import org.forum.server.graphql.Topic;
 import org.forum.server.graphql.TopicInput;
+import org.forum.server.graphql.util.DataFetchersDelegateMutation;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.PostRepository;
 import org.forum.server.jpa.TopicRepository;

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.allGraphQLCases.server.SIP_IBar1_SIS;
 import org.allGraphQLCases.server.STP_TBar1_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateIBar1;
+import org.allGraphQLCases.server.DataFetchersDelegateIBar1;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 

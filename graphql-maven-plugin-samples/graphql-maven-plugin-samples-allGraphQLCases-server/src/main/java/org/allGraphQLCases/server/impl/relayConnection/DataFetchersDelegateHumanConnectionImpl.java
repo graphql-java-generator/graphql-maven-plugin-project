@@ -5,7 +5,7 @@ import java.util.List;
 import org.allGraphQLCases.server.STP_HumanConnection_STS;
 import org.allGraphQLCases.server.STP_HumanEdge_STS;
 import org.allGraphQLCases.server.STP_PageInfo_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateHumanConnection;
+import org.allGraphQLCases.server.DataFetchersDelegateHumanConnection;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCases;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SIP_AllFieldCasesInterface_SIS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCases;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

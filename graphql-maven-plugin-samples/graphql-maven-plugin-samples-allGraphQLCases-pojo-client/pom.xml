@@ -22,6 +22,7 @@
 							<goal>generatePojo</goal>
 						</goals>
 						<configuration>
+							<copyRuntimeSources>true</copyRuntimeSources>
 							<!-- Choosing client or server is useless. It's here only to check that if used, everything is still Ok -->
 							<generateJacksonAnnotations>false</generateJacksonAnnotations>
 							<mode>client</mode>
@@ -96,7 +97,6 @@
 	</build>
 
 	<dependencies>
-
 		<!-- Complementary graphql dependencies, for the custom scalars -->
 		<dependency>
 			<groupId>com.graphql-java</groupId>

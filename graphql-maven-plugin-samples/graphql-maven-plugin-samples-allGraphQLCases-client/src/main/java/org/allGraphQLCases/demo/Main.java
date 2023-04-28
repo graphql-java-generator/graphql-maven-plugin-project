@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.allGraphQLCases.demo.impl.PartialPreparedQueries;

@@ -28,7 +28,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
-	private boolean skipGenerationIfSchemaHasNotChanged = true; // Since 2.0, this value may not be overriden
+	public boolean skipGenerationIfSchemaHasNotChanged = true;
 	public String resourceEncoding = "UTF-8";
 	public File targetFolder = null;
 	public String targetSchemaFileName = null;

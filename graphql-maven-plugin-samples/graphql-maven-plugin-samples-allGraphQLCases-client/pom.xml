@@ -41,6 +41,7 @@
 							<goal>generateClientCode</goal>
 						</goals>
 						<configuration>
+							<generateDeprecatedRequestResponse>true</generateDeprecatedRequestResponse>
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
 							<separateUtilityClasses>false</separateUtilityClasses>
@@ -77,21 +78,21 @@
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
-                            <!-- ClientINputPrefix -->
-                            <inputPrefix>CINP_</inputPrefix>
-                            <!-- ClientINputSuffix -->
-                            <inputSuffix>_CINS</inputSuffix>
-                            <!-- ClientTypePrefix -->
-                            <typePrefix>CTP_</typePrefix>
-                            <!-- ClientTypeSuffix etc. -->
-                            <typeSuffix>_CTS</typeSuffix>
-                            <interfacePrefix>CIP_</interfacePrefix>
-                            <interfaceSuffix>_CIS</interfaceSuffix>
-                            <unionPrefix>CUP_</unionPrefix>
-                            <unionSuffix>_CUS</unionSuffix>
-                            <enumPrefix>CEP_</enumPrefix>
-                            <enumSuffix>_CES</enumSuffix>
-                        </configuration>
+							<!-- ClientINputPrefix -->
+							<inputPrefix>CINP_</inputPrefix>
+							<!-- ClientINputSuffix -->
+							<inputSuffix>_CINS</inputSuffix>
+							<!-- ClientTypePrefix -->
+							<typePrefix>CTP_</typePrefix>
+							<!-- ClientTypeSuffix etc. -->
+							<typeSuffix>_CTS</typeSuffix>
+							<interfacePrefix>CIP_</interfacePrefix>
+							<interfaceSuffix>_CIS</interfaceSuffix>
+							<unionPrefix>CUP_</unionPrefix>
+							<unionSuffix>_CUS</unionSuffix>
+							<enumPrefix>CEP_</enumPrefix>
+							<enumSuffix>_CES</enumSuffix>
+						</configuration>
 					</execution>
 					<execution>
 						<!-- This second generation of the client code for the same -->

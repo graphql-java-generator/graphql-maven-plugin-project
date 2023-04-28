@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.STP_AllFieldCasesWithIdSubtype_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesWithIdSubtype;
+import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesWithIdSubtype;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 

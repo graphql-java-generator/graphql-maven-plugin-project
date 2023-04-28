@@ -2,15 +2,15 @@ package org.forum.server.specific_code;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
-
 import org.dataloader.BatchLoaderEnvironment;
-import org.forum.server.graphql.DataFetchersDelegateMember;
 import org.forum.server.graphql.Member;
+import org.forum.server.graphql.util.DataFetchersDelegateMember;
 import org.forum.server.jpa.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.Resource;
 
 @Component
 public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMember {

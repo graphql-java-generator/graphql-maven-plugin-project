@@ -7,8 +7,8 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
-import com.generated.graphql.MutationTypeExecutor;
-import com.generated.graphql.QueryTypeExecutor;
+import com.generated.graphql.util.MutationTypeExecutor;
+import com.generated.graphql.util.QueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
@@ -79,7 +79,8 @@ public class PartialDirectRequests implements Queries {
 
 	@Override
 	public Droid droidDoesNotExist() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryTypeExecutor.droid("{id appearsIn friends {name friends {friends{id name appearsIn}}} primaryFunction }",
+		return queryTypeExecutor.droid(
+				"{id appearsIn friends {name friends {friends{id name appearsIn}}} primaryFunction }",
 				"00000000-0000-0000-0000-000000001111");
 	}
 

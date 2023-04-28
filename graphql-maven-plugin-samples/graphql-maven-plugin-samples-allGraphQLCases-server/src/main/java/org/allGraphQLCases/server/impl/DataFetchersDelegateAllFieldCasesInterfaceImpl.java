@@ -17,7 +17,7 @@ import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_HumanConnection_STS;
 import org.allGraphQLCases.server.STP_HumanEdge_STS;
 import org.allGraphQLCases.server.STP_PageInfo_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesInterface;
+import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesInterface;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;

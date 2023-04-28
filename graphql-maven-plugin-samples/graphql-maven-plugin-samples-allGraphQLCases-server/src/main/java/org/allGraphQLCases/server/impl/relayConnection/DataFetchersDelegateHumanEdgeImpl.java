@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_HumanEdge_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateHumanEdge;
+import org.allGraphQLCases.server.DataFetchersDelegateHumanEdge;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

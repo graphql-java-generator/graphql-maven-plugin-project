@@ -11,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.starwars.server.Character;
-import org.starwars.server.DataFetchersDelegateMutationType;
 import org.starwars.server.Droid;
 import org.starwars.server.Human;
 import org.starwars.server.jpa.DroidRepository;
 import org.starwars.server.jpa.HumanRepository;
+import org.starwars.server.util.DataFetchersDelegateMutationType;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.reactivex.subjects.Subject;

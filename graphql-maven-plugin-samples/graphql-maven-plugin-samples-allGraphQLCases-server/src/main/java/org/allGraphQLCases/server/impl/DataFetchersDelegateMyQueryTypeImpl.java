@@ -28,7 +28,7 @@ import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.config.GraphQlException;
-import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
+import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;

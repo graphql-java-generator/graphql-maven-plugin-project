@@ -1,9 +1,11 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* Document it, then release it
+* plugin-logic: remove the runtime dependencies, that implies useless dependencies (with troubles in the Gradle plugin)
+* Review the plugin documentation (goal and parameters)
 * [Client mode] Remove the deprecated request response
 * Remove the GraphQL goal/task
+* Restore the graphql goal/task in the pom.xml and build.gradle files (to test the goals/tasks that changed of default value)
 
 
 ## TODO list for the 1.x branch

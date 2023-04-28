@@ -3,8 +3,8 @@
  */
 package org.forum.server.specific_code;
 
-import org.forum.server.graphql.DataFetchersDelegateSubscription;
 import org.forum.server.graphql.Post;
+import org.forum.server.graphql.util.DataFetchersDelegateSubscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

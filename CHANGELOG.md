@@ -1,20 +1,13 @@
-# Note for the future 2.x versions
 
-New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
-Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
-Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
+
+# Not released yet
+
+Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_
 * generateBatchLoaderEnvironment: true _(server only)_
 * generateDeprecatedRequestResponse: false _(client only)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
-
-Note about the _separateUtilityClasses_ plugin parameter:
-It was initally planned to force it to true. But this may have a real impact on the existing code.
-As a consequence, on 2.x versions:
-* Its default value changed from false to true
-* It is recommended to accept this default value, and adapt your code, as this separates the generated code that maps the GraphQL schema from the utility code that helps to start the server or execute the requests.
-* You can define its value to false, to avoid impact on your code.
-
+It was initially planned to force their value to the new default valye. But this would have too much impact on the existing code. Changing the default value allows 'old' users to minimize the impact when switching to the 2.0 version, while new user will use cleaner code.
 
 
 # 2.0RC1

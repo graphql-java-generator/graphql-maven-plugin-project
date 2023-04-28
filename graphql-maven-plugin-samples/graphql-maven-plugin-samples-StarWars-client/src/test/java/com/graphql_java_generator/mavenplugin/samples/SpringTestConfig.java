@@ -30,7 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import com.generated.graphql.QueryTypeExecutor;
+import com.generated.graphql.util.QueryTypeExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.samples.simple.client.Main;
 

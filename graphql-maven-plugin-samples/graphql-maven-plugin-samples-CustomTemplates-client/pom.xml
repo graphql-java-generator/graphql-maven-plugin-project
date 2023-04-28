@@ -22,8 +22,10 @@
 					</execution>
 				</executions>
 				<configuration>
+					<generateDeprecatedRequestResponse>true</generateDeprecatedRequestResponse>
 					<mode>client</mode>
 					<packageName>com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client</packageName>
+					<separateUtilityClasses>false</separateUtilityClasses>
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>

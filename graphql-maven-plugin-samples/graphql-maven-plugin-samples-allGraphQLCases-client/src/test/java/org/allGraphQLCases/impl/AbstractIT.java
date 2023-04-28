@@ -24,7 +24,7 @@ import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_Droid_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;

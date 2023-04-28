@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
 
 /**
  * Some samples (and tests) with direct queries having input parameters

@@ -1,6 +1,6 @@
 package org.allGraphQLCases.server.impl;
 
-import org.allGraphQLCases.server.util.DataFetchersDelegatePet;
+import org.allGraphQLCases.server.DataFetchersDelegatePet;
 import org.springframework.stereotype.Component;
 
 @Component

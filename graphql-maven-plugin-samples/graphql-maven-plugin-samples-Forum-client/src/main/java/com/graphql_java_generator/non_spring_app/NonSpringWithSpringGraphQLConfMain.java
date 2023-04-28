@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.minimal_app.MinimalSpringApp;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.SubscriptionExecutor;
 
 /**
  * This class demonstrates how to use the Spring Boot configuration capabilities, with a non spring app. It can be used

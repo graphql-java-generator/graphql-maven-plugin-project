@@ -8,8 +8,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.DataFetchersDelegateWithID;
 import org.allGraphQLCases.server.SIP_WithID_SIS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateWithID;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 

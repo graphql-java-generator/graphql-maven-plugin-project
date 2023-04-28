@@ -12,7 +12,7 @@ import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_HumanInput_SINS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateAnotherMutationType;
+import org.allGraphQLCases.server.DataFetchersDelegateAnotherMutationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

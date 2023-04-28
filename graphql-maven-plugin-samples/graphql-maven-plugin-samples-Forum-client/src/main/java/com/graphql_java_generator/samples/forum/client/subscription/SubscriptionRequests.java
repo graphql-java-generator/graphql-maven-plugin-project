@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.GraphQLRequest;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.SubscriptionExecutor;
 
 @Component
 public class SubscriptionRequests {

@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.allGraphQLCases.server.SIP_IBar12_SIS;
 import org.allGraphQLCases.server.SIP_IFoo3_SIS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateIFoo3;
+import org.allGraphQLCases.server.DataFetchersDelegateIFoo3;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;

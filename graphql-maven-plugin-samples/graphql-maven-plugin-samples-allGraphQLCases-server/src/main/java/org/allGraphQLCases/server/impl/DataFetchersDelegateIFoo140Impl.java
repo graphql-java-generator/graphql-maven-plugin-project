@@ -3,7 +3,7 @@ package org.allGraphQLCases.server.impl;
 import org.allGraphQLCases.server.STP_Bar140_STS;
 import org.allGraphQLCases.server.SIP_IBar140_SIS;
 import org.allGraphQLCases.server.SIP_IFoo140_SIS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateIFoo140;
+import org.allGraphQLCases.server.DataFetchersDelegateIFoo140;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

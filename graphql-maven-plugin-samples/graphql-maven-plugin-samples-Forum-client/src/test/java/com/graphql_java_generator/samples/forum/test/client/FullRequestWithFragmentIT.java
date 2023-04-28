@@ -21,8 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Query;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.test.SpringTestConfig;
 
 /**

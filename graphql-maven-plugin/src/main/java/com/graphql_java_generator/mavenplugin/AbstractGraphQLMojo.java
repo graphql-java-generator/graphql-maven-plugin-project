@@ -22,16 +22,19 @@ public abstract class AbstractGraphQLMojo extends AbstractGenerateServerCodeMojo
 
 	/**
 	 * <P>
-	 * <I>Since 1.7.1 version</I>
+	 * <I>(since 1.7.1 version) Default value is _true_ for 1.x version, and _false_ for version 2.0 and after.</I>
 	 * </P>
 	 * <P>
-	 * Generates a XxxxResponse class for each query/mutation/subscription, and (if separateUtilityClasses is true) Xxxx
-	 * classes in the util subpackage. This allows to keep compatibility with code Developed with the 1.x versions of
-	 * the plugin.
+	 * If this parameter is set to true, the plugin generates a XxxxResponse class for each query/mutation/subscription,
+	 * and (if separateUtilityClasses is true) Xxxx classes in the util subpackage. This allows to keep compatibility
+	 * with code Developed with the 1.x versions of the plugin.
 	 * </P>
 	 * <P>
-	 * The best way to use the plugin is to directly use the Xxxx query/mutation/subscription classes, where Xxxx is the
-	 * query/mutation/subscription name defined in the GraphQL schema.
+	 * The recommended way to use the plugin is to directly use the Xxxx query/mutation/subscription executor classes,
+	 * where Xxxx is the query/mutation/subscription name defined in the GraphQL schema. To do this, set this parameter
+	 * to _false_, and use the plugin as described in the
+	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_spring">wiki client
+	 * page</a>.
 	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateDeprecatedRequestResponse", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE)

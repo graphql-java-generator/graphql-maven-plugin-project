@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.starwars.server.Character;
-import org.starwars.server.DataFetchersDelegateSubscriptionType;
+import org.starwars.server.util.DataFetchersDelegateSubscriptionType;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.reactivex.subjects.Subject;

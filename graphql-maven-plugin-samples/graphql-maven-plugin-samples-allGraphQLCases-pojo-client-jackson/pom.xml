@@ -22,6 +22,7 @@
 							<goal>generatePojo</goal>
 						</goals>
 						<configuration>
+							<copyRuntimeSources>true</copyRuntimeSources>
 							<!-- Choosing client or server is useless. It's here only to check that if used, everything is still Ok -->
 							<mode>client</mode>
 							<packageName>org.allGraphQLCases.client.pojo</packageName>
@@ -104,7 +105,7 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+				
 		<!-- Complementary graphql dependencies, for the custom scalars -->
 		<dependency>
 			<groupId>com.graphql-java</groupId>

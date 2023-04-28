@@ -3,8 +3,6 @@
  */
 package org.forum.server.specific_code;
 
-import jakarta.annotation.Resource;
-
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.Post;
 import org.forum.server.graphql.Topic;
@@ -14,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.Resource;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.EmitResult;

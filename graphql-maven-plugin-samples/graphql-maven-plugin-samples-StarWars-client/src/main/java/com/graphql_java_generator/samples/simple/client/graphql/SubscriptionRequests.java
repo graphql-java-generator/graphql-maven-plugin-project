@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.generated.graphql.GraphQLRequest;
-import com.generated.graphql.MutationTypeExecutor;
-import com.generated.graphql.SubscriptionTypeExecutor;
+import com.generated.graphql.util.GraphQLRequest;
+import com.generated.graphql.util.MutationTypeExecutor;
+import com.generated.graphql.util.SubscriptionTypeExecutor;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;

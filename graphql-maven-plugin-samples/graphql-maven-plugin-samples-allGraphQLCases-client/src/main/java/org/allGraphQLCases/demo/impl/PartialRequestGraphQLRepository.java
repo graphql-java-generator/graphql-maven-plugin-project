@@ -17,7 +17,7 @@ import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.CEP_extends_CES;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 
 import com.graphql_java_generator.annotation.RequestType;

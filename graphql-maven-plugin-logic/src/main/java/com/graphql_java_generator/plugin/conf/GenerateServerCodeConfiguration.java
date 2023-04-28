@@ -154,7 +154,8 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * value.
 	 * </P>
 	 * <P>
-	 * <B><I>Default value is false</I></B>
+	 * <B><I>The default value changed since 2.0 version: it is false in 1.x version, and true since the 2.0
+	 * version</I></B>
 	 * </P>
 	 */
 	public boolean isGenerateBatchLoaderEnvironment();

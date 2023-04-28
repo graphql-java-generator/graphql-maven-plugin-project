@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.STP_Droid_STS;
 import org.allGraphQLCases.server.SEP_Episode_SES;
-import org.allGraphQLCases.server.util.DataFetchersDelegateDroid;
+import org.allGraphQLCases.server.DataFetchersDelegateDroid;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 

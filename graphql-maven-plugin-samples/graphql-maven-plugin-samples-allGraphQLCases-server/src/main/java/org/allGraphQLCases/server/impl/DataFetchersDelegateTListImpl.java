@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.allGraphQLCases.server.STP_TFoo1_STS;
 import org.allGraphQLCases.server.STP_TList_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateTList;
+import org.allGraphQLCases.server.DataFetchersDelegateTList;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

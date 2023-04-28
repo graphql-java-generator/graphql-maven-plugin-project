@@ -3,16 +3,16 @@ package com.graphql_java_generator.samples.forum.client;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.GraphQLRequest;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Check that the server correctly works with the combination for the arguments for the post field: as there are

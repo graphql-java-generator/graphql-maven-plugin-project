@@ -6,7 +6,7 @@ package org.allGraphQLCases.minimal.oauth_app;
 import java.util.List;
 
 import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -12,8 +12,6 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.PostConstruct;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -26,15 +24,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.GraphQLRequest;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.SubscriptionExecutor;
 import com.graphql_java_generator.samples.forum.client.subscription.PostSubscriptionCallback;
 import com.graphql_java_generator.samples.forum.test.SpringTestConfig;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class executes integration tests for subscription, and can be used as a sample on how to use Subscription, based

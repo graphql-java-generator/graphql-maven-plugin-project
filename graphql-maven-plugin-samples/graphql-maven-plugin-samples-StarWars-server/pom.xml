@@ -27,12 +27,15 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>generateServerCode</goal>
+							<goal>graphql</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
+					<copyRuntimeSources>true</copyRuntimeSources>
+					<generateBatchLoaderEnvironment>false</generateBatchLoaderEnvironment>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
+					<mode>server</mode>
 					<packageName>org.starwars.server</packageName>
 				</configuration>
 			</plugin>
@@ -80,7 +83,8 @@
 		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-server-runtime</artifactId>
+			<artifactId>graphql-java-server-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
 
 		<!-- Mandatory to enable Web Sockets for Spring-mvc application (mandatory for subscription) -->
@@ -88,7 +92,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		
+
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

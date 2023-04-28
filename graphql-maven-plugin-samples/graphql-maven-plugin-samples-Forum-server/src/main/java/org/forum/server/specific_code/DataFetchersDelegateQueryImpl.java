@@ -5,11 +5,9 @@ package org.forum.server.specific_code;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
-
 import org.forum.server.graphql.Board;
-import org.forum.server.graphql.DataFetchersDelegateQuery;
 import org.forum.server.graphql.Topic;
+import org.forum.server.graphql.util.DataFetchersDelegateQuery;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf

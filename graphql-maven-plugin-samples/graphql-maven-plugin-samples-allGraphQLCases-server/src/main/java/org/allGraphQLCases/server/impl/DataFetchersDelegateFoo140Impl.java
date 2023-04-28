@@ -2,7 +2,7 @@ package org.allGraphQLCases.server.impl;
 
 import org.allGraphQLCases.server.STP_Bar140_STS;
 import org.allGraphQLCases.server.STP_Foo140_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateFoo140;
+import org.allGraphQLCases.server.DataFetchersDelegateFoo140;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

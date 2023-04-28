@@ -71,7 +71,8 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * value.
 	 * </P>
 	 * <P>
-	 * <B><I>Default value is false</I></B>
+	 * <B><I>The default value changed since 2.0 version: it is false in 1.x version, and true since the 2.0
+	 * version</I></B>
 	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateBatchLoaderEnvironment", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT)

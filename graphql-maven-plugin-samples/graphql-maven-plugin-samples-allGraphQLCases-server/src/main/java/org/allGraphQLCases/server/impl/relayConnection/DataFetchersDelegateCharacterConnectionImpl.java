@@ -5,7 +5,7 @@ import java.util.List;
 import org.allGraphQLCases.server.SIP_CharacterConnection_SIS;
 import org.allGraphQLCases.server.SIP_CharacterEdge_SIS;
 import org.allGraphQLCases.server.STP_PageInfo_STS;
-import org.allGraphQLCases.server.util.DataFetchersDelegateCharacterConnection;
+import org.allGraphQLCases.server.DataFetchersDelegateCharacterConnection;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
