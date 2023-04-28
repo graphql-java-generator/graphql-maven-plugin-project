@@ -119,18 +119,25 @@
 	</build>
 
 	<dependencies>
-		<!-- Internal dependencies -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-common-runtime</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		
+		<!-- Internal dependencies (for test only) -->
+		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-runtime</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-server-runtime</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Dependencies for tests -->

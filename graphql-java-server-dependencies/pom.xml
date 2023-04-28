@@ -23,8 +23,9 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+
 		<dependency>
 			<!-- Mandatory to avoid ClassNotFound errors on javax.servlet.filter -->
 			<groupId>javax.servlet</groupId>
