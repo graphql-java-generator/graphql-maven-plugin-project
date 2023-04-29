@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -60,6 +61,8 @@ class SubscriptionNewTestIT {
 
 	public static Thread currentThread;
 
+	SubscriptionClient client1, client2, client3;
+
 	@PostConstruct
 	public void init() throws GraphQLRequestPreparationException {
 		subscriptionRequest = subscriptionType
@@ -104,51 +107,70 @@ class SubscriptionNewTestIT {
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		logger.debug(
-				"Creating dummy posts, to check that we won't receive a notification, latter on, for this one, once subscribed");
+				"Creating a dummy post, to check that we won't receive a notification, latter on, for this one, once subscribed");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);
-		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Go, go, go
-		logger.debug("--------------------------------------------------------------------------------------------");
-		logger.debug("(client 1) Subscribing to the GraphQL subscription");
-		SubscriptionClient client1 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback1,
-				"Board name 1");
-		logger.debug("(client 2) Subscribing to the GraphQL subscription");
-		SubscriptionClient client2 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback2,
-				"Board name 1");
+		// Go, go, go (the subscription is done on another thread, to avoid inter-thread contention)
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					logger.debug(
+							"--------------------------------------------------------------------------------------------");
+					logger.debug("(client 1) Subscribing to the GraphQL subscription");
+					client1 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback1, "Board name 1");
+					logger.debug("(client 2) Subscribing to the GraphQL subscription");
+					client2 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback2, "Board name 1");
+				} catch (GraphQLRequestExecutionException e) {
+					logger.error(e.getClass().getName() + ": " + e.getMessage());
+				}
+			}
+		}.start();
 
 		// We wait a little, just to be sure that the subscription is active on server side
-		Thread.sleep(200);
+		Thread.sleep(400);
 
 		logger.debug("Creating the post, for which we should receive the notification");
-		createdPost = mutationType.createPost(createPostRequest, postInput1);
+		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
 		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
 		callback1.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 		callback2.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
-		logger.trace("postInput1: {}", postInput1);
+		logger.trace("postInput1: {}", postInput2);
 		logger.trace("createdPost: {}", createdPost);
-		logger.trace("callback1: {}", callback1);
-		logger.trace("callback2: {}", callback2);
 		logger.trace("Checking callback1");
-		checkNotification(callback1, createdPost, postInput1);
+		checkNotification(callback1, createdPost, postInput2);
 		logger.trace("Checking callback2");
-		checkNotification(callback2, createdPost, postInput1);
+		checkNotification(callback2, createdPost, postInput2);
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's do it again (there was an issue that prevent a second notification to arrive)
 		logger.debug("--------------------------------------------------------------------------------------------");
-		logger.debug("(client 3) Subscribing to the GraphQL subscription");
-		SubscriptionClient client3 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback3,
-				"Board name 1");
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					logger.debug("(client 3) Subscribing to the GraphQL subscription");
+					client3 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback3, "Board name 1");
+				} catch (GraphQLRequestExecutionException e) {
+					logger.error(e.getClass().getName() + ": " + e.getMessage());
+				}
+			}
+		}.start();
 		//
 		callback1.nbReceivedMessages = 0;
-		callback2.nbReceivedMessages = 0;
 		callback1.lastReceivedMessage = null;
+		callback1.latchNewMessage = new CountDownLatch(1);
+
+		callback2.nbReceivedMessages = 0;
 		callback2.lastReceivedMessage = null;
+		callback2.latchNewMessage = new CountDownLatch(1);
+
+		// We wait a little, just to be sure that the subscription is active on server side
+		Thread.sleep(400);
 
 		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
@@ -158,11 +180,11 @@ class SubscriptionNewTestIT {
 		callback3.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
-		logger.trace("Checking callback1");
+		logger.trace("Checking callback1 (check2)");
 		checkNotification(callback1, createdPost, postInput2);
-		logger.trace("Checking callback2");
+		logger.trace("Checking callback2 (check2)");
 		checkNotification(callback2, createdPost, postInput2);
-		logger.trace("Checking callback3");
+		logger.trace("Checking callback3 (check2)");
 		checkNotification(callback3, createdPost, postInput2);
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////

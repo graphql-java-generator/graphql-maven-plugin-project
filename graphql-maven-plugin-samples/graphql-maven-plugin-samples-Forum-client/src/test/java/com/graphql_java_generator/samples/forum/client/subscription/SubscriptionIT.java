@@ -58,6 +58,8 @@ class SubscriptionIT {
 	GraphQLRequest subscriptionRequest;
 	GraphQLRequest createPostRequest;
 
+	SubscriptionClient client;
+
 	public static Thread currentThread;
 
 	@PostConstruct
@@ -82,9 +84,18 @@ class SubscriptionIT {
 		postInput.setInput(getTopicPostInput(author, "Some other content",
 				new GregorianCalendar(2000, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
-		// Go, go, go
+		// Go, go, go (the subscription is done on another thread, to avoid inter-thread contention)
 		logger.debug("Subscribing to the GraphQL subscription");
-		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, callback, "Board name 1");
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					client = subscriptionType.subscribeToNewPost(subscriptionRequest, callback, "Board name 1");
+				} catch (GraphQLRequestExecutionException e) {
+					logger.error(e.getClass().getName() + ": " + e.getMessage());
+				}
+			}
+		}.start();
 
 		// We wait a little, just to be sure that the subscription is active on server side
 		Thread.sleep(500);
