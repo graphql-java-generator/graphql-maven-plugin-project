@@ -70,7 +70,8 @@
 		<module>graphql-java-server-dependencies</module>
 		<module>graphql-maven-plugin-logic</module>
 		<module>graphql-maven-plugin</module>
-		<module>graphql-maven-plugin-samples</module>
+		<!-- The graphql-maven-plugin-samples module is activate in the profile "withSamples", see below -->
+		<!-- module>graphql-maven-plugin-samples</module -->
 	</modules>
 
 	<properties>
@@ -169,7 +170,7 @@
 					<version>3.0.0</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<useReleaseProfile>false</useReleaseProfile>
+						<useReleaseProfile>false</useReleaseProfile> <!-- ignore the default release profile -->
 						<releaseProfiles>release,!withSamples</releaseProfiles>
 						<goals>deploy</goals>
 					</configuration>
@@ -212,13 +213,20 @@
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>1.6.13</version>
+					<version>1.6.7</version>
 					<extensions>true</extensions>
 					<configuration>
 						<serverId>ossrh</serverId>
 						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 						<autoReleaseAfterClose>true</autoReleaseAfterClose>
 					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>com.thoughtworks.xstream</groupId>
+							<artifactId>xstream</artifactId>
+							<version>1.4.15</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
@@ -579,8 +587,8 @@
 		</profile>
 
 		<profile>
-			<!-- This profile is activated, when the "release" profile is not active. It embeds all samples. -->
-			<!-- This prevents the sample to pollute the maven central repository -->
+			<!-- This profile is activated by default. It embeds all samples. -->
+			<!-- It is deactivated by setting the skipSamples property to true -->
 			<id>withSamples</id>
 			<activation>
 				<property>

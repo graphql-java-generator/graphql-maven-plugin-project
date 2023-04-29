@@ -13,7 +13,6 @@
 	<description>Maven plugin to generate the graphql code, based on graphql schema files</description>
 
 
-
 	<build>
 		<plugins>
 			<plugin>
