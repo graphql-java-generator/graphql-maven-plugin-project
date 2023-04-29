@@ -1,13 +1,35 @@
-# Note for the future 2.x versions
 
-New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
-Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
-Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
+
+# 2.0
+
+Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_
 * generateBatchLoaderEnvironment: true _(server only)_
 * generateDeprecatedRequestResponse: false _(client only)_
-* separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
+It was initially planned to force their value to the new default valye. But this would have too much impact on the existing code. Changing the default value allows 'old' users to minimize the impact when switching to the 2.0 version, while new user will use cleaner code.
+
+
+# 2.0RC1
+
+Release Candidate version for the 2.x versions.
+
+Main changes:
+* Based on [spring-graphql](https://spring.io/projects/spring-graphql)
+* Upgrade of dependencies, based on [spring-boot 2.7.10](https://docs.spring.io/spring-boot/docs/2.7.10/reference/html/)
+* Needs JDK 17 to be build, but the generated artifact is compatible with Java 8
+* Compatibility with Spring Boot 3.
+    * For a sample of this, you can check the [graphql-maven-plugin-samples-Forum-client](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client) and the [graphql-maven-plugin-samples-Forum-server](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server) samples that are part of the build.
+* __gradle plugin__: The id changed from `com.graphql_java_generator.graphql-gradle-plugin` to `com.graphql-java-generator.graphql-gradle-plugin`
+
+You can check these pages for more information on how to migrate from 1.x versions:
+* [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]]
+* [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]]
+
+Know issues:
+* All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
+* For Spring 3, in client mode, copyRuntimeSources should be manually to false, to avoid compilation errors
+
 
 
 # 1.18.11
