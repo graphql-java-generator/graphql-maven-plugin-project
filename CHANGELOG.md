@@ -1,6 +1,6 @@
 
 
-# Not released yet
+# 2.0
 
 Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_
