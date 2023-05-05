@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * The Spring configuration used for JUnit tests. To use tit, just create a subclass, and provide the schemaFilePattern
@@ -28,6 +29,11 @@ public abstract class AbstractSpringConfiguration {
 
 	protected File getRootUnitTestFolder() {
 		return new File(mavenTestHelper.getModulePathFile(), ROOT_UNIT_TEST_FOLDER);
+	}
+
+	@Bean
+	GraphqlUtils graphQlUtils() {
+		return GraphqlUtils.graphqlUtils;
 	}
 
 	@Bean

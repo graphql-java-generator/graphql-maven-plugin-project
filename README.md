@@ -123,6 +123,15 @@ The Change Log is available [here](CHANGELOG.md)
 
 # Note for contributors
 
+## Branches
+
+Since 01 may 2023, the default branch is the `master_2.x` branch. It contains all the changes done for the 2.0 version.
+This branch
+
+The historical branch has been renamed from `master` to `master_1.x` branch. This branch is used only for the 1.x maintenance, that is: only major and security issues. 
+
+## Project organization
+
 All the plugin logic is stored in the [graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project.
 
 The [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) and the [Gradle plugin](https://github.com/graphql-java-generator/graphql-gradle-plugin-project) are just wrapper for the plugin logic, available in the __graphql-maven-plugin-logic__ module of the maven project. 

@@ -10,7 +10,6 @@ import java.util.concurrent.CompletableFuture;
 import org.dataloader.BatchLoaderEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.graphql_java_generator.util.GraphqlUtils;
 
@@ -83,9 +82,9 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	/**
 	 * (only for server mode) Transform the list of package names returned by {@link #getScanBasePackages()} by a list
 	 * of package names, surrounded by double quotes, as it can be used in the Spring scanBasePackages property of the
-	 * {@link SpringBootApplication} Spring annotation.
+	 * &amp;SpringBootApplication Spring annotation.
 	 * 
-	 * @return A string that can be added to the scanBasePackages property of {@link SpringBootApplication}, that is: an
+	 * @return A string that can be added to the scanBasePackages property of &amp;SpringBootApplication, that is: an
 	 *         empty String, or a list of quoted package names starting with a comma (e.g.: ", \"my.package\",
 	 *         \"my.other.package\"")
 	 */

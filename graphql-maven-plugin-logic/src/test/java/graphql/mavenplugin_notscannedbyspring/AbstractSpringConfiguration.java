@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,11 @@ public abstract class AbstractSpringConfiguration {
 
 	@Autowired
 	MavenTestHelper mavenTestHelper;
+
+	@Bean
+	GraphqlUtils graphQlUtils() {
+		return GraphqlUtils.graphqlUtils;
+	}
 
 	@Bean
 	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {

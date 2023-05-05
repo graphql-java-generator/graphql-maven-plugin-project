@@ -4,16 +4,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 class AbstractTypeTest {
 
 	GraphQLConfigurationTestHelper pluginConfiguration = new GraphQLConfigurationTestHelper(this);
+
+	/** A test class for {@link graphqlClientUtilsTest#test_addImports()} */
+	public class AnInnerClass {
+		int dummy;
+	}
 
 	@Test
 	void testAddImportClassOfQ() {
@@ -119,5 +128,47 @@ class AbstractTypeTest {
 		pluginConfiguration.enumSuffix = "EnumSuffix";
 		assertEquals("EnumPrefixMyEnumEnumSuffix", enumObject.getJavaName());
 
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	public void test_addImports() {
+		// Preparation
+		AbstractType type = new ObjectType("DateFormat", pluginConfiguration, null);
+		Set<String> imports = new TreeSet<>();
+
+		// Same package
+		type.addImport(imports, getClass().getPackage().getName(), getClass().getName(), false);
+		assertEquals(0, imports.size(), "Same package: import not added");
+
+		// primitive type
+		type.addImport(imports, getClass().getPackage().getName(), "byte[]", false);
+		assertEquals(0, imports.size(), "primitive type: import not added");
+
+		// java.lang
+		type.addImport(imports, getClass().getPackage().getName(), java.lang.String.class.getName(), false);
+		assertEquals(0, imports.size(), "java.lang: import not added");
+
+		// java.util
+		type.addImport(imports, getClass().getPackage().getName(), java.util.Date.class.getName(), false);
+		assertEquals(1, imports.size(), "java.util: import added");
+		assertEquals("java.util.Date", imports.toArray(new String[0])[0]);
+
+		imports = new TreeSet<>();
+		type.addImport(imports, "another.target.package", AnInnerClass.class.getName(), false);
+		assertEquals(1, imports.size(), "import added");
+		assertEquals("com.graphql_java_generator.plugin.language.impl.AbstractTypeTest.AnInnerClass",
+				imports.toArray(new String[0])[0]);
+
+		imports = new TreeSet<>();
+		type.addImport(imports, "another.target.package", Type.class.getName(), false);
+		assertEquals(1, imports.size(), "import added");
+		assertEquals("com.fasterxml.jackson.annotation.JsonSubTypes.Type", imports.toArray(new String[0])[0]);
+
+		// Check of useJakartaEE9
+		imports = new TreeSet<>();
+		type.addImport(imports, "another.target.package", "javax.test", true);
+		assertEquals(1, imports.size(), "import added");
+		assertEquals("jakarta.test", imports.toArray(new String[0])[0]);
 	}
 }

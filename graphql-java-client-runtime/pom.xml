@@ -94,11 +94,6 @@
 			<artifactId>graphql-java-extended-scalars</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-		    <groupId>io.projectreactor</groupId>
-		    <artifactId>reactor-test</artifactId>
-		    <scope>test</scope>
-		</dependency>
 
 		<!-- Module dependencies -->
 		<dependency>

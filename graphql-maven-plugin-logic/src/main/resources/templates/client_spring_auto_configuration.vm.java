@@ -114,7 +114,7 @@ public class GraphQLMavenPluginAutoConfiguration${springBeanSuffix} {
 #end
 	@Bean
 	@ConditionalOnMissingBean(name = "graphqlClientUtils")
-	GraphqlUtils graphqlClientUtils() {
+	GraphqlClientUtils graphqlClientUtils() {
 		return GraphqlClientUtils.graphqlClientUtils;
 	}
 

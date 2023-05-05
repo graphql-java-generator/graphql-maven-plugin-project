@@ -161,7 +161,7 @@ public abstract class AbstractType implements Type {
 			}
 
 			// We only import if it's another simple classname
-			GraphqlUtils.graphqlUtils.addImport(imports, targetPackageName, classname, useJakartaEE9);
+			addImport(imports, targetPackageName, classname, useJakartaEE9);
 		}
 	}
 
@@ -174,7 +174,42 @@ public abstract class AbstractType implements Type {
 			useJakartaEE9 = ((GenerateCodeCommonConfiguration) configuration).isUseJakartaEE9();
 		}
 
-		GraphqlUtils.graphqlUtils.addImport(importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
+		addImport(importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
+	}
+
+	/**
+	 * Adds, if necessary the import calculated from the given parameters, into the given set of imports.
+	 * 
+	 * @param imports
+	 *            The set of import, in which the import for the given parameters is to be added
+	 * @param targetPackageName
+	 *            The package in which is the class that will contain this import
+	 * @param classname
+	 *            the full classname of the class to import
+	 * @param useJakartaEE9
+	 *            If true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
+	 * @return
+	 */
+	void addImport(Set<String> imports, String targetPackageName, String classname, boolean useJakartaEE9) {
+
+		if (useJakartaEE9 && classname.startsWith("javax.")) {
+			classname = "jakarta" + classname.substring(5);
+		}
+
+		// For inner class, the classname is "MainClassname$InnerClassname". And the
+		// inner class must be imported, even
+		// if we are in the same package. So, we replace all $ by dot
+		String fullClassname = classname.replace('$', '.');
+
+		int lastDotPos = fullClassname.lastIndexOf('.');
+		String packageName = lastDotPos < 0 ? "" : fullClassname.substring(0, lastDotPos);
+		String simpleClassName = fullClassname.substring(lastDotPos + 1);
+
+		// No import for primitive types and java.lang
+		// And no import if the class is in the same package.
+		if (!packageName.isEmpty() && !packageName.equals("java.lang") && !targetPackageName.equals(packageName)) {
+			imports.add(packageName + "." + simpleClassName);
+		}
 	}
 
 	/**
