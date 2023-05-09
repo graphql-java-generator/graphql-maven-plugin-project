@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SEP_extends_SES;
@@ -28,7 +29,6 @@ import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.config.GraphQlException;
-import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
@@ -600,6 +600,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._byte,
 				SEP_EnumWithReservedJavaKeywordAsValues_SES._case);
+	}
+
+	@Override
+	public String _null(DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
 	}
 
 }

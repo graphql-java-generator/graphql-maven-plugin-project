@@ -105,6 +105,7 @@ public class GraphqlUtils {
 		javaKeywords.add("long");
 		javaKeywords.add("native");
 		javaKeywords.add("new");
+		javaKeywords.add("null");
 		javaKeywords.add("package");
 		javaKeywords.add("private");
 		javaKeywords.add("protected");

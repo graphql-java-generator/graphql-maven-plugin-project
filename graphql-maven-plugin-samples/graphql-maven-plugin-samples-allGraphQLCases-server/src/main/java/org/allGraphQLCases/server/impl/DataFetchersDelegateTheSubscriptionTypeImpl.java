@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.allGraphQLCases.server.DataFetchersDelegateTheSubscriptionType;
 import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
@@ -21,7 +22,7 @@ import org.allGraphQLCases.server.STP_AllFieldCasesWithoutIdSubtype_STS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.config.GraphQlException;
-import org.allGraphQLCases.server.DataFetchersDelegateTheSubscriptionType;
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -366,6 +367,12 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.map((l) -> Arrays.asList(//
 						SEP_EnumWithReservedJavaKeywordAsValues_SES._byte,
 						SEP_EnumWithReservedJavaKeywordAsValues_SES._case));
+	}
+
+	@Override
+	public Publisher<Optional<String>> _null(DataFetchingEnvironment dataFetchingEnvironment) {
+		// This method is not implemented (not used in internal tests)
+		return null;
 	}
 
 }
