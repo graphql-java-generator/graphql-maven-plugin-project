@@ -607,4 +607,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return null;
 	}
 
+	@Override
+	public String checkOverridedController(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "Welcome from the default controller";
+	}
+
 }

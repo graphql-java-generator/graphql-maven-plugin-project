@@ -10,6 +10,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.graphql.execution.ClassNameTypeResolver;
 import org.springframework.graphql.execution.GraphQlSource;
@@ -26,7 +28,12 @@ import com.graphql_java_generator.server.util.GraphqlServerUtils;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @SpringBootApplication()
-@ComponentScan(basePackages = { "${configuration.packageName}", "com.graphql_java_generator.server", "com.graphql_java_generator.util" ${configuration.quotedScanBasePackages}})
+@ComponentScan(
+		basePackages = { "${configuration.packageName}", "com.graphql_java_generator.server", "com.graphql_java_generator.util" ${configuration.quotedScanBasePackages}},
+		// To allow Controller overriding, the controller are declared as @Controller (mandatory for the AnnotatedControllerResolver), 
+		// but they must be found by the autoconfiguration class to allow them to be overriding.
+		// So we prevent the default component scan to find them. They will be available as default bean in GraphQLPluginAutoConfiguration 
+		excludeFilters = {@Filter(type = FilterType.REGEX, pattern = "${packageUtilName}\\.[^.]*Controller") })
 #if($configuration.generateJPAAnnotation)
 @EnableJpaRepositories(basePackages = { "${configuration.packageName}", "com.graphql_java_generator" ${configuration.quotedScanBasePackages} })
 @EntityScan(basePackages = { "${configuration.packageName}", "com.graphql_java_generator" ${configuration.quotedScanBasePackages} })

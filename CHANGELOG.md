@@ -10,6 +10,9 @@ Change of some plugin parameters value (please read either [[Client migration fr
 It was initially planned to force their value to the new default valye. But this would have too much impact on the existing code. Changing the default value allows 'old' users to minimize the impact when switching to the 2.0 version, while new user will use cleaner code.
 
 
+Server mode:
+* Issue #190: The spring entity controllers can now be overridden
+
 # 2.0RC1
 
 Release Candidate version for the 2.x versions.

@@ -1,8 +1,9 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* plugin-logic: remove the runtime dependencies, that implies useless dependencies (with troubles in the Gradle plugin)
+* Respond to issue #189: spring 6 - missing createError() method in OAuthTokenExtractor.GetOAuthTokenClientResponse implementing spring reactive ClientResponse
 * Review the plugin documentation (goal and parameters)
+* Issue Gradle-project #15: redundant cast to Long
 * [Client mode] Remove the deprecated request response
 * Remove the GraphQL goal/task
 * Restore the graphql goal/task in the pom.xml and build.gradle files (to test the goals/tasks that changed of default value)

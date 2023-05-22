@@ -118,10 +118,9 @@ class CodeGeneratorTest {
 		// objects.add(object2);
 
 		String type = "my test type";
-		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename, false);
+		int i = codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -130,7 +129,8 @@ class CodeGeneratorTest {
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
 		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
-		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
+		assertEquals(CodeTemplate.OBJECT.getDefaultPath(), argument1.getValue(),
+				"checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,10 +167,9 @@ class CodeGeneratorTest {
 		objects.add(object1);
 
 		String type = "my test type";
-		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename, false);
+		int i = codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -179,7 +178,8 @@ class CodeGeneratorTest {
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
 		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
-		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
+		assertEquals(CodeTemplate.OBJECT.getDefaultPath(), argument1.getValue(),
+				"checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,21 +205,7 @@ class CodeGeneratorTest {
 
 		// Go, go, go
 		codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
-				"testTemplate.vm");
-
-		// If there is no error, then the template has been found. The test is Ok
-	}
-
-	@Test
-	@Execution(ExecutionMode.CONCURRENT)
-	void test_generateOneFile_inFileSystem() throws IOException {
-		// Preparation
-		VelocityContext velocityContext = new VelocityContext();
-		File targetFile = new File(targetResourceFolder + "/testTemplate_inFileSystem");
-
-		// Go, go, go
-		codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
-				"/src/test/resources/testTemplate.vm");
+				CodeTemplate.OBJECT);
 
 		// If there is no error, then the template has been found. The test is Ok
 	}
@@ -305,7 +291,7 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateDefault() {
 		pluginConfiguration.templates.clear();
-		assertEquals(CodeTemplate.WIRING.getDefaultValue(), this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
+		assertEquals(CodeTemplate.WIRING.getDefaultPath(), this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
 		;
 	}
 

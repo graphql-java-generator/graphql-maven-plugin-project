@@ -83,13 +83,13 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 		return Arrays.stream(CodeTemplate.values()).filter(
 				codeTemplate -> codeTemplate.getScope() == scope || codeTemplate.getScope() == CodeTemplateScope.COMMON)
 				.map(codeTemplate -> {
-					Matcher matcher = templatePattern.matcher(codeTemplate.getDefaultValue());
+					Matcher matcher = templatePattern.matcher(codeTemplate.getDefaultPath());
 					if (matcher.matches()) {
 						return new Pair<CodeTemplate, String>(codeTemplate, String
 								.format("templates_personalization/%s.vm.%s", matcher.group(1), matcher.group(2)));
 					} else {
 						throw new RuntimeException(String.format("Template does not match expected pattern: %s - %s",
-								codeTemplate, codeTemplate.getDefaultValue()));
+								codeTemplate, codeTemplate.getDefaultPath()));
 					}
 
 				}).collect(Collectors.toMap(pair -> pair.getValue0().name(), pair -> pair.getValue1()));
@@ -167,7 +167,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 		return Arrays.stream(CodeTemplate.values())
 				.filter(template -> template.getScope() == CodeTemplateScope.COMMON
 						|| template.getScope() == this.codeTemplateScope)
-				.map(template -> Paths.get(template.getDefaultValue()))
+				.map(template -> Paths.get(template.getDefaultPath()))
 				.map(templatePath -> templatePath.getFileName().toString()).collect(Collectors.toList());
 	}
 }

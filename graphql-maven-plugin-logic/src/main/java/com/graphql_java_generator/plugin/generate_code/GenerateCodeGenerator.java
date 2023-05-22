@@ -73,7 +73,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar";
 	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar";
 
-	private final static String CLIENT_SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLMavenPluginAutoConfiguration";
+	private final static String SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLPluginAutoConfiguration";
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
@@ -131,16 +131,16 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 		int i = 0;
 		logger.debug("Generating objects");
-		i += generateTargetFiles(generateCodeDocumentParser.getObjectTypes(), "object",
-				resolveTemplate(CodeTemplate.OBJECT), false);
+		i += generateTargetFilesForTypeList(generateCodeDocumentParser.getObjectTypes(), "object", CodeTemplate.OBJECT,
+				false);
 		logger.debug("Generating interfaces");
-		i += generateTargetFiles(generateCodeDocumentParser.getInterfaceTypes(), "interface",
-				resolveTemplate(CodeTemplate.INTERFACE), false);
+		i += generateTargetFilesForTypeList(generateCodeDocumentParser.getInterfaceTypes(), "interface",
+				CodeTemplate.INTERFACE, false);
 		logger.debug("Generating unions");
-		i += generateTargetFiles(generateCodeDocumentParser.getUnionTypes(), "union",
-				resolveTemplate(CodeTemplate.UNION), false);
+		i += generateTargetFilesForTypeList(generateCodeDocumentParser.getUnionTypes(), "union", CodeTemplate.UNION,
+				false);
 		logger.debug("Generating enums");
-		i += generateTargetFiles(generateCodeDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM),
+		i += generateTargetFilesForTypeList(generateCodeDocumentParser.getEnumTypes(), "enum", CodeTemplate.ENUM,
 				false);
 
 		switch (configuration.getMode()) {
@@ -174,10 +174,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		context.put("customSerializers", generateCodeDocumentParser.getCustomSerializers());
 
 		if (configuration.isGenerateJacksonAnnotations()) {
-			i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
-					context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
-			i += generateOneFile(getJavaFile("CustomJacksonSerializers", true), "Generating custom serializers",
-					context, resolveTemplate(CodeTemplate.JACKSON_SERIALIZERS));
+			i += generateOneJavaFile("CustomJacksonDeserializers", true, "Generating custom deserializers", context,
+					CodeTemplate.JACKSON_DESERIALIZERS);
+			i += generateOneJavaFile("CustomJacksonSerializers", true, "Generating custom serializers", context,
+					CodeTemplate.JACKSON_SERIALIZERS);
 		}
 
 		if (configuration.isGenerateUtilityClasses()) {
@@ -186,79 +186,80 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
 				logger.debug("Generating query");
-				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "query",
-						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getQueryType(), "query",
+						CodeTemplate.QUERY_MUTATION, true);
 				logger.debug("Generating mutation");
-				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "mutation",
-						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getMutationType(), "mutation",
+						CodeTemplate.QUERY_MUTATION, true);
 				logger.debug("Generating subscription");
-				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "subscription",
-						resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getSubscriptionType(), "subscription",
+						CodeTemplate.SUBSCRIPTION, true);
 			}
 
 			// Generation of the query/mutation/subscription executor classes
 			logger.debug("Generating query executors");
-			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "executor",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getQueryType(), "executor",
+					CodeTemplate.QUERY_MUTATION_EXECUTOR, true);
 			logger.debug("Generating mutation executors");
-			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "executor",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getMutationType(), "executor",
+					CodeTemplate.QUERY_MUTATION_EXECUTOR, true);
 			logger.debug("Generating subscription executors");
-			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "executor",
-					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getSubscriptionType(), "executor",
+					CodeTemplate.SUBSCRIPTION_EXECUTOR, true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				logger.debug("Generating query response");
-				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "response",
-						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getQueryType(), "response",
+						CodeTemplate.QUERY_RESPONSE, true);
 				logger.debug("Generating mutation response");
-				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "response",
-						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getMutationType(), "response",
+						CodeTemplate.QUERY_RESPONSE, true);
 				logger.debug("Generating subscription response");
-				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "response",
-						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+				i += generateTargetFileForType(generateCodeDocumentParser.getSubscriptionType(), "response",
+						CodeTemplate.QUERY_RESPONSE, true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
 			logger.debug("Generating query root response");
-			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getQueryType(), "root response",
+					CodeTemplate.ROOT_RESPONSE, true);
 			logger.debug("Generating mutation root response");
-			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getMutationType(), "root response",
+					CodeTemplate.ROOT_RESPONSE, true);
 			logger.debug("Generating subscription root response");
-			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
+			i += generateTargetFileForType(generateCodeDocumentParser.getSubscriptionType(), "root response",
+					CodeTemplate.ROOT_RESPONSE, true);
 
 			// Generation of the GraphQLRequest class
 			logger.debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest();
 
-			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
-			logger.debug("Generating SpringConfig");
-			i += generateOneFile(
-					getJavaFile(CLIENT_SPRING_AUTO_CONFIGURATION_CLASS
-							+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix()),
-							true),
-					"generating SpringConfiguration", context,
-					resolveTemplate(CodeTemplate.SPRING_AUTO_CONFIGURATION_CLASS));
-
 			// Files for Custom Scalars
 			logger.debug("Generating CustomScalarRegistryInitializer");
-			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),
+			i += generateOneJavaFile("CustomScalarRegistryInitializer", true,
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
-					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
+					CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER);
 
 			// Files for Directives
 			logger.debug("Generating DirectiveRegistryInitializer");
-			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
-					"Generating DirectiveRegistryInitializer", getVelocityContext(),
-					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
+			i += generateOneJavaFile("DirectiveRegistryInitializer", true, "Generating DirectiveRegistryInitializer",
+					getVelocityContext(), CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER);
+
+			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
+			logger.debug("Generating Spring autoconfiguration class");
+			i += generateOneJavaFile(
+					SPRING_AUTO_CONFIGURATION_CLASS
+							+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix()),
+					true, "generating SpringConfiguration", context,
+					CodeTemplate.CLIENT_SPRING_AUTO_CONFIGURATION_CLASS);
 
 			// Spring auto-configuration management
-			logger.debug("Generating Spring auto-configuration generation");
-			i += generateSpringAutoConfigurationDeclaration();
+			logger.debug("Generating Spring autoconfiguration generation");
+			String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "."
+					+ SPRING_AUTO_CONFIGURATION_CLASS
+					+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
+			i += generateSpringAutoConfigurationDeclaration(autoConfClass);
 		}
 
 		logger.debug("Generating client side mapping from graphql type to java type");
@@ -276,8 +277,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		VelocityContext context = getVelocityContext();
 		context.put("types", generateCodeDocumentParser.getTypes());
 
-		generateOneFile(getJavaFile("GraphQLTypeMapping", false), "generating GraphQLTypeMapping", context,
-				resolveTemplate(CodeTemplate.TYPE_MAPPING));
+		generateOneJavaFile("GraphQLTypeMapping", false, "generating GraphQLTypeMapping", context,
+				CodeTemplate.TYPE_MAPPING);
 
 		return 1;
 	}
@@ -289,12 +290,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 * @return
 	 * @throws IOException
 	 */
-	private int generateSpringAutoConfigurationDeclaration() throws IOException {
+	private int generateSpringAutoConfigurationDeclaration(String autoConfClass) throws IOException {
 		String springAutoConfigurationPath = "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports";
 		File springFactories = new File(configuration.getTargetResourceFolder(), springAutoConfigurationPath);
-		String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "."
-				+ CLIENT_SPRING_AUTO_CONFIGURATION_CLASS
-				+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
 		Set<String> autoConfClasses = new TreeSet<>();
 		autoConfClasses.add(autoConfClass);
 		if (springFactories.exists()) {
@@ -314,7 +312,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		VelocityContext context = getVelocityContext();
 		context.put("springAutoConfigurationClasses", String.join("\n", autoConfClasses));
 		generateOneFile(getResourceFile(springAutoConfigurationPath), "Generating " + springAutoConfigurationPath,
-				context, resolveTemplate(CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE));
+				context, CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE);
 
 		return 1;
 	}
@@ -483,18 +481,18 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 *            The list of objects to send to the template
 	 * @param type
 	 *            The kind of graphql object (object, query, mutation...), just for proper logging
-	 * @param templateFilename
+	 * @param templateCode
 	 *            The absolute path for the template (or relative to the current path)
 	 * @param utilityClass
 	 *            true if this class is a utility class, false if it is not. A utility class it a class the is not
 	 *            directly the transposition of an item in the GraphQL schema (like object, interface, union, query...)
 	 * @throws IOException
 	 */
-	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename, boolean utilityClass)
-			throws RuntimeException {
+	int generateTargetFilesForTypeList(List<? extends Type> objects, String type, CodeTemplate templateCode,
+			boolean utilityClass) throws RuntimeException {
 		int ret = 0;
 		for (Type object : objects) {
-			ret += generateTargetFile(object, type, templateFilename, utilityClass);
+			ret += generateTargetFileForType(object, type, templateCode, utilityClass);
 		}
 		return ret;
 	}
@@ -507,30 +505,27 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 *            just return 0.
 	 * @param type
 	 *            The kind of graphql object (object, query, mutation...), just for proper logging
-	 * @param templateFilename
-	 *            The absolute path for the template (or relative to the current path)
+	 * @param templateCode
+	 *            The template to use for this file
 	 * @param utilityClass
 	 *            true if this class is a utility class, false if it is not. A utility class it a class the is not
 	 *            directly the transposition of an item in the GraphQL schema (like object, interface, union, query...)
 	 * @return 1 if one file was generated, or 0 if object is null.
 	 */
-	int generateTargetFile(Type object, String type, String templateFilename, boolean utilityClass) {
+	int generateTargetFileForType(Type object, String type, CodeTemplate templateCode, boolean utilityClass) {
 		if (object == null) {
 			return 0;
 		} else {
-			String targetFileName = (String) execWithOneStringParam("getTargetFileName", object, type);
+			String classname = (String) execWithOneStringParam("getTargetFileName", object, type);
 			if (type.equals("executor") && configuration.getSpringBeanSuffix() != null) {
-				targetFileName += configuration.getSpringBeanSuffix();
+				classname += configuration.getSpringBeanSuffix();
 			}
-			File targetFile = getJavaFile(targetFileName, utilityClass);
-			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 
 			VelocityContext context = getVelocityContext();
 			context.put("object", object);
-			context.put("targetFileName", targetFileName);
 			context.put("type", type);
 
-			generateOneFile(targetFile, msg, context, templateFilename);
+			generateOneJavaFile(classname, utilityClass, type + " '" + object.getName(), context, templateCode);
 			return 1;
 		}
 	}
@@ -546,10 +541,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		context.put("mutation", generateCodeDocumentParser.getMutationType());
 		context.put("subscription", generateCodeDocumentParser.getSubscriptionType());
 
-		return generateOneFile(getJavaFile(//
+		return generateOneJavaFile(//
 				(configuration.getSpringBeanSuffix() == null) ? "GraphQLRequest"
 						: "GraphQLRequest" + configuration.getSpringBeanSuffix(), //
-				true), "generating GraphQLRequest", context, resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
+				true, "generating GraphQLRequest", context, CodeTemplate.GRAPHQL_REQUEST);
 	}
 
 	/**
@@ -575,12 +570,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			context.put("schemaFiles", schemaFiles);
 
 			logger.debug("Generating GraphQLServerMain");
-			ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
-					resolveTemplate(CodeTemplate.SERVER));
+			ret += generateOneJavaFile("GraphQLServerMain", true, "generating GraphQLServerMain", context,
+					CodeTemplate.SERVER);
 
 			logger.debug("Generating GraphQLWiring");
-			ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
-					resolveTemplate(CodeTemplate.WIRING));
+			ret += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
 			for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
 				context.put("dataFetchersDelegate", dataFetcherDelegate);
@@ -590,14 +584,28 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				String entityControllerName = graphqlUtils.getJavaName(dataFetcherDelegate.getType().getName())
 						+ "Controller";
 				logger.debug("Generating " + entityControllerName);
-				ret += generateOneFile(getJavaFile(entityControllerName, true), "generating " + entityControllerName,
-						context, resolveTemplate(CodeTemplate.ENTITY_CONTROLLER));
+				ret += generateOneJavaFile(entityControllerName, true, "generating " + entityControllerName, context,
+						CodeTemplate.ENTITY_CONTROLLER);
 
 				logger.debug("Generating " + dataFetcherDelegate.getPascalCaseName());
-				ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
+				ret += generateOneJavaFile(dataFetcherDelegate.getPascalCaseName(), true,
 						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
-						resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
+						CodeTemplate.DATA_FETCHER_DELEGATE);
 			}
+
+			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
+			logger.debug("Generating Spring autoconfiguration class");
+			String className = SPRING_AUTO_CONFIGURATION_CLASS
+					+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
+			ret += generateOneJavaFile(className, true, "generating SpringConfiguration", context,
+					CodeTemplate.SERVER_SPRING_AUTO_CONFIGURATION_CLASS);
+
+			// Spring auto-configuration management
+			logger.debug("Generating Spring autoconfiguration generation");
+			String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "."
+					+ SPRING_AUTO_CONFIGURATION_CLASS
+					+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
+			ret += generateSpringAutoConfigurationDeclaration(autoConfClass);
 		}
 
 		// We're in server mode. So, When the addRelayConnections parameter is true, we must generate the resulting
@@ -760,6 +768,34 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	/**
 	 * Generates one file from the given parameter, based on a Velocity context and template.
 	 * 
+	 * @param classname
+	 *            The classname for the file to be generated. It will be either created or rewrited
+	 * @param utilityClass
+	 *            true if this class is utility class.
+	 * @param msg
+	 *            A log message. It will be logged in debug mode, or send as the error message if an exception is
+	 *            raised.
+	 * @param context
+	 *            The Velocity context
+	 * @param templateCode
+	 *            The Velocity template to use
+	 * @return The number of classes created, that is: 1
+	 */
+	int generateOneJavaFile(String classname, boolean utilityClass, String msg, VelocityContext context,
+			CodeTemplate templateCode) {
+
+		context.put("targetFileName", classname);
+
+		File targetFile = getJavaFile(classname, utilityClass);
+		logger.debug("Generating {} into {}", msg, targetFile);
+		targetFile.getParentFile().mkdirs();
+
+		return generateOneFile(targetFile, msg, context, templateCode);
+	}
+
+	/**
+	 * Generates one resource file from the given parameter, based on a Velocity context and template.
+	 * 
 	 * @param targetFile
 	 *            The file to be generated. It will be either created or rewrited
 	 * @param msg
@@ -767,18 +803,19 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 *            raised.
 	 * @param context
 	 *            The Velocity context
-	 * @param templateFilename
-	 *            The Velocity template
+	 * @param templateCode
+	 *            The Velocity template to use
 	 * @return The number of classes created, that is: 1
 	 */
-	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
+	int generateOneFile(File targetFile, String msg, VelocityContext context, CodeTemplate templateCode) {
 		try {
 			Writer writer = null;
-			logger.debug(msg);
 
-			Template template = velocityEngine.getTemplate(templateFilename, "UTF-8");
+			Template template = velocityEngine.getTemplate(resolveTemplate(templateCode), "UTF-8");
 
+			logger.debug("Generating {} into {}", msg, targetFile);
 			targetFile.getParentFile().mkdirs();
+
 			try {
 				if (configuration.getSourceEncoding() != null) {
 					writer = new OutputStreamWriter(new FileOutputStream(targetFile),
@@ -818,7 +855,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
 		String packageName;
 
-		if (simpleClassname.startsWith(CLIENT_SPRING_AUTO_CONFIGURATION_CLASS)) {
+		if (simpleClassname.startsWith(SPRING_AUTO_CONFIGURATION_CLASS)) {
 			packageName = configuration.getSpringAutoConfigurationPackage();
 		} else {
 			packageName = (utilityClass && configuration.isSeparateUtilityClasses())
@@ -928,17 +965,16 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	}
 
 	/**
-	 * Resolves the template for the given key
+	 * Resolves the template for the given code
 	 * 
-	 * @param templateKey
-	 * @param defaultValue
+	 * @param templateCode
 	 * @return
 	 */
-	protected String resolveTemplate(CodeTemplate template) {
-		if (configuration.getTemplates().containsKey(template.name())) {
-			return configuration.getTemplates().get(template.name());
+	protected String resolveTemplate(CodeTemplate templateCode) {
+		if (configuration.getTemplates().containsKey(templateCode.name())) {
+			return configuration.getTemplates().get(templateCode.name());
 		} else {
-			return template.getDefaultValue();
+			return templateCode.getDefaultPath();
 		}
 	}
 }

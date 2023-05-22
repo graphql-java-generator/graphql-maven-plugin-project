@@ -34,7 +34,8 @@ public enum CodeTemplate {
 	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"), //
 	SPRING_AUTOCONFIGURATION_DEFINITION_FILE(CodeTemplateScope.CLIENT,
 			"templates/client_spring_autoconfiguration_definition.vm.properties"), //
-	SPRING_AUTO_CONFIGURATION_CLASS(CodeTemplateScope.CLIENT, "templates/client_spring_auto_configuration.vm.java"), //
+	CLIENT_SPRING_AUTO_CONFIGURATION_CLASS(CodeTemplateScope.CLIENT,
+			"templates/client_spring_auto_configuration.vm.java"), //
 	SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_subscription_type.vm.java"), //
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), //
 	TYPE_MAPPING(CodeTemplateScope.CLIENT, "templates/client_type_mapping.vm.java"), //
@@ -43,6 +44,8 @@ public enum CodeTemplate {
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
 	ENTITY_CONTROLLER(CodeTemplateScope.SERVER, "templates/server_EntityController.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java"), //
+	SERVER_SPRING_AUTO_CONFIGURATION_CLASS(CodeTemplateScope.SERVER,
+			"templates/server_spring_auto_configuration.vm.java"), //
 	WIRING(CodeTemplateScope.SERVER, "templates/server_GraphQLWiring.vm.java"), //
 
 	// Template for the GraphQL relay schema generation
@@ -58,6 +61,6 @@ public enum CodeTemplate {
 	 * The default value to use
 	 */
 	@NonNull
-	private String defaultValue;
+	private String defaultPath;
 
 }

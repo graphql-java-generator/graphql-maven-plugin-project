@@ -118,6 +118,8 @@ type MyQueryType {
     ################################################################################
     # queries created to test some issues
     
+    checkOverridedController: String!
+    
     """
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, 
     that was not properly serialized/deserialized

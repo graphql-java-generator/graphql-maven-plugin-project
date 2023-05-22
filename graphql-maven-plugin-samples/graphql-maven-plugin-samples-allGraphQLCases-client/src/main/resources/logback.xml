@@ -19,10 +19,8 @@
 	<logger name="org.allGraphQLCases" level="trace" additivity="false">
 		<appender-ref ref="File" />
 	</logger>
-
-	<logger name="com.graphql_java_generator" level="info" />
-	<root level="info">
-		<appender-ref ref="Console" />
+	<root level="warn">
+		<appender-ref ref="File" />
 	</root>
 
 </configuration>

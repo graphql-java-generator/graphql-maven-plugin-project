@@ -39,9 +39,9 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * @author etienne-sf
  */
 @AutoConfiguration
-public class GraphQLMavenPluginAutoConfiguration${springBeanSuffix} {
+public class ${targetFileName} {
 
-	private static Logger logger = LoggerFactory.getLogger(GraphQLMavenPluginAutoConfiguration${springBeanSuffix}.class);
+	private static Logger logger = LoggerFactory.getLogger(${targetFileName}.class);
 
 	// Creating this bean makes sure that its static field is set. This is mandatory for some part of the code that must
 	// be kept, to allow compliance with existing projects.

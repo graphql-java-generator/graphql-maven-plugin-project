@@ -156,7 +156,7 @@ public class GenerateGraphQLSchema {
 		if (configuration.getTemplates().containsKey(template.name())) {
 			return configuration.getTemplates().get(template.name());
 		} else {
-			return template.getDefaultValue();
+			return template.getDefaultPath();
 		}
 	}
 

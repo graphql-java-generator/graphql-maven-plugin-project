@@ -93,6 +93,9 @@
 							<sources>
 								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
 							</sources>
+							<resources>
+								<resource>${project.build.directory}/generated-resources/graphql-maven-plugin</resource>
+							</resources>
 						</configuration>
 					</execution>
 					<execution>
