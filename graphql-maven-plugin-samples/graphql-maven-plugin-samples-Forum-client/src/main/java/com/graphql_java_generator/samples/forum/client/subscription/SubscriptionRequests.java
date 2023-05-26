@@ -27,6 +27,8 @@ public class SubscriptionRequests {
 	@Autowired
 	SubscriptionExecutor subscriptionTypeExecutor;
 
+	SubscriptionClient subscriptionClient;
+
 	public void execSubscription()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, IOException {
 		// Preparation
@@ -44,22 +46,30 @@ public class SubscriptionRequests {
 				new GregorianCalendar(2020, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
 		// Go, go, go
-		System.out.println("Submitting the 'subscribeToNewPostWithBindValues' GraphQL subscription");
-		SubscriptionClient subscriptionClient = subscriptionTypeExecutor.subscribeToNewPost(subscriptionRequest,
-				postSubscriptionCallback, "Board name 1");
+
+		// To avoid thread conflict when waiting fir the subscription to be active, we subscribe in a separate thread.
+		// In real life, this is useless.
+		SubscriptionRequests subscriptionRequests = this;
+		new Thread() {
+			SubscriptionRequests mother = subscriptionRequests;
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("Submitting the 'subscribeToNewPostWithBindValues' GraphQL subscription");
+					mother.subscriptionClient = subscriptionTypeExecutor.subscribeToNewPost(subscriptionRequest,
+							postSubscriptionCallback, "Board name 1");
+				} catch (GraphQLRequestExecutionException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 
 		// For this test, we need to be sure that the subscription is active, before creating the post (that we will
 		// receive a notification about). 3s: that's long, but my PC is so slow from time to time... :(
-		final int TIMEOUT1 = 3000;
-		for (int i = 0; i < TIMEOUT1 / 10; i += 1) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
-			if (postSubscriptionCallback.connected) {
-				break;
-			}
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
 		}
 
 		// Let's check that everything is ready

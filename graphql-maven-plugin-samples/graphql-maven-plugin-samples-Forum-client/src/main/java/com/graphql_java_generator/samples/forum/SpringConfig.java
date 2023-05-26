@@ -1,4 +1,5 @@
-package com.graphql_java_generator.samples.forum.test;
+
+package com.graphql_java_generator.samples.forum;
 
 import java.net.URI;
 import java.util.Collections;
@@ -7,11 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
@@ -26,23 +25,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 
-import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
-import com.graphql_java_generator.samples.forum.client.DirectQueriesWithFieldInputParameters;
-import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Query;
 
 import reactor.core.publisher.Mono;
 
-@TestConfiguration
-@SpringBootApplication
-@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, Query.class, PartialPreparedRequests.class,
-		DirectQueriesWithFieldInputParameters.class })
-@EnableGraphQLRepositories({ "com.graphql_java_generator.samples.forum.client.graphql" })
-public class SpringTestConfig {
+@Configuration
+public class SpringConfig {
 
-	private static Logger logger = LoggerFactory.getLogger(SpringTestConfig.class);
+	private static Logger logger = LoggerFactory.getLogger(SpringConfig.class);
 
 	@Bean
 	@Primary
@@ -90,6 +80,7 @@ public class SpringTestConfig {
 	@Primary
 	GraphQlClient webSocketGraphQlClient(String graphqlEndpoint,
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction) {
+
 		logger.debug("Creating SpringConfig webSocketGraphQlClient");
 
 		// Creation of an OAuthTokenExtractor based on this OAuth ExchangeFilterFunction
@@ -121,4 +112,5 @@ public class SpringTestConfig {
 
 		return WebSocketGraphQlClient.builder(graphqlEndpoint, client).build();
 	}
+
 }

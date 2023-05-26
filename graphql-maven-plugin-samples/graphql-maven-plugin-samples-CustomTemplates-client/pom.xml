@@ -86,6 +86,27 @@
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>start_OAuth_Authorization_server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
+							<workingDir>OAuth-authorization-server</workingDir>
+							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
+							<waitAfterLaunch>180</waitAfterLaunch>
+							<waitForInterrupt>false</waitForInterrupt>
+							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
+							<arguments>
+								<argument>java</argument>
+								<argument>-jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>start-Forum-server</id>
 						<goals>
 							<goal>start</goal>
@@ -162,6 +183,12 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-runtime</artifactId>
+		</dependency>
+
+		<!-- The Forum server is protected by OAuth2-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 	</dependencies>
 

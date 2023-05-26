@@ -70,7 +70,7 @@
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>
 					<packageName>org.forum.server.graphql</packageName>
-					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code </scanBasePackages>
+					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code, org.forum.server.oauth2</scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 					<useJakartaEE9>true</useJakartaEE9><!-- This is mandatory for Spring Boot 3 -->
 					<customScalars>
@@ -162,6 +162,10 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -30,9 +30,10 @@ import org.springframework.graphql.client.GraphQlClientInterceptor;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.InMemoryReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -138,9 +139,13 @@ public class SpringTestConfig {
 	@Primary
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
 			ReactiveClientRegistrationRepository clientRegistrations) {
+		InMemoryReactiveOAuth2AuthorizedClientService clientService = new InMemoryReactiveOAuth2AuthorizedClientService(
+				clientRegistrations);
+		AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientManager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(
+				clientRegistrations, clientService);
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
-				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-		oauth.setDefaultClientRegistrationId("provider_test");
+				authorizedClientManager);
+		oauth.setDefaultClientRegistrationId("provider_test"); // Defines our custom OAuth2 provider
 		return oauth;
 	}
 
@@ -148,7 +153,14 @@ public class SpringTestConfig {
 	@Primary
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum(
 			ReactiveClientRegistrationRepository clientRegistrations) {
-		return null;
+		InMemoryReactiveOAuth2AuthorizedClientService clientService = new InMemoryReactiveOAuth2AuthorizedClientService(
+				clientRegistrations);
+		AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientManager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(
+				clientRegistrations, clientService);
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+				authorizedClientManager);
+		oauth.setDefaultClientRegistrationId("provider_test"); // Defines our custom OAuth2 provider
+		return oauth;
 	}
 
 	@Bean
@@ -167,6 +179,26 @@ public class SpringTestConfig {
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointAllGraphQLCases))
 				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
+				.exchangeStrategies(exchangeStrategies)//
+				.build();
+	}
+
+	@Bean
+	@Primary
+	public WebClient webClientForum(String graphqlEndpointForum, //
+			CodecCustomizer defaultCodecCustomizer, //
+			@Autowired(required = false) @Qualifier("httpClientForum") HttpClient httpClientForum,
+			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionForum") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum) {
+
+		// This raises the volume of the in-memory buffer to manager large server responses
+		ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+				.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 10)).build();
+
+		return WebClient.builder()//
+				.baseUrl(graphqlEndpointForum)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointForum))
+				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionForum)//
 				.exchangeStrategies(exchangeStrategies)//
 				.build();
 	}
@@ -220,5 +252,56 @@ public class SpringTestConfig {
 
 		return WebSocketGraphQlClient.builder(graphqlEndpointAllGraphQLCases, client)
 				.interceptor(new MyInterceptor("AllGraphQLCases")).build();
+	}
+
+	/**
+	 * This overrides the default one provided by the plugin. It adds the OAuth token generation, thanks to the
+	 * 
+	 * @param graphqlEndpointForum
+	 *            The endpoint that is protected by OAuth
+	 * @param serverOAuth2AuthorizedClientExchangeFilterFunctionForum
+	 *            the {@link ExchangeFilterFunction} that adds the OAuth capability to the http {@link WebClient} for
+	 *            this endpoint. It used by the {@link OAuthTokenExtractor} to retrieve a OAuth bearer token, that will
+	 *            be used for WebSocket connections.
+	 * @return
+	 */
+	@Bean
+	@Qualifier("Forum")
+	@Primary
+	GraphQlClient webSocketGraphQlClientForum(String graphqlEndpointForum,
+			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionForum") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum) {
+
+		logger.debug("Creating SpringTestConfig webSocketGraphQlClientAllGraphQLCases");
+		loggerBeanPostProcessor.debug("Creating SpringTestConfig webSocketGraphQlClientAllGraphQLCases");
+
+		// Creation of an OAuthTokenExtractor based on this OAuth ExchangeFilterFunction
+		OAuthTokenExtractor oAuthTokenExtractor = new OAuthTokenExtractor(
+				serverOAuth2AuthorizedClientExchangeFilterFunctionForum);
+
+		// The OAuth token must be checked at each execution. The spring WebSocketClient doesn't provide any way to
+		// update the headers just before the request execution. So we override the WebSocketClient to add this
+		// capability:
+		ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient() {
+			@Override
+			public Mono<Void> execute(URI url, HttpHeaders requestHeaders, WebSocketHandler handler) {
+				// Let's retrieve the valid OAuth token
+				String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
+
+				// Then we apply it to the given headers
+				if (requestHeaders == null) {
+					requestHeaders = new HttpHeaders();
+				} else {
+					requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
+				}
+				logger.trace("Adding the bearer token to the Subscription websocket request");
+				requestHeaders.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
+
+				// Then, let's execute the Web Socket request
+				return super.execute(url, requestHeaders, handler);
+			}
+		};
+
+		return WebSocketGraphQlClient.builder(graphqlEndpointForum, client).interceptor(new MyInterceptor("Forum"))
+				.build();
 	}
 }

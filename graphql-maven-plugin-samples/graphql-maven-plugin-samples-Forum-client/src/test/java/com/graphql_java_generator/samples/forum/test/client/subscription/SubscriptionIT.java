@@ -133,7 +133,7 @@ class SubscriptionIT {
 
 		// We wait a little, just to be sure that the subscription is active on server side
 		logger.debug("Before Thread.sleep() (iteration {})", iteration);
-		Thread.sleep(500);
+		Thread.sleep(2000);
 
 		Post createdPost = mutationType.createPost(createPostRequest, postInput);
 

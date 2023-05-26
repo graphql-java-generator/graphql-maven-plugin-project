@@ -2,6 +2,8 @@ package com.graphql_java_generator.samples.forum;
 
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +25,8 @@ import com.graphql_java_generator.samples.forum.client.subscription.Subscription
  */
 @SpringBootApplication(scanBasePackageClasses = { SpringMain.class, GraphqlClientUtils.class, QueryExecutor.class })
 public class SpringMain implements CommandLineRunner {
+
+	private static Logger logger = LoggerFactory.getLogger(SpringMain.class);
 
 	@Autowired
 	PartialDirectRequests partialDirectRequests;
@@ -89,5 +93,4 @@ public class SpringMain implements CommandLineRunner {
 		name = (name != null) ? name : "Name " + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
 		System.out.println(client.createBoard(name, true));
 	}
-
 }

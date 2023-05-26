@@ -107,6 +107,27 @@
 				<version>${process-exec-maven-plugin.version}</version>
 				<executions>
 					<execution>
+						<id>start_OAuth_Authorization_server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
+							<workingDir>OAuth-authorization-server</workingDir>
+							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
+							<waitAfterLaunch>180</waitAfterLaunch>
+							<waitForInterrupt>false</waitForInterrupt>
+							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
+							<arguments>
+								<argument>java</argument>
+								<argument>-jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>start-forum-server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -185,6 +206,12 @@
 			<version>local-SNAPSHOT</version>
 		</dependency>
 
+		<!-- The Forum server is protected by OAuth2-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<reporting>
@@ -210,10 +237,10 @@
 	</reporting>
 
 
-  <scm>
-    <tag>graphql-maven-plugin-project-2.0</tag>
-    <connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
-    <developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-    <url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-  </scm>
+	<scm>
+		<tag>graphql-maven-plugin-project-2.0</tag>
+		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
+		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
+	</scm>
 </project>
