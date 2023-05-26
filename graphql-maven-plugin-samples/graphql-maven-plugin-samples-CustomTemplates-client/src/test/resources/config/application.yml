@@ -1,7 +1,0 @@
-graphql:
-  endpoint: http://localhost:8182/graphql
-  
-# We don't need the Netty web server to start (but its dependencies are mandatory)
-spring:
-  main:
-    web-application-type: none

@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.TheSubscriptionTypeExecutorAllGraphQLCases;

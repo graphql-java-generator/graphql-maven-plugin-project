@@ -1,31 +1,30 @@
-package com.graphql_java_generator.samples.basic.client;
+package org.forum.customtemplates;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.allGraphQLCases.SpringTestConfig;
+import org.forum.client.Board;
+import org.forum.client.Query;
+import org.forum.client.QueryExecutorForum;
+import org.forum.client.Subscription;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Query;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryExecutor;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Subscription;
 
-@SpringBootTest()
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringConfiguration.class)
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Execution(ExecutionMode.CONCURRENT)
 class ValidateCustomQueryIT {
 
 	@Autowired
-	QueryExecutor query;
+	QueryExecutorForum query;
 
 	@Test
 	void test_customTemplateInTheProject() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {

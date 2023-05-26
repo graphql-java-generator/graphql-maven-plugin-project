@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.forum.client.Topic;
-import org.forum.client.util.QueryExecutorForum;
+import org.forum.client.QueryExecutorForum;
 
 import com.graphql_java_generator.client.graphqlrepository.BindParameter;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;

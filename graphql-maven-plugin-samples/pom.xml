@@ -32,7 +32,6 @@
 		<module>graphql-maven-plugin-samples-StarWars-client</module>
 		<!-- Custom template -->
 		<module>graphql-maven-plugin-samples-CustomTemplates-resttemplate</module>
-		<module>graphql-maven-plugin-samples-CustomTemplates-client</module>
 	</modules>
 
 	<build>

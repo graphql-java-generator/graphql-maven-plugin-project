@@ -26,7 +26,7 @@ import org.forum.client.Member;
 import org.forum.client.MemberType;
 import org.forum.client.Post;
 import org.forum.client.Topic;
-import org.forum.client.util.QueryExecutorForum;
+import org.forum.client.QueryExecutorForum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;

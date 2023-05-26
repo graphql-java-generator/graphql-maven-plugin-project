@@ -153,9 +153,10 @@
 						<configuration>
 							<mode>client</mode>
 							<copyRuntimeSources>false</copyRuntimeSources>
+							<generateDeprecatedRequestResponse>true</generateDeprecatedRequestResponse>
 							<packageName>org.forum.client</packageName>
 							<schemaFileFolder>${basedir}/src/graphqls/forum/</schemaFileFolder>
-							<separateUtilityClasses>true</separateUtilityClasses>
+							<separateUtilityClasses>false</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<springBeanSuffix>Forum</springBeanSuffix>
 							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin_forum</targetSourceFolder>
@@ -166,9 +167,23 @@
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
+							<templates>
+								<!-- The QUERY_MUTATION is found in the graphql-maven-plugin-samples-CustomTemplates-resttemplate dependency -->
+								<QUERY_MUTATION>templates/resttemplate/client_query_mutation_type.vm.java</QUERY_MUTATION>
+								<!-- The SUBSCRIPTION_EXECUTOR is found in this project, int the src/graphql/customtemplates folder -->
+								<SUBSCRIPTION>src/graphqls/customtemplates/client_subscription_type.vm.java</SUBSCRIPTION>
+							</templates>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
+					<dependency>
+						<groupId>com.graphql-java-generator</groupId>
+						<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -311,6 +326,13 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-runtime</artifactId>
+		</dependency>
+
+		<!-- Dependency contains the custom template parameterized in plugin and a QueryExecutor based on Spring Rest Template -->
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Complementary graphql dependencies, for the custom scalars -->

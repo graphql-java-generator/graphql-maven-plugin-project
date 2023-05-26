@@ -11,7 +11,7 @@ import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
 import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
 import org.allGraphQLCases.demo.subscription.ExecSubscription;
-import org.forum.client.util.QueryExecutorForum;
+import org.forum.client.QueryExecutorForum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
