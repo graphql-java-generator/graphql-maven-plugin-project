@@ -309,5 +309,9 @@ public class OAuthTokenExtractor {
 		public String logPrefix() {
 			return this.getClass().getSimpleName();
 		}
+
+		public <T> Mono<T> createError() {
+			return null;
+		}
 	}
 }
