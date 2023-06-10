@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-Forum-client</artifactId>
-	<version>2.1</version>
+	<version>local-SNAPSHOT</version>
 
 	<distributionManagement>
 		<repository>
@@ -49,7 +49,7 @@
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
-				<version>2.1</version>
+				<version>local-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
@@ -203,7 +203,7 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-runtime</artifactId>
-			<version>2.1</version>
+			<version>local-SNAPSHOT</version>
 		</dependency>
 
 		<!-- The Forum server is protected by OAuth2-->
@@ -238,7 +238,7 @@
 
 
 	<scm>
-		<tag>graphql-maven-plugin-project-2.1</tag>
+		<tag>graphql-maven-plugin-project-2.0</tag>
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
