@@ -10,8 +10,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,13 +36,16 @@ import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.Generator;
@@ -76,6 +81,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	private final static String SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLPluginAutoConfiguration";
 
 	@Autowired
+	ApplicationContext ctx;
+
+	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
 
 	/**
@@ -101,11 +109,16 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	public void afterPropertiesSet() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath, file");
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,file,str");
 
 		// Configuration for 'real' executions of the plugin (that is: from the plugin's packaged jar)
 		velocityEngine.setProperty("resource.loader.classpath.description", "Velocity Classpath Resource Loader");
 		velocityEngine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
+
+		// Used for a workaround of a gradle issue: Velocity doesn't seem to properly find templates that are in another
+		// jar. See the generateOneFile() method for the usage
+		velocityEngine.setProperty("resource.loader.str.description", "Velocity String Resource Loader");
+		velocityEngine.setProperty("resource.loader.str.class", StringResourceLoader.class.getName());
 
 		// Configuration for the unit tests (that is: from the file system)
 		velocityEngine.setProperty("resource.loader.file.description", "Velocity File Resource Loader");
@@ -808,10 +821,31 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 * @return The number of classes created, that is: 1
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, CodeTemplate templateCode) {
-		try {
-			Writer writer = null;
+		Template template = null;
+		Writer writer = null;
+		String theTemplate = null;
+		String resolvedTemplate = resolveTemplate(templateCode);
 
-			Template template = velocityEngine.getTemplate(resolveTemplate(templateCode), "UTF-8");
+		try {
+			template = velocityEngine.getTemplate(resolvedTemplate, "UTF-8");
+		} catch (ResourceNotFoundException e) {
+			// When in Gradle, Velocity doesn't seem to be able to load templates that are packaged in another jar. So
+			// we load these templates with a spring resource
+			try {
+				Resource resource = ctx.getResource("classpath:" + resolvedTemplate);
+				try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF_8")) {
+					theTemplate = FileCopyUtils.copyToString(reader);
+				}
+				StringResourceLoader.getRepository().putStringResource(theTemplate, resolvedTemplate);
+			} catch (Exception e2) {
+				logger.warn("Could not load the resource in a the Spring resource. Got this exception: "
+						+ e2.getClass().getSimpleName() + " (" + e2.getMessage() + ")");
+				// If we can't load the resource here, we send the original exception.
+				throw new ResourceNotFoundException(e.getMessage(), e);
+			}
+		}
+
+		try {
 
 			logger.debug("Generating {} into {}", msg, targetFile);
 			targetFile.getParentFile().mkdirs();
