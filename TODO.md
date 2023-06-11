@@ -3,7 +3,7 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the 2.x branch
 * Check for GraphQL specification change (to properly manage them)
 * Review the plugin documentation (goal and parameters)
-* Issue Gradle-project #15: redundant cast to Long
+* Issue Gradle-project #15: redundant cast to Long 
 
 
 ## TODO list for the 1.x branch
