@@ -15,7 +15,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-public class OverridedController {
+public class OverriddenController {
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases queryExecutor;
@@ -23,7 +23,7 @@ public class OverridedController {
 	@Test
 	void checkThatTheControllerIsOverrided()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals("Welcome from the overrided controller", queryExecutor.checkOverridedController(""));
+		assertEquals("Welcome from the overridden controller", queryExecutor.checkOverriddenController(""));
 	}
 
 }

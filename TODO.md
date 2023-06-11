@@ -1,6 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* Generate the site for the 2.1 release
 * Check the Gradle plugin variant for Spring Boot 3
 * Add a note in the wiki about the `buildscript`, that there may be mismatch if there is buildSrc folder
 * Review the plugin documentation (goal and parameters)

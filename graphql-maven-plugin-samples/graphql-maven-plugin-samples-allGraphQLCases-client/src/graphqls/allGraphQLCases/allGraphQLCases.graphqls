@@ -118,7 +118,7 @@ type MyQueryType {
     ################################################################################
     # queries created to test some issues
     
-    checkOverridedController: String!
+    checkOverriddenController: String!
     
     """
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, 
