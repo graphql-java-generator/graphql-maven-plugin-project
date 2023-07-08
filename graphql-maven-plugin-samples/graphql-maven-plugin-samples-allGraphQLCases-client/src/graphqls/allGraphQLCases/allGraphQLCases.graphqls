@@ -1,7 +1,5 @@
 scalar Date 
-	#@testDirective(value:"on Scalar") @anotherTestDirective 
-	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
-	# (see issue 2055)
+	@testDirective(value:"on Scalar") @anotherTestDirective 
 
 """ The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
 scalar DateTime
@@ -497,8 +495,7 @@ directive @testDirective(
   aCustomScalarDate: Date = "2000-12-31"
 ) on
 # ExecutableDirectiveLocation
-# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
-	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
 # TypeSystemDirectiveLocation
 	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
@@ -506,8 +503,7 @@ directive @testDirective(
 directive @anotherTestDirective
 on
 # ExecutableDirectiveLocation
-# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
-	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
 # TypeSystemDirectiveLocation
 	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 

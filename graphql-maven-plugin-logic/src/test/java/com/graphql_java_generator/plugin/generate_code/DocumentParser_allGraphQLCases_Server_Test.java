@@ -250,13 +250,14 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 
 		// On Scalar
-		assertEquals(0, generateCodeDocumentParser.getType("Date").getAppliedDirectives().size(),
+		assertEquals(2, generateCodeDocumentParser.getType("Date").getAppliedDirectives().size(),
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
-		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
-		// 2055 is solved
-		// checkDirectivesOnType(generateCodeDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null,
-		// null,
-		// null, null, true);
+		// checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
+		// Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, String aCustomScalarDate,
+		// boolean containsAnotherTestDirective, int nbOtherDirectives)
+		checkDirectivesOnType(generateCodeDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null,
+				null, null, null, true, 0);
+
 		checkDirectivesOnType(generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null, null,
 				null, null, false, 1);
 

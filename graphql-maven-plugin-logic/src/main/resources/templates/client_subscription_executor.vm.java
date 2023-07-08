@@ -115,7 +115,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 
 	/**
 	 * This method takes a <B>full request</B> definition, and executes the it against the GraphQL server. That is,
-	 * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * the request contains the full GraphQL requests, including the query/mutation/subscription keyword.<BR/>
 	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * For instance:
 	 * 
