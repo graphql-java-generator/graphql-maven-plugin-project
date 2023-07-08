@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -219,7 +217,8 @@ public abstract class DocumentParser implements InitializingBean {
 	/**
 	 * All the {@link Type}s that have been parsed, added by the default scalars. So it contains the query, the mutation
 	 * (if defined), the subscription (if defined), the types, the input types, all the scalars (including the default
-	 * ones), the interfaces, the unions and the enums
+	 * ones), the interfaces, the unions and the enums.<br/>
+	 * The key is the type's name. The value is the {@link Type}.
 	 */
 	@Getter
 	@Setter

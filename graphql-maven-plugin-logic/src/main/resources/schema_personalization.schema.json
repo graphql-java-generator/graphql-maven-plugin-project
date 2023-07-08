@@ -29,11 +29,11 @@
                "type":"string"
             },
             "addAnnotation":{
-               "description":"This string will be added to the annotation(s) of this entity. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline beween each annotation. If this entity already has annotation(s), a newline and indentation will be added first. Default value is null (no change to the annotations)",
+               "description":"This string will be added to the annotation(s) of this entity. You can put as many annotations as you want here, provided that they are properly separated. At least by a semicolon. For proper format of the generated code, the best is to have a newline beween each annotation. If this entity already has annotation(s), a newline and indentation will be added first. Default value is null (no change to the annotations)",
                "type":"string"
             },
-            "replaceAnnotation":{
-               "description":"This string will replace the annotations of this entity. If empty, the entity will no more be annotated. It's the way to remove the @Entity annotation for an object,if you wish. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. Default value is null (no change to the annotations)",
+            "addInterface":{
+               "description":"This string will be added to the list of interfaces for this entity. For each interface the full name must be provided. You can put as many interfaces as you want here, provided that they are separated by a comma. Space are also accepted in the string.",
                "type":"string"
             },
             "newFields":{
@@ -85,10 +85,6 @@
             },
             "addAnnotation":{
                "description":"This string will be added to the annotations of this field. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. If this field already has annotation, a newline and indentation will be added first. Default value is: null (no change)",
-               "type":"string"
-            },
-            "replaceAnnotation":{
-               "description":"This string will replace the annotations of this field. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. If empty, the field will no more be annotated. Default value is: null (no change)",
                "type":"string"
             }
          }

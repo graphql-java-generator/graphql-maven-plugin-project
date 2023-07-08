@@ -25,6 +25,9 @@ import com.graphql_java_generator.annotation.GraphQLEnumType;
  */
 @GraphQLEnumType("${object.name}")
 #appliedDirectives(${object.appliedDirectives}, "")
+#if ($object.annotation)
+$object.annotation
+#end
 @SuppressWarnings("unused")
 public enum ${object.javaName} {
 #foreach ($value in $object.values)

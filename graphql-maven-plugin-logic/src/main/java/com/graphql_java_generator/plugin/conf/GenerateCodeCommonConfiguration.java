@@ -23,6 +23,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "false";
 	public final String DEFAULT_QUERY_MUTATION_EXECUTION_PROTOCOL = "http";
+	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "true";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
@@ -87,6 +88,23 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * The default value is http.
 	 */
 	public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol();
+
+	/**
+	 * <P>
+	 * (only for server mode) schemaPersonalizationFile is the file name where the GraphQL maven plugin will find
+	 * personalization that it must apply before generating the code. This applies to the <B>server</B> mode only. See
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
+	 * the plugin web site</A> for more details.
+	 * </P>
+	 * <P>
+	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
+	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
+	 * /src/main/resources folders).
+	 * </P>
+	 * 
+	 * @return
+	 */
+	public File getSchemaPersonalizationFile();
 
 	/** The encoding for the generated source files */
 	public String getSourceEncoding();

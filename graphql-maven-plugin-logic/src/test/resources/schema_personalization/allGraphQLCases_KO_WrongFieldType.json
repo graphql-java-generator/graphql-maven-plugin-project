@@ -1,0 +1,16 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "Human",
+			"newFields": [
+				{
+					"name": "age2",
+					"type": "int",
+					"id": true,
+					"list": true,
+					"mandatory": true
+				}
+			]
+		}
+	]
+}

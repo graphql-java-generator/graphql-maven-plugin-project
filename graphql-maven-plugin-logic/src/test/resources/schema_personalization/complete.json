@@ -3,7 +3,6 @@
 		{
 			"name": "entity1",
 			"addAnnotation": "addAnnotation1",
-			"replaceAnnotation": "replaceAnnotation1",
 			"newFields": [
 				{
 					"name": "field1.1",
@@ -11,8 +10,7 @@
 					"id": true,
 					"list": true,
 					"mandatory": true,
-					"addAnnotation": "addAnnotation1.1",
-					"replaceAnnotation": "replaceAnnotation1.1"
+					"addAnnotation": "addAnnotation1.1"
 				},
 				{
 					"name": "field1.2",
@@ -20,8 +18,7 @@
 					"id": false,
 					"list": false,
 					"mandatory": false,
-					"addAnnotation": "addAnnotation1.2",
-					"replaceAnnotation": "replaceAnnotation1.2"
+					"addAnnotation": "addAnnotation1.2"
 				}
 			],
 			"fieldPersonalizations": [
@@ -31,8 +28,7 @@
 					"id": true,
 					"list": true,
 					"mandatory": true,
-					"addAnnotation": "addAnnotation1.3",
-					"replaceAnnotation": "replaceAnnotation1.3"
+					"addAnnotation": "addAnnotation1.3"
 				},
 				{
 					"name": "Checks that everything was set to null (important to properly identify that there should be no update for these values"
@@ -41,7 +37,7 @@
 		},
 		{
 			"name": "entity2",
-			"addAnnotation": "addAnnotation2","replaceAnnotation":"replaceAnnotation2",
+			"addAnnotation": "addAnnotation2",
 			"newFields": [
 				{
 					"name": "field2.1",
@@ -49,8 +45,7 @@
 					"id": true,
 					"list": true,
 					"mandatory": true,
-					"addAnnotation": "addAnnotation2.1",
-					"replaceAnnotation": "replaceAnnotation2.1"
+					"addAnnotation": "addAnnotation2.1"
 				},
 				{
 					"name": "field2.2",
@@ -58,8 +53,7 @@
 					"id": false,
 					"list": false,
 					"mandatory": false,
-					"addAnnotation": "addAnnotation2.2",
-					"replaceAnnotation": "replaceAnnotation2.2"
+					"addAnnotation": "addAnnotation2.2"
 				}
 			],
 			"fieldPersonalizations": [
@@ -69,8 +63,7 @@
 					"id": true,
 					"list": true,
 					"mandatory": true,
-					"addAnnotation": "addAnnotation2.3",
-					"replaceAnnotation": "replaceAnnotation2.3"
+					"addAnnotation": "addAnnotation2.3"
 				},
 				{
 					"name": "field2.4",
@@ -78,8 +71,7 @@
 					"id": false,
 					"list": false,
 					"mandatory": false,
-					"addAnnotation": "addAnnotation2.4",
-					"replaceAnnotation": "replaceAnnotation2.4"
+					"addAnnotation": "addAnnotation2.4"
 				}
 			]
 		}

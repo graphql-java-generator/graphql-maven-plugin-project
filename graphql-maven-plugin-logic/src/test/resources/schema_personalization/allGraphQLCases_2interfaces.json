@@ -1,0 +1,13 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "[types]",
+			"addInterface": "interface1"
+		},
+		{
+			"name": "Human",
+			"addAnnotation": "@MyAdditionalAnnotation",
+			"addInterface": "interface1,interface2,interface1"
+		}
+	]
+}

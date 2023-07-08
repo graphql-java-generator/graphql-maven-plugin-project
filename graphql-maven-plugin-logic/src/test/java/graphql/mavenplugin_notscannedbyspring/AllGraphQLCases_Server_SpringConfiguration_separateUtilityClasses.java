@@ -54,7 +54,9 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 		configuration.generateBatchLoaderEnvironment = true;
 		configuration.mode = PluginMode.server;
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
-		configuration.schemaPersonalizationFile = null;
+		configuration.schemaPersonalizationFile = new File(mavenTestHelper.getModulePathFile(),
+				"src/test/resources/schema_personalization/schema_personalization_for_code_generation.json");
+		;
 		configuration.separateUtilityClasses = true;
 	}
 }

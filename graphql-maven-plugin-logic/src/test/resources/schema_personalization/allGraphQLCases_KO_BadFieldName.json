@@ -1,0 +1,17 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "Human",
+			"newFields": [
+				{
+					"name": "name with a space",
+					"type": "int",
+					"id": true,
+					"list": true,
+					"mandatory": true,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		}
+	]
+}

@@ -3,7 +3,6 @@
  */
 package com.graphql_java_generator.mavenplugin;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -170,22 +169,6 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.scanBasePackages", defaultValue = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES)
 	String scanBasePackages;
 
-	/**
-	 * <P>
-	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
-	 * apply before generating the code. This applies to the <B>server</B> mode only. See
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
-	 * the plugin web site</A> for more details.
-	 * </P>
-	 * <P>
-	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
-	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
-	 * /src/main/resources folders).
-	 * </P>
-	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
-	String schemaPersonalizationFile;
-
 	@Override
 	public String getJavaTypeForIDType() {
 		return javaTypeForIDType;
@@ -200,12 +183,6 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	@Override
 	public Packaging getPackaging() {
 		return Packaging.valueOf(project.getPackaging());
-	}
-
-	@Override
-	public File getSchemaPersonalizationFile() {
-		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
-				: new File(project.getBasedir(), schemaPersonalizationFile);
 	}
 
 	@Override

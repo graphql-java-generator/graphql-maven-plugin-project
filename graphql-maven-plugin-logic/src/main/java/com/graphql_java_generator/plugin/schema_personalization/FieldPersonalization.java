@@ -12,7 +12,7 @@ import lombok.Data;
  * @author etienne-sf
  */
 @Data
-public class Field {
+public class FieldPersonalization {
 
 	/** The name of the new field */
 	String name;
@@ -41,13 +41,5 @@ public class Field {
 	 * newline and indentation will be added first. Default value is: null (no change)
 	 */
 	String addAnnotation = null;
-
-	/**
-	 * This string will replace the annotations of this field. You can put as many annotations as you want here,
-	 * provided that they are properly separated. At least by a semi column. For proper format of the generated code,
-	 * the best is to have a newline then a tabulation beween each annotation. If empty, the field will no more be
-	 * annotated. Default value is: null (no change)
-	 */
-	String replaceAnnotation = null;
 
 }

@@ -104,8 +104,15 @@ public class ObjectType extends AbstractType {
 			}
 		}
 
-		// Currently, only one identifier per Type is managed
-		return identifiers.size() == 1 ? identifiers.get(0) : null;
+		switch (identifiers.size()) {
+		case 0:
+			return null;
+		case 1:
+			return identifiers.get(0);
+		default:
+			throw new RuntimeException("Only one identifier per object is expected. But " + identifiers.size()
+					+ " were found for " + getName());
+		}
 	}
 
 	@Override

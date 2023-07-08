@@ -1,0 +1,17 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "AllFieldCases",
+			"newFields": [
+				{
+					"name": "listWithoutIdSubTypes",
+					"type": "int",
+					"id": true,
+					"list": true,
+					"mandatory": true,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		}
+	]
+}

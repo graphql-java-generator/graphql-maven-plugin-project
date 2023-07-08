@@ -108,6 +108,22 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 
 	/**
 	 * <P>
+	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
+	 * apply before generating the code. This applies to the <B>server</B> mode only. See
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
+	 * the plugin web site</A> for more details.
+	 * </P>
+	 * <P>
+	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
+	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
+	 * /src/main/resources folders).
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
+	String schemaPersonalizationFile;
+
+	/**
+	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
 	 * generated in the same package than the classes that matches the GraphQL schema.
 	 * </P>
@@ -164,6 +180,13 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
 		return queryMutationExecutionProtocol;
+	}
+
+	@Override
+	public File getSchemaPersonalizationFile() {
+		return (GenerateCodeCommonConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile))
+				? null
+				: new File(project.getBasedir(), schemaPersonalizationFile);
 	}
 
 	@Override

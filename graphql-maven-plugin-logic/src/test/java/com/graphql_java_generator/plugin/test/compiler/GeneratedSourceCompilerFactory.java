@@ -21,7 +21,7 @@ public class GeneratedSourceCompilerFactory {
 	 * @param log
 	 *            The logger, where to write all output messages
 	 * @param className
-	 *            The clas that is being generated
+	 *            The class that is being generated
 	 * @param javaSrcFolder
 	 *            The folder, where to store java files.
 	 * @param classTargetFolder

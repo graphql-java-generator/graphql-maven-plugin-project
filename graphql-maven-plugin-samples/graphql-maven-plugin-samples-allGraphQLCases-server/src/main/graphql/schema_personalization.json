@@ -1,0 +1,100 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "[enums]",
+			"addAnnotation": "@org.allGraphQLCases.annotation.AllEnums1(\"enum1\")\n@org.allGraphQLCases.annotation.AllEnums2(\"enum2\")"
+		},
+		{
+			"name": "[input types]",
+			"addInterface": "org.allGraphQLCases.interfaces.AllInputTypes1,org.allGraphQLCases.interfaces.AllInputTypes2"
+		},
+		{
+			"name": "[interfaces]",
+			"addInterface": "org.allGraphQLCases.interfaces.AllInterfaces1,org.allGraphQLCases.interfaces.AllInterfaces2"
+		},
+		{
+			"name": "[types]",
+			"addInterface": "org.allGraphQLCases.interfaces.AllTypes1,org.allGraphQLCases.interfaces.AllTypes2"
+		},
+		{
+			"name": "[unions]",
+			"addInterface": "org.allGraphQLCases.interfaces.AllUnions1,org.allGraphQLCases.interfaces.AllUnions2"
+		},
+		{
+			"name": "Human",
+			"addAnnotation": "@org.allGraphQLCases.annotation.MyAdditionalAnnotation",
+			"addInterface": "org.allGraphQLCases.interfaces.HumanInterface",
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": false,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"age\")"
+				},
+				{
+					"name": "age2",
+					"type": "Int",
+					"id": false,
+					"list": true,
+					"mandatory": true,
+					"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"age2\")"
+				}
+			]
+		},
+		{
+			"name": "Droid",
+			"addAnnotation": "@org.allGraphQLCases.annotation.MyReplacementAnnotation",
+			"addInterface": "org.allGraphQLCases.interfaces.AllTypes1,org.allGraphQLCases.interfaces.AllTypes2",
+			"fieldPersonalizations": [
+				{
+					"name": "id",
+					"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"local annotation\")"
+				},
+				{
+					"name": "name",
+					"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"an annotation\")"
+				}
+			],
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": false,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@org.allGraphQLCases.annotation.MyReplacementAnnotation"
+				}
+			]
+		},
+		{
+			"name": "DroidInput",
+			"addInterface": "org.allGraphQLCases.interfaces.DroidInputInterface"
+		},
+		{
+			"name": "extends",
+			"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"enum's annotation\")"
+		},
+		{
+			"name": "AnyCharacter",
+			"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"union's annotation\")",
+			"addInterface": "org.allGraphQLCases.interfaces.AnyCharacterInterface"
+		},
+		{
+			"name": "Character",
+			"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"interface's annotation\")",
+			"addInterface": "org.allGraphQLCases.interfaces.CharacterInterface",
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": false,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@org.allGraphQLCases.annotation.LocalAnnotation(\"interface method's annotation\")"
+				}
+			]
+		}
+	]
+}

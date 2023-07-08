@@ -538,7 +538,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			context.put("object", object);
 			context.put("type", type);
 
-			generateOneJavaFile(classname, utilityClass, type + " '" + object.getName(), context, templateCode);
+			generateOneJavaFile(classname, utilityClass, "Generating file for " + type + " '" + object.getName() + "'",
+					context, templateCode);
 			return 1;
 		}
 	}
@@ -871,7 +872,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			return 1;
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {
-			throw new RuntimeException("Error when " + msg, e);
+			throw new RuntimeException("Error when " + msg + "; " + e.getMessage(), e);
 		}
 	}
 

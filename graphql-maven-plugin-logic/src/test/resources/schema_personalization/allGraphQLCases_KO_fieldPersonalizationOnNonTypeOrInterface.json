@@ -1,0 +1,17 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "MemberType",
+			"newFields": [
+				{
+					"name": "age2",
+					"type": "int",
+					"id": true,
+					"list": true,
+					"mandatory": true,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		}
+	]
+}

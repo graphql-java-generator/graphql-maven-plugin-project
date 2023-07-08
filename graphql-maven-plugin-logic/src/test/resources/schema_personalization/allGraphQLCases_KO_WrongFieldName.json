@@ -1,0 +1,13 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "AllFieldCases",
+			"fieldPersonalizations": [
+				{
+					"name": "this field does not exist",
+					"addAnnotation": "@NotId\n\t@AnotherAnnotation"
+				}
+			]
+		}
+	]
+}

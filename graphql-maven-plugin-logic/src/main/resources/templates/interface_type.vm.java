@@ -26,7 +26,16 @@ import com.graphql_java_generator.annotation.GraphQLDirective;
 ${object.annotation}
 #appliedDirectives(${object.appliedDirectives}, "")
 @SuppressWarnings("unused")
-public interface ${object.javaName} #if($object.implementz.size()>0)extends #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end#end {
+public interface ${object.javaName}
+#if($object.implementz.size()>0)
+	extends #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end
+	#foreach ($interface in $object.additionalInterfaces)
+	, $interface
+#end
+#elseif ($object.additionalInterfaces.size() > 0)
+	extends #foreach($interface in $object.additionalInterfaces)$interface#if($foreach.hasNext), #end#end 
+#end
+{
 #foreach ($field in $object.fields)
 
 #if ($field.comments.size() > 0)

@@ -1,7 +1,7 @@
 {
 	"entityPersonalizations": [
 		{
-			"name": "Member",
+			"name": "This entity does not exist",
 			"addAnnotation": "@MyAdditionalAnnotation",
 			"newFields": [
 				{
@@ -10,7 +10,7 @@
 					"id": true,
 					"list": true,
 					"mandatory": true,
-					"replaceAnnotation": "@Annotation1"
+					"addAnnotation": "@Annotation1"
 				},
 				{
 					"name": "age2",
@@ -24,11 +24,11 @@
 		},
 		{
 			"name": "Board",
-			"replaceAnnotation": "@com.me.MyReplacementAnnotation",
+			"addAnnotation": "@com.me.MyReplacementAnnotation",
 			"fieldPersonalizations": [
 				{
-					"name": "this field does not exist",
-					"replaceAnnotation": "@NotId\n\t@AnotherAnnotation"
+					"name": "id",
+					"addAnnotation": "@NotId\n\t@AnotherAnnotation"
 				},
 				{
 					"name": "name",

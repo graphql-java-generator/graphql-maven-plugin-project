@@ -28,18 +28,16 @@ public class EntityPersonalization {
 	private String addAnnotation = null;
 
 	/**
-	 * This string will replace the annotations of this entity. If empty, the entity will no more be annotated. It's the
-	 * way to remove the @Entity annotation for an object,if you wish. You can put as many annotations as you want here,
-	 * provided that they are properly separated. At least by a semi column. For proper format of the generated code,
-	 * the best is to have a newline then a tabulation beween each annotation. Default value is null (no change to the
-	 * annotations)
+	 * This string will be added to the list of interfaces for this entity. You can put as many interfaces as you want
+	 * here, provided that they are separated by a comma. For proper format of the generated code, you can add newline
+	 * characters (\n) and tabulation (\t) between each interface.
 	 */
-	private String replaceAnnotation = null;
+	private String addInterface = null;
 
 	/** The description of a field that will be added to this entity, in the generated code */
-	private List<Field> newFields = new ArrayList<>();
+	private List<FieldPersonalization> newFields = new ArrayList<>();
 
 	/** The changes that will be applied to the entity'sfields, before the code generation */
-	private List<Field> fieldPersonalizations = new ArrayList<>();
+	private List<FieldPersonalization> fieldPersonalizations = new ArrayList<>();
 
 }

@@ -52,7 +52,8 @@ public class AllGraphQLCases_Server_SpringConfiguration extends AbstractSpringCo
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.mode = PluginMode.server;
-		configuration.schemaPersonalizationFile = null;
+		configuration.schemaPersonalizationFile = new File(mavenTestHelper.getModulePathFile(),
+				"src/test/resources/schema_personalization/schema_personalization_for_code_generation.json");
 		configuration.customScalars = customScalars;
 		configuration.separateUtilityClasses = false;
 

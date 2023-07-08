@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin.language.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -54,6 +55,13 @@ public abstract class AbstractType implements Type {
 
 	/** All directives that have been defined in the GraphQL schema for this type */
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
+
+	/**
+	 * List of additional interfaces implemented by this object. Items can be added to this list through the schema
+	 * personalization capability.<br/>
+	 * Interface can be added to types, input types, interfaces, unions and enums.
+	 */
+	private Set<String> additionalInterfaces = new HashSet<>();
 
 	/** The comments that have been found before this type, in the provided GraphQL schema */
 	private List<String> comments = new ArrayList<>();

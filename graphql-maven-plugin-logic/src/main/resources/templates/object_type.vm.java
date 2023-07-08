@@ -43,8 +43,22 @@ ${object.annotation}
 #appliedDirectives(${object.appliedDirectives}, "")
 @SuppressWarnings("unused")
 public class ${targetFileName}
-#if($object.implementz.size()>0)	implements #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end#end
-#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
+#if($object.implementz.size()>0)
+	implements #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end
+#foreach ($interface in $object.additionalInterfaces)
+		, $interface
+#end
+#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
+		, com.graphql_java_generator.client.GraphQLRequestObject
+#end
+#elseif ($object.additionalInterfaces.size() > 0)
+	implements #foreach($interface in $object.additionalInterfaces)$interface#if($foreach.hasNext), #end#end 
+#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
+		, com.graphql_java_generator.client.GraphQLRequestObject
+#end
+#elseif($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
+	implements com.graphql_java_generator.client.GraphQLRequestObject
+#end
 {
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field

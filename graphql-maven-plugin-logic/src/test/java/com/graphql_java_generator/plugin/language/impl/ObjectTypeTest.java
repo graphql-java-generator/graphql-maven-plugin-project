@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,10 @@ class ObjectTypeTest {
 				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("ID").build()).build();
 		objectType.getFields().add(f);
 
-		assertNull(objectType.getIdentifier(),
+		RuntimeException e = assertThrows(RuntimeException.class, () -> objectType.getIdentifier(),
 				"With only two fields being an identifier, we receive null when calling getIdentifier (multiple identifier is currently not managed).");
+		assertEquals("Only one identifier per object is expected. But 2 were found for " + objectType.getName(),
+				e.getMessage());
 	}
 
 }

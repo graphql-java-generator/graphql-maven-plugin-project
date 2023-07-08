@@ -1,0 +1,80 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "Human",
+			"addAnnotation": "@MyAdditionalAnnotation",
+			"addInterface": "\t interface1\t \n,interface2",
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": true,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@Annotation1"
+				},
+				{
+					"name": "age2",
+					"type": "Int",
+					"id": false,
+					"list": true,
+					"mandatory": true,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		},
+		{
+			"name": "Droid",
+			"addAnnotation": "@com.me.MyReplacementAnnotation",
+			"fieldPersonalizations": [
+				{
+					"name": "id",
+					"addAnnotation": "@NotId\n\t@AnotherAnnotation"
+				},
+				{
+					"name": "name",
+					"addAnnotation": "@Column(name=\"column_name\")"
+				}
+			],
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": true,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		},
+		{
+			"name": "DroidInput",
+			"addInterface": "interface3"
+		},
+		{
+			"name": "extends",
+			"addAnnotation": "@com.me.MyReplacementAnnotation",
+			"addInterface": "interface4"
+		},
+		{
+			"name": "AnyCharacter",
+			"addAnnotation": "@com.me.MyReplacementAnnotation",
+			"addInterface": "interface5"
+		},
+		{
+			"name": "Character",
+			"addAnnotation": "@com.me.MyReplacementAnnotation",
+			"addInterface": "interface6",
+			"newFields": [
+				{
+					"name": "age",
+					"type": "Int",
+					"id": true,
+					"list": false,
+					"mandatory": false,
+					"addAnnotation": "@Annotation1"
+				}
+			]
+		}
+	]
+}

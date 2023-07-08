@@ -65,8 +65,7 @@ class JsonSchemaPersonalizationTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's check the first entity
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		checkEntityPersonalization(verif.getEntityPersonalizations().get(++i), i, "entity1", "addAnnotation1",
-				"replaceAnnotation1");
+		checkEntityPersonalization(verif.getEntityPersonalizations().get(++i), i, "entity1", "addAnnotation1");
 
 		//
 		// There are two new fields
@@ -94,8 +93,7 @@ class JsonSchemaPersonalizationTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's check the second entity
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		checkEntityPersonalization(verif.getEntityPersonalizations().get(++i), i, "entity2", "addAnnotation2",
-				"replaceAnnotation2");
+		checkEntityPersonalization(verif.getEntityPersonalizations().get(++i), i, "entity2", "addAnnotation2");
 		//
 		// There are two new fields
 		//
@@ -120,14 +118,13 @@ class JsonSchemaPersonalizationTest {
 	}
 
 	private void checkEntityPersonalization(EntityPersonalization entityPers, int num, String name,
-			String addAnnotation, String replaceAnnotation) {
+			String addAnnotation) {
 		assertEquals(name, entityPers.getName(), "entity" + num + ": name");
 		assertEquals(addAnnotation, entityPers.getAddAnnotation(), "entity" + num + ": addAnnotation");
-		assertEquals(replaceAnnotation, entityPers.getReplaceAnnotation(), "entity" + num + ": replaceAnnotation");
 	}
 
-	private void checkField(Field field, int entityNum, int fieldNum, String name, String type, Boolean id,
-			Boolean list, Boolean mandatory, String addAnnotation, String replaceAnnotation) {
+	private void checkField(FieldPersonalization field, int entityNum, int fieldNum, String name, String type,
+			Boolean id, Boolean list, Boolean mandatory, String addAnnotation, String replaceAnnotation) {
 		assertEquals(name, field.getName(), "entity" + entityNum + ", field " + fieldNum + ": name");
 		assertEquals(type, field.getType(), "entity" + entityNum + ", field " + fieldNum + ": type");
 		assertEquals(id, field.getId(), "entity" + entityNum + ", field " + fieldNum + ": id");
@@ -135,8 +132,6 @@ class JsonSchemaPersonalizationTest {
 		assertEquals(mandatory, field.getMandatory(), "entity" + entityNum + ", field " + fieldNum + ": mandatory");
 		assertEquals(addAnnotation, field.getAddAnnotation(),
 				"entity" + entityNum + ", field " + fieldNum + ": addAnnotation");
-		assertEquals(replaceAnnotation, field.getReplaceAnnotation(),
-				"entity" + entityNum + ", field " + fieldNum + ": replaceAnnotation");
 	}
 
 }
