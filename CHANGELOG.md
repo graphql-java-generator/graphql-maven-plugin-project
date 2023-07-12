@@ -1,4 +1,17 @@
 
+
+# 2.2
+
+Gradle plugin:
+* Creation of a graphql-gradle-plugin3 plugin, compiled against Spring Boot 3 and Spring Framework 6
+    * graphql-gradle-plugin is still available, if you' re using Spring Boot 2 and Spring Framework 5
+
+Both mode:
+* The schema personalization capability is now open to both the server and client modes. It allows to:
+    * Add or modify fields
+    * Add interface and annotation to classes (GraphQL types, input types, interfaces, unions and enums) or fields.
+
+
 # 2.1
 
 Both mode:
