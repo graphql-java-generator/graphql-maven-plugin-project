@@ -91,18 +91,23 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 
 	/**
 	 * <P>
-	 * (only for server mode) schemaPersonalizationFile is the file name where the GraphQL maven plugin will find
-	 * personalization that it must apply before generating the code. This applies to the <B>server</B> mode only. See
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
-	 * the plugin web site</A> for more details.
+	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
+	 * apply before generating the code. Since the 2.2 release, it is available for both client and server. Before, it
+	 * applies to the <B>server</B> mode only.
+	 * <P>
+	 * <P>
+	 * This allows to:
+	 * <UL>
+	 * <LI>Add or modify fields</LI>
+	 * <LI>Add interface and annotation to classes (GraphQL types, input types, interfaces, unions and enums) or fields.
+	 * </LI>
+	 * </UL>
 	 * </P>
 	 * <P>
-	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
-	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
-	 * /src/main/resources folders).
+	 * See <A HREF=
+	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">the
+	 * doc on the project's wiki</A> for more details.
 	 * </P>
-	 * 
-	 * @return
 	 */
 	public File getSchemaPersonalizationFile();
 

@@ -51,8 +51,8 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * </P>
 	 * <P>
 	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
-	 * look at the
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 * look at the <A HREF=
+	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">Schema
 	 * Personalization doc page</A>.
 	 * </P>
 	 * 
