@@ -4,5 +4,6 @@ com.graphql_java_generator.samples.forum
 com.graphql_java_generator.samples.forum.client
 com.graphql_java_generator.samples.forum.client.graphql
 com.graphql_java_generator.samples.forum.client.graphql.forum.client
-com.graphql_java_generator.samples.forum.client.graphql.forum.client_spring_autoconfiguration
+com.graphql_java_generator.samples.forum.client.graphql.forum.client.spring_autoconfiguration
+com.graphql_java_generator.samples.forum.client.graphql.forum.client.util
 com.graphql_java_generator.samples.forum.client.subscription

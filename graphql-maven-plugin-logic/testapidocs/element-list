@@ -3,3 +3,5 @@ com.graphql_java_generator.plugin.test.compiler
 com.graphql_java_generator.plugin.test.helper
 graphql.mavenplugin_notscannedbyspring
 merge.mavenplugin_notscannedbyspring
+org.allGraphQLCases.annotation
+org.allGraphQLCases.interfaces

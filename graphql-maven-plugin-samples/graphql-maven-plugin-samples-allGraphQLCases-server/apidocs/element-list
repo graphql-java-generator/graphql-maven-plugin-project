@@ -1,6 +1,8 @@
+org.allGraphQLCases.annotation
+org.allGraphQLCases.interfaces
 org.allGraphQLCases.server
+org.allGraphQLCases.server_spring_autoconfiguration
 org.allGraphQLCases.server.config
 org.allGraphQLCases.server.impl
 org.allGraphQLCases.server.impl.relayConnection
 org.allGraphQLCases.server.oauth2
-org.allGraphQLCases.server.util
