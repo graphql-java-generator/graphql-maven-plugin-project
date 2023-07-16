@@ -142,7 +142,7 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * <P>
 	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
 	 * look at the <A HREF=
-	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">Schema
+	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/usage_schema_personalization">Schema
 	 * Personalization doc page</A>.
 	 * </P>
 	 * 

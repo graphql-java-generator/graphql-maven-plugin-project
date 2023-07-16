@@ -122,7 +122,7 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	 * </P>
 	 * <P>
 	 * See <A HREF=
-	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">the
+	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/usage_schema_personalization">the
 	 * doc on the project's wiki</A> for more details.
 	 * </P>
 	 */
