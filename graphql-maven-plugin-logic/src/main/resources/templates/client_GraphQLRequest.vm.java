@@ -83,7 +83,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest${springBeanSuffix}(String graphQLRequest) throws GraphQLRequestPreparationException {
-		super(null, "$springBeanSuffix", graphQLRequest);
+		super(null, "$springBeanSuffix", graphQLRequest); //$NON-NLS-1$
 	}
 
 
@@ -116,7 +116,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	public GraphQLRequest${springBeanSuffix}(GraphQlClient graphQlClient, String graphQLRequest,
 			RequestType requestType, String fieldName, InputParameter... inputParams)
 			throws GraphQLRequestPreparationException {
-		super(graphQlClient, "$springBeanSuffix", graphQLRequest, requestType, fieldName, inputParams);
+		super(graphQlClient, "$springBeanSuffix", graphQLRequest, requestType, fieldName, inputParams); //$NON-NLS-1$
 	}
 #if ($query)
 	/**
@@ -194,7 +194,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public #if(${configuration.generateDeprecatedRequestResponse})${query.name}Response#else${query.javaName}#end execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(#if(${configuration.generateDeprecatedRequestResponse})${query.name}Response#else${query.javaName}#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(#if(${configuration.generateDeprecatedRequestResponse})${query.name}Response#else${query.javaName}#end.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #end
@@ -275,7 +275,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public #if(${configuration.generateDeprecatedRequestResponse})${mutation.name}Response#else${mutation.javaName}#end execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(#if(${configuration.generateDeprecatedRequestResponse})${mutation.name}Response#else${mutation.javaName}#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(#if(${configuration.generateDeprecatedRequestResponse})${mutation.name}Response#else${mutation.javaName}#end.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #end
@@ -389,7 +389,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 */
 	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback,
 			Class<T> messageType, Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), 
+		return exec(this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), 
 				subscriptionCallback, ${subscription.classSimpleName}.class, messageType);
 	}
 
@@ -400,23 +400,23 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 *            A string
 	 * @param parameters
 	 */
-	private void logExecution(RequestType requestType, Map<String, Object> parameters) {
+	private static void logExecution(RequestType requestType, Map<String, Object> parameters) {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
-				logger.trace("Executing of " + requestType.toString() + " without parameters");
+				logger.trace("Executing of " + requestType.toString() + " without parameters"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				StringBuilder sb = new StringBuilder("Executing of root mutation with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing of root mutation with parameters: "); //$NON-NLS-1$
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
-					sb.append(key).append(":").append(parameters.get(key));
+					sb.append(key).append(":").append(parameters.get(key)); //$NON-NLS-1$
 					if (addComma)
-						sb.append(", ");
+						sb.append(", "); //$NON-NLS-1$
 					addComma = true;
 				}
 				logger.trace(sb.toString());
 			}
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing of mutation 'MutationType'");
+			logger.debug("Executing of mutation 'MutationType'"); //$NON-NLS-1$
 		}
 	}
 
@@ -428,13 +428,13 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 */
 	@Override
 	protected String getGraphQLClassesPackageName() {
-		return "${configuration.packageName}";
+		return "${configuration.packageName}"; //$NON-NLS-1$
 	}
 
 	@Override
 	public QueryField getQueryContext() throws GraphQLRequestPreparationException {
 #if ($query)
-		return new QueryField(${query.name}RootResponse.class, "query");
+		return new QueryField(${query.name}RootResponse.class, "query"); //$NON-NLS-1$
 #else
 		// No query in this GraphQL schema
 		return null;
@@ -444,7 +444,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	@Override
 	public QueryField getMutationContext() throws GraphQLRequestPreparationException {
 #if ($mutation)
-		return new QueryField(${mutation.name}RootResponse.class, "mutation");
+		return new QueryField(${mutation.name}RootResponse.class, "mutation"); //$NON-NLS-1$
 #else
 		// No mutation in this GraphQL schema
 		return null;
@@ -454,7 +454,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	@Override
 	public QueryField getSubscriptionContext() throws GraphQLRequestPreparationException {
 #if ($subscription)
-		return new QueryField(${subscription.name}RootResponse.class, "subscription");
+		return new QueryField(${subscription.name}RootResponse.class, "subscription"); //$NON-NLS-1$
 #else
 	// No subscription in this GraphQL schema
 	return null;

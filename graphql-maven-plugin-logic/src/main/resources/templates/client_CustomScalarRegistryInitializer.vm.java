@@ -50,7 +50,7 @@ public class CustomScalarRegistryInitializer {
 #end
 #end
 
-		CustomScalarRegistryImpl.setCustomScalarRegistry("$springBeanSuffix", customScalarRegistry);
+		CustomScalarRegistryImpl.setCustomScalarRegistry("$springBeanSuffix", customScalarRegistry); //$NON-NLS-1$
 		return customScalarRegistry;
 	}
 

@@ -82,7 +82,7 @@
 	@JsonProperty("${field.name}")
 #end
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
-		return ${field.javaName};
+		return this.${field.javaName};
 	}
 		
 #else
@@ -106,13 +106,23 @@
 	  */
 #end
 	@Override
-#if ($field.javaType.startsWith("List<"))
-	@SuppressWarnings("unchecked")
-#end
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
+################
+## Standard case: the given type is the same as the field's type. It's useless to control anything at runtime.
+#if ($type==${field.javaTypeFullClassname})
+	public void set${field.pascalCaseName}($type ${field.javaName}) {
+		this.${field.javaName} = ${field.javaName};
+	}
+################
+## Complex case: the given type is NOT the same as the field's type. Let's check at runtime that everything is ok
+## (see issue #15 in the Gradle project for a sample of this)
+#else
+#if ($field.javaType.startsWith("List<"))
+	@SuppressWarnings("unchecked")
+#end
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
 		if (${field.javaName} == null || ${field.javaName} instanceof List) {
@@ -120,7 +130,7 @@
 			// ${field.javaName} is an instance of $type. Let's check that this can be copied into a ${field.javaType} 
 			for (Object item : ${field.javaName}) {
 				if (! (item instanceof ${field.type.classFullName}))
-					throw new IllegalArgumentException("The given ${field.javaName} should be a list of instances of ${field.type.classFullName}, but at least one item is an instance of "
+					throw new IllegalArgumentException("The given ${field.javaName} should be a list of instances of ${field.type.classFullName}, but at least one item is an instance of "  //$NON-NLS-1$
 							+ item.getClass().getName());
 			}
 #end
@@ -130,10 +140,12 @@
 			this.${field.javaName} = (${field.javaTypeFullClassname}) ${field.javaName};
 #end
 		} else {
-			throw new IllegalArgumentException("The given ${field.javaName} should be an instance of ${field.javaTypeFullClassname}, but is an instance of "
+			throw new IllegalArgumentException("The given ${field.javaName} should be an instance of ${field.javaTypeFullClassname}, but is an instance of " //$NON-NLS-1$
 					+ ${field.javaName}.getClass().getName());
 		}
 	}
+################
+#end ##if ($type==${field.javaTypeFullClassname})
 #end ##(foreach ($type in $field.fieldJavaFullClassnamesFromImplementedInterface))
 
 #if (!$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname))
@@ -243,7 +255,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #appliedDirectives(${field.appliedDirectives}, "	")
 	@SuppressWarnings("unchecked")
 	public $supertype get${field.pascalCaseName}() {
-		return ($supertype) (Object) ${field.javaName};
+		return ($supertype) (Object) this.${field.javaName};
 	}
 
 #end
@@ -266,7 +278,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
-		return ${field.javaName};
+		return this.${field.javaName};
 	}
 #end
 
@@ -286,7 +298,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	 * @param aliasDeserializedValue
 	 */
 	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
-		aliasValues.put(aliasName, aliasDeserializedValue);
+		this.aliasValues.put(aliasName, aliasDeserializedValue);
 	}
 
 	/**
@@ -299,19 +311,19 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	 * @return
 	 */
 	public Object getAliasValue(String alias) {
-		return aliasValues.get(alias);
+		return this.aliasValues.get(alias);
 	}
 
 #end
     public String toString() {
-        return "${object.javaName} {"
+        return "${object.javaName} {" //$NON-NLS-1$
 #foreach ($field in $object.fields)
-				+ "${field.javaName}: " + ${field.javaName}
+				+ "${field.javaName}: " + this.${field.javaName} //$NON-NLS-1$
 #if($foreach.hasNext)
-				+ ", "
+				+ ", " //$NON-NLS-1$
 #end 
 #end
-        		+ "}";
+        		+ "}"; //$NON-NLS-1$
     }
 
 ## Issue 130: if the GraphQL type's name is Builder, the inner static class may not be named Builder. So we prefix it with '_'
@@ -346,8 +358,8 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #end
 	  */
 #end
-		public#if($targetFileName=="Builder") _Builder#else Builder#end with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
-			this.${field.javaName} = ${field.javaName};
+		public#if($targetFileName=="Builder") _Builder#else Builder#end with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}Param) {
+			this.${field.javaName} = ${field.javaName}Param;
 			return this;
 		}
 #end
@@ -358,12 +370,12 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 			${targetFileName} _object = new ${targetFileName}();
 #foreach ($field in $object.fields)
 #if(${field.javaName} == '__typename')
-			_object.set__typename("${object.javaName}");
+			_object.set__typename("${object.javaName}"); //$NON-NLS-1$
 #else
 #if ($field.fieldJavaFullClassnamesFromImplementedInterface.size()>0 && !$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname) && $field.javaType.startsWith("List<"))
-			_object.set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaName});
+			_object.set${field.pascalCaseName}${field.graphQLTypeSimpleName}(this.${field.javaName});
 #else
-			_object.set${field.pascalCaseName}(${field.javaName});
+			_object.set${field.pascalCaseName}(this.${field.javaName});
 #end
 #end
 #end

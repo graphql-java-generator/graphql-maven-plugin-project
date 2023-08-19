@@ -49,7 +49,7 @@ public class ${entity}Controller {
 			return Mono.fromCallable(() -> {
 				Map<${batchLoader.type.identifier.javaTypeFullClassname}, ${batchLoader.type.classFullName}> map = new HashMap<>();
 				// Values are returned in the same order as the keys list
-				List<${batchLoader.type.classFullName}> values = ${dataFetchersDelegate.camelCaseName}.batchLoader(keys#if($configuration.generateBatchLoaderEnvironment), env#end);
+				List<${batchLoader.type.classFullName}> values = this.${dataFetchersDelegate.camelCaseName}.batchLoader(keys#if($configuration.generateBatchLoaderEnvironment), env#end);
 				for (int i = 0; i < keys.size(); i += 1) {
 					map.put(keys.get(i), values.get(i));
 				}
@@ -130,11 +130,23 @@ $argument.javaTypeFullClassname##
 #end
 #end
 ##
+########################
+## If at least one parameter is a list of enums, there would be a cast warning. Let's prevent that.
+#set($suppressWarning=false)
+#foreach($argument in $dataFetcher.field.inputParameters)
+#if($argument.type.isEnum() && $argument.fieldTypeAST.listDepth>0)
+#set($suppressWarning=true)
+#end
+#end
+#if($suppressWarning)
+@SuppressWarnings("unchecked")
+#end
+########################
 	public Object ${dataFetcher.field.javaName}(DataFetchingEnvironment dataFetchingEnvironment##
 #if(${dataFetcher.completableFuture})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
 #if($dataFetcher.graphQLOriginType)			, ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
 			@Argument("${argument.name}") #argumentType($argument) ${argument.javaName}#end) {
-		return #if($isEnum)GraphqlServerUtils.graphqlServerUtils.enumValueToString(#end${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
+		return #if($isEnum)GraphqlServerUtils.graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
 #end

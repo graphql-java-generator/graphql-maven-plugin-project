@@ -1,6 +1,12 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* Finish the code that removes (or highly diminish the number of) warnings
+* #152: check the reactive implementation
+    * Doc (including migration doc)
+    * Issue with the `spring-boot-starter-websocket` dependency, which (by default) add the `spring-webmvc` dependency
+    * Update the plugin, so that the code that uses the generated code can also be reactive.
+* #195: give access to the received data, even if there are errors
 * Check for GraphQL specification changes (to properly manage them)
 * Review the plugin documentation (goal and parameters)
 * Issue Gradle-project #15: redundant cast to Long 

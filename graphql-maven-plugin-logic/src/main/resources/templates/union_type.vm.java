@@ -32,5 +32,5 @@ public interface ${object.javaName}
 	extends #foreach($interface in $object.additionalInterfaces)$interface#if($foreach.hasNext), #end#end 
 #end
 {
-
+	// Empty block. No method for an union
 }

@@ -43,7 +43,7 @@ ${object.annotation}
 #appliedDirectives(${object.appliedDirectives}, "")
 @SuppressWarnings("unused")
 public class ${targetFileName}
-#if($object.implementz.size()>0)
+#if($object.implementz && $object.implementz.size()>0)
 	implements #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end
 #foreach ($interface in $object.additionalInterfaces)
 		, $interface
@@ -51,7 +51,7 @@ public class ${targetFileName}
 #if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
 		, com.graphql_java_generator.client.GraphQLRequestObject
 #end
-#elseif ($object.additionalInterfaces.size() > 0)
+#elseif ($object.additionalInterfaces && $object.additionalInterfaces.size() > 0)
 	implements #foreach($interface in $object.additionalInterfaces)$interface#if($foreach.hasNext), #end#end 
 #if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
 		, com.graphql_java_generator.client.GraphQLRequestObject
@@ -75,18 +75,18 @@ public class ${targetFileName}
 ##
 #if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
 	private ObjectMapper getMapper() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
+		if (this.mapper == null) {
+			this.mapper = new ObjectMapper();
 		}
-		return mapper;
+		return this.mapper;
 	}
 	
 	public JsonNode getExtensions() {
-		return extensions;
+		return this.extensions;
 	}
 	
-	public void setExtensions(JsonNode extensions) {
-		this.extensions = extensions;
+	public void setExtensions(JsonNode extensionsParam) {
+		this.extensions = extensionsParam;
 	}
 	
 	/**
@@ -95,12 +95,12 @@ public class ${targetFileName}
 	 * @return
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
-		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+		if (this.extensionsAsMap == null) {
+			this.extensionsAsMap = new ObjectMapper().convertValue(this.extensions, new TypeReference<Map<String, JsonNode>>() {
+				// Empty bloc
 			});
 		}
-		return extensionsAsMap;
+		return this.extensionsAsMap;
 	}
 	
 	/**

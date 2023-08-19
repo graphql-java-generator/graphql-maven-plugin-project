@@ -198,8 +198,8 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	default public List<${batchLoader.type.classFullName}> batchLoader(List<${batchLoader.type.identifier.javaTypeFullClassname}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end) {
 		List<${batchLoader.type.classFullName}> ret = unorderedReturnBatchLoader(keys#if($configuration.generateBatchLoaderEnvironment), environment#end);
 		if (ret == null)
-			throw new NullPointerException("Either batchLoader or unorderedReturnBatchLoader must be overriden in ${dataFetchersDelegate.pascalCaseName} implementation. And unorderedReturnBatchLoader must return a list.");
-		return GraphqlUtils.graphqlUtils.orderList(keys, ret, "${batchLoader.type.identifier.javaName}");
+			throw new NullPointerException("Either batchLoader or unorderedReturnBatchLoader must be overriden in ${dataFetchersDelegate.pascalCaseName} implementation. And unorderedReturnBatchLoader must return a list."); //$NON-NLS-1$
+		return GraphqlUtils.graphqlUtils.orderList(keys, ret, "${batchLoader.type.identifier.javaName}"); //$NON-NLS-1$
 	}
 
 	/**

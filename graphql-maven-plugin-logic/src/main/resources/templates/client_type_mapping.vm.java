@@ -16,7 +16,7 @@ public class GraphQLTypeMapping {
 	public static Class<?> getJavaClass(String typeName) {
 		switch(typeName) {
 			#foreach ($entry in $types.entrySet())
-			case "${entry.key}": return ${entry.value.classFullName}.class;
+			case "${entry.key}": return ${entry.value.classFullName}.class; //$NON-NLS-1$
 			#end
 			default:
 				return null;

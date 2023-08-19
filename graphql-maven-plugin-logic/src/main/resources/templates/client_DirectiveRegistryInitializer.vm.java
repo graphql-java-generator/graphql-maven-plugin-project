@@ -29,12 +29,12 @@ public class DirectiveRegistryInitializer {
 		// Creating Directive ${directive.name}
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
-		directive.setName("${directive.name}");
-		directive.setPackageName("${packageUtilName}");
+		directive.setName("${directive.name}"); //$NON-NLS-1$
+		directive.setPackageName("${packageUtilName}"); //$NON-NLS-1$
 #foreach ($argument in $directive.arguments)
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
-					"$springBeanSuffix", "${argument.name}", null, "${argument.graphQLTypeSimpleName}", ${argument.fieldTypeAST.mandatory}, ${argument.fieldTypeAST.listDepth}, ${argument.fieldTypeAST.itemMandatory}));
+					"$springBeanSuffix", "${argument.name}", null, "${argument.graphQLTypeSimpleName}", ${argument.fieldTypeAST.mandatory}, ${argument.fieldTypeAST.listDepth}, ${argument.fieldTypeAST.itemMandatory})); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 #end
 #foreach ($location in $directive.directiveLocations)
 		directive.getDirectiveLocations().add(DirectiveLocation.${location.name()});

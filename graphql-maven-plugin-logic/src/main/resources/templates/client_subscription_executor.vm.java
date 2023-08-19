@@ -104,10 +104,10 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 
 	public ${object.name}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
-		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
-			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-					+ graphqlUtils.getRuntimeVersion() 
-					+ "' whereas the GraphQL plugin version is '@project.version@'");
+		if (!"@project.version@".equals(this.graphqlUtils.getRuntimeVersion())) { //$NON-NLS-1$
+			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '" //$NON-NLS-1$
+					+ this.graphqlUtils.getRuntimeVersion() 
+					+ "' whereas the GraphQL plugin version is '@project.version@'"); //$NON-NLS-1$
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -150,13 +150,12 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
 	public SubscriptionClient execWithBindValues(
 			String queryResponseDef, 
 			SubscriptionCallback<?> subscriptionCallback,
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return exec(objectResponse, subscriptionCallback, parameters);
 	}
@@ -198,9 +197,9 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 			SubscriptionCallback<?> subscriptionCallback,
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return execWithBindValues(objectResponse, subscriptionCallback, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return execWithBindValues(objectResponse, subscriptionCallback, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -241,6 +240,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings({ "unchecked", "static-method" })
 	public SubscriptionClient execWithBindValues(
 			ObjectResponse objectResponse, 
 			SubscriptionCallback<?> subscriptionCallback,
@@ -248,24 +248,24 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
-				logger.trace("Executing ${object.requestType} without parameters");
+				logger.trace("Executing ${object.requestType} without parameters"); //$NON-NLS-1$
 			} else {
-				StringBuilder sb = new StringBuilder("Executing root ${object.requestType} with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root ${object.requestType} with parameters: "); //$NON-NLS-1$
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
-					sb.append(key).append(":").append(parameters.get(key));
+					sb.append(key).append(":").append(parameters.get(key)); //$NON-NLS-1$
 					if (addComma)
-						sb.append(", ");
+						sb.append(", "); //$NON-NLS-1$
 					addComma = true;
 				}
 				logger.trace(sb.toString());
 			}
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing ${object.requestType} '${object.name}'");
+			logger.debug("Executing ${object.requestType} '${object.name}'"); //$NON-NLS-1$
 		}
 
 		// Given values for the BindVariables
-		parameters = (parameters != null) ? parameters : new HashMap<>();
+		Map<String, Object> parametersLocal = (parameters != null) ? parameters : new HashMap<>();
 
 		// The subscription may only subscribe to one subscription at a time, even for a full request.
 		// Let's check that, and find the type returned by this subscription (that is: the type of the notifications
@@ -274,17 +274,17 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 		// The subscription must query only one subscription
 		if (objectResponse.getQuery() != null || objectResponse.getMutation() != null) {
 			throw new GraphQLRequestExecutionException(
-					"This method may only be called for subscription, but the given GraphQL request is a "
-							+ (objectResponse.getQuery() != null ? "query" : "mutation"));
+					"This method may only be called for subscription, but the given GraphQL request is a " //$NON-NLS-1$
+							+ (objectResponse.getQuery() != null ? "query" : "mutation")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (objectResponse.getSubscription() == null) {
 			throw new GraphQLRequestExecutionException(
-					"This method may only be called for subscription, but the given GraphQL request has no mutation field");
+					"This method may only be called for subscription, but the given GraphQL request has no mutation field"); //$NON-NLS-1$
 		}
 		if (objectResponse.getSubscription().getFields().size() != 1) {
 			throw new GraphQLRequestExecutionException(
-					"Full Request for subscription may only be called for one subscription, but the given GraphQL request has "
-							+ objectResponse.getSubscription().getFields().size() + " subscription fields");
+					"Full Request for subscription may only be called for one subscription, but the given GraphQL request has " //$NON-NLS-1$
+							+ objectResponse.getSubscription().getFields().size() + " subscription fields"); //$NON-NLS-1$
 		}
 		
 		// It's probably possible to do much better than this switch!  
@@ -292,15 +292,15 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
 #foreach ($field in $object.fields)
 #if ($field.name != "__typename")
-		case "${field.name}":
-			return objectResponse.exec(parameters,
+		case "${field.name}": //$NON-NLS-1$
+			return objectResponse.exec(parametersLocal,
 					 (SubscriptionCallback<#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end>) subscriptionCallback, 
 					 ${executionResponse}.class, 
 					 #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 #end
 #end
 		default:
-			throw new GraphQLRequestExecutionException("Unexpected field name: " + objectResponse.getSubscription().getFields().get(0).getName());
+			throw new GraphQLRequestExecutionException("Unexpected field name: " + objectResponse.getSubscription().getFields().get(0).getName()); //$NON-NLS-1$
 		}
 	}
 
@@ -347,7 +347,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 			SubscriptionCallback<?> subscriptionCallback,
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
-		return execWithBindValues(objectResponse, subscriptionCallback, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return execWithBindValues(objectResponse, subscriptionCallback, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -358,7 +358,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest${springBeanSuffix}.class);
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class);
 	}
 
 	/**
@@ -371,6 +371,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
+	@SuppressWarnings("static-method")
 	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest${springBeanSuffix}(fullRequest);
 	}
@@ -528,9 +529,9 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 #inputParams()
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing subscription '${field.name}'. queryResponseDef is '{}'", queryResponseDef);
+		logger.debug("Executing subscription '${field.name}'. queryResponseDef is '{}'", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return ${field.javaName}WithBindValues(objectResponse, subscriptionCallback#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return ${field.javaName}WithBindValues(objectResponse, subscriptionCallback#inputValues(), this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #foreach ($comment in $field.comments)
@@ -603,29 +604,31 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 */
 #appliedDirectives(${field.appliedDirectives}, "	")
 #if($field.fieldTypeAST.listDepth>0)
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-#end 
+	@SuppressWarnings({"unchecked", "rawtypes", "static-method"})
+#else 
+	@SuppressWarnings("static-method")
+#end
 	public SubscriptionClient ${field.javaName}WithBindValues(ObjectResponse objectResponse,
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams() 
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Executing ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end);
+			logger.trace("Executing ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end); //$NON-NLS-1$
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing ${object.requestType} '${field.name}'");
+			logger.debug("Executing ${object.requestType} '${field.name}'"); //$NON-NLS-1$
 		}
 	
 		// Given values for the BindVariables
-		parameters = (parameters != null) ? parameters : new HashMap<>();
+		Map<String, Object> parametersLocal = (parameters != null) ? parameters : new HashMap<>();
 #foreach ($inputParameter in $field.inputParameters)
-		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
+		parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
 #end
 
 #if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return objectResponse.exec(parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse.exec(parametersLocal,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 	}
 
 #foreach ($comment in $field.comments)
@@ -710,27 +713,27 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Executing subscription '${field.name}' with bind variables: ");
+			sb.append("Executing subscription '${field.name}' with bind variables: "); //$NON-NLS-1$
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
 					if (addComma)
-						sb.append(", ");
+						sb.append(", "); //$NON-NLS-1$
 					addComma = true;
 				}
 			}
 			logger.trace(sb.toString());
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing subscription '${field.name}' (with bind variables)");
+			logger.debug("Executing subscription '${field.name}' (with bind variables)"); //$NON-NLS-1$
 		}
 
-		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+		Map<String, Object> parametersLocal = this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 #foreach ($inputParameter in $field.inputParameters)
-		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
+		parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
 #end
 		
-		return objectResponse.exec(parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse.exec(parametersLocal, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 	}
 
 #foreach ($comment in $field.comments)
@@ -747,9 +750,9 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType}
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType} //$NON-NLS-1$
 #foreach ($inputParameter in $field.inputParameters)
-			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
+			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 #end
 			);
 	}
@@ -770,9 +773,17 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest${springBeanSuffix}(graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}"
+		return new GraphQLRequest${springBeanSuffix}(this.graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}" //$NON-NLS-1$
 #foreach ($inputParameter in $field.inputParameters)
-		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
+		, InputParameter.newBindParameter(
+				"$springBeanSuffix", //$NON-NLS-1$
+				"${inputParameter.name}", //$NON-NLS-1$
+				"${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", //$NON-NLS-1$
+				#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, 
+				"${inputParameter.graphQLTypeSimpleName}", //$NON-NLS-1$
+				${inputParameter.fieldTypeAST.mandatory}, 
+				${inputParameter.fieldTypeAST.listDepth}, 
+				${inputParameter.fieldTypeAST.itemMandatory})
 #end
 		);
 	}

@@ -23,6 +23,7 @@ public class ${targetFileName} {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "${dataFetchersDelegate.type.camelCaseName}Controller")
+	@SuppressWarnings("static-method")
 	${dataFetchersDelegate.type.packageName}.#if($configuration.separateUtilityClasses)util.#end${graphqlUtils.getJavaName($dataFetchersDelegate.type.name)}Controller ${dataFetchersDelegate.type.camelCaseName}Controller(BatchLoaderRegistry registry) {
 ## The constructor is only used to declare the relevant data loader... if any (0 or 1 for each class)
 #set ($found=false)

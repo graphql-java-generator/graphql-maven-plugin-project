@@ -113,8 +113,8 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return extensions;
 	}
 	
-	public void setExtensions(JsonNode extensions) {
-		this.extensions = extensions;
+	public void setExtensions(JsonNode extensionsParam) {
+		this.extensions = extensionsParam;
 	}
 	
 	/**
@@ -123,11 +123,11 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * @return
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
-		if (extensionsAsMap == null) {
-			extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+		if (this.extensionsAsMap == null) {
+			this.extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
-		return extensionsAsMap;
+		return this.extensionsAsMap;
 	}
 	
 	/**

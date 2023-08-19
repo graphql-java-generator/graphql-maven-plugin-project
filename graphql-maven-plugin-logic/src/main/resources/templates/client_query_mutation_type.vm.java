@@ -100,14 +100,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ##
 #if(!${configuration.separateUtilityClasses} && ${object.requestType})
 	private GraphQLObjectMapper getExtensionMapper() {
-		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null);
+		if (this.extensionMapper == null) {
+			this.extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null);
 		}
-		return extensionMapper;
+		return this.extensionMapper;
 	}
 	
 	public JsonNode getExtensions() {
-		return extensions;
+		return this.extensions;
 	}
 	
 	public void setExtensions(JsonNode extensions) {
@@ -120,11 +120,11 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * @return
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
-		if (extensionsAsMap == null) {
-			extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+		if (this.extensionsAsMap == null) {
+			this.extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
-		return extensionsAsMap;
+		return this.extensionsAsMap;
 	}
 	
 	/**

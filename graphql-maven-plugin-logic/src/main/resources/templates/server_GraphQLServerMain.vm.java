@@ -55,6 +55,7 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	}
 #end
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		SpringApplication.run(GraphQLServerMain.class, args);
 	}
@@ -78,7 +79,7 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	public GraphQlSourceBuilderCustomizer defaultSourceBuilderCustomizer() {
 		ClassNameTypeResolver classNameTypeResolver = new ClassNameTypeResolver();
 		classNameTypeResolver.setClassNameExtractor((cls) -> {
-			return graphqlServerUtils.classNameExtractor(cls);
+			return this.graphqlServerUtils.classNameExtractor(cls);
 		});
 		return (builder) -> builder.defaultTypeResolver(classNameTypeResolver);
 	}

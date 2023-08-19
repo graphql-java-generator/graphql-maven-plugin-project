@@ -36,10 +36,10 @@ public enum ${object.javaName} {
 	@JsonProperty("${value.name}") // Needed as ${value.name} is a java reserved keyword
 #end
 #appliedDirectives(${value.appliedDirectives}, "	")
-	${javaKeywordPrefix}${value.name}("${value.name}")#if($foreach.hasNext), #else;#end
+	${javaKeywordPrefix}${value.name}("${value.name}")#if($foreach.hasNext), #else;#end //$NON-NLS-1$
 #else
 	#appliedDirectives(${value.appliedDirectives}, "	")
-	${value.name}("${value.name}")#if($foreach.hasNext), #else;#end
+	${value.name}("${value.name}")#if($foreach.hasNext), #else;#end //$NON-NLS-1$
 #end
 #end
 
@@ -55,7 +55,7 @@ public enum ${object.javaName} {
 	 * @return the enum constant with the specified name, as defined in the GraphQL schema
 	 */
 	public String graphQlValue() {
-		return graphQlValue;
+		return this.graphQlValue;
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public enum ${object.javaName} {
 				return e;
 			}
 		}
-		throw new IllegalArgumentException("No ${object.javaName} exists with '" + graphQlValue + "' as a GraphQL value");
+		throw new IllegalArgumentException("No ${object.javaName} exists with '" + graphQlValue + "' as a GraphQL value"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	${object.javaName}(String graphQlValue) {
