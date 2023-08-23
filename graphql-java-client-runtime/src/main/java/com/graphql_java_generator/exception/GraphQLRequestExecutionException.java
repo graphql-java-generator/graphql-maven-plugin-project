@@ -19,7 +19,7 @@ import graphql.GraphQLError;
  * 
  * @author etienne-sf
  */
-public class GraphQLRequestExecutionException extends Exception {
+public class GraphQLRequestExecutionException extends Exception implements GraphQLRequestExecutionExceptionInterface {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +46,7 @@ public class GraphQLRequestExecutionException extends Exception {
 		this.errors = errors;
 	}
 
+	@Override
 	public List<ResponseError> getErrors() {
 		return errors;
 	}

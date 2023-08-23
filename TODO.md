@@ -1,7 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* Finish the code that removes (or highly diminish the number of) warnings
+* Gradle issue #18: all Gradle tasks are run, even if unnecessary
 * #152: check the reactive implementation
     * Doc (including migration doc)
     * Issue with the `spring-boot-starter-websocket` dependency, which (by default) add the `spring-webmvc` dependency
