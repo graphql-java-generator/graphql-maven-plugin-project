@@ -30,6 +30,8 @@ public enum CodeTemplate {
 	JACKSON_SERIALIZERS(CodeTemplateScope.CLIENT, "templates/client_jackson_serializers.vm.java"), //
 	QUERY_MUTATION(CodeTemplateScope.CLIENT, "templates/client_query_mutation_type.vm.java"), //
 	QUERY_MUTATION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_query_mutation_executor.vm.java"), //
+	QUERY_MUTATION_REACTIVE_EXECUTOR(CodeTemplateScope.CLIENT,
+			"templates/client_query_mutation_reactive_executor.vm.java"), //
 	QUERY_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_response.vm.java"), //
 	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"), //
 	SPRING_AUTOCONFIGURATION_DEFINITION_FILE(CodeTemplateScope.CLIENT,

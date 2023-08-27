@@ -34,8 +34,6 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 
 	private static final Logger logger = LoggerFactory.getLogger(PluginExecutor.class);
 
-	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
-
 	@Autowired
 	GenerateCodeDocumentParser documentParser;
 
@@ -68,11 +66,11 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		if (skipGenerationIfSchemaHasNotChanged()) {
 			logger.info(
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped for target folder "
-							+ configuration.getTargetSourceFolder());
+							+ this.configuration.getTargetSourceFolder());
 		} else {
 			// Let's do the job
-			documentParser.parseGraphQLSchemas();
-			generator.generateCode();
+			this.documentParser.parseGraphQLSchemas();
+			this.generator.generateCode();
 		}
 	}
 
@@ -82,8 +80,8 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	 * @throws IOException
 	 */
 	void checkConfiguration() throws IOException {
-		if (configuration.getTemplates() != null) {
-			for (String key : configuration.getTemplates().keySet()) {
+		if (this.configuration.getTemplates() != null) {
+			for (String key : this.configuration.getTemplates().keySet()) {
 				// Check 1: the key must be a valid template name
 				try {
 					CodeTemplate.valueOf(key);
@@ -91,13 +89,13 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 					throw new RuntimeException("'" + key + "' is not a valid template name", e);
 				}
 				// Check 2: the given value must be a valid file
-				File file = new File(configuration.getProjectDir(), configuration.getTemplates().get(key));
+				File file = new File(this.configuration.getProjectDir(), this.configuration.getTemplates().get(key));
 				if (!file.exists()) {
 					// This template is not a local file. So it must be in the classpath.
-					if (null == getClass().getClassLoader().getResource(configuration.getTemplates().get(key))) {
+					if (null == getClass().getClassLoader().getResource(this.configuration.getTemplates().get(key))) {
 						throw new RuntimeException("The file provided for the '" + key
 								+ "' template could not be found. The provided filename is: '"
-								+ configuration.getTemplates().get(key) + "' (the full path is '"
+								+ this.configuration.getTemplates().get(key) + "' (the full path is '"
 								+ file.getCanonicalPath() + "')");
 					}
 
@@ -109,7 +107,7 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	private boolean skipGenerationIfSchemaHasNotChanged() throws IOException {
 
 		// First, we look for the last modification date of all the given schema.
-		OptionalLong optSchemaLastModification = resourceSchemaStringProvider.schemas(false).stream()//
+		OptionalLong optSchemaLastModification = this.resourceSchemaStringProvider.schemas(false).stream()//
 				.mapToLong((r) -> {
 					try {
 						return r.lastModified();
@@ -128,7 +126,8 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		// Then, we get the maximum last modification date for all the generated sources. This makes sure that the code
 		// is generated if the schema is newer, and that it is not renegerated even if an old file remains for instance
 		// if a type has been removed from the schema (in which case a clean must be done)
-		Long targetSourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetSourceFolder(), true);
+		Long targetSourcesLastModified = this.graphqlUtils.getLastModified(this.configuration.getTargetSourceFolder(),
+				true);
 		if (targetSourcesLastModified == null) {
 			logger.debug("No source folder: we need to generate the sources");
 			return false;

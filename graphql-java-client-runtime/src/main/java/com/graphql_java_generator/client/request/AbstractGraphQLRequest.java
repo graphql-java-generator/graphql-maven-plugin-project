@@ -552,8 +552,6 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public <T extends GraphQLRequestObject> T exec(Class<T> t, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
-		if (getRequestType().equals(RequestType.subscription))
-			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions"); //$NON-NLS-1$
 		try {
 			return execReactive(t, params).block();
 		} catch (GraphQLRequestExecutionUncheckedException e) {

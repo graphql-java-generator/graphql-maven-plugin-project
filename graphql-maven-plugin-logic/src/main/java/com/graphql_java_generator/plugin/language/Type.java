@@ -17,6 +17,10 @@ import com.graphql_java_generator.util.GraphqlUtils;
  */
 public interface Type {
 
+	public static enum TargetFileType {
+		ENUM, EXECUTOR, INTERFACE, JACKSON_DESERIALIZER, MUTATION, OBJECT, QUERY, REACTIVE_EXECUTOR, RESPONSE, ROOT_RESPONSE, SUBSCRIPTION, UNION
+	}
+
 	public enum GraphQlType {
 		OBJECT, SCALAR, ENUM, INTERFACE, UNION
 	}
@@ -48,14 +52,16 @@ public interface Type {
 	public String getPackageName();
 
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
-	default public String getTargetFileName(String fileType) {
+	default public String getTargetFileName(TargetFileType fileType) {
 		switch (fileType) {
-		case "executor":
-			return getName() + "Executor";
-		case "response":
-			return getName() + "Response";
-		case "root response":
-			return getName() + "RootResponse";
+		case EXECUTOR:
+			return getName() + "Executor"; //$NON-NLS-1$
+		case REACTIVE_EXECUTOR:
+			return getName() + "ReactiveExecutor"; //$NON-NLS-1$
+		case RESPONSE:
+			return getName() + "Response"; //$NON-NLS-1$
+		case ROOT_RESPONSE:
+			return getName() + "RootResponse"; //$NON-NLS-1$
 		default:
 			return getJavaName();
 		}
@@ -180,7 +186,7 @@ public interface Type {
 		if (getPackageName() == null)
 			return getClassSimpleName();
 		else
-			return getPackageName() + "." + getClassSimpleName();
+			return getPackageName() + "." + getClassSimpleName(); //$NON-NLS-1$
 	}
 
 	/**
@@ -208,7 +214,7 @@ public interface Type {
 				return f;
 			}
 		}
-		throw new NoSuchFieldException("The type '" + getName() + " has no field of name '" + fieldName + "'");
+		throw new NoSuchFieldException("The type '" + getName() + " has no field of name '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	/**

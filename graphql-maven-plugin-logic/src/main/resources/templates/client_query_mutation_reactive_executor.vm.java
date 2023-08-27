@@ -46,7 +46,6 @@ package ${packageUtilName};
 #end
 ##
 ##
-#set ($reactiveExecutor = $graphqlUtils.getCamelCase($object.name + "ReactiveExecutor" + $springBeanSuffix))
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +58,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
-import reactor.core.publisher.Mono;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLDirective;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
@@ -68,16 +65,17 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar; 
 import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.client.GraphQLMutationExecutor;
+import com.graphql_java_generator.client.GraphQLMutationReactiveExecutor;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
-import com.graphql_java_generator.client.GraphQLQueryExecutor;
+import com.graphql_java_generator.client.GraphQLQueryReactiveExecutor;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionUncheckedException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
+
+import reactor.core.publisher.Mono;
 
 #foreach($import in ${object.importsForUtilityClasses})
 import $import;
@@ -109,10 +107,10 @@ import $import;
  */
 @Component
 @SuppressWarnings("unused")
-public class ${object.name}Executor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
+public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationReactiveExecutor #else GraphQLQueryReactiveExecutor #end{
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
+	private static Logger logger = LoggerFactory.getLogger(${object.name}ReactiveExecutor${springBeanSuffix}.class);
 
 	@Autowired
 #if ($configuration.queryMutationExecutionProtocol == "http")
@@ -121,17 +119,13 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	@Qualifier("webSocketGraphQlClient${springBeanSuffix}")
 #end
 	GraphQlClient graphQlClient;
-
-	@Autowired
-	@Qualifier("$reactiveExecutor")
-	${object.name}ReactiveExecutor${springBeanSuffix} $reactiveExecutor; 
-
+	
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils; // must be set that way, to be used in the constructor
 	
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
 
-	public ${object.name}Executor${springBeanSuffix}() {
+	public ${object.name}ReactiveExecutor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(this.graphqlUtils.getRuntimeVersion())) { //$NON-NLS-1$
 			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"  //$NON-NLS-1$
@@ -177,9 +171,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public $executionResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public Mono<$executionResponse> execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return getValueFromMono(this.${reactiveExecutor}.execWithBindValues(queryResponseDef, parameters));
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);  //$NON-NLS-1$
+		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return exec(objectResponse, parameters);
 	}
 
 	/**
@@ -212,9 +208,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public $executionResponse exec(String queryResponseDef, Object... paramsAndValues)
+	public Mono<$executionResponse> exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return getValueFromMono(this.${reactiveExecutor}.exec(queryResponseDef, paramsAndValues));
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);  //$NON-NLS-1$
+		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return execWithBindValues(objectResponse, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -254,9 +252,27 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@SuppressWarnings("static-method")
-	public $executionResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public Mono<$executionResponse> execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
-		return getValueFromMono(this.${reactiveExecutor}.execWithBindValues(objectResponse, parameters));
+		if (logger.isTraceEnabled()) {
+			if (parameters == null) {
+				logger.trace("Executing ${object.requestType} without parameters");  //$NON-NLS-1$
+			} else {
+				StringBuilder sb = new StringBuilder("Executing root ${object.requestType} with parameters: ");  //$NON-NLS-1$
+				boolean addComma = false;
+				for (String key : parameters.keySet()) {
+					sb.append(key).append(":").append(parameters.get(key));  //$NON-NLS-1$
+					if (addComma)
+						sb.append(", ");  //$NON-NLS-1$
+					addComma = true;
+				}
+				logger.trace(sb.toString());
+			}
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing ${object.requestType} '${object.name}'");  //$NON-NLS-1$
+		}
+
+		return objectResponse.execReactive(${executionResponse}.class, (parameters != null) ? parameters : new HashMap<>());
 	}
 
 	/**
@@ -295,9 +311,9 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public $executionResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public Mono<$executionResponse> exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
-		return getValueFromMono(this.${reactiveExecutor}.exec(objectResponse, paramsAndValues));
+		return execWithBindValues(objectResponse, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -308,7 +324,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.getResponseBuilder();
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class);
 	}
 
 	/**
@@ -323,7 +339,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 */
 	@SuppressWarnings("static-method")
 	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.getGraphQLRequest(fullRequest);
+		return new GraphQLRequest${springBeanSuffix}(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -382,12 +398,14 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 ## the current name and the query type object: they have the same name, but are in different packages 
 #if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
+	public Mono<Optional<${field.javaTypeFullClassname}>> ${field.javaName}WithBindValues(
 			String queryResponseDef,
 #inputParams()
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return getValueFromMonoOptional(this.${reactiveExecutor}.${field.javaName}WithBindValues(queryResponseDef#inputValues(), parameters));
+		logger.debug("Executing ${object.requestType} '${field.name}': {} ", queryResponseDef); //$NON-NLS-1$
+		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return ${field.javaName}(objectResponse#inputValues(), parameters);
 	}
 
 #foreach ($comment in $field.comments)
@@ -442,12 +460,14 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public ${field.javaTypeFullClassname} ${field.javaName}(
+	public Mono<Optional<${field.javaTypeFullClassname}>> ${field.javaName}(
 			String queryResponseDef,
 #inputParams()
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return getValueFromMonoOptional(this.${reactiveExecutor}.${field.javaName}(queryResponseDef#inputValues(), paramsAndValues));
+		logger.debug("Executing ${object.requestType} '${field.name}': {} ", queryResponseDef); //$NON-NLS-1$
+		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return ${field.javaName}WithBindValues(objectResponse#inputValues(), this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #foreach ($comment in $field.comments)
@@ -507,12 +527,31 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 #if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #appliedDirectives(${field.appliedDirectives}, "	")
 	@SuppressWarnings("static-method")
-	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
+	public Mono<Optional<${field.javaTypeFullClassname}>> ${field.javaName}WithBindValues(
 			ObjectResponse objectResponse,
 #inputParams()
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
-		return getValueFromMonoOptional(this.${reactiveExecutor}.${field.javaName}WithBindValues(objectResponse#inputValues(), parameters));
+		if (logger.isTraceEnabled()) {
+			logger.trace("Executing ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end); //$NON-NLS-1$
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing ${object.requestType} '${field.name}'"); //$NON-NLS-1$
+		}
+	
+		// Given values for the BindVariables
+		Map<String, Object> parametersLocal = (parameters != null) ? parameters : new HashMap<>();
+#foreach ($inputParameter in $field.inputParameters)
+parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
+#end
+
+#if(${configuration.separateUtilityClasses})
+		return objectResponse //
+			.execReactive(#if(${configuration.separateUtilityClasses})${configuration.packageName}.#end${field.owningType.classSimpleName}.class, parametersLocal) //
+#else
+		return objectResponse//
+			.execReactive(${field.owningType.classSimpleName}.class, parametersLocal) //
+#end
+			.map(t -> (t.get${field.pascalCaseName}() == null) ? Optional.empty() : Optional.of(t.get${field.pascalCaseName}()));
 	}
 
 #foreach ($comment in $field.comments)
@@ -572,12 +611,41 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public ${field.javaTypeFullClassname} ${field.javaName}(
+	public Mono<Optional<${field.javaTypeFullClassname}>> ${field.javaName}(
 			ObjectResponse objectResponse,
 #inputParams()
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
-		return getValueFromMonoOptional(this.${reactiveExecutor}.${field.javaName}(objectResponse#inputValues() ,paramsAndValues));
+		if (logger.isTraceEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Executing ${object.requestType} '${field.name}' with bind variables: "); //$NON-NLS-1$
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", "); //$NON-NLS-1$
+					addComma = true;
+				}
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing ${object.requestType} '${field.name}' (with bind variables)"); //$NON-NLS-1$ 
+		}
+
+		Map<String, Object> parameters = this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+#foreach ($inputParameter in $field.inputParameters)
+		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
+#end
+		
+#if (${configuration.separateUtilityClasses})
+		return objectResponse //
+			.execReactive(#if(${configuration.separateUtilityClasses})${configuration.packageName}.#end${field.owningType.classSimpleName}.class, parameters) // 
+#else
+		return objectResponse //
+			.execReactive(${field.owningType.classSimpleName}.class, parameters) //
+#end
+			.map(t -> (t.get${field.pascalCaseName}() == null) ? Optional.empty() : Optional.of(t.get${field.pascalCaseName}()));
 	}
 
 #foreach ($comment in $field.comments)
@@ -594,7 +662,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.get${field.pascalCaseName}ResponseBuilder();
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType} //$NON-NLS-1$
+#foreach ($inputParameter in $field.inputParameters)
+			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+#end
+			);
 	}
 
 
@@ -614,50 +686,12 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.get${field.pascalCaseName}GraphQLRequest(partialRequest);
+		return new GraphQLRequest${springBeanSuffix}(this.graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}" //$NON-NLS-1$
+#foreach ($inputParameter in $field.inputParameters)  ## Here, inputParameter is an instance of Field
+		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+#end
+		);
 	}
 	
 #end
-
-	/**
-	 * Retrieves the value returned by the given Mono.
-	 * 
-	 * @param <T>
-	 * @param mono
-	 * @param clazz
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             A {@link GraphQLRequestExecutionException} is thrown, when a
-	 *             {@link GraphQLRequestExecutionUncheckedException} is thrown while processing the Mono.
-	 */
-	private static <T> T getValueFromMono(Mono<T> mono)
-			throws GraphQLRequestExecutionException {
-		try {
-			return mono.block();
-		} catch (GraphQLRequestExecutionUncheckedException e) {
-			throw e.getGraphQLRequestExecutionException();
-		}
-	}
-
-
-	/**
-	 * Retrieves the value returned by the given Mono. The values are {@link Optional}, and the returned is either null or the non empty value
-	 * 
-	 * @param <T>
-	 * @param mono
-	 * @param clazz
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             A {@link GraphQLRequestExecutionException} is thrown, when a
-	 *             {@link GraphQLRequestExecutionUncheckedException} is thrown while processing the Mono.
-	 */
-	private static <T> T getValueFromMonoOptional(Mono<Optional<T>> mono)
-			throws GraphQLRequestExecutionException {
-		try {
-			Optional<T> optional = mono.block();
-			return (optional.isPresent()) ? optional.get() : null;
-		} catch (GraphQLRequestExecutionUncheckedException e) {
-			throw e.getGraphQLRequestExecutionException();
-		}
-	}
 }

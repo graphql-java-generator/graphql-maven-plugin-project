@@ -36,6 +36,7 @@ import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.Type.TargetFileType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -56,43 +57,43 @@ class CodeGeneratorTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		context = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
-		pluginConfiguration = context.getBean(GraphQLConfigurationTestHelper.class);
-		mavenTestHelper = context.getBean(MavenTestHelper.class);
+		this.context = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		this.pluginConfiguration = this.context.getBean(GraphQLConfigurationTestHelper.class);
+		this.mavenTestHelper = this.context.getBean(MavenTestHelper.class);
 
-		targetResourceFolder = mavenTestHelper.getTargetResourceFolder(this.getClass().getSimpleName());
-		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
-		targetRuntimeClassesSourceFolder = mavenTestHelper
+		this.targetResourceFolder = this.mavenTestHelper.getTargetResourceFolder(this.getClass().getSimpleName());
+		this.targetSourceFolder = this.mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
+		this.targetRuntimeClassesSourceFolder = this.mavenTestHelper
 				.getTargetRuntimeClassesBaseSourceFolder(this.getClass().getSimpleName());
-		testRuntimeSourcesFile = mavenTestHelper.getTestRutimeSourcesJarFile();
+		this.testRuntimeSourcesFile = this.mavenTestHelper.getTestRutimeSourcesJarFile();
 
-		if (targetResourceFolder.exists()) {
-			FileUtils.forceDelete(targetResourceFolder);
-			targetResourceFolder.mkdirs();
+		if (this.targetResourceFolder.exists()) {
+			FileUtils.forceDelete(this.targetResourceFolder);
+			this.targetResourceFolder.mkdirs();
 		}
-		if (targetSourceFolder.exists()) {
-			FileUtils.forceDelete(targetSourceFolder);
-			targetSourceFolder.mkdirs();
-		}
-
-		if (testRuntimeSourcesFile.exists()) {
-			testRuntimeSourcesFile.delete();
+		if (this.targetSourceFolder.exists()) {
+			FileUtils.forceDelete(this.targetSourceFolder);
+			this.targetSourceFolder.mkdirs();
 		}
 
-		codeGenerator = context.getBean(GenerateCodeGenerator.class);
-		codeGenerator.generateCodeDocumentParser = new GenerateCodeDocumentParser();
-		codeGenerator.generateCodeDocumentParser.configuration = pluginConfiguration;
+		if (this.testRuntimeSourcesFile.exists()) {
+			this.testRuntimeSourcesFile.delete();
+		}
+
+		this.codeGenerator = this.context.getBean(GenerateCodeGenerator.class);
+		this.codeGenerator.generateCodeDocumentParser = new GenerateCodeDocumentParser();
+		this.codeGenerator.generateCodeDocumentParser.configuration = this.pluginConfiguration;
 	}
 
 	@AfterEach
 	void close() {
-		context.close();
+		this.context.close();
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testCodeGenerator() {
-		assertNotNull(codeGenerator.velocityEngine, "Velocity engine must be initialized");
+		assertNotNull(this.codeGenerator.velocityEngine, "Velocity engine must be initialized");
 	}
 
 	/**
@@ -104,23 +105,23 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_client() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngine = mock(VelocityEngine.class);
+		this.codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
+		when(this.codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
-		codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
-		pluginConfiguration.mode = PluginMode.client;
+		this.codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
+		this.pluginConfiguration.mode = PluginMode.client;
 
-		ObjectType object1 = new ObjectType("O1", pluginConfiguration, null);
+		ObjectType object1 = new ObjectType("O1", this.pluginConfiguration, null);
 		// ObjectType object2 = new ObjectType("O2", configuration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		// objects.add(object2);
 
-		String type = "my test type";
+		TargetFileType type = TargetFileType.OBJECT;
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
+		int i = this.codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -128,7 +129,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
+		verify(this.codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(CodeTemplate.OBJECT.getDefaultPath(), argument1.getValue(),
 				"checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
@@ -139,7 +140,7 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(pluginConfiguration.getPackageName(),
+		assertEquals(this.pluginConfiguration.getPackageName(),
 				((GraphQLConfiguration) argumentContext.getValue().get("configuration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
@@ -156,20 +157,20 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_server() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngine = mock(VelocityEngine.class);
+		this.codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
+		when(this.codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
-		pluginConfiguration.mode = PluginMode.server;
+		this.pluginConfiguration.mode = PluginMode.server;
 
-		ObjectType object1 = new ObjectType("O1", pluginConfiguration, null);
+		ObjectType object1 = new ObjectType("O1", this.pluginConfiguration, null);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 
-		String type = "my test type";
+		TargetFileType type = TargetFileType.OBJECT;
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
+		int i = this.codeGenerator.generateTargetFilesForTypeList(objects, type, CodeTemplate.OBJECT, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -177,7 +178,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
+		verify(this.codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(CodeTemplate.OBJECT.getDefaultPath(), argument1.getValue(),
 				"checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
@@ -188,7 +189,7 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(pluginConfiguration.getPackageName(),
+		assertEquals(this.pluginConfiguration.getPackageName(),
 				((GraphQLConfiguration) argumentContext.getValue().get("configuration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
@@ -201,10 +202,10 @@ class CodeGeneratorTest {
 	void test_generateOneFile_inClasspath() throws IOException {
 		// Preparation
 		VelocityContext velocityContext = new VelocityContext();
-		File targetFile = new File(targetResourceFolder + "/testTemplate_inClasspath");
+		File targetFile = new File(this.targetResourceFolder + "/testTemplate_inClasspath");
 
 		// Go, go, go
-		codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
+		this.codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
 				CodeTemplate.OBJECT);
 
 		// If there is no error, then the template has been found. The test is Ok
@@ -216,46 +217,46 @@ class CodeGeneratorTest {
 		// Preparation
 		String name = "MyClass";
 		String packageName = "my.package";
-		pluginConfiguration.packageName = packageName;
-		pluginConfiguration.separateUtilityClasses = false;
-		pluginConfiguration.targetResourceFolder = targetResourceFolder;
-		pluginConfiguration.targetSourceFolder = targetSourceFolder;
+		this.pluginConfiguration.packageName = packageName;
+		this.pluginConfiguration.separateUtilityClasses = false;
+		this.pluginConfiguration.targetResourceFolder = this.targetResourceFolder;
+		this.pluginConfiguration.targetSourceFolder = this.targetSourceFolder;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Go, go, go (separateUtilityClasses=false, isUtility=false)
-		File file = codeGenerator.getJavaFile(name, false);
+		File file = this.codeGenerator.getJavaFile(name, false);
 		// Verification
-		String expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
+		String expectedEndOfPath = (this.targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
 				.replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Go, go, go (separateUtilityClasses=false, isUtility=true)
-		file = codeGenerator.getJavaFile(name, true);
+		file = this.codeGenerator.getJavaFile(name, true);
 		// Verification
-		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name).replace('.', '/')
-				.replace('\\', '/') + ".java";
+		expectedEndOfPath = (this.targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
+				.replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 
 		// separateUtilityClasses=true
-		pluginConfiguration.separateUtilityClasses = true;
+		this.pluginConfiguration.separateUtilityClasses = true;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Go, go, go (separateUtilityClasses=true, isUtility=false)
-		file = codeGenerator.getJavaFile(name, false);
+		file = this.codeGenerator.getJavaFile(name, false);
 		// Verification
-		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name).replace('.', '/')
-				.replace('\\', '/') + ".java";
+		expectedEndOfPath = (this.targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
+				.replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Go, go, go (separateUtilityClasses=true, isUtility=true)
-		file = codeGenerator.getJavaFile(name, true);
+		file = this.codeGenerator.getJavaFile(name, true);
 		// Verification
-		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
+		expectedEndOfPath = (this.targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
 				+ GenerateCodeDocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/')
 				+ ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
@@ -272,16 +273,16 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateCode_noCopyOfRuntimeSources() throws IOException {
 
-		pluginConfiguration.mode = PluginMode.client;
-		pluginConfiguration.packageName = "test.generatecode.enabled";
-		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
-		pluginConfiguration.schemaFilePattern = "basic.graphqls";
-		pluginConfiguration.targetResourceFolder = targetResourceFolder;
-		pluginConfiguration.targetSourceFolder = targetSourceFolder;
-		pluginConfiguration.targetClassFolder = targetSourceFolder;
+		this.pluginConfiguration.mode = PluginMode.client;
+		this.pluginConfiguration.packageName = "test.generatecode.enabled";
+		this.pluginConfiguration.schemaFileFolder = new File("src/test/resources");
+		this.pluginConfiguration.schemaFilePattern = "basic.graphqls";
+		this.pluginConfiguration.targetResourceFolder = this.targetResourceFolder;
+		this.pluginConfiguration.targetSourceFolder = this.targetSourceFolder;
+		this.pluginConfiguration.targetClassFolder = this.targetSourceFolder;
 
-		codeGenerator.generateCode();
-		assertFalse(targetRuntimeClassesSourceFolder.exists());
+		this.codeGenerator.generateCode();
+		assertFalse(this.targetRuntimeClassesSourceFolder.exists());
 	}
 
 	/**
@@ -290,7 +291,7 @@ class CodeGeneratorTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateDefault() {
-		pluginConfiguration.templates.clear();
+		this.pluginConfiguration.templates.clear();
 		assertEquals(CodeTemplate.WIRING.getDefaultPath(), this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
 		;
 	}
@@ -301,8 +302,8 @@ class CodeGeneratorTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateCustom() {
-		pluginConfiguration.templates.clear();
-		pluginConfiguration.templates.put(CodeTemplate.WIRING.name(), "/my/custom/template");
+		this.pluginConfiguration.templates.clear();
+		this.pluginConfiguration.templates.put(CodeTemplate.WIRING.name(), "/my/custom/template");
 		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
 		;
 	}
@@ -314,7 +315,7 @@ class CodeGeneratorTest {
 	 * @throws IOException
 	 */
 	protected void createRuntimeSourcesJar() throws IOException {
-		File file = mavenTestHelper.getTestRutimeSourcesJarFile();
+		File file = this.mavenTestHelper.getTestRutimeSourcesJarFile();
 		if (file.exists()) {
 			file.delete();
 		}

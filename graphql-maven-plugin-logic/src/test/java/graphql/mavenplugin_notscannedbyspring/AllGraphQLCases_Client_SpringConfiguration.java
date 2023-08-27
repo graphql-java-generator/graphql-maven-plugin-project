@@ -48,11 +48,12 @@ public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringCo
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
 		// The allGraphQLCases GraphQL schema is located in the allGraphQLCases client sample
-		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
+		configuration.schemaFileFolder = new File(this.mavenTestHelper.getModulePathFile(),
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
+		configuration.generateDeprecatedRequestResponse = true;
 		configuration.mode = PluginMode.client;
-		configuration.schemaPersonalizationFile = new File(mavenTestHelper.getModulePathFile(),
+		configuration.schemaPersonalizationFile = new File(this.mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/schema_personalization_for_code_generation.json");
 		configuration.customScalars = customScalars;
 		configuration.separateUtilityClasses = false;

@@ -6,7 +6,6 @@ package com.graphql_java_generator.plugin.language.impl;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.generate_code.GenerateCodePluginExecutor;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 import com.graphql_java_generator.util.GraphqlUtils;
 
@@ -64,8 +63,8 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
 	@Override
-	public String getTargetFileName(String fileType) {
-		if (GenerateCodePluginExecutor.FILE_TYPE_JACKSON_DESERIALIZER.equals(fileType)) {
+	public String getTargetFileName(TargetFileType fileType) {
+		if (TargetFileType.JACKSON_DESERIALIZER.equals(fileType)) {
 			return "CustomScalarDeserializer" + getName();
 		} else {
 			throw new RuntimeException("Unknown file type: '" + fileType + "'");
@@ -75,6 +74,6 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 
 	@Override
 	public String getClassFullName() {
-		return customScalarDefinition.getJavaType();
+		return this.customScalarDefinition.getJavaType();
 	}
 }
