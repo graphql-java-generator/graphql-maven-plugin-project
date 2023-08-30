@@ -934,4 +934,33 @@ public abstract class AbstractGraphQLRequest {
 		return this.requestName;
 	}
 
+	/**
+	 * 
+	 * @param executionOf
+	 *            A string
+	 * @param parameters
+	 */
+	protected static void logExecution(RequestType requestType, String queryMutationTypeName,
+			Map<String, Object> parameters) {
+		if (logger.isTraceEnabled()) {
+			if (parameters == null) {
+				logger.trace("Executing of " + requestType.toString() + " without parameters"); //$NON-NLS-1$ //$NON-NLS-2$
+			} else {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Executing of root ") //$NON-NLS-1$
+						.append(requestType.toString()) //
+						.append("mutation with parameters: "); //$NON-NLS-1$
+				boolean addComma = false;
+				for (String key : parameters.keySet()) {
+					sb.append(key).append(":").append(parameters.get(key)); //$NON-NLS-1$
+					if (addComma)
+						sb.append(", "); //$NON-NLS-1$
+					addComma = true;
+				}
+				logger.trace(sb.toString());
+			}
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of {} '{}'", requestType.toString(), queryMutationTypeName); //$NON-NLS-1$
+		}
+	}
 }

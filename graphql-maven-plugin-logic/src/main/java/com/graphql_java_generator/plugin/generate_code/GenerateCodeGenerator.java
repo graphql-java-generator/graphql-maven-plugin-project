@@ -254,9 +254,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 					TargetFileType.ROOT_RESPONSE, CodeTemplate.ROOT_RESPONSE, true);
 
-			// Generation of the GraphQLRequest class
+			// Generation of the GraphQLRequest classes
 			logger.debug("Generating GraphQL Request class"); //$NON-NLS-1$
-			i += generateGraphQLRequest();
+			i += generateGraphQLRequest(false);
+			logger.debug("Generating GraphQL Reactive Request class"); //$NON-NLS-1$
+			i += generateGraphQLRequest(true);
 
 			// Files for Custom Scalars
 			logger.debug("Generating CustomScalarRegistryInitializer"); //$NON-NLS-1$
@@ -559,17 +561,21 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 * Generates the GraphQLRequest class . This method expects at most one query, one mutation and one subscription,
 	 * which is compliant with the GraphQL specification
 	 */
-	int generateGraphQLRequest() {
+	int generateGraphQLRequest(boolean reactive) {
 		VelocityContext context = getVelocityContext();
 
 		context.put("query", this.generateCodeDocumentParser.getQueryType()); //$NON-NLS-1$
 		context.put("mutation", this.generateCodeDocumentParser.getMutationType()); //$NON-NLS-1$
 		context.put("subscription", this.generateCodeDocumentParser.getSubscriptionType()); //$NON-NLS-1$
 
+		String classname = (reactive) ? "GraphQLReactiveRequest" : "GraphQLRequest"; //$NON-NLS-1$ //$NON-NLS-2$
+		CodeTemplate codeTemplate = (reactive) ? CodeTemplate.GRAPHQL_REACTIVE_REQUEST : CodeTemplate.GRAPHQL_REQUEST;
+
 		return generateOneJavaFile(//
-				(this.configuration.getSpringBeanSuffix() == null) ? "GraphQLRequest" //$NON-NLS-1$
-						: "GraphQLRequest" + this.configuration.getSpringBeanSuffix(), // //$NON-NLS-1$
-				true, "generating GraphQLRequest", context, CodeTemplate.GRAPHQL_REQUEST); //$NON-NLS-1$
+				(this.configuration.getSpringBeanSuffix() == null) ? classname
+						: classname + this.configuration.getSpringBeanSuffix(),
+				true, "generating GraphQLRequest", context, //$NON-NLS-1$
+				codeTemplate);
 	}
 
 	/**

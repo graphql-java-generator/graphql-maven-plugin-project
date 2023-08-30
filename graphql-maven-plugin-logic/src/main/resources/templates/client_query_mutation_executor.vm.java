@@ -323,7 +323,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 */
 	@SuppressWarnings("static-method")
 	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.getGraphQLRequest(fullRequest);
+		return new GraphQLRequest${springBeanSuffix}(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -614,7 +614,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return this.${reactiveExecutor}.get${field.pascalCaseName}GraphQLRequest(partialRequest);
+		return new GraphQLRequest${springBeanSuffix}(this.graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}" //$NON-NLS-1$
+#foreach ($inputParameter in $field.inputParameters)  ## Here, inputParameter is an instance of Field
+		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+#end
+		);
 	}
 	
 #end

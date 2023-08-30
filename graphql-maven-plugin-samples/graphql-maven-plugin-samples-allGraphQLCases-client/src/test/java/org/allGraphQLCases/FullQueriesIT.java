@@ -14,15 +14,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -43,10 +45,14 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 class FullQueriesIT {
 
 	@Autowired
-	MyQueryTypeExecutorAllGraphQLCases myQuery;
+	MyQueryTypeExecutorAllGraphQLCases queryExecutor;
+	@Autowired
+	MyQueryTypeReactiveExecutorAllGraphQLCases reactiveQueryExecutor;
 
 	@Autowired
-	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationExecutor;
+	@Autowired
+	AnotherMutationTypeReactiveExecutorAllGraphQLCases reactiveMutationExecutor;
 
 	@Resource(name = "httpGraphQlClientAllGraphQLCases")
 	GraphQlClient httpGraphQlClient;
@@ -56,6 +62,11 @@ class FullQueriesIT {
 	GraphQLRequestAllGraphQLCases withDirectiveTwoParametersRequest;
 	GraphQLRequestAllGraphQLCases multipleQueriesRequest;
 
+	GraphQLRequestAllGraphQLCases reactiveMutationWithDirectiveRequest;
+	GraphQLRequestAllGraphQLCases reactiveMutationWithoutDirectiveRequest;
+	GraphQLRequestAllGraphQLCases reactiveWithDirectiveTwoParametersRequest;
+	GraphQLRequestAllGraphQLCases reactiveMultipleQueriesRequest;
+
 	public static class ExtensionValue {
 		public String name;
 		public String forname;
@@ -63,55 +74,44 @@ class FullQueriesIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
+		String req;
 		// The response preparation should be somewhere in the application initialization code.
-		mutationWithDirectiveRequest = mutationType.getGraphQLRequest(//
-				"mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
-						+ "{id name appearsIn friends {id name}}}"//
-		);
+		req = "mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
+				+ "{id name appearsIn friends {id name}}}";//
+		this.mutationWithDirectiveRequest = this.mutationExecutor.getGraphQLRequest(req);
 
-		mutationWithoutDirectiveRequest = mutationType.getGraphQLRequest(//
-				"mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
-		);
+		req = "mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}";
+		this.mutationWithoutDirectiveRequest = this.mutationExecutor.getGraphQLRequest(req);
 
-		withDirectiveTwoParametersRequest = mutationType.getGraphQLRequest(
-				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}");
+		req = "query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}";
+		this.withDirectiveTwoParametersRequest = this.mutationExecutor.getGraphQLRequest(req);
 
-		multipleQueriesRequest = myQuery.getGraphQLRequest("{"//
+		req = "{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
-				+ "}");
-
+				+ "}";
+		this.multipleQueriesRequest = this.queryExecutor.getGraphQLRequest(req);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void test_noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void test_noDirective_extensionsResponseField()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
+		String request = "{directiveOnQuery}";
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-		// simple cases
+		// Direct queries should be used only for very simple cases
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request);
 
 		// Verifications
 		assertNotNull(resp);
 		List<String> ret = resp.getDirectiveOnQuery();
 		assertNotNull(ret);
 		assertEquals(0, ret.size());
-	}
-
-	@Execution(ExecutionMode.CONCURRENT)
-	@Test
-	void test_extensionsResponseField()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
-
-		// Go, go, go
-		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-		// simple cases
-
-		// Verifications
+		//
 		// The extensions field contains a CTP_Human_CTS instance, for the key "aValueToTestTheExtensionsField".
 		// Check the org.allGraphQLCases.server.extensions.CustomBeans (creation of the customGraphQL Spring bean)
-		assertNotNull(resp);
 		assertNotNull(resp.getExtensions());
 		assertNotNull(resp.getExtensionsAsMap());
 		assertNotNull(resp.getExtensionsAsMap().get("aValueToTestTheExtensionsField"));
@@ -124,11 +124,12 @@ class FullQueriesIT {
 	@Test
 	void test_withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
+		String request = "{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}";
+
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
-				"value", "the value", "skip", Boolean.FALSE);
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request, "value", "the value", "skip", Boolean.FALSE); //$NON-NLS-3$
 
 		// Verifications
 		assertNotNull(resp);
@@ -144,7 +145,7 @@ class FullQueriesIT {
 	void test_withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = withDirectiveTwoParametersRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = this.withDirectiveTwoParametersRequest.execQuery( //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -170,7 +171,7 @@ class FullQueriesIT {
 		);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = myQuery.exec(graphQLRequest, "input", bytes);
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(graphQLRequest, "input", bytes);
 
 		// Verifications
 		assertNotNull(resp);
@@ -193,7 +194,7 @@ class FullQueriesIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		CTP_AnotherMutationType_CTS resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
+		CTP_AnotherMutationType_CTS resp = this.mutationWithoutDirectiveRequest.execMutation("humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -205,7 +206,7 @@ class FullQueriesIT {
 		// WITH DIRECTIVE
 
 		// Go, go, go
-		resp = mutationWithDirectiveRequest.execMutation( //
+		resp = this.mutationWithDirectiveRequest.execMutation( //
 				"humanInput", input, //
 				"value", "the mutation value", //
 				"anotherValue", "the other mutation value");
@@ -243,10 +244,10 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = multipleQueriesRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = this.multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
-				"skipAppearsIn", true, //
-				"skipName", false);
+				"skipAppearsIn", Boolean.TRUE, //
+				"skipName", Boolean.FALSE);
 
 		// Verification
 		assertNotNull(resp);
@@ -268,10 +269,10 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		resp = multipleQueriesRequest.execQuery( //
+		resp = this.multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
-				"skipAppearsIn", false, //
-				"skipName", true);
+				"skipAppearsIn", Boolean.FALSE, //
+				"skipName", Boolean.TRUE);
 
 		// Verification
 		withoutParameters = resp.getWithoutParameters();
@@ -291,7 +292,7 @@ class FullQueriesIT {
 		Date date = cal.getTime();
 		//
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = myQuery.exec("{issue53(date: &date)}", "date", date);
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec("{issue53(date: &date)}", "date", date);
 
 		// Verifications
 		assertNotNull(resp);
@@ -310,7 +311,8 @@ class FullQueriesIT {
 		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = new GraphQLRequestAllGraphQLCases(request);
 
 		// Go, go, go
-		CTP_Human_CTS human = mutationType.execWithBindValues(GraphQLRequestAllGraphQLCases, null).getCreateHuman();
+		CTP_Human_CTS human = this.mutationExecutor.execWithBindValues(GraphQLRequestAllGraphQLCases, null)
+				.getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
@@ -320,7 +322,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases request = myQuery
+		GraphQLRequestAllGraphQLCases request = this.queryExecutor
 				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
 
 		// test 1 (with an int bind parameter)
@@ -332,36 +334,37 @@ class FullQueriesIT {
 		assertEquals(2, ret);
 
 		// test 3 (with a hardcoded int parameter)
-		request = myQuery.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: 3)  {}}");
+		request = this.queryExecutor.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: 3)  {}}");
 		ret = request.execQuery().getWithOneMandatoryParamDefaultValue();
 		assertEquals(3, ret);
 
 		// test 4 (with a hardcoded boolean and string parameter)
-		request = myQuery.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\"a value\") {}}");
+		request = this.queryExecutor
+				.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\"a value\") {}}");
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
 		assertEquals("A VALUE", strings.get(0));
 
 		// test 5 (with a hardcoded Float parameter, that has an int value)
-		request = myQuery.getGraphQLRequest("{issue82Float(aFloat: 5) {}}");
+		request = this.queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 5) {}}");
 		assertEquals(5, request.execQuery().getIssue82Float());
 
 		// test 6 (with a hardcoded Float parameter, that has a float value)
-		request = myQuery.getGraphQLRequest("{issue82Float(aFloat: 6.6) {}}");
+		request = this.queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 6.6) {}}");
 		assertEquals(6.6, request.execQuery().getIssue82Float());
 
 		// test 7 (with an ID parameter)
-		request = myQuery.getGraphQLRequest("{issue82ID(aID: \"123e4567-e89b-12d3-a456-426655440000\") {}}");
+		request = this.queryExecutor.getGraphQLRequest("{issue82ID(aID: \"123e4567-e89b-12d3-a456-426655440000\") {}}");
 		assertTrue(request.execQuery().getIssue82ID().equalsIgnoreCase("123e4567-e89b-12d3-a456-426655440000"),
 				"Should be '123e4567-e89b-12d3-a456-426655440000' but is '" + request.execQuery().getIssue82ID() + "'");
 
 		// test 8 (with an enumeration)
-		request = myQuery.getGraphQLRequest("{withEnum(episode: JEDI) {name}}");
+		request = this.queryExecutor.getGraphQLRequest("{withEnum(episode: JEDI) {name}}");
 		assertEquals("JEDI", request.execQuery().getWithEnum().getName());
 
 		// test 9 (with a custom scalar)
-		request = myQuery.getGraphQLRequest("{issue53(date: \"2021-05-20\") {}}");
+		request = this.queryExecutor.getGraphQLRequest("{issue53(date: \"2021-05-20\") {}}");
 		Date verif = new Calendar.Builder().setDate(2021, 5 - 1, 20).build().getTime();
 		assertEquals(verif, request.execQuery().getIssue53());
 	}
@@ -374,8 +377,8 @@ class FullQueriesIT {
 
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		String value = "\\, \"  trailing antislash \\";
-		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = myQuery.getGraphQLRequest(
+		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\""); //$NON-NLS-3$ //$NON-NLS-4$
+		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -384,8 +387,8 @@ class FullQueriesIT {
 
 		// test 2 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "antislash then escaped double-quote \\\"";
-		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = myQuery.getGraphQLRequest(
+		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\""); //$NON-NLS-3$ //$NON-NLS-4$
+		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -394,8 +397,8 @@ class FullQueriesIT {
 
 		// test 3 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
-		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
-		request = myQuery.getGraphQLRequest(
+		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"); //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);

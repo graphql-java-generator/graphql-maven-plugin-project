@@ -26,6 +26,7 @@ public enum CodeTemplate {
 			"templates/client_CustomScalarRegistryInitializer.vm.java"), //
 	DIRECTIVE_REGISTRY_INITIALIZER(CodeTemplateScope.CLIENT, "templates/client_DirectiveRegistryInitializer.vm.java"), //
 	GRAPHQL_REQUEST(CodeTemplateScope.CLIENT, "templates/client_GraphQLRequest.vm.java"), //
+	GRAPHQL_REACTIVE_REQUEST(CodeTemplateScope.CLIENT, "templates/client_GraphQLReactiveRequest.vm.java"), //
 	JACKSON_DESERIALIZERS(CodeTemplateScope.CLIENT, "templates/client_jackson_deserializers.vm.java"), //
 	JACKSON_SERIALIZERS(CodeTemplateScope.CLIENT, "templates/client_jackson_serializers.vm.java"), //
 	QUERY_MUTATION(CodeTemplateScope.CLIENT, "templates/client_query_mutation_type.vm.java"), //

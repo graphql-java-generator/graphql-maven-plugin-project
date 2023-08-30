@@ -175,7 +175,7 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($ob
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);  //$NON-NLS-1$
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return exec(objectResponse, parameters);
+		return execWithBindValues(objectResponse, parameters);
 	}
 
 	/**
@@ -324,13 +324,13 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($ob
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class);
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLReactiveRequest${springBeanSuffix}.class);
 	}
 
 	/**
-	 * Get the {@link GraphQLRequest${springBeanSuffix}} for <B>full request</B>. For instance:
+	 * Get the {@link GraphQLReactiveRequest${springBeanSuffix}} for <B>full request</B>. For instance:
 	 * <PRE>
-	 * GraphQLRequest${springBeanSuffix} request = new GraphQLRequest(fullRequest);
+	 * GraphQLReactiveRequest${springBeanSuffix} request = new GraphQLRequest(fullRequest);
 	 * </PRE>
 	 * 
 	 * @param fullRequest The full GraphQL Request, as specified in the GraphQL specification
@@ -338,8 +338,8 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($ob
 	 * @throws GraphQLRequestPreparationException
 	 */
 	@SuppressWarnings("static-method")
-	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest${springBeanSuffix}(fullRequest);
+	public GraphQLReactiveRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLReactiveRequest${springBeanSuffix}(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -405,7 +405,7 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($ob
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} '${field.name}': {} ", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return ${field.javaName}(objectResponse#inputValues(), parameters);
+		return ${field.javaName}WithBindValues(objectResponse#inputValues(), parameters);
 	}
 
 #foreach ($comment in $field.comments)
@@ -662,7 +662,7 @@ parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParame
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType} //$NON-NLS-1$
+		return new com.graphql_java_generator.client.request.Builder(this.graphQlClient, GraphQLReactiveRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType} //$NON-NLS-1$
 #foreach ($inputParameter in $field.inputParameters)
 			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 #end
@@ -677,7 +677,7 @@ parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParame
 #foreach ($line in $field.description.lines)
 	 * $line
 #end
-	 * Get the {@link GraphQLRequest${springBeanSuffix}} for the ${field.name} $type, created with the given Partial request.
+	 * Get the {@link GraphQLReactiveRequest${springBeanSuffix}} for the ${field.name} $type, created with the given Partial request.
 	 * 
 	 * @param partialRequest
 	 * 				The Partial GraphQL request, as explained in the 
@@ -685,8 +685,8 @@ parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParame
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest${springBeanSuffix}(this.graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}" //$NON-NLS-1$
+	public GraphQLReactiveRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLReactiveRequest${springBeanSuffix}(this.graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}" //$NON-NLS-1$
 #foreach ($inputParameter in $field.inputParameters)  ## Here, inputParameter is an instance of Field
 		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory}) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 #end
