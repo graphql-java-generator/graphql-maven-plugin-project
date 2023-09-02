@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.reactivestreams.Subscription;
@@ -34,7 +35,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionUncheckedExce
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
-import graphql.com.google.common.base.Optional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -152,7 +153,9 @@ public abstract class AbstractGraphQLRequest {
 			// It's a valid value. Let's notify the callback
 			if (!response.isValid()) {
 				Throwable ex = new GraphQLRequestExecutionException(response.getErrors());
-				this.subscriptionCallback.onError(ex);
+				if (this.subscriptionCallback != null) {
+					this.subscriptionCallback.onError(ex);
+				}
 				throw new RuntimeException(ex.getMessage(), ex);
 			}
 
@@ -167,11 +170,13 @@ public abstract class AbstractGraphQLRequest {
 				T t = (T) GraphqlUtils.graphqlUtils.invokeGetter(r,
 						AbstractGraphQLRequest.this.subscription.getFields().get(0).getName());
 
-				return Optional.fromNullable(t);
+				return (t == null) ? Optional.empty() : Optional.of(t);
 			} catch (JsonProcessingException e) {
-				Exception ex = new GraphQLRequestExecutionException("Error when executing query <" //$NON-NLS-1$
-						+ AbstractGraphQLRequest.this.graphQLRequest + ">: " + e.getMessage(), e); //$NON-NLS-1$
-				throw new RuntimeException(ex.getMessage(), ex);
+				GraphQLRequestExecutionException ex = new GraphQLRequestExecutionException(
+						"Error when executing query <" //$NON-NLS-1$
+								+ AbstractGraphQLRequest.this.graphQLRequest + ">: " + e.getMessage(), //$NON-NLS-1$
+						e);
+				throw new GraphQLRequestExecutionUncheckedException(ex);
 			}
 		}
 	}
@@ -506,14 +511,15 @@ public abstract class AbstractGraphQLRequest {
 	 * reactive {@link Mono} that will contain the response mapped in the relevant POJO. This method executes a partial
 	 * GraphQL query, or a full GraphQL request.<BR/>
 	 * 
-	 * @param <T>
-	 * @param t
-	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
-	 *            by the plugin
+	 * @param <R>
+	 * @param r
+	 *            The type of the POJO which should be returned. As we're executing a query or a mutation, here, it must
+	 *            be a query or mutation class, generated from the GraphQL subscription definition in the provided
+	 *            schema, by the plugin
 	 * @param params
 	 * @return A Mono the returns the result of the GraphQL request, maps on the relevant POJO
 	 */
-	public <T extends GraphQLRequestObject> Mono<T> execReactive(Class<T> t, Map<String, Object> params)
+	public <R extends GraphQLRequestObject> Mono<R> execReactive(Class<R> r, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
 		if (getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions"); //$NON-NLS-1$
@@ -530,7 +536,7 @@ public abstract class AbstractGraphQLRequest {
 		logger.trace("Executing query or mutation {}", payload.query); //$NON-NLS-1$
 		return requestSpec.execute().map(response -> {
 			try {
-				return extractResponseData(t, response, payload);
+				return extractResponseData(r, response, payload);
 			} catch (GraphQLRequestExecutionException e) {
 				throw new GraphQLRequestExecutionUncheckedException(e);
 			}
@@ -542,32 +548,34 @@ public abstract class AbstractGraphQLRequest {
 	 * response mapped in the relevant POJO. This method executes a partial GraphQL query, or a full GraphQL
 	 * request.<BR/>
 	 * 
-	 * @param <T>
-	 * @param t
+	 * @param <R>
+	 * @param r
 	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
 	 *            by the plugin
 	 * @param params
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public <T extends GraphQLRequestObject> T exec(Class<T> t, Map<String, Object> params)
+	public <R extends GraphQLRequestObject> R exec(Class<R> r, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
 		try {
-			return execReactive(t, params).block();
+			return execReactive(r, params).block();
 		} catch (GraphQLRequestExecutionUncheckedException e) {
 			throw e.getGraphQLRequestExecutionException();
 		}
 	}
 
 	/**
-	 * @param <T>
-	 * @param t
+	 * Retrieve the response in the relevant query, mutation or subscription POJO, as defined in the GraphQL schema
+	 * 
+	 * @param <R>
+	 * @param r
 	 * @param response
 	 * @param payload
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	private <T extends GraphQLRequestObject> T extractResponseData(Class<T> t, ClientGraphQlResponse response,
+	private <R extends GraphQLRequestObject> R extractResponseData(Class<R> r, ClientGraphQlResponse response,
 			Payload payload) throws GraphQLRequestExecutionException {
 		// Does this response contain errors?
 		if (response.getErrors() != null && response.getErrors().size() > 0) {
@@ -578,13 +586,107 @@ public abstract class AbstractGraphQLRequest {
 		try {
 			// To properly manage aliases, interfaces and unions, we use our own mapper
 			GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
-			T ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), t);
+			R ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), r);
 			ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
 			return ret;
 		} catch (JsonProcessingException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + payload.query + ">: " + e.getMessage(), e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+	}
+
+	/**
+	 * Execution of the given <B>subscription</B> GraphQL request, in reactive mode. This method returns a {@link Flux}
+	 * of the relevant POJO. This method executes a partial GraphQL query, or a full GraphQL request.<BR/>
+	 * 
+	 * @param <T>
+	 *            The type that must be returned by the subscription in the GraphQL schema, which is actually the type
+	 *            that will be sent in the {@link Flux} returned by this subscription.
+	 * @param params
+	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
+	 * @param messageType
+	 *            The T class
+	 * @return The {@link Flux} of the relevant POJO (T class), depending on the requested subscription. <br/>
+	 *         Please note that {@link Flux} may not propagate null values. So the returned POJO is embedded into an
+	 *         {@link Optional}, so that null values can be returned by the subscriptions. The POJO is <b>always</b>
+	 *         embedded in an {@link java.util.Optional}. This make your code homogeneous between subscriptions. And
+	 *         your code won't have to be changed if the GraphQL subscription definition switch from mandatory to not
+	 *         mandatory.
+	 * @throws GraphQLRequestExecutionException
+	 *             The Flux will throw this exception when an error occurs during the request execution, typically if
+	 *             the request is invalid, if there is a network error, an error from the GraphQL server or if the
+	 *             server response can't be parsed.
+	 * @throws IOException
+	 */
+	public <T> Flux<Optional<T>> execReactive(Map<String, Object> params, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
+		return execReactive(params, null, getSubscriptionClass(), messageType);
+	}
+
+	/**
+	 * Execution of the given <B>subscription</B> GraphQL request, in reactive mode. This method returns a {@link Flux}
+	 * of the relevant POJO. This method executes a partial GraphQL query, or a full GraphQL request.<BR/>
+	 * 
+	 * 
+	 * @param <R>
+	 *            The class that is generated from the subscription definition in the GraphQL schema. It contains one
+	 *            attribute, for each available subscription. The data tag of the GraphQL server response will be mapped
+	 *            into an instance of this class.
+	 * @param <T>
+	 *            The type that must be returned by the subscription in the GraphQL schema, which is actually the type
+	 *            that will be sent in the {@link Flux} returned by this subscription.
+	 * @param params
+	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
+	 * @param subscriptionCallback
+	 *            The object that will be called each time a message is received, or an error on the subscription
+	 *            occurs. This object is provided by the application.
+	 * @param subscriptionType
+	 *            The R class. It's the subscription POJO generated from the subscription definition in the GraphQL
+	 *            schema.
+	 * @param messageType
+	 *            The T class
+	 * @return The {@link Flux} of the relevant POJO, depending on the requested subscription. Please note that
+	 *         {@link Flux} may not propagate null values. So the returned POJO is embedded into an
+	 *         {@link java.util.Optional}, so that null values can be returned by the subscriptions.<BR/>
+	 *         Please note the the POJO is <b>always</b> embedded in an {@link java.util.Optional}. This make your code
+	 *         homogeneous between subscriptions. And your code won't have to be changed when the subscription response
+	 *         switch from mandatory to not mandatory, in the GraphQL schema.
+	 * @throws GraphQLRequestExecutionException
+	 *             The Flux will throw this exception when an error occurs during the request execution, typically if
+	 *             the request is invalid, if there is a network error, an error from the GraphQL server or if the
+	 *             server response can't be parsed.
+	 * @throws IOException
+	 */
+	private <R extends GraphQLRequestObject, T> Flux<Optional<T>> execReactive(Map<String, Object> params,
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionClass, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
+		// This method accepts only subscription at a time (no query and no mutation)
+		if (!this.requestType.equals(RequestType.subscription))
+			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions"); //$NON-NLS-1$
+
+		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
+		if (this.subscription.getFields().size() != 1) {
+			throw new GraphQLRequestExecutionException(
+					"This method may be called only for one subscription at a time, but there was " //$NON-NLS-1$
+							+ this.subscription.getFields().size() + " subscriptions in this GraphQLRequest"); //$NON-NLS-1$
+		}
+
+		// Building of the request
+		Payload payload = getPayload(params);
+		RequestSpec requestSpec = this.graphQlClient.document(payload.query);
+		if (payload.variables.size() > 0)
+			requestSpec.variables(payload.variables);
+		if (payload.operationName != null)
+			requestSpec.operationName(payload.operationName);
+
+		SubscriptionMessageConsumer<R, T> msgConsumer = new SubscriptionMessageConsumer<R, T>(subscriptionClass,
+				subscriptionCallback, messageType);
+
+		// Actual execution of the request
+		return requestSpec//
+				.executeSubscription()//
+				// Next message
+				.map(response -> msgConsumer.accept(response));
 	}
 
 	/**
@@ -626,62 +728,37 @@ public abstract class AbstractGraphQLRequest {
 	public <R extends GraphQLRequestObject, T> SubscriptionClient exec(Map<String, Object> params,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
 			throws GraphQLRequestExecutionException {
-		// This method accepts only subscription at a time (no query and no mutation)
-		if (!this.requestType.equals(RequestType.subscription))
-			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions"); //$NON-NLS-1$
-
-		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
-		if (this.subscription.getFields().size() != 1) {
-			throw new GraphQLRequestExecutionException(
-					"This method may be called only for one subscription at a time, but there was " //$NON-NLS-1$
-							+ this.subscription.getFields().size() + " subscriptions in this GraphQLRequest"); //$NON-NLS-1$
-		}
-
-		// Building of the request
-		Payload payload = getPayload(params);
-		RequestSpec requestSpec = this.graphQlClient.document(payload.query);
-		if (payload.variables.size() > 0)
-			requestSpec.variables(payload.variables);
-		if (payload.operationName != null)
-			requestSpec.operationName(payload.operationName);
-
-		SubscriptionMessageConsumer<R, T> msgConsumer = new SubscriptionMessageConsumer<R, T>(subscriptionType,
-				subscriptionCallback, messageType);
-
-		// Actual execution of the request
-		return new SubscriptionClientReactiveImpl(requestSpec//
-				.executeSubscription()//
-				// on subscription
-				.doOnSubscribe(new Consumer<Subscription>() {
-					@Override
-					public void accept(Subscription t) {
-						logger.trace("Executing subscription {}", payload.query); //$NON-NLS-1$
-						subscriptionCallback.onConnect();
-					}
-				})
-				// Next message
-				.map(response -> msgConsumer.accept(response))//
-				.subscribe(
-						// onNext:
-						t -> subscriptionCallback.onMessage(t.isPresent() ? t.get() : null),
-						// onError:
-						err -> {
-							if (err instanceof RuntimeException
-									&& (err.getCause() instanceof GraphQLRequestPreparationException
-											|| err.getCause() instanceof GraphQLRequestExecutionException)) {
-								// The RuntimeException only "hides" the real exception.
-								subscriptionCallback.onError(err.getCause());
-							} else {
-								subscriptionCallback.onError(err);
-							}
-						},
-						// onComplete :
-						new Runnable() {
+		return new SubscriptionClientReactiveImpl(
+				execReactive(params, subscriptionCallback, subscriptionType, messageType)
+						// on subscription
+						.doOnSubscribe(new Consumer<Subscription>() {
 							@Override
-							public void run() {
-								subscriptionCallback.onClose(0, null);
+							public void accept(Subscription t) {
+								subscriptionCallback.onConnect();
 							}
-						}));
+						})
+						// Next message
+						.subscribe(
+								// onNext:
+								t -> subscriptionCallback.onMessage(t.isPresent() ? t.get() : null),
+								// onError:
+								err -> {
+									if (err instanceof RuntimeException
+											&& (err.getCause() instanceof GraphQLRequestPreparationException
+													|| err.getCause() instanceof GraphQLRequestExecutionException)) {
+										// The RuntimeException only "hides" the real exception.
+										subscriptionCallback.onError(err.getCause());
+									} else {
+										subscriptionCallback.onError(err);
+									}
+								},
+								// onComplete :
+								new Runnable() {
+									@Override
+									public void run() {
+										subscriptionCallback.onClose(0, null);
+									}
+								}));
 	}
 
 	/**
@@ -901,6 +978,9 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 */
 	protected abstract QueryField getMutationContext() throws GraphQLRequestPreparationException;
+
+	/** Returns the subscription class for this schema */
+	protected abstract Class<? extends GraphQLRequestObject> getSubscriptionClass();
 
 	/**
 	 * Retrieved the {@link QueryField} for the subscription (that is the subscription type coming from the GraphQL

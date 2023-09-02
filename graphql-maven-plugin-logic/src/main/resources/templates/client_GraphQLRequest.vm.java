@@ -13,6 +13,7 @@ import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -436,4 +437,12 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 #end
 	}
 
+	@Override
+	public Class<? extends GraphQLRequestObject> getSubscriptionClass() {
+#if ($subscription)
+		return ${subscription.classFullName}.class;
+#else
+		return null;
+#end
+	}
 }

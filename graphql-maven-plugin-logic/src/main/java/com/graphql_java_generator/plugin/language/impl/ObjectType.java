@@ -92,7 +92,7 @@ public class ObjectType extends AbstractType {
 
 	@Override
 	public String getPackageName() {
-		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
+		return ((GenerateCodeCommonConfiguration) this.configuration).getPackageName();
 	}
 
 	@Override
@@ -110,8 +110,8 @@ public class ObjectType extends AbstractType {
 		case 1:
 			return identifiers.get(0);
 		default:
-			throw new RuntimeException("Only one identifier per object is expected. But " + identifiers.size()
-					+ " were found for " + getName());
+			throw new RuntimeException("Only one identifier per object is expected. But " + identifiers.size() //$NON-NLS-1$
+					+ " were found for " + getName()); //$NON-NLS-1$
 		}
 	}
 
@@ -144,32 +144,32 @@ public class ObjectType extends AbstractType {
 		StringBuilder sb = new StringBuilder();
 		boolean addSeparator;
 
-		sb.append(getClass().getSimpleName() + " {name:").append(getName());
+		sb.append(getClass().getSimpleName() + " {name:").append(getName()); //$NON-NLS-1$
 
-		sb.append(", fields:{");
+		sb.append(", fields:{"); //$NON-NLS-1$
 		addSeparator = false;
 		for (Field f : getFields()) {
 			if (addSeparator)
-				sb.append(",");
+				sb.append(","); //$NON-NLS-1$
 			else
 				addSeparator = true;
 			sb.append(f.toString());
 		}
-		sb.append("}");
+		sb.append("}"); //$NON-NLS-1$
 
 		if (getImplementz().size() > 0) {
-			sb.append(", implements ");
-			sb.append(String.join(",", getImplementz()));
+			sb.append(", implements "); //$NON-NLS-1$
+			sb.append(String.join(",", getImplementz())); //$NON-NLS-1$
 		}
 
 		if (getComments() == null) {
-			sb.append(", comments=null");
+			sb.append(", comments=null"); //$NON-NLS-1$
 		} else if (getComments().size() > 0) {
-			sb.append(", comments=empty");
+			sb.append(", comments=empty"); //$NON-NLS-1$
 		} else {
-			sb.append(", comments \"");
-			sb.append(String.join("\\n", getComments()));
-			sb.append("\"");
+			sb.append(", comments \""); //$NON-NLS-1$
+			sb.append(String.join("\\n", getComments())); //$NON-NLS-1$
+			sb.append("\""); //$NON-NLS-1$
 		}
 
 		return sb.toString();
@@ -184,7 +184,7 @@ public class ObjectType extends AbstractType {
 		List<ObjectType> ret = new ArrayList<>();
 
 		for (String typeName : getImplementz()) {
-			ret.add((ObjectType) documentParser.getType(typeName));
+			ret.add((ObjectType) this.documentParser.getType(typeName));
 		}
 
 		return ret;

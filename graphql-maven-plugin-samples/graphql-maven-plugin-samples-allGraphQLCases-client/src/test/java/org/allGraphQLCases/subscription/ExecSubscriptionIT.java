@@ -62,11 +62,11 @@ public class ExecSubscriptionIT {
 		@Override
 		public void run() {
 			try {
-				SubscriptionClient sub = subscriptionExecutor.subscribeToAList("", callback);
+				SubscriptionClient sub = this.subscriptionExecutor.subscribeToAList("", this.callback);
 
 				// Let's wait a max of 30 second, until we receive some notifications
 				// (80s will never occur... unless using the debugger to undebug some stuff)
-				callback.latchForMessageReception.await(80, TimeUnit.SECONDS);
+				this.callback.latchForMessageReception.await(80, TimeUnit.SECONDS);
 
 				// Let's disconnect from the subscription
 				sub.unsubscribe();
@@ -90,7 +90,7 @@ public class ExecSubscriptionIT {
 		// To test the issue 72, we create NB_THREADS clients for the subscription, and check that each of them properly
 		// receives the relevant notifications
 		for (int i = 0; i < NB_THREADS; i += 1) {
-			SubscribeToAList sub = new SubscribeToAList(subscriptionExecutor, "client" + i);
+			SubscribeToAList sub = new SubscribeToAList(this.subscriptionExecutor, "client" + i);
 			subs.add(sub);
 			threads.add(new Thread(sub));
 		}
@@ -160,8 +160,8 @@ public class ExecSubscriptionIT {
 
 		// To test the issue 53, we create two clients for the subscription, and check that each of them properly
 		// receives the notifications
-		SubscribeToADate client1 = new SubscribeToADate(subscriptionExecutor, "client1", date1);
-		SubscribeToADate client2 = new SubscribeToADate(subscriptionExecutor, "client2", date2);
+		SubscribeToADate client1 = new SubscribeToADate(this.subscriptionExecutor, "client1", date1);
+		SubscribeToADate client2 = new SubscribeToADate(this.subscriptionExecutor, "client2", date2);
 
 		Thread thread1 = new Thread(client1);
 		Thread thread2 = new Thread(client2);
@@ -186,7 +186,7 @@ public class ExecSubscriptionIT {
 
 		SubscriptionCallbackNullableString callback = new SubscriptionCallbackNullableString(
 				"test_subscribeToANullableString");
-		SubscriptionClient sub = subscriptionExecutor.subscriptionWithNullResponse("", callback);
+		SubscriptionClient sub = this.subscriptionExecutor.subscriptionWithNullResponse("", callback);
 
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -195,6 +195,12 @@ public class ExecSubscriptionIT {
 		// Let's disconnect from the subscription
 		sub.unsubscribe();
 
+		assertNull(callback.lastExceptionReceived,
+				"We should have received no exception (if any, the received exception is: "
+						+ ((callback.lastExceptionReceived == null) ? null
+								: callback.lastExceptionReceived.getClass().getName())
+						+ ": " + ((callback.lastExceptionReceived == null) ? null
+								: callback.lastExceptionReceived.getMessage()));
 		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
 		assertNull(callback.lastReceivedMessage, "The message should be null");
 	}
@@ -209,7 +215,7 @@ public class ExecSubscriptionIT {
 
 		SubscriptionCallbackToAListOfDates callback = new SubscriptionCallbackToAListOfDates(
 				"test_subscribeToAListOfDate");
-		SubscriptionClient sub = subscriptionExecutor.subscribeToAListOfScalars("", callback);
+		SubscriptionClient sub = this.subscriptionExecutor.subscribeToAListOfScalars("", callback);
 
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -246,7 +252,7 @@ public class ExecSubscriptionIT {
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCompleteAfterFirstNotification(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_serverComplete");
-		subscriptionExecutor.subscriptionTest("", callback, param);
+		this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
@@ -279,7 +285,7 @@ public class ExecSubscriptionIT {
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_clientComplete");
-		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		boolean success = callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
@@ -306,7 +312,7 @@ public class ExecSubscriptionIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
 		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
-		SubscriptionClient sub = subscriptionExecutor2.issue53("", callback, date);
+		SubscriptionClient sub = this.subscriptionExecutor2.issue53("", callback, date);
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		assertInstanceOf(GraphQlTransportException.class, callback.lastReceivedError);
 		assertTrue(callback.lastReceivedError.getMessage().contains("Connection refused"),
@@ -333,7 +339,7 @@ public class ExecSubscriptionIT {
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnSubscription(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_subscriptionError");
-		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
@@ -362,12 +368,12 @@ public class ExecSubscriptionIT {
 	public void test_subscriptionTest_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToADate_nextError");
+		logger.info("Starting test_subscriptionTest_nextError");
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnNext(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_nextError");
-		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
@@ -393,16 +399,16 @@ public class ExecSubscriptionIT {
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	public void test_subscribeToADate_webSocketCloseError()
+	public void test_subscribeToAString_webSocketCloseError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToADate_webSocketCloseError");
+		logger.info("Starting test_subscribeToAString_webSocketCloseError");
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCloseWebSocketBeforeFirstNotification(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString(
 				"test_subscribeToADate_webSocketCloseError");
-		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
@@ -426,7 +432,7 @@ public class ExecSubscriptionIT {
 
 		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
 				"test_subscribeToAEnumWithReservedJavaKeywordAsValues");
-		SubscriptionClient sub = subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
+		SubscriptionClient sub = this.subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
@@ -449,7 +455,7 @@ public class ExecSubscriptionIT {
 
 		SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues(
 				"test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
-		SubscriptionClient sub = subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback);
+		SubscriptionClient sub = this.subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
@@ -471,7 +477,7 @@ public class ExecSubscriptionIT {
 		sub.unsubscribe();
 	}
 
-	private CINP_SubscriptionTestParam_CINS getSubscriptionTestParam() {
+	public static CINP_SubscriptionTestParam_CINS getSubscriptionTestParam() {
 		CINP_SubscriptionTestParam_CINS param = new CINP_SubscriptionTestParam_CINS();
 		param.setCloseWebSocketBeforeFirstNotification(false);
 		param.setCompleteAfterFirstNotification(false);

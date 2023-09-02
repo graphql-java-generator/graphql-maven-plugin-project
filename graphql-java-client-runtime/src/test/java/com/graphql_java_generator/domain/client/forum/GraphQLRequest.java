@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -124,7 +125,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public QueryResponse execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(QueryResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(QueryResponse.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -202,7 +203,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public MutationResponse execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(MutationResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(MutationResponse.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -313,7 +314,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 */
 	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, Class<T> messageType,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
+		return exec(this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
 				Subscription.class, messageType);
 	}
 
@@ -367,6 +368,11 @@ public class GraphQLRequest extends ObjectResponse {
 	@Override
 	public QueryField getSubscriptionContext() throws GraphQLRequestPreparationException {
 		return new QueryField(SubscriptionRootResponse.class, "subscription");
+	}
+
+	@Override
+	protected Class<? extends GraphQLRequestObject> getSubscriptionClass() {
+		return Subscription.class;
 	}
 
 }

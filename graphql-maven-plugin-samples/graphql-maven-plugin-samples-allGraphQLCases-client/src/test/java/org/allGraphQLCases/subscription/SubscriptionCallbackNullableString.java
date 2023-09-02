@@ -37,29 +37,30 @@ public class SubscriptionCallbackNullableString implements SubscriptionCallback<
 
 	@Override
 	public void onConnect() {
-		logger.debug("The subscription is connected (for {})", clientName);
+		logger.debug("The subscription is connected (for {})", this.clientName);
 	}
 
 	@Override
 	public synchronized void onMessage(String t) {
-		logger.debug("Received this message from the 'subscriptionTest' subscription: {} (for {})", t, clientName);
-		hasReceveivedAMessage = true;
-		lastReceivedMessage = t;
-		latchForMessageReception.countDown();
+		logger.debug("Received this message from the 'subscriptionTest' subscription: {} (for {})", t, this.clientName);
+		this.hasReceveivedAMessage = true;
+		this.lastReceivedMessage = t;
+		this.latchForMessageReception.countDown();
 	}
 
 	@Override
 	public void onClose(int statusCode, String reason) {
-		logger.debug("The subscription is closed (for {})", clientName);
-		closedHasBeenReceived = true;
-		latchForCompleteReception.countDown();
+		logger.debug("The subscription is closed (for {})", this.clientName);
+		this.closedHasBeenReceived = true;
+		this.latchForCompleteReception.countDown();
 	}
 
 	@Override
 	public void onError(Throwable cause) {
 		logger.error("Oups! An error occurred: " + cause.getMessage());
-		lastExceptionReceived = cause;
-		latchForErrorReception.countDown();
+		this.lastExceptionReceived = cause;
+		this.latchForErrorReception.countDown();
+		this.latchForMessageReception.countDown();
 	}
 
 }

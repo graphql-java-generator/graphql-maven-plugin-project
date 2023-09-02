@@ -229,6 +229,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			logger.debug("Generating subscription executor"); //$NON-NLS-1$
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 					TargetFileType.EXECUTOR, CodeTemplate.SUBSCRIPTION_EXECUTOR, true);
+			logger.debug("Generating subscription reactive executor"); //$NON-NLS-1$
+			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
+					TargetFileType.REACTIVE_EXECUTOR, CodeTemplate.SUBSCRIPTION_REACTIVE_EXECUTOR, true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (((GenerateClientCodeConfiguration) this.configuration).isGenerateDeprecatedRequestResponse()) {
