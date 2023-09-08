@@ -993,9 +993,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		// Velocity can't access to enum values. So we add it into the context
 		context.put("isPluginModeClient", Boolean.valueOf(this.configuration.getMode() == PluginMode.client)); //$NON-NLS-1$
 
-		context.put("packageUtilName", this.generateCodeDocumentParser.getUtilPackageName()); //$NON-NLS-1$
 		context.put("customScalars", this.generateCodeDocumentParser.getCustomScalars()); //$NON-NLS-1$
 		context.put("directives", this.generateCodeDocumentParser.getDirectives()); //$NON-NLS-1$
+		context.put("packageUtilName", this.generateCodeDocumentParser.getUtilPackageName()); //$NON-NLS-1$
+		context.put("subscriptionType", this.generateCodeDocumentParser.getSubscriptionType()); //$NON-NLS-1$
+
 		return context;
 	}
 

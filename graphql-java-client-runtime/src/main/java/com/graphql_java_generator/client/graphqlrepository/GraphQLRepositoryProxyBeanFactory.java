@@ -25,10 +25,21 @@ public class GraphQLRepositoryProxyBeanFactory {
 	@Autowired
 	ApplicationContext ctx;
 
+	/**
+	 * 
+	 * @param <R>
+	 *            The class of the bean to construct. This class is expected to be annotated by
+	 *            {@link GraphQLRepository} or {@link GraphQLReactiveRepository}
+	 * @param classLoader
+	 * @param clazz
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
 	@SuppressWarnings("unchecked")
 	public <R> R createGraphQLRepositoryInvocationHandler(ClassLoader classLoader, Class<R> clazz)
 			throws GraphQLRequestPreparationException {
-		GraphQLRepositoryInvocationHandler<?> invocationHandler = new GraphQLRepositoryInvocationHandler<R>(clazz, ctx);
+		GraphQLRepositoryInvocationHandler<?> invocationHandler = new GraphQLRepositoryInvocationHandler<R>(clazz,
+				this.ctx);
 		return (R) Proxy.newProxyInstance(classLoader, new Class[] { clazz }, invocationHandler);
 	}
 }

@@ -10,10 +10,10 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
  * @see https://stackoverflow.com/questions/39507736/dynamic-proxy-bean-with-autowiring-capability
  */
 @Configuration
-public class GraphQLRepositoryProxyBeansRegistrar
-		extends AbstractGraphQLRepositoryProxyBeansRegistrar<GraphQLRepository> {
+public class GraphQLReactiveRepositoryProxyBeansRegistrar
+		extends AbstractGraphQLRepositoryProxyBeansRegistrar<GraphQLReactiveRepository> {
 
-	public GraphQLRepositoryProxyBeansRegistrar() {
-		super(GraphQLRepository.class);
+	public GraphQLReactiveRepositoryProxyBeansRegistrar() {
+		super(GraphQLReactiveRepository.class);
 	}
 }

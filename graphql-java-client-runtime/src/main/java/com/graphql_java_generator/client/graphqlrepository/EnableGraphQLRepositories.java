@@ -13,10 +13,10 @@ import org.springframework.core.annotation.AliasFor;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({ GraphQLRepositoryProxyBeansRegistrar.class })
+@Import({ GraphQLRepositoryProxyBeansRegistrar.class, GraphQLReactiveRepositoryProxyBeansRegistrar.class })
 /**
- * This annotation can be applied to some Configuration annotated class with packages to scan interfaces, as below.
- * <code>
+ * This annotation can be applied to some Configuration annotated class with packages to scan interfaces, as below. This
+ * annotation add the configuration to add both reactive and non-reactive GraphQL repositories. <code>
 &#64;EnableGraphQLRepositories({
     "a.b.c.graphqlrepositories",
     "x.y.z.graphqlrepositories"

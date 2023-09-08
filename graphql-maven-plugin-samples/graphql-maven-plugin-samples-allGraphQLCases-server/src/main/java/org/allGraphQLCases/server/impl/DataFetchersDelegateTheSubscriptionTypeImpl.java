@@ -42,7 +42,7 @@ import reactor.core.publisher.Flux;
 @Component
 public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchersDelegateTheSubscriptionType {
 
-	private static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateTheSubscriptionTypeImpl.class);
+	static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateTheSubscriptionTypeImpl.class);
 
 	@Autowired
 	DataGenerator dataGenerator;
@@ -58,33 +58,33 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		Consumer<? super Subscription> onSubscribe = new Consumer<Subscription>() {
 			@Override
 			public void accept(Subscription t) {
-				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now active");
-				subscribedOnSubscribeNewHumanForEpisode = true;
+				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now active"); //$NON-NLS-1$
+				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = true;
 			}
 		};
 
 		Runnable onCancel = new Runnable() {
 			@Override
 			public void run() {
-				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now canceled");
-				subscribedOnSubscribeNewHumanForEpisode = false;
+				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now canceled"); //$NON-NLS-1$
+				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
 		Runnable onTerminate = new Runnable() {
 			@Override
 			public void run() {
-				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now terminated");
-				subscribedOnSubscribeNewHumanForEpisode = false;
+				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now terminated"); //$NON-NLS-1$
+				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
 		Consumer<Throwable> onError = new Consumer<Throwable>() {
 			@Override
 			public void accept(Throwable t) {
-				logger.debug("The subscription 'subscribeNewHumanForEpisode' had an error: {}-{}",
+				logger.debug("The subscription 'subscribeNewHumanForEpisode' had an error: {}-{}", //$NON-NLS-1$
 						t.getClass().getName(), t.getMessage());
-				subscribedOnSubscribeNewHumanForEpisode = false;
+				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
@@ -97,20 +97,20 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.doOnTerminate(onTerminate)//
 				.doOnError(Throwable.class, onError)//
 				.map((l) -> {
-					STP_Human_STS h = dataGenerator.generateInstance(STP_Human_STS.class);
+					STP_Human_STS h = this.dataGenerator.generateInstance(STP_Human_STS.class);
 					if (!h.getAppearsIn().contains(SEP_Episode_SES)) {
 						h.getAppearsIn().add(SEP_Episode_SES);
 					}
 					h.setId(new UUID(0, l));
-					logger.trace("subscribeNewHumanForEpisode [active={}] Sending this human: {}",
-							subscribedOnSubscribeNewHumanForEpisode, h);
+					logger.trace("subscribeNewHumanForEpisode [active={}] Sending this human: {}", //$NON-NLS-1$
+							this.subscribedOnSubscribeNewHumanForEpisode, h);
 					return h;
 				});
 	}
 
 	@Override
 	public Flux<List<Integer>> subscribeToAList(DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription subscribeToAList()");
+		logger.debug("Executing subscription subscribeToAList()"); //$NON-NLS-1$
 		// The Flux class, from Spring reactive, implements the Publisher interface.
 		// Let's return one list of integer, every 0.1 second
 		return Flux//
@@ -120,20 +120,20 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					return Arrays.asList(l.intValue(), 2 * l.intValue());
 				}).doOnEach(lst -> {
 					if (logger.isTraceEnabled()) {
-						String separator = "";
+						String separator = ""; //$NON-NLS-1$
 						StringBuilder sb = new StringBuilder();
 						for (int i : lst.get()) {
 							sb.append(separator).append(i);
-							separator = ",";
+							separator = ","; //$NON-NLS-1$
 						}
-						logger.trace("Sending this list: [{}]", sb);
+						logger.trace("Sending this list: [{}]", sb); //$NON-NLS-1$
 					}
 				});
 	}
 
 	@Override
 	public Flux<Date> issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
-		logger.debug("Executing subscription issue53({})", date);
+		logger.debug("Executing subscription issue53({})", date); //$NON-NLS-1$
 		// The Flux class, from Spring reactive, implements the Publisher interface.
 		// Let's returns one item, the date that has been provided as a parameter
 		return Flux//
@@ -147,23 +147,23 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_SubscriptionTestParam_SINS param) {
-		logger.debug("Executing subscription subscriptionTest({})", param);
+		logger.debug("Executing subscription subscriptionTest({})", param); //$NON-NLS-1$
 
 		if (param.getErrorOnSubscription()) {
 			// The client asked that an exception is thrown now
-			throw new GraphQlException("Oups, the subscriber asked for an error during the subscription");
+			throw new GraphQlException("Oups, the subscriber asked for an error during the subscription"); //$NON-NLS-1$
 		} else if (param.getErrorOnNext()) {
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> {
 						boolean b = true;
 						if (b)
-							throw new GraphQlException("Oups, the subscriber asked for an error for each next message");
+							throw new GraphQlException("Oups, the subscriber asked for an error for each next message"); //$NON-NLS-1$
 						// The line below will never get executed. But doing this prevents a compilation error !
-						return "won't go there";
+						return "won't go there"; //$NON-NLS-1$
 					});
 		} else if (param.getCompleteAfterFirstNotification()) {
-			return Flux.just("The subscriber asked for a complete after the first notification");
+			return Flux.just("The subscriber asked for a complete after the first notification"); //$NON-NLS-1$
 		} else if (param.getCloseWebSocketBeforeFirstNotification()) {
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
@@ -171,9 +171,9 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 						boolean b = true;
 						if (b)
 							throw new GraphQlException(
-									"Oups, the subscriber asked that the web socket get disconnected before the first notification");
+									"Oups, the subscriber asked that the web socket get disconnected before the first notification"); //$NON-NLS-1$
 						// The line below will never get executed. But doing this prevents a compilation error !
-						return "won't go there";
+						return "won't go there"; //$NON-NLS-1$
 					});
 		} else {
 			// The client didn't ask for any specific error. Let's return a valid flux, that will sent 10 string each
@@ -187,7 +187,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<STP_AllFieldCases_STS> allGraphQLCasesInput(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_AllFieldCasesInput_SINS input) {
-		logger.debug("Executing subscription allGraphQLCasesInput({})", input);
+		logger.debug("Executing subscription allGraphQLCasesInput({})", input); //$NON-NLS-1$
 
 		STP_AllFieldCases_STS ret = mapper.map(input, STP_AllFieldCases_STS.class);
 
@@ -205,7 +205,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			String name, Long age, Integer integer, Date date, List<Date> dates, List<List<Double>> matrix,
 			SINP_AllFieldCasesWithoutIdSubtypeInput_SINS onewithoutIdSubtype,
 			List<SINP_AllFieldCasesWithoutIdSubtypeInput_SINS> listwithoutIdSubtype) {
-		logger.debug("Executing subscription allGraphQLCasesParam(id={}, name={}, age={}...)", id, name, age);
+		logger.debug("Executing subscription allGraphQLCasesParam(id={}, name={}, age={}...)", id, name, age); //$NON-NLS-1$
 
 		STP_AllFieldCases_STS ret = new STP_AllFieldCases_STS();
 		ret.setId(UUID.fromString(id));
@@ -214,8 +214,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		ret.setDate(date);
 		ret.setDates(dates);
 		ret.setMatrix(matrix);
-		ret.setAliases(Arrays.asList("an alias"));
-		ret.setPlanets(Arrays.asList("planet 1", "planet 2"));
+		ret.setAliases(Arrays.asList("an alias")); //$NON-NLS-1$
+		ret.setPlanets(Arrays.asList("planet 1", "planet 2")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		ret.setOneWithoutIdSubType(mapper.map(onewithoutIdSubtype, STP_AllFieldCasesWithoutIdSubtype_STS.class));
 
@@ -230,12 +230,12 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<Optional<String>> subscriptionWithNullResponse(DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription subscriptionWithNullResponse()");
+		logger.debug("Executing subscription subscriptionWithNullResponse()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.2 second
 				.map((l) -> {
-					logger.trace("Sending a message in 'subscriptionWithNullResponse'");
+					logger.trace("Sending a message in 'subscriptionWithNullResponse'"); //$NON-NLS-1$
 					return Optional.ofNullable(null);
 				});
 	}
@@ -245,29 +245,29 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	 */
 	@Override
 	public Flux<Optional<List<Date>>> subscribeToAListOfScalars(DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription subscribeToAListOfScalars()");
+		logger.debug("Executing subscription subscribeToAListOfScalars()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable(dataGenerator.generateInstanceList(Date.class, 2)));
+				.map((l) -> Optional.ofNullable(this.dataGenerator.generateInstanceList(Date.class, 2)));
 	}
 
 	@Override
 	public Flux<Optional<String>> _if(DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription _if()");
+		logger.debug("Executing subscription _if()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable("a value for _if"));
+				.map((l) -> Optional.ofNullable("a value for _if")); //$NON-NLS-1$
 	}
 
 	@Override
 	public Flux<Optional<String>> _implements(DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription _implements()");
+		logger.debug("Executing subscription _implements()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable("a value for _implements"));
+				.map((l) -> Optional.ofNullable("a value for _implements")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -349,7 +349,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription enumWithReservedJavaKeywordAsValues()");
+		logger.debug("Executing subscription enumWithReservedJavaKeywordAsValues()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
@@ -360,7 +360,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfMandatoryEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		logger.debug("Executing subscription listOfEnumWithReservedJavaKeywordAsValues()");
+		logger.debug("Executing subscription listOfEnumWithReservedJavaKeywordAsValues()"); //$NON-NLS-1$
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second

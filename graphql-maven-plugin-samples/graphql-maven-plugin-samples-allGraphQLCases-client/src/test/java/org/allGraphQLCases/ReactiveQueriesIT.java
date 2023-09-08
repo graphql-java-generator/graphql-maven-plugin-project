@@ -53,7 +53,7 @@ import reactor.core.publisher.Signal;
 //More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-class ReactiveQueriesIT {
+public class ReactiveQueriesIT {
 
 	private static Logger logger = LoggerFactory.getLogger(ReactiveQueriesIT.class);
 
@@ -79,14 +79,14 @@ class ReactiveQueriesIT {
 	GraphQLReactiveRequestAllGraphQLCases reactiveWithDirectiveTwoParametersRequest;
 	GraphQLReactiveRequestAllGraphQLCases reactiveMultipleQueriesRequest;
 
-	// Test stuff for the subscriptions
-	static class ReceivedFromSubsription<T> {
-		CountDownLatch latchForMessageReception = new CountDownLatch(1);
-		boolean hasReceveivedAMessage = false;
-		T lastReceivedMessage = null;
-		Throwable lastReceivedError = null;
+	// Test stuff for the subscriptions (valid only for partial queries)
+	public static class ReceivedFromSubscription<T> {
+		public CountDownLatch latchForMessageReception = new CountDownLatch(1);
+		public boolean hasReceveivedAMessage = false;
+		public T lastReceivedMessage = null;
+		public Throwable lastReceivedError = null;
 
-		void doOnEach(Signal<Optional<T>> o) {
+		public void doOnEach(Signal<Optional<T>> o) {
 			switch (o.getType()) {
 			case ON_NEXT:
 				this.lastReceivedMessage = o.get().orElse(null);
@@ -103,8 +103,8 @@ class ReactiveQueriesIT {
 		}
 	}
 
-	final ReceivedFromSubsription<String> receivedFromSubsriptionString = new ReceivedFromSubsription<String>();
-	final ReceivedFromSubsription<Date> receivedFromSubsriptionDate = new ReceivedFromSubsription<Date>();
+	final ReceivedFromSubscription<String> receivedFromSubsriptionString = new ReceivedFromSubscription<String>();
+	final ReceivedFromSubscription<Date> receivedFromSubsriptionDate = new ReceivedFromSubscription<Date>();
 
 	public static class ExtensionValue {
 		public String name;

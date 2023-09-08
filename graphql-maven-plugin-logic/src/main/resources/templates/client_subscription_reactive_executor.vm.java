@@ -151,14 +151,13 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public <T> Flux<Optional<T>> execWithBindValues(
+	public Flux<${subscriptionType.classFullName}> execWithBindValues(
 			String queryResponseDef,
-			Class<T> clazz,
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return exec(objectResponse, clazz, parameters);
+		return exec(objectResponse, parameters);
 	}
 
 	/**
@@ -193,14 +192,13 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public <T> Flux<Optional<T>> exec(
+	public Flux<${subscriptionType.classFullName}> exec(
 			String queryResponseDef,
-			Class<T> clazz,
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef); //$NON-NLS-1$
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return execWithBindValues(objectResponse, clazz, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return execWithBindValues(objectResponse, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -242,9 +240,8 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@SuppressWarnings({ "unchecked", "static-method" })
-	public <T> Flux<Optional<T>> execWithBindValues(
+	public Flux<${subscriptionType.classFullName}> execWithBindValues(
 			ObjectResponse objectResponse, 
-			Class<T> clazz,
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -288,25 +285,8 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 							+ objectResponse.getSubscription().getFields().size() + " subscription fields"); //$NON-NLS-1$
 		}
 		
-		// It's probably possible to do much better than this switch!  
-		// If someone has a better idea to call this parameterized method, please come in.
-		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
-#foreach ($field in $object.fields)
-#if ($field.name != "__typename")
-		case "${field.name}": //$NON-NLS-1$
-			if (! clazz.isInstance(#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class)) {
-				throw new GraphQLRequestExecutionException("The provided message class is " 
-						+ clazz.getClass().getName() 
-						+ " where it should be " 
-						+ #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class.getName() 
-						+ " (or a subclass)" );
-			}
-			return objectResponse.execReactive(parametersLocal, clazz);
-#end
-#end
-		default:
-			throw new GraphQLRequestExecutionException("Unexpected field name: " + objectResponse.getSubscription().getFields().get(0).getName()); //$NON-NLS-1$
-		}
+		return objectResponse.execReactive(parametersLocal,
+				${subscriptionType.classFullName}.class);
 	}
 
 	/**
@@ -347,12 +327,11 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public <T> Flux<Optional<T>> exec(
+	public Flux<${subscriptionType.classFullName}> exec(
 			ObjectResponse objectResponse, 
-			Class<T> clazz,
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
-		return execWithBindValues(objectResponse, clazz, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return execWithBindValues(objectResponse, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -621,7 +600,12 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 		parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
 #end
 
-		return#if($field.fieldTypeAST.listDepth>0) (Flux<Optional<${field.javaTypeFullClassname}>>)(Object)#end objectResponse.execReactive(parametersLocal, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse//
+			.execReactive(parametersLocal, ${subscriptionType.classFullName}.class)
+			.map(r -> {
+				${field.javaTypeFullClassname} t = r.get${field.pascalCaseName}();
+				return (t == null) ? Optional.empty() : Optional.of(t);
+			});
 	}
 
 #foreach ($comment in $field.comments)
@@ -725,7 +709,12 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 		parametersLocal.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName}); //$NON-NLS-1$
 #end
 		
-		return#if($field.fieldTypeAST.listDepth>0) (Flux<Optional<${field.javaTypeFullClassname}>>)(Object)#end objectResponse.execReactive(parametersLocal, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse//
+				.execReactive(parametersLocal, ${subscriptionType.classFullName}.class)
+				.map(r -> {
+					${field.javaTypeFullClassname} t = r.get${field.pascalCaseName}();
+					return (t == null) ? Optional.empty() : Optional.of(t);
+				});
 	}
 
 #foreach ($comment in $field.comments)
