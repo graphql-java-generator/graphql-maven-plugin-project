@@ -2,12 +2,10 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
 * Gradle issue #18: all Gradle tasks are run, even if unnecessary
-* #152: check the reactive implementation
+* #152: Update the plugin, so that the code that uses the generated code can also be reactive.
     * Doc (including migration doc)
     * Issue with the `spring-boot-starter-websocket` dependency, which (by default) add the `spring-webmvc` dependency
-    * Update the plugin, so that the code that uses the generated code can also be reactive.
     * Still to do:
-        * Subscriptions  (comment of subscriptions to update)
         * Reactive GraphQLRepository
         * Add a test in FullRequestSubscriptionGraphQLReactiveRepository : PartialRequest for a subscription
 * #195: give access to the received data, even if there are errors
