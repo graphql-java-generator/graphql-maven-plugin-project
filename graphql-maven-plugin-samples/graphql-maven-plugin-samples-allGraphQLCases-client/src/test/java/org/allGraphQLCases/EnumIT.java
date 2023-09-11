@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -61,13 +62,13 @@ public class EnumIT {
 
 		@Override
 		public void onConnect() {
-			connected = true;
+			this.connected = true;
 			logger.debug("Subscription connected");
 		}
 
 		@Override
 		public void onMessage(T t) {
-			messages.add(t);
+			this.messages.add(t);
 			logger.debug("Message received: {}", t);
 		}
 
@@ -78,16 +79,16 @@ public class EnumIT {
 
 		@Override
 		public void onError(Throwable error) {
-			lastError = error;
+			this.lastError = error;
 			logger.error("Subscription on error: {}", error);
 		}
-	};
+	}
 
 	@Test
 	void testQueriesThatReturnEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertNull(queryType.returnEnum(""));
-		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, queryType.returnMandatoryEnum(""));
-		assertNull(queryType.returnListOfEnums(""));
+		assertNull(this.queryType.returnEnum(""));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, this.queryType.returnMandatoryEnum(""));
+		assertNull(this.queryType.returnListOfEnums(""));
 		compareList(//
 				Arrays.asList(//
 						Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean,
@@ -96,18 +97,18 @@ public class EnumIT {
 						null, //
 						Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._default, null,
 								CEP_EnumWithReservedJavaKeywordAsValues_CES._implements)), //
-				queryType.returnListOfListOfEnums(""), //
+				this.queryType.returnListOfListOfEnums(""), //
 				"returnListOfListOfEnums");
-		assertNull(queryType.returnListOfMandatoryEnums(""));
+		assertNull(this.queryType.returnListOfMandatoryEnums(""));
 		compareList(//
 				Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean, null,
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._break),
-				queryType.returnMandatoryListOfEnums(""), //
+				this.queryType.returnMandatoryListOfEnums(""), //
 				"returnMandatoryListOfEnums");
 		compareList(//
 				Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte,
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._case),
-				queryType.returnMandatoryListOfMandatoryEnums(""), //
+				this.queryType.returnMandatoryListOfMandatoryEnums(""), //
 				"returnMandatoryListOfMandatoryEnums");
 	}
 
@@ -118,14 +119,14 @@ public class EnumIT {
 
 		// enumWithReservedJavaKeywordAsValues
 		SubscriptionCallbackImpl<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback1 = new SubscriptionCallbackImpl<>();
-		execSubscription(subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback1), callback1);
+		execSubscription(this.subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback1), callback1);
 		//
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._instanceof, callback1.messages.get(0));
 		assertNull(callback1.messages.get(1));
 
 		// listOfEnumWithReservedJavaKeywordAsValues
 		SubscriptionCallbackImpl<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> callback2 = new SubscriptionCallbackImpl<>();
-		execSubscription(subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback2), callback2);
+		execSubscription(this.subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback2), callback2);
 		//
 		assertIterableEquals(//
 				Arrays.asList(//
@@ -138,21 +139,22 @@ public class EnumIT {
 
 		// returnEnum
 		SubscriptionCallbackImpl<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback3 = new SubscriptionCallbackImpl<>();
-		assertNull(execSubscription(subscriptionExecutor.returnEnum("", callback3), callback3));
+		assertNull(execSubscription(this.subscriptionExecutor.returnEnum("", callback3), callback3));
 
 		// returnMandatoryEnum
 		SubscriptionCallbackImpl<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback4 = new SubscriptionCallbackImpl<>();
 		assertEquals(//
 				CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, //
-				execSubscription(subscriptionExecutor.returnMandatoryEnum("", callback4), callback4));
+				execSubscription(this.subscriptionExecutor.returnMandatoryEnum("", callback4,
+						CEP_EnumWithReservedJavaKeywordAsValues_CES._assert), callback4));
 
 		// returnListOfEnums
 		SubscriptionCallbackImpl<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> callback5 = new SubscriptionCallbackImpl<>();
-		assertNull(execSubscription(subscriptionExecutor.returnListOfEnums("", callback5), callback5));
+		assertNull(execSubscription(this.subscriptionExecutor.returnListOfEnums("", callback5), callback5));
 
 		// returnListOfMandatoryEnums
 		SubscriptionCallbackImpl<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> callback6 = new SubscriptionCallbackImpl<>();
-		assertNull(execSubscription(subscriptionExecutor.returnListOfMandatoryEnums("", callback6), callback6));
+		assertNull(execSubscription(this.subscriptionExecutor.returnListOfMandatoryEnums("", callback6), callback6));
 
 		// returnMandatoryListOfEnums
 		SubscriptionCallbackImpl<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> callback7 = new SubscriptionCallbackImpl<>();
@@ -160,7 +162,7 @@ public class EnumIT {
 				Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean, null,
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._break),
 				(List<CEP_EnumWithReservedJavaKeywordAsValues_CES>) execSubscription(
-						subscriptionExecutor.returnMandatoryListOfEnums("", callback7), callback7), //
+						this.subscriptionExecutor.returnMandatoryListOfEnums("", callback7), callback7), //
 				"returnMandatoryListOfEnums");
 
 		// returnListOfListOfEnums
@@ -173,7 +175,7 @@ public class EnumIT {
 						Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._default, null,
 								CEP_EnumWithReservedJavaKeywordAsValues_CES._implements)), //
 				(List<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>>) execSubscription(
-						subscriptionExecutor.returnListOfListOfEnums("", callback8), callback8), //
+						this.subscriptionExecutor.returnListOfListOfEnums("", callback8), callback8), //
 				"returnListOfListOfEnums");
 
 		// returnMandatoryListOfMandatoryEnums
@@ -183,7 +185,7 @@ public class EnumIT {
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._byte, //
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._case),
 				(List<CEP_EnumWithReservedJavaKeywordAsValues_CES>) execSubscription(
-						subscriptionExecutor.returnMandatoryListOfMandatoryEnums("", callback9), callback9), //
+						this.subscriptionExecutor.returnMandatoryListOfMandatoryEnums("", callback9), callback9), //
 				"returnMandatoryListOfMandatoryEnums");
 	}
 

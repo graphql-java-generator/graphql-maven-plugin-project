@@ -310,10 +310,11 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryEnum(
-			DataFetchingEnvironment dataFetchingEnvironment) {
+			DataFetchingEnvironment dataFetchingEnvironment,
+			org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES _enum) {
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> SEP_EnumWithReservedJavaKeywordAsValues_SES._assert);
+				.map((l) -> (_enum == null) ? SEP_EnumWithReservedJavaKeywordAsValues_SES._assert : _enum);
 	}
 
 	@Override

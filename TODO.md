@@ -8,6 +8,7 @@ Here are the next tasks listed, as a TODO list:
     * Still to do:
         * Reactive GraphQLRepository
         * Add a test in FullRequestSubscriptionGraphQLReactiveRepository : PartialRequest for a subscription
+        * Document the reactive stuff in the wiki
 * #195: give access to the received data, even if there are errors
 * Check for GraphQL specification changes (to properly manage them)
 * Review the plugin documentation (goal and parameters)

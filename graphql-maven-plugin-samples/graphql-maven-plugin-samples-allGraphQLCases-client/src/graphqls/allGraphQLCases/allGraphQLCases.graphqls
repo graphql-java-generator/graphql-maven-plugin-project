@@ -218,7 +218,7 @@ type TheSubscriptionType {
     ################################################################################
     # test for various queries that return enum, list of enum, list of nullable enums...
     returnEnum: EnumWithReservedJavaKeywordAsValues
-    returnMandatoryEnum: EnumWithReservedJavaKeywordAsValues!
+    returnMandatoryEnum(enum: EnumWithReservedJavaKeywordAsValues): EnumWithReservedJavaKeywordAsValues!
     returnListOfEnums: [EnumWithReservedJavaKeywordAsValues]
     returnListOfMandatoryEnums: [EnumWithReservedJavaKeywordAsValues!]
     returnListOfListOfEnums: [[EnumWithReservedJavaKeywordAsValues]]

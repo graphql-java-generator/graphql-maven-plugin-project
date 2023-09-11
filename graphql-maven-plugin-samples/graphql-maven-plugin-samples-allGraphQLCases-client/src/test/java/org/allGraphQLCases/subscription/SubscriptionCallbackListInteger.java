@@ -22,6 +22,7 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackListInteger.class);
 
 	final String clientName;
+	public Throwable lastReceivedError = null;
 	public List<Integer> lastReceivedMessage = null;
 
 	/** A latch that will be freed when a the first notification arrives for this subscription */
@@ -33,27 +34,29 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 
 	@Override
 	public void onConnect() {
-		logger.debug("The subscription is connected (for {})", clientName);
+		logger.debug("The subscription is connected (for {})", this.clientName);
 	}
 
 	@Override
 	public void onMessage(List<Integer> t) {
-		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
-		lastReceivedMessage = t;
-		latchForMessageReception.countDown();
+		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, this.clientName);
+		this.lastReceivedMessage = t;
+		this.latchForMessageReception.countDown();
 	}
 
 	@Override
 	public void onClose(int statusCode, String reason) {
-		logger.debug("The subscription is closed (for {})", clientName);
+		logger.debug("The subscription is closed (for {})", this.clientName);
 	}
 
 	@Override
 	public void onError(Throwable cause) {
 		logger.error("Oups! An error occurred: "
 				+ ((cause == null) ? null : cause.getClass().getSimpleName() + ": " + cause.getMessage()));
+		this.lastReceivedError = cause;
+
 		// An error occurred. Let's free the test thread that is waiting for a message.
-		latchForMessageReception.countDown();
+		this.latchForMessageReception.countDown();
 	}
 
 }

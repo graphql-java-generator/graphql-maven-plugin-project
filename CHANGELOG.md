@@ -1,4 +1,12 @@
 
+# Not released yet
+
+Client mode:
+* Add of the reactive executors and GraphQL repositories:
+    * Queries and mutations returns Mono
+    * Subscriptions returns Flux
+
+
 
 # 2.2
 
