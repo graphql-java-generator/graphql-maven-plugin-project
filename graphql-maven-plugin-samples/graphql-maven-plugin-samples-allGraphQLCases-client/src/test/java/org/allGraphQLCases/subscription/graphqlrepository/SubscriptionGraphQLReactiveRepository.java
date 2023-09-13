@@ -18,7 +18,8 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import reactor.core.publisher.Flux;
 
 /**
- * This interface demonstrate the use of GraphqlRepository: it implements a unique Full Requests that is a subscription.
+ * This interface demonstrates the use of {@link GraphQLReactiveRepository}: it implements a unique Full Requests that
+ * is a subscription.
  * 
  * @author etienne-sf
  */

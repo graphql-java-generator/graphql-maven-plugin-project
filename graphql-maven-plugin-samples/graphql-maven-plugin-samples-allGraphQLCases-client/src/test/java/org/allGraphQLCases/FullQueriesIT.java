@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
@@ -25,6 +26,9 @@ import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.graphqlrepositories.GraphQLReactiveRepositoryFullRequests;
+import org.allGraphQLCases.graphqlrepositories.GraphQLRepositoryFullRequests;
+import org.allGraphQLCases.impl.AbstractIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -36,6 +40,8 @@ import org.springframework.graphql.client.GraphQlClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import reactor.core.publisher.Mono;
 
 //Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
@@ -53,6 +59,11 @@ class FullQueriesIT {
 	AnotherMutationTypeExecutorAllGraphQLCases mutationExecutor;
 	@Autowired
 	AnotherMutationTypeReactiveExecutorAllGraphQLCases reactiveMutationExecutor;
+
+	@Autowired
+	GraphQLRepositoryFullRequests graphQlRepo;
+	@Autowired
+	GraphQLReactiveRepositoryFullRequests graphQlReactiveRepo;
 
 	@Resource(name = "httpGraphQlClientAllGraphQLCases")
 	GraphQlClient httpGraphQlClient;
@@ -406,4 +417,112 @@ class FullQueriesIT {
 		assertEquals(value.toUpperCase(), strings.get(0));
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_graphQLRepo_fullRequestQuery()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		CINP_CharacterInput_CINS character = new CINP_CharacterInput_CINS();
+		character.setName("A name");
+		character.setAppearsIn(new ArrayList<CEP_Episode_CES>());
+		character.setType("Human");
+
+		// Go, go, go
+		CTP_MyQueryType_CTS response = this.graphQlRepo.fullRequestQuery(character);
+
+		// Verification
+
+		List<CIP_Character_CIS> list = response.getWithoutParameters();
+		assertNotNull(list);
+		assertEquals(10, list.size());
+		for (CIP_Character_CIS c : list) {
+			AbstractIT.checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
+		}
+
+		CIP_Character_CIS c = response.getWithOneOptionalParam();
+		// Verification
+		assertNotNull(c.getId());
+		assertEquals("A name", c.getName());
+
+		// appearsIn and friends is generated on server side.
+		assertNotNull(c.getAppearsIn());
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateHumanImpl.appearsIn
+		assertNotNull(c.getFriends());
+		assertEquals(6, c.getFriends().size());// See DataFetchersDelegateHumanImpl.friends
+
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_graphQLRepo_fullRequestMutation()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		CINP_HumanInput_CINS input = CINP_HumanInput_CINS.builder().withName("test name")
+				.withHomePlanet("a home planet").withAppearsIn(new ArrayList<>()).build();
+
+		// Go, go, go
+		CTP_AnotherMutationType_CTS response = this.graphQlRepo.fullRequestMutation(input);
+
+		// Verification
+		assertNotNull(response);
+		assertNotNull(response.getCreateHuman());
+		assertNotNull("test name", response.getCreateHuman().getName());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_graphQLReactiveRepo_fullRequestQuery()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		CINP_CharacterInput_CINS character = new CINP_CharacterInput_CINS();
+		character.setName("A name");
+		character.setAppearsIn(new ArrayList<CEP_Episode_CES>());
+		character.setType("Human");
+
+		// Go, go, go
+		Mono<CTP_MyQueryType_CTS> mono = this.graphQlReactiveRepo.fullRequestQuery(character);
+		CTP_MyQueryType_CTS response = mono.block();
+
+		// Verification
+
+		List<CIP_Character_CIS> list = response.getWithoutParameters();
+		assertNotNull(list);
+		assertEquals(10, list.size());
+		for (CIP_Character_CIS c : list) {
+			AbstractIT.checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
+		}
+
+		CIP_Character_CIS c = response.getWithOneOptionalParam();
+		// Verification
+		assertNotNull(c.getId());
+		assertEquals("A name", c.getName());
+
+		// appearsIn and friends is generated on server side.
+		assertNotNull(c.getAppearsIn());
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateHumanImpl.appearsIn
+		assertNotNull(c.getFriends());
+		assertEquals(6, c.getFriends().size());// See DataFetchersDelegateHumanImpl.friends
+
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_graphQLReactiveRepo_fullRequestMutation()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		CINP_HumanInput_CINS input = CINP_HumanInput_CINS.builder().withName("test name")
+				.withHomePlanet("a home planet").withAppearsIn(new ArrayList<>()).build();
+
+		// Go, go, go
+		Mono<CTP_AnotherMutationType_CTS> mono = this.graphQlReactiveRepo.fullRequestMutation(input);
+		CTP_AnotherMutationType_CTS response = mono.block();
+
+		// Verification
+		assertNotNull(response);
+		assertNotNull(response.getCreateHuman());
+		assertNotNull("test name", response.getCreateHuman().getName());
+	}
 }

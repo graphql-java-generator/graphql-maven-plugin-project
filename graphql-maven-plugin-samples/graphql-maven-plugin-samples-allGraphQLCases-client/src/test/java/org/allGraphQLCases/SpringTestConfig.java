@@ -57,9 +57,8 @@ import reactor.netty.http.client.HttpClient;
 				@Filter(type = FilterType.REGEX, pattern = "/SpringConfig"),
 				@Filter(type = FilterType.REGEX, pattern = "/Main") })
 @PropertySource("classpath:/application.properties")
-@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository",
-		"org.allGraphQLCases.two_graphql_servers" })
-@SuppressWarnings("deprecation")
+@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.graphqlrepositories",
+		"org.allGraphQLCases.subscription.graphqlrepository", "org.allGraphQLCases.two_graphql_servers" })
 public class SpringTestConfig {
 
 	private static Logger logger = LoggerFactory.getLogger(SpringTestConfig.class);
@@ -86,10 +85,10 @@ public class SpringTestConfig {
 		/** Interception of each message received on subscription */
 		public void interceptionSubscriptionResponse(ClientGraphQlResponse response) {
 			if (response.isValid()) {
-				logger.debug("[subscription interception] Received a valid response for '{}': {}", beanSuffix,
+				logger.debug("[subscription interception] Received a valid response for '{}': {}", this.beanSuffix,
 						response.getData());
 			} else {
-				logger.debug("[subscription interception] Received a non valid response for '{}': {}", beanSuffix,
+				logger.debug("[subscription interception] Received a non valid response for '{}': {}", this.beanSuffix,
 						response.getErrors());
 			}
 		}
@@ -111,7 +110,7 @@ public class SpringTestConfig {
 			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 				String classname = bean.getClass().getName();
 				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT"))
-					SpringContextBean.setApplicationContext(applicationContext);
+					SpringContextBean.setApplicationContext(SpringTestConfig.this.applicationContext);
 				return bean;
 			}
 		};

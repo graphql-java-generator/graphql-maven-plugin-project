@@ -15,7 +15,8 @@ import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * This interface demonstrate the use of GraphqlRepository: it implements a unique Full Requests that is a subscription.
+ * This interface demonstrates the use of GraphqlRepository: it implements subscriptions, with both Partial and Full
+ * Requests.
  * 
  * @author etienne-sf
  */

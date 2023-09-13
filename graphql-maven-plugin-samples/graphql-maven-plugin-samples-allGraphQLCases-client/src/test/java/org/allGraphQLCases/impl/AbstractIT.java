@@ -49,7 +49,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 // More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-abstract class AbstractIT {
+public abstract class AbstractIT {
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases queryType;
@@ -290,7 +290,7 @@ abstract class AbstractIT {
 		assertEquals(CEP_extends_CES.DOUBLE, this.partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
 	}
 
-	private static void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+	public static void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
 			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
