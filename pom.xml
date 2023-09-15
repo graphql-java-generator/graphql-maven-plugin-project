@@ -87,7 +87,7 @@
 		<java.release>8</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<maven.dependency.version>3.6.3</maven.dependency.version>
+		<maven.dependency.version>3.8.1</maven.dependency.version>
 		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
 		<maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
 
