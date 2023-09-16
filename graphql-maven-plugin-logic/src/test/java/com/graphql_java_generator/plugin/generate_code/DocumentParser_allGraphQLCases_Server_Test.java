@@ -61,35 +61,35 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
-		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
-		generateCodeDocumentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		ResourceSchemaStringProvider schemaStringProvider = ctx.getBean(ResourceSchemaStringProvider.class);
+		this.ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		this.generateCodeDocumentParser = this.ctx.getBean(GenerateCodeDocumentParser.class);
+		this.pluginConfiguration = this.ctx.getBean(GraphQLConfiguration.class);
+		ResourceSchemaStringProvider schemaStringProvider = this.ctx.getBean(ResourceSchemaStringProvider.class);
 
 		SchemaParser schemaParser = new SchemaParser();
-		typeDefinitionRegistry = schemaParser.parse(schemaStringProvider.getConcatenatedSchemaStrings());
+		this.typeDefinitionRegistry = schemaParser.parse(schemaStringProvider.getConcatenatedSchemaStrings());
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_allGraphQLCases() throws IOException {
 		// Go, go, go
-		int i = generateCodeDocumentParser.parseGraphQLSchemas();
+		int i = this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(58, i, "Nb java files are generated");
-		assertEquals(10, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(35, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
-		assertEquals(6, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
-		assertEquals(19, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
-		assertEquals(4, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
-		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
-		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");
-		assertNotNull(generateCodeDocumentParser.getSubscriptionType(),
+		assertEquals(59, i, "Nb java files are generated");
+		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(36, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(7, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(19, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
+		assertEquals(4, this.generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
+		assertNotNull(this.generateCodeDocumentParser.getQueryType(), "One query");
+		assertNotNull(this.generateCodeDocumentParser.getMutationType(), "One mutation");
+		assertNotNull(this.generateCodeDocumentParser.getSubscriptionType(),
 				"One subscription (defined in the schema extension)");
 
-		assertEquals("query", generateCodeDocumentParser.getQueryType().getRequestType());
-		assertEquals("mutation", generateCodeDocumentParser.getMutationType().getRequestType());
+		assertEquals("query", this.generateCodeDocumentParser.getQueryType().getRequestType());
+		assertEquals("mutation", this.generateCodeDocumentParser.getMutationType().getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
@@ -107,7 +107,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks if input types for the AllFieldCases object are correctly read
 		//
-		ObjectType objectType = (ObjectType) generateCodeDocumentParser.getType("AllFieldCases");
+		ObjectType objectType = (ObjectType) this.generateCodeDocumentParser.getType("AllFieldCases");
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
@@ -219,7 +219,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of type implementing multiples interfaces
-		objectType = (ObjectType) generateCodeDocumentParser.getType("Human");
+		objectType = (ObjectType) this.generateCodeDocumentParser.getType("Human");
 		//
 		assertEquals(4, objectType.getImplementz().size());
 		assertTrue(objectType.getImplementz().contains("Character"));
@@ -227,7 +227,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertTrue(objectType.getImplementz().contains("WithID"));
 		assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
 		//
-		InterfaceType interfaceType = (InterfaceType) generateCodeDocumentParser.getType("WithID");
+		InterfaceType interfaceType = (InterfaceType) this.generateCodeDocumentParser.getType("WithID");
 		assertEquals(4, interfaceType.getImplementingTypes().size());
 		j = 0;
 		assertEquals("AllFieldCases", interfaceType.getImplementingTypes().get(j++).getName());
@@ -238,16 +238,16 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of directive parsing
 		i = 0;
-		assertEquals("skip", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("include", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("defer", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("deprecated", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("IDScalarDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("RelayConnection", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("generateDataLoaderForLists", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("testExtendKeyword", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("testDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("skip", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("include", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("defer", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("deprecated", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("IDScalarDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("RelayConnection", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("generateDataLoaderForLists", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("testExtendKeyword", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("testDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("anotherTestDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 
 		// On Scalar
 		assertEquals(0, generateCodeDocumentParser.getType("Date").getAppliedDirectives().size(),
@@ -264,52 +264,54 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Currently not managed (schema is not stored, and no java classes is generated afterward for the schema)
 
 		// On enum
-		assertEquals(2, generateCodeDocumentParser.getType("Episode").getAppliedDirectives().size(),
+		assertEquals(2, this.generateCodeDocumentParser.getType("Episode").getAppliedDirectives().size(),
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666,
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666,
 				(float) 666.666, true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false, 1);
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null, null,
-				null, null, false, 1);
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null,
+				null, null, null, false, 1);
 
 		// On enum item
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true,
+		checkDirectivesOnEnumValue(this.generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true,
 				"on Enum values", "-1", true);
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+		checkDirectivesOnEnumValue(this.generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null,
+				false);
+		checkDirectivesOnEnumValue(this.generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null,
+				true);
 
 		// On interface
-		checkDirectivesOnType(generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null, null,
-				null, null, null, null, false, 0);
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Character"), true, "on Character interface", null,
-				null, null, null, null, null, null, true, 0);
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null,
+				null, null, null, null, null, false, 0);
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Character"), true, "on Character interface",
+				null, null, null, null, null, null, null, true, 0);
 		// On interface field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "name", true, "on interface field",
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("Character"), "name", true, "on interface field",
 				null, true, 0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "appearsIn", false, null, null, true,
-				0);
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("Character"), "appearsIn", false, null, null,
+				true, 0);
 		// On union
 		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
 		// On input type
-		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCasesInput"), true, "on Input Type", null,
-				null, null, null, null, null, null, false, 1);
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("AllFieldCasesInput"), true, "on Input Type",
+				null, null, null, null, null, null, null, false, 1);
 		// On input type field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field",
-				null, false, 0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "name", false, null, null,
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("AllFieldCasesInput"), "id", true,
+				"on Input Field", null, false, 0);
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("AllFieldCasesInput"), "name", false, null, null,
 				false, 0);
 		// On type
-		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true,
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("AllFieldCases"), true,
 				"on Object\n With a line feed\\\n\r and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\",
 				null, null, null, null, null, null, null, true, 1);
 		// On type field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null, false,
-				0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "name", false, null, null, false,
-				0);
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null,
+				false, 0);
+		checkDirectivesOnField(this.generateCodeDocumentParser.getType("AllFieldCases"), "name", false, null, null,
+				false, 0);
 		// On input parameter
-		checkDirectivesOnInputParameter(generateCodeDocumentParser.getType("AllFieldCases"), "forname", "uppercase",
-				true, "on Argument", null, false);
-		checkDirectivesOnInputParameter(generateCodeDocumentParser.getType("AllFieldCases"), "forname",
+		checkDirectivesOnInputParameter(this.generateCodeDocumentParser.getType("AllFieldCases"), "forname",
+				"uppercase", true, "on Argument", null, false);
+		checkDirectivesOnInputParameter(this.generateCodeDocumentParser.getType("AllFieldCases"), "forname",
 				"textToAppendToTheForname", false, null, null, false);
 	}
 
@@ -525,15 +527,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	private void test_addObjectType_noImplement() throws IOException {
 		// Preparation
 		String objectName = "AllFieldCases";
-		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		ObjectTypeDefinition def = (ObjectTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
+		this.generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
-		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
+		ObjectType type = this.generateCodeDocumentParser.readObjectTypeDefinition(def);
 
 		// Verification
 		assertEquals(objectName, type.getName(), "Checks the name");
@@ -585,15 +587,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_withImplement() throws IOException {
 		// Preparation
 		String objectName = "Human";
-		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		ObjectTypeDefinition def = (ObjectTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
+		this.generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
-		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
+		ObjectType type = this.generateCodeDocumentParser.readObjectTypeDefinition(def);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Verification
@@ -635,18 +637,18 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 
 		// Go, go, go
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals("MyQueryType", generateCodeDocumentParser.getQueryTypeName(), "the query");
-		assertNotNull(generateCodeDocumentParser.getQueryType());
+		assertEquals("MyQueryType", this.generateCodeDocumentParser.getQueryTypeName(), "the query");
+		assertNotNull(this.generateCodeDocumentParser.getQueryType());
 
-		assertEquals("AnotherMutationType", generateCodeDocumentParser.getMutationTypeName(), "the mutation");
-		assertNotNull(generateCodeDocumentParser.getMutationType());
+		assertEquals("AnotherMutationType", this.generateCodeDocumentParser.getMutationTypeName(), "the mutation");
+		assertNotNull(this.generateCodeDocumentParser.getMutationType());
 
-		assertEquals("TheSubscriptionType", generateCodeDocumentParser.getSubscriptionTypeName(),
+		assertEquals("TheSubscriptionType", this.generateCodeDocumentParser.getSubscriptionTypeName(),
 				"Nb subscriptions is 0: the subscription is defined in the schema extension");
-		assertNotNull(generateCodeDocumentParser.getSubscriptionType());
+		assertNotNull(this.generateCodeDocumentParser.getSubscriptionType());
 	}
 
 	@Test
@@ -654,10 +656,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_readObjectType_QueryType() throws IOException {
 		// Preparation
 		String objectName = "MyQueryType";
-		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		ObjectTypeDefinition def = (ObjectTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		//
 		// We need this ObjectValue for one of the next tests:
@@ -671,7 +673,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		ObjectValue objectValue = new ObjectValue(objectFields);
 
 		// Go, go, go
-		ObjectType type = generateCodeDocumentParser.getQueryType();
+		ObjectType type = this.generateCodeDocumentParser.getQueryType();
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
@@ -725,19 +727,19 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_readEnumType() throws IOException {
 		// Preparation
 		String objectName = "Episode";
-		EnumTypeDefinition def = (EnumTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		EnumTypeDefinition def = (EnumTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to read the directives first
-		generateCodeDocumentParser.postConstruct();
-		typeDefinitionRegistry.getDirectiveDefinitions().values().stream()//
-				.forEach(node -> generateCodeDocumentParser.getDirectives()
-						.add(generateCodeDocumentParser.readDirectiveDefinition(node)));
+		this.generateCodeDocumentParser.postConstruct();
+		this.typeDefinitionRegistry.getDirectiveDefinitions().values().stream()//
+				.forEach(node -> this.generateCodeDocumentParser.getDirectives()
+						.add(this.generateCodeDocumentParser.readDirectiveDefinition(node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setQueryType(null);
+		this.generateCodeDocumentParser.setQueryType(null);
 
 		// Go, go, go
-		EnumType type = generateCodeDocumentParser.readEnumType(//
-				new EnumType(def.getName(), pluginConfiguration, generateCodeDocumentParser), //
+		EnumType type = this.generateCodeDocumentParser.readEnumType(//
+				new EnumType(def.getName(), this.pluginConfiguration, this.generateCodeDocumentParser), //
 				def);
 
 		// Verification
@@ -756,15 +758,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_MutationType() throws IOException {
 		// Preparation
 		String objectName = "AnotherMutationType";
-		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		ObjectTypeDefinition def = (ObjectTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setMutationType(null);
+		this.generateCodeDocumentParser.setMutationType(null);
 
 		// Go, go, go
-		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
+		ObjectType type = this.generateCodeDocumentParser.readObjectTypeDefinition(def);
 
 		// Verification
 		assertEquals(objectName, type.getName());
@@ -799,15 +801,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_SubscriptionType() throws IOException {
 		// Preparation
 		String objectName = "TheSubscriptionType";
-		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
+		ObjectTypeDefinition def = (ObjectTypeDefinition) this.typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setSubscriptionType(null);
+		this.generateCodeDocumentParser.setSubscriptionType(null);
 
 		// Go, go, go
-		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
+		ObjectType type = this.generateCodeDocumentParser.readObjectTypeDefinition(def);
 
 		// Verification
 		assertEquals(objectName, type.getName());
@@ -855,7 +857,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	private DataFetchersDelegateImpl findDataFetcherDelegate(String name) {
-		for (DataFetchersDelegate delegate : generateCodeDocumentParser.dataFetchersDelegates) {
+		for (DataFetchersDelegate delegate : this.generateCodeDocumentParser.dataFetchersDelegates) {
 			if (delegate.getName().equals(name))
 				return (DataFetchersDelegateImpl) delegate;
 		}

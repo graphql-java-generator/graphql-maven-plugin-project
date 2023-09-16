@@ -127,6 +127,159 @@ public class GraphqlUtils {
 		javaKeywords.add("void");
 		javaKeywords.add("volatile");
 		javaKeywords.add("while");
+		this.javaKeywords.add("abstract");
+		this.javaKeywords.add("assert");
+		this.javaKeywords.add("boolean");
+		this.javaKeywords.add("break");
+		this.javaKeywords.add("byte");
+		this.javaKeywords.add("case");
+		this.javaKeywords.add("catch");
+		this.javaKeywords.add("char");
+		this.javaKeywords.add("class");
+		this.javaKeywords.add("const");
+		this.javaKeywords.add("continue");
+		this.javaKeywords.add("default");
+		this.javaKeywords.add("do");
+		this.javaKeywords.add("double");
+		this.javaKeywords.add("else");
+		this.javaKeywords.add("enum");
+		this.javaKeywords.add("extends");
+		this.javaKeywords.add("final");
+		this.javaKeywords.add("finally");
+		this.javaKeywords.add("float");
+		this.javaKeywords.add("for");
+		this.javaKeywords.add("goto");
+		this.javaKeywords.add("if");
+		this.javaKeywords.add("implements");
+		this.javaKeywords.add("import");
+		this.javaKeywords.add("instanceof");
+		this.javaKeywords.add("int");
+		this.javaKeywords.add("interface");
+		this.javaKeywords.add("long");
+		this.javaKeywords.add("native");
+		this.javaKeywords.add("new");
+		this.javaKeywords.add("null");
+		this.javaKeywords.add("package");
+		this.javaKeywords.add("private");
+		this.javaKeywords.add("protected");
+		this.javaKeywords.add("public");
+		this.javaKeywords.add("return");
+		this.javaKeywords.add("short");
+		this.javaKeywords.add("static");
+		this.javaKeywords.add("strictfp");
+		this.javaKeywords.add("super");
+		this.javaKeywords.add("switch");
+		this.javaKeywords.add("synchronized");
+		this.javaKeywords.add("this");
+		this.javaKeywords.add("throw");
+		this.javaKeywords.add("throws");
+		this.javaKeywords.add("transient");
+		this.javaKeywords.add("try");
+		this.javaKeywords.add("void");
+		this.javaKeywords.add("volatile");
+		this.javaKeywords.add("while");
+		this.javaKeywords.add("abstract");
+		this.javaKeywords.add("assert");
+		this.javaKeywords.add("boolean");
+		this.javaKeywords.add("break");
+		this.javaKeywords.add("byte");
+		this.javaKeywords.add("case");
+		this.javaKeywords.add("catch");
+		this.javaKeywords.add("char");
+		this.javaKeywords.add("class");
+		this.javaKeywords.add("const");
+		this.javaKeywords.add("continue");
+		this.javaKeywords.add("default");
+		this.javaKeywords.add("do");
+		this.javaKeywords.add("double");
+		this.javaKeywords.add("else");
+		this.javaKeywords.add("enum");
+		this.javaKeywords.add("extends");
+		this.javaKeywords.add("final");
+		this.javaKeywords.add("finally");
+		this.javaKeywords.add("float");
+		this.javaKeywords.add("for");
+		this.javaKeywords.add("goto");
+		this.javaKeywords.add("if");
+		this.javaKeywords.add("implements");
+		this.javaKeywords.add("import");
+		this.javaKeywords.add("instanceof");
+		this.javaKeywords.add("int");
+		this.javaKeywords.add("interface");
+		this.javaKeywords.add("long");
+		this.javaKeywords.add("native");
+		this.javaKeywords.add("new");
+		this.javaKeywords.add("null");
+		this.javaKeywords.add("package");
+		this.javaKeywords.add("private");
+		this.javaKeywords.add("protected");
+		this.javaKeywords.add("public");
+		this.javaKeywords.add("return");
+		this.javaKeywords.add("short");
+		this.javaKeywords.add("static");
+		this.javaKeywords.add("strictfp");
+		this.javaKeywords.add("super");
+		this.javaKeywords.add("switch");
+		this.javaKeywords.add("synchronized");
+		this.javaKeywords.add("this");
+		this.javaKeywords.add("throw");
+		this.javaKeywords.add("throws");
+		this.javaKeywords.add("transient");
+		this.javaKeywords.add("try");
+		this.javaKeywords.add("void");
+		this.javaKeywords.add("volatile");
+		this.javaKeywords.add("while");
+		this.javaKeywords.add("abstract");
+		this.javaKeywords.add("assert");
+		this.javaKeywords.add("boolean");
+		this.javaKeywords.add("break");
+		this.javaKeywords.add("byte");
+		this.javaKeywords.add("case");
+		this.javaKeywords.add("catch");
+		this.javaKeywords.add("char");
+		this.javaKeywords.add("class");
+		this.javaKeywords.add("const");
+		this.javaKeywords.add("continue");
+		this.javaKeywords.add("default");
+		this.javaKeywords.add("do");
+		this.javaKeywords.add("double");
+		this.javaKeywords.add("else");
+		this.javaKeywords.add("enum");
+		this.javaKeywords.add("extends");
+		this.javaKeywords.add("final");
+		this.javaKeywords.add("finally");
+		this.javaKeywords.add("float");
+		this.javaKeywords.add("for");
+		this.javaKeywords.add("goto");
+		this.javaKeywords.add("if");
+		this.javaKeywords.add("implements");
+		this.javaKeywords.add("import");
+		this.javaKeywords.add("instanceof");
+		this.javaKeywords.add("int");
+		this.javaKeywords.add("interface");
+		this.javaKeywords.add("long");
+		this.javaKeywords.add("native");
+		this.javaKeywords.add("new");
+		this.javaKeywords.add("null");
+		this.javaKeywords.add("package");
+		this.javaKeywords.add("private");
+		this.javaKeywords.add("protected");
+		this.javaKeywords.add("public");
+		this.javaKeywords.add("return");
+		this.javaKeywords.add("short");
+		this.javaKeywords.add("static");
+		this.javaKeywords.add("strictfp");
+		this.javaKeywords.add("super");
+		this.javaKeywords.add("switch");
+		this.javaKeywords.add("synchronized");
+		this.javaKeywords.add("this");
+		this.javaKeywords.add("throw");
+		this.javaKeywords.add("throws");
+		this.javaKeywords.add("transient");
+		this.javaKeywords.add("try");
+		this.javaKeywords.add("void");
+		this.javaKeywords.add("volatile");
+		this.javaKeywords.add("while");
 	}
 
 	/**
@@ -141,17 +294,17 @@ public class GraphqlUtils {
 	 * Loads the runtime properties file, from the graphql-java-runtime.properties file.
 	 */
 	private Properties getProperties() {
-		if (properties == null) {
-			properties = new Properties();
+		if (this.properties == null) {
+			this.properties = new Properties();
 			try (InputStream res = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-				properties.load(res);
+				this.properties.load(res);
 			} catch (IOException e) {
 				String msg = "Error while reading the '" + PROPERTIES_FILE + "' properties file: " + e.getMessage();
 				logger.error(msg);
 				throw new RuntimeException(msg, e);
 			}
 		}
-		return properties;
+		return this.properties;
 	}
 
 	/**
@@ -919,7 +1072,7 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public boolean isJavaReservedWords(String name) {
-		return javaKeywords.contains(name);
+		return this.javaKeywords.contains(name);
 	}
 
 	/**
@@ -968,14 +1121,8 @@ public class GraphqlUtils {
 			return null; // No package for primitive types
 		}
 
-		try {
-			Class<?> cls = Class.forName(classFullName);
-			return cls.getPackage().getName();
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(
-					"Could not find the package for the class '" + classFullNameParam + "', due to: " + e.getMessage(),
-					e);
-		}
+		int lstPointPosition = classFullName.lastIndexOf('.');
+		return classFullName.substring(0, lstPointPosition);
 	}
 
 	/**

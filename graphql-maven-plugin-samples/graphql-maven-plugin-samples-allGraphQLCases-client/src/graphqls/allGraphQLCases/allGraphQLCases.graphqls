@@ -12,6 +12,9 @@ scalar Long
 """ A scalar to test the issue #174 """
 scalar Base64String
 
+""" A scalar to test the issues #154 and #198 """
+scalar CustomId
+
 directive @IDScalarDirective
 on SCALAR
 
@@ -832,4 +835,9 @@ type ReservedJavaKeywordAllFieldCases {
     
 	""" A field with a java reserved name which is a union """
     interface: AnyCharacter
+}
+
+""" A class to test the issues #154 and #198 """
+type ClassWithCustomId {
+	id: CustomId!
 }

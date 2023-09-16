@@ -34,6 +34,8 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 
 		customScalars.add(new CustomScalarDefinition("Base64String", "byte[]", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String", null));
+		customScalars.add(new CustomScalarDefinition("CustomId", "com.generated.graphql.samples.customscalar.CustomId",
+				null, "com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType", null));
 		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
 		customScalars.add(new CustomScalarDefinition("DateTime", "java.time.OffsetDateTime", null,
@@ -49,7 +51,7 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
 		// The allGraphQLCases GraphQL schema is located in the allGraphQLCases client sample
-		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
+		configuration.schemaFileFolder = new File(this.mavenTestHelper.getModulePathFile(),
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.mode = PluginMode.client;

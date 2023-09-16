@@ -33,6 +33,8 @@ public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringCo
 		customScalars = new ArrayList<>();
 		customScalars.add(new CustomScalarDefinition("Base64String", "byte[]", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String", null));
+		customScalars.add(new CustomScalarDefinition("CustomId", "com.generated.graphql.samples.customscalar.CustomId",
+				null, "com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType", null));
 		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
 		customScalars.add(new CustomScalarDefinition("DateTime", "java.time.OffsetDateTime", null,
