@@ -8,6 +8,11 @@
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
+	<description>
+		This maven module contain a custom templates, to check in integration tests that custom templates coming 
+		from an external jar can actually be used.
+		It also contains a type that is used in Custom Scalar, to check the correction of the issues 184 and 198. 
+	</description>
 
 	<dependencies>
 		<dependency>

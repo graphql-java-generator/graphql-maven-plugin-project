@@ -54,6 +54,11 @@
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
+									<graphQLTypeName>CustomId</graphQLTypeName>
+									<javaType>com.generated.graphql.samples.customscalar.CustomId</javaType>
+									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
 									<javaType>java.util.Date</javaType>
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
@@ -119,6 +124,11 @@
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
+									<graphQLTypeName>CustomId</graphQLTypeName>
+									<javaType>com.generated.graphql.samples.customscalar.CustomId</javaType>
+									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
 									<javaType>java.util.Date</javaType>
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
@@ -178,7 +188,7 @@
 					</execution>
 				</executions>
 				<dependencies>
-					<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
+					<!-- Dependency contains the custom template parameterized in plugin and a QueryExecutor bases on Spring Rest Template -->
 					<dependency>
 						<groupId>com.graphql-java-generator</groupId>
 						<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>

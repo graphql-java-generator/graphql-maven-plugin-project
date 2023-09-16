@@ -1,5 +1,5 @@
 
-# Not released yet
+# 2.3
 
 Client mode:
 * Add of the reactive executors and GraphQL repositories:
