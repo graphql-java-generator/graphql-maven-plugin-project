@@ -25,9 +25,11 @@ That is: graphql-java-generator generates the boilerplate code, and lets you con
 * In __client mode__ : graphql-java-generator generates an executor class for each query, mutation type and/or subscription type. These classes contain the methods to call the queries, mutations and subscriptions. That is: __to call the GraphQL server, you just call the relevant method__. In client mode, the plugin generates:
     * The __POJOs__ from the GraphQL schema. That is: one class, interface or enum for each item in the provided GraphQL schema file(s)
     * The __utility classes__ that allows you to execute queries, mutations and subscriptions, and to retrieve their result (including the GraphQL response's _extensions field)
+    * Support blocking and (since 2.3) reactive (Mono, Flux) queries
     * The support for the full GraphQL specification (relay cursors, subscription, custom scalars, fragment, directive, GraphQL variables, GraphQL alias...).
     * The capability to use __bind parameters__ within your queries, mutations and subscriptions, in an easier way than the GraphQL variables
-    * It can be used within a __spring boot app__, or in non-spring apps. When using as a spring boot app, each Spring component can be overridden. This allows fine tuning, like connecting to __OAuth__ server, changing the _WebClient_, and much more
+    * It is based on Spring framework, and since 2.0 on __spring-graphql__. It still can be used with non-spring apps, as explained in the project's wiki.
+    * When used in a spring boot app, each Spring component can be overridden. This allows fine tuning, like connecting to __OAuth__ server, changing the _WebClient_, and much more
     * Since 1.17, it is possible to execute GraphQL request by just creating a Java interface, no code at all: __GraphQL Repositories__ work almost like Spring Data Repositories. More information [in the wiki](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_graphql_repository)
 * In __server mode__ : graphql-java-generator generates an almost ready to start GraphQL server. The developer has only to develop the access to the data. That is :
     * The generated code can be packaged either in a __jar__ (starting as a Java application) or a __war__ (starting in a Java container like tomcat or jetty).
@@ -42,7 +44,7 @@ Other points that are worth to point out:
 * The project is __extensively tested__:
     * Through unit tests (for the runtime),
     * Through unit and integration tests (for the plugin logic)
-    * Through full integration tests: three samples contain both the client and the server part, and integration tests are run on client side, against "its" server side. Around 150 integration tests are run on client side against the server part.
+    * Through full integration tests: three samples contain both the client and the server parts. Integration tests are run on client side, against "its" server side. More than 250 integration tests are run on client side against the server part.
 * A big effort is done to __avoid any impact on your code, when the plugin evolves__. 
 * A maven/gradle goal/task allows to __merge several schemas in one__, adding (for instance) relay capability in the generated schema
 
@@ -58,6 +60,7 @@ The 2.x version:
 * Is based on [spring-graphql](https://spring.io/projects/spring-graphql)
 * Is compatible with Spring Boot 3 and Spring Framework 6
     * Another version of the Gradle plugin had been created to achieve this (see below)
+* (since 2.3) Allows also reactive queries (that returns reactive Mono or Flux)
 * Please check the [Client migration from 1.x to 2.x](../../wiki/client_migrate_1-x_to_2-x) or [Server migration from 1.x to 2.x](../../wiki/server_migrate_1-x_to_2-x) if you're using the 1.x version.
 
 # Availability: Maven and Gradle

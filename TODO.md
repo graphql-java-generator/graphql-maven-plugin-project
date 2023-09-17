@@ -20,7 +20,7 @@ Here are the next tasks listed, as a TODO list:
     * initialize it only once (not at each creation of a GraphQLRequest)
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
-* Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
+* Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-logic, com.graphql_java_generator.plugin.language)
 * add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)
 * Add a description for the GraphQL mojo
