@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.annotation"},{"l":"org.allGraphQLCases.server.pojo"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.generated.graphql.samples.customscalar"},{"l":"com.graphql_java_generator.annotation"},{"l":"org.allGraphQLCases.server.pojo"}];updateSearchResults();

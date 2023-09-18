@@ -1,3 +1,4 @@
+com.generated.graphql.samples.customscalar
 com.graphql_java_generator.annotation
 com.graphql_java_generator.client
 com.graphql_java_generator.client.request

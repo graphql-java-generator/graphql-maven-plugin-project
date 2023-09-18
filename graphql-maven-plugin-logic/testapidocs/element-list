@@ -1,3 +1,4 @@
+com.generated.graphql.samples.customscalar
 com.graphql_java_generator.plugin.compilation_tests
 com.graphql_java_generator.plugin.test.compiler
 com.graphql_java_generator.plugin.test.helper

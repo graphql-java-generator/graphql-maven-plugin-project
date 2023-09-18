@@ -1,3 +1,4 @@
+com.generated.graphql.samples.customscalar
 org.allGraphQLCases.annotation
 org.allGraphQLCases.client
 org.allGraphQLCases.client_spring_autoconfiguration
