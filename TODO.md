@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
 * #184 et #198: issues with custom scalars which type is no in the plugin-logic dependencies
+    * Report correction in 1.x branch
+* #199: "code too large" compilation error
 * Gradle issue #18: all Gradle tasks are run, even if unnecessary
 * #195: give access to the received data, even if there are errors
 * Check for GraphQL specification changes (to properly manage them)
@@ -11,6 +13,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 1.x branch
 * #184 et #198: issues with custom scalars which type is not in the plugin dependencies
+* #199: "code too large" compilation error
 * Add an option to add the Serializable interface for generated POJOs
     * ==> Done. Answer to the related issue to do, when released
 * Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)

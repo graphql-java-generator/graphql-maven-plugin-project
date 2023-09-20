@@ -43,6 +43,7 @@ public enum CodeTemplate {
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), // //$NON-NLS-1$
 	SUBSCRIPTION_REACTIVE_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_reactive_executor.vm.java"), // //$NON-NLS-1$
 	TYPE_MAPPING(CodeTemplateScope.CLIENT, "templates/client_type_mapping.vm.java"), // //$NON-NLS-1$
+	TYPE_MAPPING_CSV(CodeTemplateScope.CLIENT, "templates/client_type_mapping.vm.csv"), // //$NON-NLS-1$
 
 	// Server files (alphabetic order)
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), // //$NON-NLS-1$

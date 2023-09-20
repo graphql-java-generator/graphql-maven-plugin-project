@@ -211,6 +211,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				logger.debug("Generating subscription"); //$NON-NLS-1$
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 						TargetFileType.SUBSCRIPTION, CodeTemplate.SUBSCRIPTION, true);
+				logger.debug("Generating client side mapping from graphql type to java type"); //$NON-NLS-1$
+				i += generateClientTypeMapping();
 			}
 
 			// Generation of the query/mutation/subscription executor classes
@@ -290,9 +292,6 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			i += generateSpringAutoConfigurationDeclaration(autoConfClass);
 		}
 
-		logger.debug("Generating client side mapping from graphql type to java type"); //$NON-NLS-1$
-		i += generateClientTypeMapping();
-
 		return i;
 	}
 
@@ -305,10 +304,20 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		VelocityContext context = getVelocityContext();
 		context.put("types", this.generateCodeDocumentParser.getTypes()); //$NON-NLS-1$
 
-		generateOneJavaFile("GraphQLTypeMapping", false, "generating GraphQLTypeMapping", context, //$NON-NLS-1$ //$NON-NLS-2$
+		// Generation of the GraphQLTypeMapping file
+		generateOneJavaFile("GraphQLTypeMapping", true, "generating GraphQLTypeMapping", context, //$NON-NLS-1$ //$NON-NLS-2$
 				CodeTemplate.TYPE_MAPPING);
 
-		return 1;
+		// Generation of the typeMapping.csv file
+		String relativePath = "typeMapping" //$NON-NLS-1$
+				+ ((this.configuration.getSpringBeanSuffix() == null) ? "" : this.configuration.getSpringBeanSuffix())
+				+ ".csv";
+		File targetFile = new File(this.configuration.getTargetResourceFolder(), relativePath);
+		logger.debug("Generating typeMapping.csv into {}", targetFile); //$NON-NLS-1$
+		targetFile.getParentFile().mkdirs();
+		generateOneFile(targetFile, "Generating typeMapping.csv", context, CodeTemplate.TYPE_MAPPING_CSV); //$NON-NLS-1$
+
+		return 2;
 	}
 
 	/**

@@ -1,0 +1,13 @@
+##
+## Velocity template for type GraphQLTypeMapping (client side).
+##
+## The generated file contains:
+## - one line par GraphQL type, that allows to build a map at runtime from the graphql type name to the java class
+##
+##
+## This template has these inputs:
+## types 	 			A map from graphql name to the java class
+##
+#foreach ($entry in $types.entrySet())
+${entry.key},${entry.value.classFullName}
+#end

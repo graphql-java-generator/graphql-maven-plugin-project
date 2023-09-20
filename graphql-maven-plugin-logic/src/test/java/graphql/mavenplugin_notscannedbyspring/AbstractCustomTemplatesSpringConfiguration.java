@@ -45,7 +45,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	 */
 
 	protected static final Pattern templatePattern = Pattern
-			.compile("templates\\/([a-zA-Z_]*)\\.vm\\.(java|properties)");
+			.compile("templates\\/([a-zA-Z_]*)\\.vm\\.(java|properties|csv)");
 	protected static List<CustomScalarDefinition> customScalars;
 
 	static {

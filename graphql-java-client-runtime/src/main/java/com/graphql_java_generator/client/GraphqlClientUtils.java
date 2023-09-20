@@ -53,13 +53,13 @@ public class GraphqlClientUtils {
 
 	public GraphqlClientUtils() {
 		// Add of all predefined scalars
-		scalars.add(String.class);
-		scalars.add(int.class);
-		scalars.add(Integer.class);
-		scalars.add(float.class);
-		scalars.add(Float.class);
-		scalars.add(boolean.class);
-		scalars.add(Boolean.class);
+		this.scalars.add(String.class);
+		this.scalars.add(int.class);
+		this.scalars.add(Integer.class);
+		this.scalars.add(float.class);
+		this.scalars.add(Float.class);
+		this.scalars.add(boolean.class);
+		this.scalars.add(Boolean.class);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class GraphqlClientUtils {
 		if (graphqlIdentifier == null) {
 			throw new NullPointerException("A GraphQL identifier may not be null");
 		}
-		Matcher m = graphqlNamePattern.matcher(graphqlIdentifier);
+		Matcher m = this.graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
 			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name");
 		}
