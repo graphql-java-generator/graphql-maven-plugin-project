@@ -93,7 +93,7 @@
 
 		<!-- Below are some versions that overrides the one coming from spring-boot-starter -->
 		<!-- snakeyaml priori to 1.31 have various vulnarabilities -->
-		<snakeyaml.version>2.0</snakeyaml.version>
+		<snakeyaml.version>1.33</snakeyaml.version>
 	</properties>
 
 	<build>
