@@ -37,6 +37,14 @@ public class GraphqlClientUtils {
 	/** A singleton without Spring */
 	public static GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
+	/**
+	 * graphqlTypeMappingImplementations will contain the GraphQLTypeMapping.getJavaClass(String) method for each schema
+	 * used in this execution. This map is used to avoid to dynamically find this method, each time it has to be called.
+	 * 
+	 * @see #getClass(String, String, String)
+	 */
+	private static Map<String, Method> graphqlTypeMappingGetJavaClassImplementations = new HashMap<>();
+
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
@@ -49,13 +57,13 @@ public class GraphqlClientUtils {
 
 	public GraphqlClientUtils() {
 		// Add of all predefined scalars
-		scalars.add(String.class);
-		scalars.add(int.class);
-		scalars.add(Integer.class);
-		scalars.add(float.class);
-		scalars.add(Float.class);
-		scalars.add(boolean.class);
-		scalars.add(Boolean.class);
+		this.scalars.add(String.class);
+		this.scalars.add(int.class);
+		this.scalars.add(Integer.class);
+		this.scalars.add(float.class);
+		this.scalars.add(Float.class);
+		this.scalars.add(boolean.class);
+		this.scalars.add(Boolean.class);
 	}
 
 	/**
@@ -71,7 +79,7 @@ public class GraphqlClientUtils {
 		if (graphqlIdentifier == null) {
 			throw new NullPointerException("A GraphQL identifier may not be null");
 		}
-		Matcher m = graphqlNamePattern.matcher(graphqlIdentifier);
+		Matcher m = this.graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
 			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name");
 		}
@@ -201,15 +209,16 @@ public class GraphqlClientUtils {
 	 * @return
 	 */
 	public Class<?> getClass(String packageName, String graphQLTypeName, String schema) {
+		String graphQLTypeMappingClassname;
 
 		// First case, the simplest: standard GraphQL type
-		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
+		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Boolean.class;
-		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName))
+		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Integer.class;
-		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName))
+		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return String.class;
-		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName))
+		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Double.class;
 
 		// Then custom scalars
@@ -223,23 +232,57 @@ public class GraphqlClientUtils {
 
 		// Then other GraphQL types. This types should be linked to a generated java class. So we search for a class of
 		// this name in the given package.
+		// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
 		try {
-			// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
-			return (Class<?>) getClass().getClassLoader().loadClass(packageName + ".GraphQLTypeMapping")
-					.getMethod("getJavaClass", String.class).invoke(null, graphQLTypeName);
-		} catch (ClassNotFoundException e) {
-			// If GraphqlTypeMapping does not exist (in some tests), fallback to using the type name.
-			final String className = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName);
-			try {
-				return getClass().getClassLoader().loadClass(className);
-			} catch (ClassNotFoundException ex) {
-				throw new RuntimeException(
-						"Could not load class '" + className + "' for type '" + graphQLTypeName + "'", e);
-			}
-		} catch (ClassCastException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException("Could not get the class for type '" + graphQLTypeName + "' from '"
-					+ (packageName + ".GraphQLTypeMapping") + "'", e);
+			return (Class<?>) getGetJavaClassMethod(packageName).invoke(null, graphQLTypeName);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException("Error while calling GraphQLTypeMapping.getJavaClass(\"" + packageName //$NON-NLS-1$
+					+ "\"): ClassNotFoundException (" + e.getMessage() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+	}
+
+	/**
+	 * This method loads tries to load the GraphQLTypeMapping.getJavaClass(String) method in the
+	 * {@link #graphqlTypeMappingGetJavaClassImplementations} map, and return it, so that this method is loaded only
+	 * once for each GraphQL schema managed in this execution.
+	 * 
+	 * @param packageName
+	 * @return
+	 */
+	private Method getGetJavaClassMethod(String packageName) {
+		Method ret = graphqlTypeMappingGetJavaClassImplementations.get(packageName);
+
+		if (ret == null) {
+			String graphQLTypeMappingClassname1 = packageName + ".GraphQLTypeMapping"; //$NON-NLS-1$
+			String graphQLTypeMappingClassname2 = packageName + ".util.GraphQLTypeMapping"; //$NON-NLS-1$
+
+			// Let's find the GraphQLTypeMapping class.
+			Class<?> clazz;
+			try {
+				clazz = getClass().getClassLoader().loadClass(graphQLTypeMappingClassname1);
+			} catch (ClassNotFoundException e) {
+				try {
+					clazz = getClass().getClassLoader().loadClass(graphQLTypeMappingClassname2);
+				} catch (ClassNotFoundException e1) {
+					throw new RuntimeException(
+							"ClassNotFoundException: could find neither '" + graphQLTypeMappingClassname1 //$NON-NLS-1$
+									+ "' class nor '" + graphQLTypeMappingClassname2 + "' class"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			}
+
+			// let's find its getJavaClass method
+			try {
+				ret = clazz.getMethod("getJavaClass", String.class); //$NON-NLS-1$
+			} catch (NoSuchMethodException | SecurityException e) {
+				throw new RuntimeException(e.getClass().getSimpleName()
+						+ ": could find the 'getJavaClass' method in the " + clazz.getName() + " class"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+
+			// Let's store it, to avoid to have to find it again, latter on.
+			graphqlTypeMappingGetJavaClassImplementations.put(packageName, ret);
+		}
+
+		return ret;
 	}
 
 	/**
