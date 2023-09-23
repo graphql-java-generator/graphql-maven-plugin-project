@@ -18,7 +18,7 @@ import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_break_CTS;
-import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 
 import com.graphql_java_generator.annotation.RequestType;

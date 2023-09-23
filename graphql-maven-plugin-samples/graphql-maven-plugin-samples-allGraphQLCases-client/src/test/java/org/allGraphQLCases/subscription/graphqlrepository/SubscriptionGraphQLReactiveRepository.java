@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CTP_TheSubscriptionType_CTS;
-import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.graphqlrepository.FullRequest;

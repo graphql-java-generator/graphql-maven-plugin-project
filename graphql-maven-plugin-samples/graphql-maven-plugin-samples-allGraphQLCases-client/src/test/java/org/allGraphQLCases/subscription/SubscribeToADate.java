@@ -3,7 +3,7 @@ package org.allGraphQLCases.subscription;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;

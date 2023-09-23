@@ -3,8 +3,8 @@ package org.allGraphQLCases;
 import java.net.URI;
 import java.util.Collections;
 
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client2.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.forum.client.QueryExecutorForum;
 import org.slf4j.Logger;

@@ -6,7 +6,7 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.allGraphQLCases.client.GraphQLTypeMapping;
+import org.allGraphQLCases.client.util.GraphQLTypeMapping;
 import org.junit.jupiter.api.Test;
 
 /**

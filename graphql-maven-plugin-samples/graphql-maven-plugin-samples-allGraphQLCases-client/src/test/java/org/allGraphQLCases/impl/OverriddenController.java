@@ -3,7 +3,7 @@ package org.allGraphQLCases.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;

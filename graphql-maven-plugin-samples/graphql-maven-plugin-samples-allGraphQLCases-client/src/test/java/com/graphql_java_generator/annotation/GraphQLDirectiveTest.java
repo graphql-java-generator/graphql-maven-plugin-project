@@ -22,7 +22,7 @@ import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CIP_AllFieldCasesInterface_CIS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CUP_AnyCharacter_CUS;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

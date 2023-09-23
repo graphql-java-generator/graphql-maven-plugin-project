@@ -43,7 +43,15 @@ public class GraphqlClientUtils {
 	public static GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
-	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
+	/**
+	 * graphqlTypeMappingImplementations will contain the GraphQLTypeMapping.getJavaClass(String) method for each schema
+	 * used in this execution. This map is used to avoid to dynamically find this method, each time it has to be called.
+	 * 
+	 * @see #getClass(String, String, String)
+	 */
+	private static Map<String, Method> graphqlTypeMappingGetJavaClassImplementations = new HashMap<>();
+
+	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$"); //$NON-NLS-1$
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
@@ -73,11 +81,11 @@ public class GraphqlClientUtils {
 	 */
 	public void checkName(String graphqlIdentifier) throws GraphQLRequestPreparationException {
 		if (graphqlIdentifier == null) {
-			throw new NullPointerException("A GraphQL identifier may not be null");
+			throw new NullPointerException("A GraphQL identifier may not be null"); //$NON-NLS-1$
 		}
 		Matcher m = this.graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
-			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name");
+			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -103,14 +111,14 @@ public class GraphqlClientUtils {
 
 		if (shouldBeScalar != null) {
 			if (shouldBeScalar & !isScalar) {
-				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the GraphQL type '"
+				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the GraphQL type '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ field.getDeclaringClass().getName()
-						+ "' is not a GraphQLScalar. At least one field must be defined for the server response.");
+						+ "' is not a GraphQLScalar. At least one field must be defined for the server response."); //$NON-NLS-1$
 			}
 			if (!shouldBeScalar & isScalar) {
-				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the GraphQL type '"
+				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the GraphQL type '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ field.getDeclaringClass().getName()
-						+ "' is not a GraphQLScalar. At least one field must be defined for the server response.");
+						+ "' is not a GraphQLScalar. At least one field must be defined for the server response."); //$NON-NLS-1$
 			}
 		}
 
@@ -140,23 +148,23 @@ public class GraphqlClientUtils {
 		boolean isScalar = isScalar(method);
 
 		if (method.getReturnType() == null) {
-			throw new GraphQLRequestPreparationException("There is a method of name '" + fieldName
-					+ "' in the GraphQL type '" + method.getDeclaringClass().getName()
-					+ "', but this method is a void method: it can't represent the '" + fieldName + "' GraphQL field");
+			throw new GraphQLRequestPreparationException("There is a method of name '" + fieldName //$NON-NLS-1$
+					+ "' in the GraphQL type '" + method.getDeclaringClass().getName() //$NON-NLS-1$
+					+ "', but this method is a void method: it can't represent the '" + fieldName + "' GraphQL field"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		if (shouldBeScalar != null) {
 			if (shouldBeScalar && !isScalar) {
 				throw new GraphQLRequestPreparationException(
-						"The field '" + fieldName + "' (accessed through its getter: " + method.getName()
-								+ "') of the GraphQL type '" + method.getDeclaringClass().getName()
-								+ "' should be a scalar. But is is actually not a GraphQLScalar");
+						"The field '" + fieldName + "' (accessed through its getter: " + method.getName() //$NON-NLS-1$ //$NON-NLS-2$
+								+ "') of the GraphQL type '" + method.getDeclaringClass().getName() //$NON-NLS-1$
+								+ "' should be a scalar. But is is actually not a GraphQLScalar"); //$NON-NLS-1$
 			}
 			if (!shouldBeScalar && isScalar) {
 				throw new GraphQLRequestPreparationException(
-						"The field '" + fieldName + "' (accessed through its getter: '" + method.getName()
-								+ "') of the GraphQL type '" + method.getDeclaringClass().getName()
-								+ "' should not be a scalar. But is is actually a GraphQLScalar");
+						"The field '" + fieldName + "' (accessed through its getter: '" + method.getName() //$NON-NLS-1$ //$NON-NLS-2$
+								+ "') of the GraphQL type '" + method.getDeclaringClass().getName() //$NON-NLS-1$
+								+ "' should not be a scalar. But is is actually a GraphQLScalar"); //$NON-NLS-1$
 			}
 		}
 
@@ -179,14 +187,14 @@ public class GraphqlClientUtils {
 			// No GraphQLScalar or GraphQLNonScalar annotation: let's throw an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the class '"
+				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the class '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ field.getDeclaringClass().getName()
-						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
+						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation"); //$NON-NLS-1$
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The method '" + method.getName() + "' of the class '"
+				throw new GraphQLRequestPreparationException("The method '" + method.getName() + "' of the class '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ method.getDeclaringClass().getName()
-						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
+						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation"); //$NON-NLS-1$
 			}
 		}
 	}
@@ -205,15 +213,16 @@ public class GraphqlClientUtils {
 	 * @return
 	 */
 	public Class<?> getClass(String packageName, String graphQLTypeName, String schema) {
+		String graphQLTypeMappingClassname;
 
 		// First case, the simplest: standard GraphQL type
-		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
+		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Boolean.class;
-		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName))
+		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Integer.class;
-		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName))
+		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return String.class;
-		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName))
+		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
 			return Double.class;
 
 		// Then custom scalars
@@ -227,23 +236,57 @@ public class GraphqlClientUtils {
 
 		// Then other GraphQL types. This types should be linked to a generated java class. So we search for a class of
 		// this name in the given package.
+		// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
 		try {
-			// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
-			return (Class<?>) getClass().getClassLoader().loadClass(packageName + ".GraphQLTypeMapping")
-					.getMethod("getJavaClass", String.class).invoke(null, graphQLTypeName);
-		} catch (ClassNotFoundException e) {
-			// If GraphqlTypeMapping does not exist (in some tests), fallback to using the type name.
-			final String className = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName);
-			try {
-				return getClass().getClassLoader().loadClass(className);
-			} catch (ClassNotFoundException ex) {
-				throw new RuntimeException(
-						"Could not load class '" + className + "' for type '" + graphQLTypeName + "'", e);
-			}
-		} catch (ClassCastException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException("Could not get the class for type '" + graphQLTypeName + "' from '"
-					+ (packageName + ".GraphQLTypeMapping") + "'", e);
+			return (Class<?>) getGetJavaClassMethod(packageName).invoke(null, graphQLTypeName);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException("Error while calling GraphQLTypeMapping.getJavaClass(\"" + packageName //$NON-NLS-1$
+					+ "\"): ClassNotFoundException (" + e.getMessage() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+	}
+
+	/**
+	 * This method loads tries to load the GraphQLTypeMapping.getJavaClass(String) method in the
+	 * {@link #graphqlTypeMappingGetJavaClassImplementations} map, and return it, so that this method is loaded only
+	 * once for each GraphQL schema managed in this execution.
+	 * 
+	 * @param packageName
+	 * @return
+	 */
+	private Method getGetJavaClassMethod(String packageName) {
+		Method ret = graphqlTypeMappingGetJavaClassImplementations.get(packageName);
+
+		if (ret == null) {
+			String graphQLTypeMappingClassname1 = packageName + ".GraphQLTypeMapping"; //$NON-NLS-1$
+			String graphQLTypeMappingClassname2 = packageName + ".util.GraphQLTypeMapping"; //$NON-NLS-1$
+
+			// Let's find the GraphQLTypeMapping class.
+			Class<?> clazz;
+			try {
+				clazz = getClass().getClassLoader().loadClass(graphQLTypeMappingClassname1);
+			} catch (ClassNotFoundException e) {
+				try {
+					clazz = getClass().getClassLoader().loadClass(graphQLTypeMappingClassname2);
+				} catch (ClassNotFoundException e1) {
+					throw new RuntimeException(
+							"ClassNotFoundException: could find neither '" + graphQLTypeMappingClassname1 //$NON-NLS-1$
+									+ "' class nor '" + graphQLTypeMappingClassname2 + "' class"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			}
+
+			// let's find its getJavaClass method
+			try {
+				ret = clazz.getMethod("getJavaClass", String.class); //$NON-NLS-1$
+			} catch (NoSuchMethodException | SecurityException e) {
+				throw new RuntimeException(e.getClass().getSimpleName()
+						+ ": could find the 'getJavaClass' method in the " + clazz.getName() + " class"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+
+			// Let's store it, to avoid to have to find it again, latter on.
+			graphqlTypeMappingGetJavaClassImplementations.put(packageName, ret);
+		}
+
+		return ret;
 	}
 
 	/**
@@ -269,19 +312,19 @@ public class GraphqlClientUtils {
 		} catch (NoSuchFieldException | SecurityException e1) {
 			// If the classname finishes by "Response", we take a look at the superclass, as the XxxResponse classes are
 			// built as just inheriting from the query/mutation/subscription class
-			if (owningClass.getSimpleName().endsWith("Response")) {
+			if (owningClass.getSimpleName().endsWith("Response")) { //$NON-NLS-1$
 				try {
 					return owningClass.getSuperclass().getDeclaredField(fieldName);
 				} catch (NoSuchFieldException | SecurityException e2) {
 					if (mustFindField)
-						throw new GraphQLRequestPreparationException("Could not find fied '" + fieldName + "' in "
-								+ owningClass.getName() + ", nor in " + owningClass.getSuperclass().getName(), e1);
+						throw new GraphQLRequestPreparationException("Could not find fied '" + fieldName + "' in " //$NON-NLS-1$ //$NON-NLS-2$
+								+ owningClass.getName() + ", nor in " + owningClass.getSuperclass().getName(), e1); //$NON-NLS-1$
 				}
 			}
 
 			if (mustFindField)
 				throw new GraphQLRequestPreparationException(
-						"Could not find fied '" + fieldName + "' in " + owningClass.getName(), e1);
+						"Could not find fied '" + fieldName + "' in " + owningClass.getName(), e1); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return null;
 	}
@@ -301,7 +344,7 @@ public class GraphqlClientUtils {
 		if (owningClass.isInterface()) {
 			// We try to get the class of this getter of the field
 			try {
-				Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName));
+				Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName)); //$NON-NLS-1$
 
 				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
 				GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
@@ -312,19 +355,19 @@ public class GraphqlClientUtils {
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-							+ fieldName + "' in the interface '" + owningClass.getName()
-							+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
+							+ fieldName + "' in the interface '" + owningClass.getName() //$NON-NLS-1$
+							+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar "); //$NON-NLS-1$
 			} catch (NoSuchMethodException e) {
 				// Hum, the field doesn't exist.
 				if (!returnIsMandatory)
 					return null;
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-							+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
+							+ fieldName + "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-						+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
+						+ fieldName + "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} else {
 			// We try to get the class of this field
@@ -340,19 +383,19 @@ public class GraphqlClientUtils {
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName()
-							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
+							+ "' in the class '" + owningClass.getName() //$NON-NLS-1$
+							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar "); //$NON-NLS-1$
 			} catch (NoSuchFieldException e) {
 				// Hum, the field doesn't exist.
 				if (!returnIsMandatory)
 					return null;
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName() + "'", e);
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
+							+ "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-						+ "' in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
+						+ "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 	}
@@ -374,14 +417,14 @@ public class GraphqlClientUtils {
 			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the class '"
+				throw new GraphQLRequestPreparationException("The field '" + field.getName() + "' of the class '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ field.getDeclaringClass().getName()
-						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
+						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation"); //$NON-NLS-1$
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The method '" + method.getName() + "' of the class '"
+				throw new GraphQLRequestPreparationException("The method '" + method.getName() + "' of the class '" //$NON-NLS-1$ //$NON-NLS-2$
 						+ method.getDeclaringClass().getName()
-						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
+						+ "' has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation"); //$NON-NLS-1$
 			}
 		}
 	}
@@ -432,7 +475,7 @@ public class GraphqlClientUtils {
 		if (fieldClass == null && owningClass.isInterface()) {
 			// The class is an interface. So it's logical we didn't find this field as an attribute. Let's search for
 			// the relevant setter
-			String expectedMethodName = "get" + graphqlUtils.getPascalCase(name);
+			String expectedMethodName = "get" + graphqlUtils.getPascalCase(name); //$NON-NLS-1$
 			for (Method method : owningClass.getDeclaredMethods()) {
 				if (method.getName().equals(expectedMethodName)) {
 					// If we need to check that this field is (or is not) a scalar
@@ -443,8 +486,8 @@ public class GraphqlClientUtils {
 		}
 
 		if (fieldClass == null) {
-			throw new GraphQLRequestPreparationException("The GraphQL type '" + owningClass.getSimpleName() + "' ("
-					+ owningClass.getName() + ") has no field of name '" + name + "'");
+			throw new GraphQLRequestPreparationException("The GraphQL type '" + owningClass.getSimpleName() + "' (" //$NON-NLS-1$ //$NON-NLS-2$
+					+ owningClass.getName() + ") has no field of name '" + name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		return fieldClass;
@@ -473,9 +516,9 @@ public class GraphqlClientUtils {
 		// If we get parameters and values, let's put them into the map
 		if (paramsAndValues != null) {
 			if (paramsAndValues.length % 2 != 0) {
-				throw new GraphQLRequestExecutionException("An even number of parameters is expected, but "
+				throw new GraphQLRequestExecutionException("An even number of parameters is expected, but " //$NON-NLS-1$
 						+ paramsAndValues.length
-						+ " parameters where sent. This method expects a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)");
+						+ " parameters where sent. This method expects a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)"); //$NON-NLS-1$
 			}
 			for (int i = 0; i < paramsAndValues.length; i += 2) {
 				map.put((String) paramsAndValues[i], paramsAndValues[i + 1]);
@@ -510,40 +553,40 @@ public class GraphqlClientUtils {
 			// Note: the GraphqQL ID is managed by specific CustomScalars, which is specific to the client or the server
 			// mode (ID are String for the client, and UUID for the server)
 			return graphQLScalarType.getCoercing().parseValue(parameterValue);
-		} else if (parameterType.equals("Boolean")) {
+		} else if (parameterType.equals("Boolean")) { //$NON-NLS-1$
 			if (parameterValue instanceof Boolean) {
 				// This should not occur
 				return parameterValue;
 			} else if (parameterValue instanceof String) {
-				if (parameterValue.equals("true"))
+				if (parameterValue.equals("true")) //$NON-NLS-1$
 					return Boolean.TRUE;
-				else if (parameterValue.equals("false"))
+				else if (parameterValue.equals("false")) //$NON-NLS-1$
 					return Boolean.FALSE;
 			}
 			throw new RuntimeException(
-					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
-		} else if (parameterType.equals("Float")) {
+					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		} else if (parameterType.equals("Float")) { //$NON-NLS-1$
 			// GraphQL Float are double precision numbers
 			return Double.parseDouble((String) parameterValue);
-		} else if (parameterType.equals("Int")) {
+		} else if (parameterType.equals("Int")) { //$NON-NLS-1$
 			return Integer.parseInt((String) parameterValue);
-		} else if (parameterType.equals("Long")) {
+		} else if (parameterType.equals("Long")) { //$NON-NLS-1$
 			return Long.parseLong((String) parameterValue);
-		} else if (parameterType.equals("String")) {
+		} else if (parameterType.equals("String")) { //$NON-NLS-1$
 			return parameterValue;
 		} else {
 			// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
 			if (parameterClass.isEnum()) {
 				// This parameter is an enum. The parameterValue is one of its elements
-				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
+				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class); //$NON-NLS-1$
 				return graphqlUtils.invokeMethod(valueOf, null, parameterValue);
 			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
 				// This parameter is a boolean. Only true and false are valid boolean.
-				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
-					throw new RuntimeException("Only true and false are allowed values for booleans, but the value is '"
-							+ parameterValue + "'");
+				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) { //$NON-NLS-1$ //$NON-NLS-2$
+					throw new RuntimeException("Only true and false are allowed values for booleans, but the value is '" //$NON-NLS-1$
+							+ parameterValue + "'"); //$NON-NLS-1$
 				}
-				return "true".equals(parameterValue);
+				return "true".equals(parameterValue); //$NON-NLS-1$
 			} else if (parameterClass.isAssignableFrom(Integer.class)) {
 				return Integer.parseInt((String) parameterValue);
 			} else if (parameterClass.isAssignableFrom(Float.class)) {
@@ -552,8 +595,8 @@ public class GraphqlClientUtils {
 		} // else (scalarType != null)
 
 		// Too bad...
-		throw new RuntimeException("Couldn't parse the value'" + parameterValue + "' for the parameter type '"
-				+ parameterType + "': non managed GraphQL type (maybe a custom scalar is not properly registered?)");
+		throw new RuntimeException("Couldn't parse the value'" + parameterValue + "' for the parameter type '" //$NON-NLS-1$ //$NON-NLS-2$
+				+ parameterType + "': non managed GraphQL type (maybe a custom scalar is not properly registered?)"); //$NON-NLS-1$
 	}
 
 	/**
@@ -588,7 +631,7 @@ public class GraphqlClientUtils {
 			return graphQLEnumType.value();
 		}
 
-		throw new RuntimeException("Could not find the GraphQL type for the class " + clazz.getName());
+		throw new RuntimeException("Could not find the GraphQL type for the class " + clazz.getName()); //$NON-NLS-1$
 	}
 
 	/**
@@ -631,15 +674,15 @@ public class GraphqlClientUtils {
 	public GraphQLScalarType getGraphQLScalarTypeFromName(String typeName, String schema) {
 
 		// Is it a known type ?
-		if (typeName.equals("String")) {
+		if (typeName.equals("String")) { //$NON-NLS-1$
 			return graphql.Scalars.GraphQLString;
-		} else if (typeName.equals("Boolean")) {
+		} else if (typeName.equals("Boolean")) { //$NON-NLS-1$
 			return graphql.Scalars.GraphQLBoolean;
-		} else if (typeName.equals("Float")) {
+		} else if (typeName.equals("Float")) { //$NON-NLS-1$
 			return graphql.Scalars.GraphQLFloat;
-		} else if (typeName.equals("Int")) {
+		} else if (typeName.equals("Int")) { //$NON-NLS-1$
 			return graphql.Scalars.GraphQLInt;
-		} else if (typeName.equals("ID")) {
+		} else if (typeName.equals("ID")) { //$NON-NLS-1$
 			return graphql.Scalars.GraphQLID;
 		}
 
@@ -674,8 +717,8 @@ public class GraphqlClientUtils {
 	 *         If this directive has no parameters, an empty map is returned.
 	 */
 	Map<String, String> getDirectiveParameters(Object o, String parameterName, String directiveName) {
-		if (directiveName == null || directiveName.equals(""))
-			throw new RuntimeException("directiveName may not be null, nor an empty string");
+		if (directiveName == null || directiveName.equals("")) //$NON-NLS-1$
+			throw new RuntimeException("directiveName may not be null, nor an empty string"); //$NON-NLS-1$
 
 		GraphQLDirective[] directives = null;
 		GraphQLDirective directive = null;
@@ -684,8 +727,8 @@ public class GraphqlClientUtils {
 			// A parameter name has been given: o must be a method. And t=we should return the GraphQLDirective content
 			// for the parameterName parameters's of the o method
 			if (!(o instanceof Method)) {
-				throw new RuntimeException("parameterName is not null. It contains \"" + parameterName
-						+ "\". So o must be a Method, but it is a " + o.getClass().getName());
+				throw new RuntimeException("parameterName is not null. It contains \"" + parameterName //$NON-NLS-1$
+						+ "\". So o must be a Method, but it is a " + o.getClass().getName()); //$NON-NLS-1$
 			}
 			Parameter[] methodParameters = ((Method) o).getParameters();
 			oName = ((Method) o).getName();
@@ -698,7 +741,7 @@ public class GraphqlClientUtils {
 
 			if (directives == null) {
 				throw new RuntimeException(
-						"The method " + ((Method) o).getName() + " has no parameter of name \"" + parameterName + "\"");
+						"The method " + ((Method) o).getName() + " has no parameter of name \"" + parameterName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		} else if (o instanceof Class) {
 			directives = ((Class<?>) o).getAnnotationsByType(GraphQLDirective.class);
@@ -710,7 +753,7 @@ public class GraphqlClientUtils {
 			directives = ((Field) o).getAnnotationsByType(GraphQLDirective.class);
 			oName = ((Field) o).getName();
 		} else
-			throw new RuntimeException("non managed object type: " + o.getClass().getName());
+			throw new RuntimeException("non managed object type: " + o.getClass().getName()); //$NON-NLS-1$
 
 		// Ok, we've found the directive annotations. Let's find the one that match the given name
 		for (GraphQLDirective d : directives) {
@@ -719,8 +762,8 @@ public class GraphqlClientUtils {
 			}
 		}
 		if (directive == null) {
-			throw new RuntimeException("No directive of name \"" + directiveName + "\" where found on the "
-					+ o.getClass().getName() + " of name \"" + oName + "\" (parameterName=" + parameterName + ")");
+			throw new RuntimeException("No directive of name \"" + directiveName + "\" where found on the " //$NON-NLS-1$ //$NON-NLS-2$
+					+ o.getClass().getName() + " of name \"" + oName + "\" (parameterName=" + parameterName + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 
 		// Ok, we've found the asked directive. Let's build and return the map of its parameter names and values

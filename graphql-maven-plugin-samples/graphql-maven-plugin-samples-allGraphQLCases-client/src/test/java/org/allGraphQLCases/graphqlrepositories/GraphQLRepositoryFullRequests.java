@@ -7,7 +7,7 @@ import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.graphqlrepository.BindParameter;

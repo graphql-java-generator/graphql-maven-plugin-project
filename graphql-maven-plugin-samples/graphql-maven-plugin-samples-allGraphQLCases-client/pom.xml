@@ -45,7 +45,6 @@
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
 							<schemaPersonalizationFile>/src/graphqls/schema_personalization/schema_personalization.json</schemaPersonalizationFile>
-							<separateUtilityClasses>false</separateUtilityClasses>
 							<springBeanSuffix>AllGraphQLCases</springBeanSuffix>
 							<customScalars>
 								<customScalar>
@@ -113,7 +112,7 @@
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.client2</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
-							<separateUtilityClasses>true</separateUtilityClasses>
+							<separateUtilityClasses>false</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<springBeanSuffix>AllGraphQLCases2</springBeanSuffix>
 							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin2</targetSourceFolder>

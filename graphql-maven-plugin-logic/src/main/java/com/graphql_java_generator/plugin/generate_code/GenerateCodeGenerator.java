@@ -211,9 +211,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				logger.debug("Generating subscription"); //$NON-NLS-1$
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 						TargetFileType.SUBSCRIPTION, CodeTemplate.SUBSCRIPTION, true);
-				logger.debug("Generating client side mapping from graphql type to java type"); //$NON-NLS-1$
-				i += generateClientTypeMapping();
 			}
+
+			logger.debug("Generating client side mapping from graphql type to java type"); //$NON-NLS-1$
+			i += generateClientTypeMapping();
 
 			// Generation of the query/mutation/subscription executor classes
 			logger.debug("Generating query executor"); //$NON-NLS-1$

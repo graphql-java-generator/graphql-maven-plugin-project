@@ -4,7 +4,7 @@
 package org.allGraphQLCases.subscription.graphqlrepository;
 
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;

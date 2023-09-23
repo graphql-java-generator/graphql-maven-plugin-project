@@ -20,15 +20,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.client.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.GraphQLReactiveRequestAllGraphQLCases;
-import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.TheSubscriptionTypeReactiveExecutorAllGraphQLCases;
-import org.allGraphQLCases.client2.util.TheSubscriptionTypeReactiveExecutorAllGraphQLCases2;
+import org.allGraphQLCases.client.util.GraphQLReactiveRequestAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client2.TheSubscriptionTypeReactiveExecutorAllGraphQLCases2;
 import org.allGraphQLCases.subscription.ExecSubscriptionIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

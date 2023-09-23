@@ -5,7 +5,7 @@ package org.allGraphQLCases.demo.subscription;
 
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

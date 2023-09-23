@@ -1,4 +1,10 @@
 
+# Not released yet
+
+Client mode:
+* Issue 199: the generated code would not compile if the GraphQL schema is too big
+
+
 # 2.3
 
 Client and server modes:

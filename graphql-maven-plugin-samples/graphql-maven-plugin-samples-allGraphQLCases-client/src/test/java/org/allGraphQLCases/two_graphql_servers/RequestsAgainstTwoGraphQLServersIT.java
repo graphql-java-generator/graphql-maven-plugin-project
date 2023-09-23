@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
 import org.forum.client.Board;
 import org.forum.client.Member;

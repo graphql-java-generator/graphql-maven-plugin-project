@@ -14,8 +14,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
@@ -23,9 +23,9 @@ import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.MyQueryTypeReactiveExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.graphqlrepositories.GraphQLReactiveRepositoryFullRequests;
 import org.allGraphQLCases.graphqlrepositories.GraphQLRepositoryFullRequests;
 import org.allGraphQLCases.impl.AbstractIT;
