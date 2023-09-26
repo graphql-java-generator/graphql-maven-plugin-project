@@ -6,6 +6,7 @@ package com.graphql_java_generator.exception;
 import java.util.List;
 
 import org.springframework.graphql.ResponseError;
+import org.springframework.graphql.client.ClientGraphQlResponse;
 
 import graphql.GraphQLError;
 
@@ -24,15 +25,21 @@ public class GraphQLRequestExecutionException extends Exception implements Graph
 	private static final long serialVersionUID = 1L;
 
 	private final List<ResponseError> errors;
+	private final Object data;
+	private final ClientGraphQlResponse response;
 
 	public GraphQLRequestExecutionException(String msg) {
 		super(msg);
-		errors = null;
+		this.errors = null;
+		this.data = null;
+		this.response = null;
 	}
 
 	public GraphQLRequestExecutionException(String msg, Throwable cause) {
 		super(msg, cause);
-		errors = null;
+		this.errors = null;
+		this.data = null;
+		this.response = null;
 	}
 
 	/**
@@ -40,15 +47,31 @@ public class GraphQLRequestExecutionException extends Exception implements Graph
 	 * 
 	 * @param errors
 	 *            A list of GraphQL error messages
+	 * @param data
+	 *            the data returned by the server, parsed by the plugin into the generated POJO that match the GraphQL
+	 *            schema. For instance, when executing a full query that requests to query's field, it can for instance
+	 *            contain the valid response data for one, while there is an error for the second queried field.
 	 */
-	public GraphQLRequestExecutionException(List<ResponseError> errors) {
+	public GraphQLRequestExecutionException(List<ResponseError> errors, Object data, ClientGraphQlResponse response) {
 		super(buildMessage(errors));
 		this.errors = errors;
+		this.data = data;
+		this.response = response;
 	}
 
 	@Override
 	public List<ResponseError> getErrors() {
-		return errors;
+		return this.errors;
+	}
+
+	@Override
+	public Object getData() {
+		return this.data;
+	}
+
+	@Override
+	public ClientGraphQlResponse getResponse() {
+		return this.response;
 	}
 
 	/**
@@ -64,13 +87,13 @@ public class GraphQLRequestExecutionException extends Exception implements Graph
 		boolean first = true;
 
 		if (errors == null || errors.size() == 0) {
-			sb.append("Unknown error");
+			sb.append("Unknown error"); //$NON-NLS-1$
 		} else {
 			sb.append(errors.size());
-			sb.append(" error(s) occurred: ");
+			sb.append(" error(s) occurred: "); //$NON-NLS-1$
 			for (ResponseError error : errors) {
 				if (!first)
-					sb.append(", ");
+					sb.append(", "); //$NON-NLS-1$
 				sb.append(error.getMessage());
 			}
 		}

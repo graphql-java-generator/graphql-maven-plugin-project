@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -48,8 +52,10 @@ public class ErrorIT {
 
 		// Go, go, go
 		GraphQLRequestExecutionException ex = assertThrows(GraphQLRequestExecutionException.class,
-				() -> myQuery.exec("{error(errorLabel:\"add a SourceLocation\"){}}"));
+				() -> this.myQuery.exec("{error(errorLabel:\"add a SourceLocation\"){}}"));
 
+		// When the parameter for the error query is "add a SourceLocation", then a special management should be
+		// executed on server side. Let's test it.
 		assertTrue(ex.getMessage().contains("add a SourceLocation"), "The exception message is: " + ex.getMessage());
 
 		List<ResponseError> errors = ex.getErrors();
@@ -84,7 +90,7 @@ public class ErrorIT {
 	void test_ErrorExtension() {
 		// Go, go, go
 		GraphQLRequestExecutionException ex = assertThrows(GraphQLRequestExecutionException.class,
-				() -> myQuery.exec("{error(errorLabel:\"add an extension\"){}}"));
+				() -> this.myQuery.exec("{error(errorLabel:\"add an extension\"){}}"));
 
 		assertTrue(ex.getMessage().contains("add an extension"), "The exception message is: " + ex.getMessage());
 
@@ -99,5 +105,38 @@ public class ErrorIT {
 		//
 		assertEquals("An error extension's value (MyInstrumentation)", extensions.get("An error extension"));
 		assertEquals("Another error extension's value (MyInstrumentation)", extensions.get("Another error extension"));
+	}
+
+	/**
+	 * Check the SourceLocation, that is added by the MyInstrumentation class, in the server project
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 * @throws GraphQLRequestPreparationException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_ExceptionGetDataParsed() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+
+		// Go, go, go
+
+		// When the parameter for the error query is "add a SourceLocation", then a special management should be
+		// executed on server side, for exception management. Let's test it.
+		GraphQLRequestExecutionException ex = assertThrows(GraphQLRequestExecutionException.class,
+				() -> this.myQuery.exec("{error(errorLabel:\"some exception message\"){} withoutParameters}"));
+
+		// We should have received the relevant message.
+		assertTrue(ex.getMessage().contains("some exception message"), "The exception message is: " + ex.getMessage());
+
+		// The data part of the response should have been read
+		assertNotNull(ex.getResponse());
+		assertNotNull(ex.getData());
+		assertTrue(ex.getData() instanceof CTP_MyQueryType_CTS, "ex.getData():" + ex.getData().getClass().getName());
+		assertNotNull(ex.getData() instanceof CTP_MyQueryType_CTS, "ex.getData():" + ex.getData().getClass().getName());
+		List<CIP_Character_CIS> withoutParameters = ((CTP_MyQueryType_CTS) ex.getData()).getWithoutParameters();
+		assertNotNull(withoutParameters);
+		assertTrue(withoutParameters.size() > 0);
+		assertTrue(
+				withoutParameters.get(0) instanceof CTP_Droid_CTS || withoutParameters.get(0) instanceof CTP_Human_CTS);
+
 	}
 }

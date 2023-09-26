@@ -6,6 +6,7 @@ package com.graphql_java_generator.exception;
 import java.util.List;
 
 import org.springframework.graphql.ResponseError;
+import org.springframework.graphql.client.ClientGraphQlResponse;
 
 /**
  * This class is the unchecked exception version of the {@link GraphQLRequestExecutionException}. It is used in reactive
@@ -36,4 +37,13 @@ public class GraphQLRequestExecutionUncheckedException extends RuntimeException
 		return this.graphQLRequestExecutionException.getErrors();
 	}
 
+	@Override
+	public Object getData() {
+		return this.graphQLRequestExecutionException.getData();
+	}
+
+	@Override
+	public ClientGraphQlResponse getResponse() {
+		return this.graphQLRequestExecutionException.getResponse();
+	}
 }

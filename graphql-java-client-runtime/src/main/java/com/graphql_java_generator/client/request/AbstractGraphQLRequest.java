@@ -144,25 +144,28 @@ public abstract class AbstractGraphQLRequest {
 		 * @return
 		 */
 		public R accept(ClientGraphQlResponse response) {
-			// It's a valid value. Let's notify the callback
-			if (!response.isValid()) {
-				throw new GraphQLRequestExecutionUncheckedException(
-						new GraphQLRequestExecutionException(response.getErrors()));
-			}
+			R ret = null;
 
 			try {
 				// To properly manage aliases, interfaces and unions, we use our own mapper
 				GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
-				R r = objectMapper.treeToValue((Map<?, ?>) response.getData(), this.subscriptionType);
-				r.setExtensions(objectMapper.valueToTree(response.getExtensions()));
-				return r;
+				ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), this.subscriptionType);
+				ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
 			} catch (JsonProcessingException e) {
 				GraphQLRequestExecutionException ex = new GraphQLRequestExecutionException(
-						"Error when executing query <" //$NON-NLS-1$
+						"Error when receiving notifications for subscription <" //$NON-NLS-1$
 								+ AbstractGraphQLRequest.this.graphQLRequest + ">: " + e.getMessage(), //$NON-NLS-1$
 						e);
 				throw new GraphQLRequestExecutionUncheckedException(ex);
 			}
+
+			// It's a valid value. Let's notify the callback
+			if (!response.isValid()) {
+				throw new GraphQLRequestExecutionUncheckedException(
+						new GraphQLRequestExecutionException(response.getErrors(), ret, response));
+			}
+
+			return ret;
 		}
 	}
 
@@ -563,22 +566,27 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	private <R extends GraphQLRequestObject> R extractResponseData(Class<R> r, ClientGraphQlResponse response,
 			Payload payload) throws GraphQLRequestExecutionException {
-		// Does this response contain errors?
-		if (response.getErrors() != null && response.getErrors().size() > 0) {
-			throw new GraphQLRequestExecutionException(response.getErrors());
-		}
+		R ret = null;
 
 		// No error, let's parse the response data
 		try {
 			// To properly manage aliases, interfaces and unions, we use our own mapper
 			GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
-			R ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), r);
-			ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
-			return ret;
+			ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), r);
+			if (ret != null) {
+				ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
+			}
 		} catch (JsonProcessingException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + payload.query + ">: " + e.getMessage(), e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+
+		// Does this response contain errors?
+		if (response.getErrors() != null && response.getErrors().size() > 0) {
+			throw new GraphQLRequestExecutionException(response.getErrors(), ret, response);
+		}
+
+		return ret;
 	}
 
 	/**

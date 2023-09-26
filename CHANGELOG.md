@@ -3,12 +3,13 @@
 
 Client mode:
 * Issue 199: the generated code would not compile if the GraphQL schema is too big
+* Issue #195: the _data_ part should be parsed even when there are errors. If an error occurs during the request execution (for instance the GraphQL server returns errors in its response), then the plugin tries to parse the _data _ part of the response. The parsed _data_ is attached to the thrown `GraphQLRequestExecutionException` or `GraphQLRequestExecutionUncheckedException`, along with the full response. They can be retrieved with the `getData()` and `getResponse()` methods.
 
 
 # 2.3
 
 Client and server modes:
-* Correction of issues #184 and #198: error with custom scalar, when the custom scalar's class is not in the plugin's classpath
+* Correction of issues #184 and #198: error with custom scalars, when the custom scalar's class is not in the plugin's classpath
 * The generated code generates much less warnings
 
 Client mode:
@@ -76,6 +77,15 @@ You can check these pages for more information on how to migrate from 1.x versio
 Know issues:
 * All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
 * For Spring 3, in client mode, copyRuntimeSources should be manually to false, to avoid compilation errors
+
+
+# 1.18.12
+
+Client and server modes:
+* Correction of issues #184 and #198: error with custom scalars, when the custom scalar's class is not in the plugin's classpath
+
+Client mode:
+* Issue 199: the generated code would not compile if the GraphQL schema is too big
 
 # 1.18.11
 
