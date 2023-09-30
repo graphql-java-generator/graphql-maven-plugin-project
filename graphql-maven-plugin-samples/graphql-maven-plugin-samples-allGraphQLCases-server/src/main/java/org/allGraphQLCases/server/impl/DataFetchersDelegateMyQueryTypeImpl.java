@@ -57,14 +57,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public List<SIP_Character_SIS> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
-		return generator.generateInstanceList(SIP_Character_SIS.class, 10);
+		return this.generator.generateInstanceList(SIP_Character_SIS.class, 10);
 	}
 
 	@Override
 	public SIP_Character_SIS withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_CharacterInput_SINS character) {
 		if (character == null) {
-			return generator.generateInstance(STP_Human_STS.class);
+			return this.generator.generateInstance(STP_Human_STS.class);
 		} else {
 			SIP_Character_SIS c = mapper.map(character, getClassFromName(SIP_Character_SIS.class, character.getType()));
 			c.setId(UUID.randomUUID());
@@ -91,7 +91,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public SIP_Character_SIS withEnum(DataFetchingEnvironment dataFetchingEnvironment,
 			SEP_Episode_SES SEP_Episode_SES) {
-		SIP_Character_SIS c = generator.generateInstance(STP_Droid_STS.class);
+		SIP_Character_SIS c = this.generator.generateInstance(STP_Droid_STS.class);
 
 		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the
 		// graphql manages the joins).
@@ -153,7 +153,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		if (input != null) {
 			ret = mapper.map(input, STP_AllFieldCases_STS.class);
 		} else {
-			ret = generator.generateInstance(STP_AllFieldCases_STS.class);
+			ret = this.generator.generateInstance(STP_AllFieldCases_STS.class);
 		}
 
 		// If the 'break' field is requested, we add the content of its 'if' parameter to the returned 'break' field
@@ -263,7 +263,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public SIP_Character_SIS directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
-		STP_Human_STS ret = generator.generateInstance(STP_Human_STS.class);
+		STP_Human_STS ret = this.generator.generateInstance(STP_Human_STS.class);
 		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
 				.getSelections().get(1);
 
@@ -546,7 +546,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public STP_ReservedJavaKeywordAllFieldCases_STS reservedJavaKeywordAllFieldCases(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		return generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
+		return this.generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
 	}
 
 	@Override
@@ -610,6 +610,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public String checkOverriddenController(DataFetchingEnvironment dataFetchingEnvironment) {
 		return "Welcome from the default controller";
+	}
+
+	@Override
+	public Boolean issue200(DataFetchingEnvironment dataFetchingEnvironment, Boolean param) {
+		return param;
 	}
 
 }

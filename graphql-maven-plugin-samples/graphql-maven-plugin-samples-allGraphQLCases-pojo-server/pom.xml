@@ -56,6 +56,11 @@
 									<graphQLScalarTypeGetter>org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
+									<graphQLTypeName>MyBoolean</graphQLTypeName>
+									<javaType>java.lang.Boolean</javaType>
+									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>Long</graphQLTypeName>
 									<javaType>java.lang.Long</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.GraphQLLong</graphQLScalarTypeStaticField>

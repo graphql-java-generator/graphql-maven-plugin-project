@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import org.allGraphQLCases.AliasesIT.HumanSubscriptionCallback;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,9 @@ public class EnumIT {
 	static protected Logger logger = LoggerFactory.getLogger(EnumIT.class);
 
 	@Autowired
-	MyQueryTypeExecutorAllGraphQLCases queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryExecutor;
+	@Autowired
+	AnotherMutationTypeExecutorAllGraphQLCases mutationExecutor;
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
@@ -86,9 +88,9 @@ public class EnumIT {
 
 	@Test
 	void testQueriesThatReturnEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertNull(this.queryType.returnEnum(""));
-		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, this.queryType.returnMandatoryEnum(""));
-		assertNull(this.queryType.returnListOfEnums(""));
+		assertNull(this.queryExecutor.returnEnum(""));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, this.queryExecutor.returnMandatoryEnum(""));
+		assertNull(this.queryExecutor.returnListOfEnums(""));
 		compareList(//
 				Arrays.asList(//
 						Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean,
@@ -97,18 +99,18 @@ public class EnumIT {
 						null, //
 						Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._default, null,
 								CEP_EnumWithReservedJavaKeywordAsValues_CES._implements)), //
-				this.queryType.returnListOfListOfEnums(""), //
+				this.queryExecutor.returnListOfListOfEnums(""), //
 				"returnListOfListOfEnums");
-		assertNull(this.queryType.returnListOfMandatoryEnums(""));
+		assertNull(this.queryExecutor.returnListOfMandatoryEnums(""));
 		compareList(//
 				Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean, null,
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._break),
-				this.queryType.returnMandatoryListOfEnums(""), //
+				this.queryExecutor.returnMandatoryListOfEnums(""), //
 				"returnMandatoryListOfEnums");
 		compareList(//
 				Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte,
 						CEP_EnumWithReservedJavaKeywordAsValues_CES._case),
-				this.queryType.returnMandatoryListOfMandatoryEnums(""), //
+				this.queryExecutor.returnMandatoryListOfMandatoryEnums(""), //
 				"returnMandatoryListOfMandatoryEnums");
 	}
 

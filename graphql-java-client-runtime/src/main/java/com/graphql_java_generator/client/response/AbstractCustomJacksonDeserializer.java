@@ -107,12 +107,12 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 
 		if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 			return null;
-		} else if (list) {
+		} else if (this.list) {
 
 			if (!p.currentToken().equals(JsonToken.START_ARRAY)) {
 				// Oups
-				throw new JsonParseException(p, "Found a " + p.currentToken().asString()
-						+ " token, but the current deserializer expects a list");
+				throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+						+ " token, but the current deserializer expects a list"); //$NON-NLS-1$
 			}
 
 			// We're at the beginning of a list. Let's read it
@@ -121,45 +121,45 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			while (!p.nextToken().equals(JsonToken.END_ARRAY)) {
 				if (p.currentToken().equals(JsonToken.START_ARRAY)) {
 					// We're starting a sublist.
-					if (itemDeserializer == null) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
-								+ " JSON token, but the itemDeserializer is not defined. This JSON token can not be handled.");
-					} else if (!itemDeserializer.list) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
-								+ " JSON token, but the itemDeserializer doesn't manage list. Hint: The number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
+					if (this.itemDeserializer == null) {
+						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+								+ " JSON token, but the itemDeserializer is not defined. This JSON token can not be handled."); //$NON-NLS-1$
+					} else if (!this.itemDeserializer.list) {
+						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+								+ " JSON token, but the itemDeserializer doesn't manage list. Hint: The number of embedded lists doesn't match the defined deserializer for the GraphQL field."); //$NON-NLS-1$
 					} else {
 						// Ok. Let's deserialize the sublist.
-						returnedList.add(itemDeserializer.deserialize(p, ctxt));
+						returnedList.add(this.itemDeserializer.deserialize(p, ctxt));
 					}
-				} else if (itemDeserializer != null) {
+				} else if (this.itemDeserializer != null) {
 					// We've found a final value (not a list).
 					if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 						returnedList.add(null);
-					} else if (itemDeserializer.list) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
-								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
+					} else if (this.itemDeserializer.list) {
+						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field."); //$NON-NLS-1$
 					} else {
-						returnedList.add(itemDeserializer.deserialize(p, ctxt));
+						returnedList.add(this.itemDeserializer.deserialize(p, ctxt));
 					}
 				} else {
 					// It's a final value, and it is not a custom scalar (otherwise, itemDeserializer would be defined)
 					// Let's let Jackson parse this value.
-					Object o = p.readValueAs(handledType);
+					Object o = p.readValueAs(this.handledType);
 					returnedList.add(o);
 				}
 			} // while
 			return (T) returnedList;
 
-		} else if (itemDeserializer != null) {
+		} else if (this.itemDeserializer != null) {
 
 			// We're not in a list, and a deserializer has been defined. Let's use it to deserialize this value
-			return (T) itemDeserializer.deserialize(p, ctxt);
+			return (T) this.itemDeserializer.deserialize(p, ctxt);
 
-		} else if (graphQLScalarType == null) {
+		} else if (this.graphQLScalarType == null) {
 
 			// Too bad
 			throw new JsonParseException(p,
-					"Having to parse a " + p.currentToken() + ", but there is no graphQLScalarType defined");
+					"Having to parse a " + p.currentToken() + ", but there is no graphQLScalarType defined"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		} else {
 
@@ -169,6 +169,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			case VALUE_FALSE:
 			case VALUE_TRUE:
 				value = new BooleanValue(p.getBooleanValue());
+				break;
 			case VALUE_NUMBER_FLOAT:
 				value = new FloatValue(p.getDecimalValue());
 				break;
@@ -182,12 +183,12 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 				value = null;
 				break;
 			default:
-				throw new JsonParseException(p, "Non managed JSON token: " + p.currentToken());
+				throw new JsonParseException(p, "Non managed JSON token: " + p.currentToken()); //$NON-NLS-1$
 			}
 			if (value == null) {
 				return null;
 			} else {
-				return (T) graphQLScalarType.getCoercing().parseLiteral(value);
+				return (T) this.graphQLScalarType.getCoercing().parseLiteral(value);
 			}
 
 		}

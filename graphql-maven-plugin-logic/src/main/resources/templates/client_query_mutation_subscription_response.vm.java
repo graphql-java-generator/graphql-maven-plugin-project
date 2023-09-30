@@ -5,6 +5,7 @@ package ${packageUtilName};
 import ${configuration.packageName}.${object.javaName};
 #end
 
+import com.graphql_java_generator.annotation.GraphQLDeprecatedResponseForRequestObject;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.RequestType;
@@ -20,6 +21,7 @@ import com.graphql_java_generator.annotation.RequestType;
  */
 @Deprecated
 ${object.annotation}
+@GraphQLDeprecatedResponseForRequestObject("${configuration.packageName}.${object.javaName}")
 @SuppressWarnings("unused")
 public class ${object.name}Response extends ${object.javaName} {
 

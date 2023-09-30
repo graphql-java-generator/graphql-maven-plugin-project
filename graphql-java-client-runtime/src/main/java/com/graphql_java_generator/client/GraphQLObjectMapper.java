@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.graphql_java_generator.annotation.GraphQLDeprecatedResponseForRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -62,7 +63,7 @@ public class GraphQLObjectMapper {
 	 * This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a proper
 	 * deserialization of each alias value returned in the json response
 	 */
-	final private Map<Class<?>, Map<String, Field>> aliasFields;
+	final Map<Class<?>, Map<String, Field>> aliasFields;
 
 	/** The package where the GraphQL objects have been generated */
 	String graphQLObjectsPackage;
@@ -84,13 +85,26 @@ public class GraphQLObjectMapper {
 			JsonDeserialize jsonDeserialize = null;
 			Object value = null;
 
-			if (logger.isTraceEnabled()) {
-				logger.trace("Reading alias '" + propertyName + "' for " + beanOrClass.getClass().getName());
+			if (this.logger.isTraceEnabled()) {
+				this.logger.trace("Reading alias '" + propertyName + "' for " + beanOrClass.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			// Let's check if there is a CustomDeserializer for the field that this alias maps to
-			if (aliasFields != null) {
-				aliases = aliasFields.get(beanOrClass.getClass());
+			if (GraphQLObjectMapper.this.aliasFields != null) {
+				// If the deprecated response type is generated, then the bean's class is this deprecated response type,
+				// instead of the query, mutation or subscription type. We have to check that, to retrieve the real
+				// GraphQL type, and find its custom deserializer, if one was defined.
+				Class<?> clazz = beanOrClass.getClass();
+				GraphQLDeprecatedResponseForRequestObject annotation = clazz
+						.getAnnotation(GraphQLDeprecatedResponseForRequestObject.class);
+				if (annotation != null) {
+					try {
+						clazz = clazz.getClassLoader().loadClass(annotation.value());
+					} catch (ClassNotFoundException e) {
+						throw new RuntimeException(e.getMessage(), e);
+					}
+				}
+				aliases = GraphQLObjectMapper.this.aliasFields.get(clazz);
 			}
 			if (aliases != null) {
 				targetField = aliases.get(propertyName);
@@ -115,14 +129,14 @@ public class GraphQLObjectMapper {
 			}
 
 			// Let's call the setAliasValue of the target object, to set the alias's value we've just read
-			String methodName = "setAliasValue";
+			String methodName = "setAliasValue"; //$NON-NLS-1$
 			try {
 				Method setAliasValue = beanOrClass.getClass().getMethod(methodName, String.class, Object.class);
 				setAliasValue.invoke(beanOrClass, propertyName, value);
 			} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
-				throw new RuntimeException("Could not find or invoke the method '" + methodName + "' in the "
-						+ beanOrClass.getClass().getName() + " class", e);
+				throw new RuntimeException("Could not find or invoke the method '" + methodName + "' in the " //$NON-NLS-1$ //$NON-NLS-2$
+						+ beanOrClass.getClass().getName() + " class", e); //$NON-NLS-1$
 			}
 
 			return true;
@@ -136,8 +150,8 @@ public class GraphQLObjectMapper {
 	 *            The package where the GraphQL objects have been generated
 	 */
 	public GraphQLObjectMapper(String graphQLObjectsPackage, Map<Class<?>, Map<String, Field>> aliasFields) {
-		objectMapper = new ObjectMapper();
-		objectMapper.addHandler(new GraphQLDeserializationProblemHandler());
+		this.objectMapper = new ObjectMapper();
+		this.objectMapper.addHandler(new GraphQLDeserializationProblemHandler());
 
 		this.graphQLObjectsPackage = graphQLObjectsPackage;
 		this.aliasFields = aliasFields;
@@ -172,14 +186,14 @@ public class GraphQLObjectMapper {
 		} else if (value instanceof ObjectNode) {
 			// This node is an object. In the GraphQL request, we asked for the __typename. Let's read it, to find out
 			// which object of the GraphQL schema should be created.
-			String typename = ((TextNode) value.get("__typename")).asText();
+			String typename = ((TextNode) value.get("__typename")).asText(); //$NON-NLS-1$
 			Class<?> clazz;
 			try {
-				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(graphQLObjectsPackage, typename, null);
+				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(this.graphQLObjectsPackage, typename, null);
 			} catch (RuntimeException e) {
 				throw new JsonMappingException(parser, e.getMessage(), e);
 			}
-			return objectMapper.treeToValue(value, clazz);
+			return this.objectMapper.treeToValue(value, clazz);
 
 		}
 		// Null
@@ -190,8 +204,8 @@ public class GraphQLObjectMapper {
 		else if (targetField != null && targetField.getType().isEnum()) {
 			if (!(value instanceof TextNode)) {
 				return new GraphQLRequestExecutionException(
-						"The '" + targetField + "' is an enum, so the encoded json should be a TextNode. But it's a '"
-								+ value.getClass().getName() + "'");
+						"The '" + targetField + "' is an enum, so the encoded json should be a TextNode. But it's a '" //$NON-NLS-1$ //$NON-NLS-2$
+								+ value.getClass().getName() + "'"); //$NON-NLS-1$
 			}
 			return Enum.valueOf((Class<? extends Enum>) targetField.getType(), ((TextNode) value).textValue());
 		}
@@ -228,7 +242,7 @@ public class GraphQLObjectMapper {
 			// 1) A custom scalar that returns a specific json type
 			// 2) A bug
 			throw new GraphQLRequestExecutionException(
-					"Non managed json type. This can happen in two cases: the value for this alias is a GraphQL custom scalar (in which case you should use the getAliasCustomScalarValue method) or a bug");
+					"Non managed json type. This can happen in two cases: the value for this alias is a GraphQL custom scalar (in which case you should use the getAliasCustomScalarValue method) or a bug"); //$NON-NLS-1$
 		}
 	}
 
@@ -238,50 +252,50 @@ public class GraphQLObjectMapper {
 
 	/** @See {@link ObjectMapper#convertValue(Object, TypeReference)} */
 	public Map<String, JsonNode> convertValue(JsonNode extensions, TypeReference<Map<String, JsonNode>> typeReference) {
-		return objectMapper.convertValue(extensions, typeReference);
+		return this.objectMapper.convertValue(extensions, typeReference);
 	}
 
 	/** @See {@link ObjectMapper#convertValue(Object, Class)} */
 	public <T> T convertValue(Object o, Class<T> clazz) {
-		return objectMapper.convertValue(o, clazz);
+		return this.objectMapper.convertValue(o, clazz);
 	}
 
 	/** @See {@link ObjectMapper#readValue(String, Class)} */
 	public <T> T readValue(String msg, Class<T> subscriptionType) throws JsonMappingException, JsonProcessingException {
-		return objectMapper.readValue(msg, subscriptionType);
+		return this.objectMapper.readValue(msg, subscriptionType);
 	}
 
 	/** @See {@link ObjectMapper#readTree(String)} */
 	public JsonNode readTree(String content) throws JsonMappingException, JsonProcessingException {
-		return objectMapper.readTree(content);
+		return this.objectMapper.readTree(content);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
 	public <T> T treeToValue(TreeNode value, Class<T> clazz) throws JsonProcessingException {
-		return objectMapper.treeToValue(value, clazz);
+		return this.objectMapper.treeToValue(value, clazz);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
 	public <T> T treeToValue(Map<?, ?> map, Class<T> clazz) throws JsonProcessingException {
 		// TODO Find a better way than map to json string, then json string to POJO object
-		JsonNode node = objectMapper.valueToTree(map);
-		return objectMapper.treeToValue(node, clazz);
+		JsonNode node = this.objectMapper.valueToTree(map);
+		return this.objectMapper.treeToValue(node, clazz);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
 	public <T> T treeToValue(List<?> list, Class<T> clazz) throws JsonProcessingException {
 		// TODO Find a better way than list to json string, then json string to POJO object
-		JsonNode node = objectMapper.valueToTree(list);
-		return objectMapper.treeToValue(node, clazz);
+		JsonNode node = this.objectMapper.valueToTree(list);
+		return this.objectMapper.treeToValue(node, clazz);
 	}
 
 	/** @See {@link ObjectMapper#writeValueAsString(Object)} */
 	public String writeValueAsString(Object o) throws JsonProcessingException {
-		return objectMapper.writeValueAsString(o);
+		return this.objectMapper.writeValueAsString(o);
 	}
 
 	/** @see ObjectMapper#valueToTree(Object) */
 	public JsonNode valueToTree(Object o) {
-		return objectMapper.valueToTree(o);
+		return this.objectMapper.valueToTree(o);
 	}
 }

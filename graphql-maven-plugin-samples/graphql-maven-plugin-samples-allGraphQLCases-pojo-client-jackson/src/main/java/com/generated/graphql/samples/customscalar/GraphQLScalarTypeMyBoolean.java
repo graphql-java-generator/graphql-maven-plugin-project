@@ -3,6 +3,7 @@
  */
 package com.generated.graphql.samples.customscalar;
 
+import graphql.language.BooleanValue;
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
@@ -18,7 +19,7 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-public class GraphQLScalarTypeCustomId {
+public class GraphQLScalarTypeMyBoolean {
 
 	/**
 	 * Useless String scalar.<BR/>
@@ -27,12 +28,10 @@ public class GraphQLScalarTypeCustomId {
 	 * strings).<BR/>
 	 * It's actually a bad management, as this custom scalars does nothing, but read basic strings. It's just for test.
 	 */
-	public static GraphQLScalarType CustomIdScalarType = GraphQLScalarType.newScalar().name("CustomId") //$NON-NLS-1$
-			.description("Useless Custom Scalar for CustomId management").coercing( //$NON-NLS-1$
-					//
-					// Note: String is the way the data is stored in GraphQL queries
-					// CustomId is the type while in the java code, either in the client and in the server
-					new Coercing<CustomId, String>() {
+	public static GraphQLScalarType MyBooleanScalarType = GraphQLScalarType.newScalar().name("MyBoolean") //$NON-NLS-1$
+			.description("Useless Custom Scalar for MyBoolean management").coercing( //$NON-NLS-1$
+
+					new Coercing<Boolean, Boolean>() {
 
 						/**
 						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
@@ -52,12 +51,12 @@ public class GraphQLScalarTypeCustomId {
 						 *             if value input can't be serialized
 						 */
 						@Override
-						public String serialize(Object input) throws CoercingSerializeException {
-							if (!(input instanceof CustomId)) {
+						public Boolean serialize(Object input) throws CoercingSerializeException {
+							if (!(input instanceof Boolean)) {
 								throw new CoercingSerializeException(
 										"Can't parse the '" + input.toString() + "' to a String"); //$NON-NLS-1$ //$NON-NLS-2$
 							} else {
-								return input.toString();
+								return (Boolean) input;
 							}
 						}
 
@@ -77,12 +76,12 @@ public class GraphQLScalarTypeCustomId {
 						 *             if value input can't be parsed
 						 */
 						@Override
-						public CustomId parseValue(Object o) throws CoercingParseValueException {
+						public Boolean parseValue(Object o) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a String"); //$NON-NLS-1$ //$NON-NLS-2$
+										"Can't parse the '" + o.toString() + "' string to a Boolean"); //$NON-NLS-1$ //$NON-NLS-2$
 							} else {
-								return new CustomId((String) o);
+								return Boolean.valueOf(Boolean.parseBoolean((String) o));
 							}
 						}
 
@@ -103,13 +102,15 @@ public class GraphQLScalarTypeCustomId {
 						 *             if input literal can't be parsed
 						 */
 						@Override
-						public CustomId parseLiteral(Object o) throws CoercingParseLiteralException {
+						public Boolean parseLiteral(Object o) throws CoercingParseLiteralException {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
-							if (!(o instanceof StringValue)) {
-								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a CustomId"); //$NON-NLS-1$ //$NON-NLS-2$
+							if (o instanceof StringValue) {
+								return Boolean.valueOf(((StringValue) o).getValue());
+							} else if (o instanceof BooleanValue) {
+								return Boolean.valueOf(((BooleanValue) o).isValue());
 							} else {
-								return new CustomId(((StringValue) o).getValue());
+								throw new CoercingParseValueException(
+										"Can't parse the '" + o.toString() + "' to a Boolean"); //$NON-NLS-1$ //$NON-NLS-2$
 							}
 						}
 					})

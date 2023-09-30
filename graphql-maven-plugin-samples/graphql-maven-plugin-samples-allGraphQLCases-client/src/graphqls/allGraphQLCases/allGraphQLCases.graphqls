@@ -7,6 +7,8 @@ scalar DateTime
 
 scalar Long
 
+scalar MyBoolean
+
 """ A scalar to test the issue #174 """
 scalar Base64String
 
@@ -126,6 +128,7 @@ type MyQueryType {
     that was not properly serialized/deserialized
     """
     issue53(date: Date!): Date!
+    issue200(param: MyBoolean): MyBoolean
     
     """
     #issue82 is about hard coded values as parameters. Other types are tests with other queries, 

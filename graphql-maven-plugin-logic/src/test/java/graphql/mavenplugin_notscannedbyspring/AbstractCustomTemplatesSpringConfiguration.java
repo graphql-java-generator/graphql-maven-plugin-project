@@ -62,6 +62,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 				"graphql.scalars.ExtendedScalars.GraphQLLong", null));
 		customScalars.add(new CustomScalarDefinition("else", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("MyBoolean", "java.lang.Boolean", null,
+				"com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType", null));
 		customScalars.add(new CustomScalarDefinition("NonNegativeInt", "java.lang.Integer", null,
 				"graphql.scalars.ExtendedScalars.NonNegativeInt", null));
 	}

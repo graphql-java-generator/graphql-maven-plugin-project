@@ -80,7 +80,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(59, i, "Nb java files are generated");
 		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(36, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
-		assertEquals(7, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(8, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(19, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, this.generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(this.generateCodeDocumentParser.getQueryType(), "One query");
@@ -678,7 +678,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(63, type.getFields().size());
+		assertEquals(64, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
