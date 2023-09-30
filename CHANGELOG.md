@@ -1,9 +1,9 @@
 
-# Not released yet
+# 2.3.1
 
 Client mode:
 * Issue 199: the generated code would not compile if the GraphQL schema is too big
-* Issue #195: the _data_ part should be parsed even when there are errors. If an error occurs during the request execution (for instance the GraphQL server returns errors in its response), then the plugin tries to parse the _data _ part of the response. The parsed _data_ is attached to the thrown `GraphQLRequestExecutionException` or `GraphQLRequestExecutionUncheckedException`, along with the full response. They can be retrieved with the `getData()` and `getResponse()` methods.
+* Issue #195: the _data_ part is now parsed even when there are errors. If an error occurs during the request execution (for instance the GraphQL server returns errors in its response), then the plugin tries to parse the _data _ part of the response. The parsed _data_ is attached to the thrown `GraphQLRequestExecutionException` or `GraphQLRequestExecutionUncheckedException`, along with the full response. They can be retrieved with the `getData()` and `getResponse()` methods.
 * Issue #200:
     * A missing break would prevent Custom Scalars of type Boolean to be deserialized (could not read the server response)
     * Alias on fields that are a Custom scalars could not be deserialized when using the deprecated ResponseType
