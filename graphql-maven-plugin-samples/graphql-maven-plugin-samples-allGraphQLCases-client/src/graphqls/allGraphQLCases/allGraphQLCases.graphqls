@@ -868,3 +868,11 @@ type ReservedJavaKeywordAllFieldCases {
 type ClassWithCustomId {
 	id: CustomId!
 }
+
+""" Test for issue 202: a class attribute would generated a forbidden getClass """
+interface InterfaceTestForIssue202 {
+	class: String
+}
+type ClassTestForIssue202 implements InterfaceTestForIssue202 {
+	class: String
+}

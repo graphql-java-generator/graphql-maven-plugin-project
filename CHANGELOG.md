@@ -1,4 +1,11 @@
 
+# Not released yet
+
+Client and server modes:
+* Correction of issue #200: the generated code would not compile, if a GraphQL interface or type has a `class` attribute (due to the final `getClass` method)
+
+
+
 # 2.3.1
 
 Client mode:

@@ -37,6 +37,20 @@ public interface ${object.javaName}
 #end
 {
 #foreach ($field in $object.fields)
+## 
+## 
+## 
+## If the field's name is either class or Class, then a getClass attribute would be generated, which generates a compile time error, as the getClass() method
+## may not be overridden. So the generated getClass method is suffixed by "_" to avoid this name conflict.
+#if ($field.name.equals("class") || $field.name.equals("Class"))
+#set($fieldPrefixForGetterAndSetter="_")
+#else
+#set($fieldPrefixForGetterAndSetter="")
+#end
+##
+## 
+## 
+##
 
 #if ($field.comments.size() > 0)
 	/**
@@ -49,7 +63,7 @@ public interface ${object.javaName}
 #end
 	${field.annotation}
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName});
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName});
 
 #if ($field.comments.size() > 0)
 	/**
@@ -62,7 +76,7 @@ public interface ${object.javaName}
 #end
 	${field.annotation}
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public ${field.javaTypeFullClassname} get${field.pascalCaseName}();
+	public ${field.javaTypeFullClassname} get$fieldPrefixForGetterAndSetter${field.pascalCaseName}();
 #end
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases

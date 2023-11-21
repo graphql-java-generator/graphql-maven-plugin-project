@@ -25,6 +25,9 @@
 	}
 
 #foreach ($field in $object.fields)
+##
+##
+##
 #foreach ($comment in $field.comments)
 	// $comment
 #end
@@ -43,6 +46,16 @@
 #end
 
 #foreach ($field in $object.fields)
+## 
+## If the field's name is either class or Class, then a getClass attribute would be generated, which generates a compile time error, as the getClass() method
+## may not be overridden. So the generated getClass method is suffixed by "_" to avoid this name conflict.
+#if ($field.name.equals("class") || $field.name.equals("Class"))
+#set($fieldPrefixForGetterAndSetter="_")
+#else
+#set($fieldPrefixForGetterAndSetter="")
+#end
+##
+##
 ##
 ####################################################################################################################################################
 ###########  Case 1 (standard case): the field's type is NOT a type that implements an interface defined in the GraphQL schema  ####################
@@ -63,7 +76,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("${field.name}")
 #end
-	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 
@@ -81,7 +94,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("${field.name}")
 #end
-	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
+	public ${field.javaTypeFullClassname} get$fieldPrefixForGetterAndSetter${field.pascalCaseName}() {
 		return this.${field.javaName};
 	}
 		
@@ -113,7 +126,7 @@
 ################
 ## Standard case: the given type is the same as the field's type. It's useless to control anything at runtime.
 #if ($type==${field.javaTypeFullClassname})
-	public void set${field.pascalCaseName}($type ${field.javaName}) {
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}($type ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 ################
@@ -123,7 +136,7 @@
 #if ($field.javaType.startsWith("List<"))
 	@SuppressWarnings("unchecked")
 #end
-	public void set${field.pascalCaseName}($type ${field.javaName}) {
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
 		if (${field.javaName} == null || ${field.javaName} instanceof List) {
 #if ($field.javaTypeFullClassname != $type)
@@ -175,7 +188,7 @@
 	@JsonIgnore
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #else
 	 * 
 	 * @param
@@ -187,7 +200,7 @@
 	@JsonIgnore
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
+	public void set$fieldPrefixForGetterAndSetter${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #end
 		this.${field.javaName} = ${field.javaName};
 	}
@@ -254,7 +267,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	@Override
 #appliedDirectives(${field.appliedDirectives}, "	")
 	@SuppressWarnings("unchecked")
-	public $supertype get${field.pascalCaseName}() {
+	public $supertype get$fieldPrefixForGetterAndSetter${field.pascalCaseName}() {
 		return ($supertype) (Object) this.${field.javaName};
 	}
 
@@ -277,7 +290,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	@JsonIgnore
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
-	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
+	public ${field.javaTypeFullClassname} get$fieldPrefixForGetterAndSetter${field.pascalCaseName}#if($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
 		return this.${field.javaName};
 	}
 #end
@@ -369,13 +382,23 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 		public ${targetFileName} build() {
 			${targetFileName} _object = new ${targetFileName}();
 #foreach ($field in $object.fields)
+## 
+## If the field's name is either class or Class, then a getClass attribute would be generated, which generates a compile time error, as the getClass() method
+## may not be overridden. So the generated getClass method is suffixed by "_" to avoid this name conflict.
+#if ($field.name.equals("class") || $field.name.equals("Class"))
+#set($fieldPrefixForGetterAndSetter="_")
+#else
+#set($fieldPrefixForGetterAndSetter="")
+#end
+##
+##
 #if(${field.javaName} == '__typename')
 			_object.set__typename("${object.javaName}"); //$NON-NLS-1$
 #else
 #if ($field.fieldJavaFullClassnamesFromImplementedInterface.size()>0 && !$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname) && $field.javaType.startsWith("List<"))
-			_object.set${field.pascalCaseName}${field.graphQLTypeSimpleName}(this.${field.javaName});
+			_object.set$fieldPrefixForGetterAndSetter${field.pascalCaseName}${field.graphQLTypeSimpleName}(this.${field.javaName});
 #else
-			_object.set${field.pascalCaseName}(this.${field.javaName});
+			_object.set$fieldPrefixForGetterAndSetter${field.pascalCaseName}(this.${field.javaName});
 #end
 #end
 #end
