@@ -1,6 +1,10 @@
 
 # 2.4
 
+Dependencies upgrade:
+* Spring boot to 2.7.18 and 3.2.1
+* Upgrade of plexus-utils to the 3.0.24 (to get rid of CVE vulnerabilities)
+
 Client and server modes:
 * Issues #205 and #207: The JSON and Object custom scalars are now properly managed
 

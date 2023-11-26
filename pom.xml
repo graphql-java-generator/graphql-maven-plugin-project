@@ -16,10 +16,13 @@
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>
-		This project is an accelerator to develop GraphQL clients and GraphQL servers in java. 
-		That is, it generates the boilerplate code, and let you concentrate on what's specific to your use case: 
-		the queries/mutations/subscriptions you will call, when in client mode. 
-		And the response to the queries/mutations/subscriptions call, as well as the relations between objects, when in server mode. 
+		This project is an accelerator to develop GraphQL clients and GraphQL
+		servers in java.
+		That is, it generates the boilerplate code, and let you concentrate on
+		what's specific to your use case:
+		the queries/mutations/subscriptions you will call, when in client mode.
+		And the response to the queries/mutations/subscriptions call, as well as
+		the relations between objects, when in server mode.
 	</description>
 	<url>https://github.com/graphql-java-generator/graphql-java-generator</url>
 
@@ -38,9 +41,12 @@
 	</developers>
 
 	<scm>
-		<!-- See the connection id in the properties, which allows to define the credentials -->
-		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
-		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
+		<!-- See the connection id in the properties, which allows to define the
+		credentials -->
+		<!-- See first response of
+		https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
+		<!-- Principle the project.scm.id property allows to define a server
+		name, then define the relevant user/password for this 
 			server id in the settings.xml -->
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
@@ -61,7 +67,8 @@
 
 	<modules>
 		<!-- Below are the module that are always in the build -->
-		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
+		<!-- The samples (within graphql-maven-plugin-samples module) are
+		activated only when not in release mode (see profiles) -->
 		<module>graphql-java-common-dependencies</module>
 		<module>graphql-java-common-runtime</module>
 		<module>graphql-java-client-dependencies</module>
@@ -70,14 +77,18 @@
 		<module>graphql-java-server-dependencies</module>
 		<module>graphql-maven-plugin-logic</module>
 		<module>graphql-maven-plugin</module>
-		<!-- The graphql-maven-plugin-samples module is activate in the profile "withSamples", see below -->
+		<!-- The graphql-maven-plugin-samples module is activate in the profile
+		"withSamples", see below -->
 		<!-- module>graphql-maven-plugin-samples</module -->
 	</modules>
 
 	<properties>
-		<!-- See the connection id in the properties, which allows to define the credentials -->
-		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
-		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
+		<!-- See the connection id in the properties, which allows to define the
+		credentials -->
+		<!-- See first response of
+		https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
+		<!-- Principle the project.scm.id property allows to define a server
+		name, then define the relevant user/password for this 
 			server id in the settings.xml -->
 		<project.scm.id>git-graphql-java-generator</project.scm.id>
 
@@ -91,12 +102,15 @@
 		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
 		<maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
 
-		<!-- The lastReleasedVersion is the version displayed in the site. The default value is the project version, which is Ok 
-			when actually doing a release. It can also be defined on the command line with -DlastReleasedVersion=version when building 
+		<!-- The lastReleasedVersion is the version displayed in the site. The
+		default value is the project version, which is Ok 
+			when actually doing a release. It can also be defined on the command line with
+		-DlastReleasedVersion=version when building 
 			the site afterward -->
 		<lastReleasedVersion>${project.version}</lastReleasedVersion>
 
-		<!-- Below are some versions that overrides the one coming from spring-boot-starter -->
+		<!-- Below are some versions that overrides the one coming from
+		spring-boot-starter -->
 		<!-- snakeyaml priori to 1.31 have various vulnarabilities -->
 		<snakeyaml.version>1.33</snakeyaml.version>
 	</properties>
@@ -170,7 +184,8 @@
 					<version>3.0.0</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<useReleaseProfile>false</useReleaseProfile> <!-- ignore the default release profile -->
+						<useReleaseProfile>false</useReleaseProfile> <!-- ignore
+						the default release profile -->
 						<releaseProfiles>release,!withSamples</releaseProfiles>
 						<goals>deploy</goals>
 					</configuration>
@@ -229,7 +244,9 @@
 					</dependencies>
 				</plugin>
 				<plugin>
-					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
+					<!-- This plugin allows to start the SpringBoot
+					StarWars-server in the background during the integration
+					tests -->
 					<groupId>com.bazaarvoice.maven.plugins</groupId>
 					<artifactId>process-exec-maven-plugin</artifactId>
 					<version>0.9</version>
@@ -336,7 +353,11 @@
 				<artifactId>plexus-build-api</artifactId>
 				<version>0.0.7</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>3.0.24</version>
+			</dependency>
 			<!-- dependencies within this project -->
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
@@ -388,7 +409,8 @@
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
+				<artifactId>
+					graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -427,7 +449,8 @@
 				<version>1.1.1</version>
 			</dependency>
 			<dependency>
-				<!-- This dependency is here to solve an issue with Mockito that loads a wring version of byte-buddy -->
+				<!-- This dependency is here to solve an issue with Mockito that
+				loads a wring version of byte-buddy -->
 				<groupId>net.bytebuddy</groupId>
 				<artifactId>byte-buddy</artifactId>
 				<version>1.12.18</version>
@@ -458,7 +481,8 @@
 				<version>2.7.4</version>
 			</dependency>
 			<dependency>
-				<!-- Avoids this warning (when building in Gradle): unknown enum constant When.MAYBE -->
+				<!-- Avoids this warning (when building in Gradle): unknown enum
+				constant When.MAYBE -->
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
 				<version>3.0.2</version>
@@ -519,10 +543,13 @@
 	<profiles>
 
 		<profile>
-			<!-- Activate this release, to generate releases, and deploy them to the central repository -->
-			<!-- https://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment -->
+			<!-- Activate this release, to generate releases, and deploy them to
+			the central repository -->
+			<!--
+			https://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment -->
 			<!-- mvn com.github.github:site-maven-plugin:site -Prelease -->
-			<!-- Issue raised: https://github.com/github/maven-plugins/issues/139 -->
+			<!-- Issue raised:
+			https://github.com/github/maven-plugins/issues/139 -->
 			<id>release</id>
 
 			<properties>
@@ -554,16 +581,23 @@
 						<!-- -->
 						<!-- NOT USED. USE maven-release-plugin, instead -->
 						<!-- -->
-						<!-- The change of the versions for your project, and the parent references in a multi module setup, can be performed 
+						<!-- The change of the versions for your project, and
+						the parent references in a multi module setup, can be
+						performed 
 							manually or with the help of the Maven versions plugin. -->
 						<!-- mvn versions:set -DnewVersion=1.2.3 -->
-						<!-- If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can run a deployment 
+						<!-- If your version is a release version (does not end
+						in -SNAPSHOT) and with this setup in place, you can run
+						a deployment 
 							to OSSRH and an automated release to the Central Repository with the usual: -->
 						<!-- mvn clean deploy -Prelease -->
-						<!-- With the property autoReleaseAfterClose set to false you can manually inspect the staging repository in the Nexus 
+						<!-- With the property autoReleaseAfterClose set to
+						false you can manually inspect the staging repository in
+						the Nexus 
 							Repository Manager and trigger a release of the staging repository later with -->
 						<!-- mvn nexus-staging:release -P release -->
-						<!-- If you find something went wrong you can drop the staging repository with -->
+						<!-- If you find something went wrong you can drop the
+						staging repository with -->
 						<!-- mvn nexus-staging:drop -Prelease -->
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -571,10 +605,13 @@
 					<plugin>
 						<!-- To manually publish the site, with my local conf: -->
 						<!-- mvn site:stage -->
-						<!-- "C:\appli\java\apache-ant\bin\ant.bat" -f ant-deploy-site.xml -->
+						<!-- "C:\appli\java\apache-ant\bin\ant.bat" -f
+						ant-deploy-site.xml -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- executions> <execution> <phase>site-deploy</phase> <goals> <goal>run</goal> </goals> </execution> </executions -->
+						<!-- executions> <execution> <phase>site-deploy</phase>
+						<goals> <goal>run</goal> </goals> </execution>
+						</executions -->
 						<configuration>
 							<target>
 								<ant antfile="ant-deploy-site.xml" />
