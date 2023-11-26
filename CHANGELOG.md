@@ -1,4 +1,11 @@
 
+# Not published yet
+
+* Upgrade of plexus-utils to the 3.0.24 (to get rid of CVE vulnerabilities)
+
+
+
+
 # 2.3.2
 
 Client and server modes:
