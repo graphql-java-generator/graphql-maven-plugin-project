@@ -24,7 +24,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 /**
  * @author etienne-sf
  */
-@Order(Integer.MIN_VALUE) // This test must run last, to avoid breaking the Spring context for other tests. See the
+@Order(Integer.MIN_VALUE) // This test must run first, to avoid breaking the Spring context for other tests. This avoid
+							// to reload the context for each test. See the
 							// src/test/resources/junit-platform.properties file for JUnit class ordering configuration
 public class CheckOAuthIT {
 	MyQueryTypeExecutorAllGraphQLCases queryType;
@@ -44,19 +45,19 @@ public class CheckOAuthIT {
 				SpringTestConfigWithoutOAuth.class);
 
 		// For some tests, we need to execute additional partialQueries
-		queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
-		assertNotNull(queryType);
-		mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
-		assertNotNull(mutation);
+		this.queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
+		assertNotNull(this.queryType);
+		this.mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
+		assertNotNull(this.mutation);
 
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryType
 				.getWithListOfListGraphQLRequest("{matrix}");
 		//
 		List<List<Double>> matrixSrc = new ArrayList<>();
 
 		// Go, go, go
 		GraphQlTransportException e = assertThrows(GraphQlTransportException.class,
-				() -> queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
+				() -> this.queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
 
 		// Verification
 		assertTrue(e.getMessage().contains("401 Unauthorized"), "The OAuth2 use control must be active on server side");

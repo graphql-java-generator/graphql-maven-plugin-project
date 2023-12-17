@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(TYPE)
 /**
- * Indicates that the annotated java class represents a GraphQL enumeration, and give the GraphQL name for this enum.
+ * Indicates that the annotated java class represents a GraphQL enumeration, and gives the GraphQL name for this enum.
  * The java name may be different from the GraphQL one, if the GraphQL name is a reserved java keyword.
  * 
  * @author etienne-sf

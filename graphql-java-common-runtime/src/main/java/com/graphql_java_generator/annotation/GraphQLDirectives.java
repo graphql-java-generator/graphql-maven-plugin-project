@@ -13,8 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * List of all directives that apply to this GraphQL type, field or parameter
+ * 
  * @author etienne-sf
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PARAMETER })

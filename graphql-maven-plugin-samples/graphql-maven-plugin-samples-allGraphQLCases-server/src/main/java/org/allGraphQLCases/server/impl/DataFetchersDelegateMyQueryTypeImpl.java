@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -16,6 +18,8 @@ import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_CharacterInput_SINS;
 import org.allGraphQLCases.server.SINP_DroidInput_SINS;
 import org.allGraphQLCases.server.SINP_HumanInput_SINS;
+import org.allGraphQLCases.server.SINP_InputWithJson_SINS;
+import org.allGraphQLCases.server.SINP_InputWithObject_SINS;
 import org.allGraphQLCases.server.SIP_CharacterConnection_SIS;
 import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.SIP_Client_SIS;
@@ -26,11 +30,16 @@ import org.allGraphQLCases.server.STP_HumanConnection_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_MyQueryType_STS;
 import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
+import org.allGraphQLCases.server.STP_TypeWithJson_STS;
+import org.allGraphQLCases.server.STP_TypeWithObject_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.config.GraphQlException;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
@@ -39,6 +48,7 @@ import graphql.language.Directive;
 import graphql.language.EnumValue;
 import graphql.language.Field;
 import graphql.language.OperationDefinition;
+import graphql.language.Selection;
 import graphql.language.StringValue;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
@@ -617,4 +627,174 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return param;
 	}
 
+	@Override
+	public ObjectNode json(DataFetchingEnvironment dataFetchingEnvironment, ObjectNode json) {
+		if (json == null)
+			try {
+				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+		else
+			return json;
+	}
+
+	@Override
+	public List<ObjectNode> jsons(DataFetchingEnvironment dataFetchingEnvironment, List<ObjectNode> jsons) {
+		return jsons;
+	}
+
+	@Override
+	public Object object(DataFetchingEnvironment dataFetchingEnvironment, Object object) {
+		if (object == null)
+			try {
+				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+		else
+			return object;
+	}
+
+	@Override
+	public List<Object> objects(DataFetchingEnvironment dataFetchingEnvironment, List<Object> objects) {
+		if (objects == null)
+			try {
+				return Arrays.asList(//
+						new ObjectMapper().readValue("{\"field11\":\"value11\", \"field12\":[11,12]}",
+								ObjectNode.class),
+						new ObjectMapper().readValue("{\"field21\":\"value21\", \"field22\":[21,22]}",
+								ObjectNode.class));
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+		else
+			return objects;
+	}
+
+	@Override
+	public STP_TypeWithJson_STS jsonWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_InputWithJson_SINS input) {
+		STP_TypeWithJson_STS ret = new STP_TypeWithJson_STS();
+		ret.setTest(input.getTest());
+		ret.setDate(input.getDate());
+		ret.setLong(input.getLong());
+		ret.setBoolean(input.getBoolean());
+		ret.setEnum(input.getEnum());
+		ret.setJson(input.getJson());// this value will be reused by the TypeWithJson controller
+		ret.setJsons(input.getJsons());// this value will be reused by the TypeWithJson controller
+
+		// Let's build the withArguments value, according to the received parameters for this field
+		ret.setWithArguments(//
+				buildWithArguments(//
+						(OperationDefinition) dataFetchingEnvironment.getDocument().getDefinitions().get(0)));
+
+		return ret;
+	}
+
+	@Override
+	public List<STP_TypeWithJson_STS> jsonsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			List<SINP_InputWithJson_SINS> input) {
+
+		List<STP_TypeWithJson_STS> ret = input.stream().map(i -> {
+
+			STP_TypeWithJson_STS item = new STP_TypeWithJson_STS();
+			item.setTest(i.getTest());
+			item.setDate(i.getDate());
+			item.setLong(i.getLong());
+			item.setBoolean(i.getBoolean());
+			item.setEnum(i.getEnum());
+			item.setJson(i.getJson());// this value will be reused by the TypeWithJson controller
+			item.setJsons(i.getJsons());// this value will be reused by the TypeWithJson controller
+
+			// Let's build the withArguments value, according to the received parameters for this field
+			// Caution: this works properly only in the context of the integration tests
+			item.setWithArguments(//
+					buildWithArguments(//
+							(OperationDefinition) dataFetchingEnvironment.getDocument().getDefinitions().get(0)));
+
+			return item;
+		}).collect(Collectors.toList());
+
+		return ret;
+	}
+
+	@Override
+	public STP_TypeWithObject_STS objectWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_InputWithObject_SINS input) {
+		STP_TypeWithObject_STS ret = new STP_TypeWithObject_STS();
+		ret.setTest(input.getTest());
+		ret.setDate(input.getDate());
+		ret.setLong(input.getLong());
+		ret.setBoolean(input.getBoolean());
+		ret.setEnum(input.getEnum());
+		ret.setObject(input.getObject());// this value will be reused by the TypeWithObject controller
+		ret.setObjects(input.getObjects());// this value will be reused by the TypeWithObject controller
+
+		// Let's build the withArguments value, according to the received parameters for this field
+		// Caution: this works properly only in the context of the integration tests
+		ret.setWithArguments(//
+				buildWithArguments(//
+						(OperationDefinition) dataFetchingEnvironment.getDocument().getDefinitions().get(0)));
+
+		return ret;
+	}
+
+	@Override
+	public List<STP_TypeWithObject_STS> objectsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			List<SINP_InputWithObject_SINS> input) {
+		List<STP_TypeWithObject_STS> ret = input.stream().map(i -> {
+
+			STP_TypeWithObject_STS item = new STP_TypeWithObject_STS();
+			item.setTest(i.getTest());
+			item.setDate(i.getDate());
+			item.setLong(i.getLong());
+			item.setBoolean(i.getBoolean());
+			item.setEnum(i.getEnum());
+			item.setObject(i.getObject());// this value will be reused by the TypeWithObject controller
+			item.setObjects(i.getObjects());// this value will be reused by the TypeWithObject controller
+
+			// Let's build the withArguments value, according to the received parameters for this field
+			// Caution: this works properly only in the context of the integration tests
+			item.setWithArguments(//
+					buildWithArguments(//
+							(OperationDefinition) dataFetchingEnvironment.getDocument().getDefinitions().get(0)));
+
+			// dozer seems to mess up the objects field. Let's reuse the one we received
+
+			return item;
+		}).collect(Collectors.toList());
+
+		return ret;
+	}
+
+	public static String buildWithArguments(OperationDefinition operation) {
+
+		// Note to readers : this is not the proper way to do. It works only in the context of the used Integration Test
+		Field field = (Field) operation.getSelectionSet().getSelections().get(0);
+
+		@SuppressWarnings("rawtypes")
+		Optional<Selection> optional = field.getSelectionSet().getSelections().stream()
+				.filter(f -> ((Field) f).getName().equals("withArguments")).findFirst();
+
+		if (optional.isPresent()) {
+			Field fieldWithArguments = (Field) optional.get();
+			StringBuilder sb = new StringBuilder();
+			boolean appendComma = false;
+			for (Argument arg : fieldWithArguments.getArguments()) {
+				if (appendComma)
+					sb.append(", ");
+				else
+					appendComma = true;
+
+				sb.append(arg.getName());
+				sb.append('=');
+				sb.append(arg.getValue());
+			}
+
+			return sb.toString();
+		} else {
+			return null;
+		}
+	}
 }

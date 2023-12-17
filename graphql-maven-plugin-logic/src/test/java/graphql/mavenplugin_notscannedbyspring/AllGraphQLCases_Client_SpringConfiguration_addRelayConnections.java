@@ -44,10 +44,14 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 				"graphql.scalars.ExtendedScalars.GraphQLLong", null));
 		customScalars.add(new CustomScalarDefinition("else", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("JSON", "java.lang.Object", null,
+				"graphql.scalars.ExtendedScalars.Json", null));
 		customScalars.add(new CustomScalarDefinition("MyBoolean", "java.lang.Boolean", null,
 				"com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType", null));
 		customScalars.add(new CustomScalarDefinition("NonNegativeInt", "java.lang.Integer", null,
 				"graphql.scalars.ExtendedScalars.NonNegativeInt", null));
+		customScalars.add(new CustomScalarDefinition("Object", "java.lang.Object", null,
+				"graphql.scalars.ExtendedScalars.Object", null));
 	}
 
 	@Override

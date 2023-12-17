@@ -1,4 +1,12 @@
 
+# Not released yet
+
+Client and server modes:
+* Issues #205 and #207: The JSON and Object custom scalars are now properly managed
+
+Client mode:
+* When executing full requests, the `query` keyword was mandatory, whereas it is optional in the GraphQL specs.
+
 # 2.3.2
 
 Client and server modes:

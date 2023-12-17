@@ -37,6 +37,9 @@ public class ${entity}Controller {
 	@Autowired
 	protected ${dataFetchersDelegate.pascalCaseName} ${dataFetchersDelegate.camelCaseName};
 
+	@Autowired
+	protected GraphqlServerUtils graphqlServerUtils;
+
 ## The constructor is only used to declare the relevant data loader... if any (0 or 1 for each class)
 #foreach ($batchLoader in $batchLoaders)
 #if ($dataFetchersDelegate.type.name == $batchLoader.type.name)
@@ -125,10 +128,28 @@ public class ${entity}Controller {
 #macro(argumentType $argument)
 #if($argument.type.isEnum())
 ${velocityUtils.repeat("List<",$argument.fieldTypeAST.listDepth)}String${velocityUtils.repeat(">",$argument.fieldTypeAST.listDepth)}##
+##
+#elseif($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+## ObjectNode has not default constructor. It can't be used as a controller parameter (directly, or if in a field's type), as spring-graphql would 
+## try to create one, and fail becayuse of this lack of default constructor.
+## So we receive the parameter as an Object, and create the ObjectNode based on the received in the controller method.
+${velocityUtils.repeat("List<",$argument.fieldTypeAST.listDepth)}Object${velocityUtils.repeat(">",$argument.fieldTypeAST.listDepth)}##
+##
 #else
 $argument.javaTypeFullClassname##
 #end
 #end
+##
+##
+##
+#macro(argumentName $argument)
+#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+${argument.javaName}Param##
+#else
+${argument.javaName}##
+#end
+#end
+##
 ##
 ########################
 ## If at least one parameter is a list of enums, there would be a cast warning. Let's prevent that.
@@ -145,9 +166,19 @@ $argument.javaTypeFullClassname##
 	public Object ${dataFetcher.field.javaName}(DataFetchingEnvironment dataFetchingEnvironment##
 #if(${dataFetcher.completableFuture})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
 #if($dataFetcher.graphQLOriginType)			, ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
-			@Argument("${argument.name}") #argumentType($argument) ${argument.javaName}#end) {
-		return #if($isEnum)GraphqlServerUtils.graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
+			@Argument("${argument.name}") #argumentType($argument) #argumentName($argument)#end) {
+##
+#foreach($argument in $dataFetcher.field.inputParameters)
+##
+#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+#if($argument.fieldTypeAST.listDepth>0)
+		@SuppressWarnings("unchecked")
+#end
+		$argument.javaTypeFullClassname ${argument.javaName} = ($argument.javaTypeFullClassname) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(#argumentName($argument), ${argument.type.classFullName}.class, ${argument.fieldTypeAST.listDepth}, "${entity}", "${argument.name}");
+#end
+#end ##foreach($argument)
+		return #if($isEnum)graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
-#end
+#end ##foreach($dataFetcher)
 }

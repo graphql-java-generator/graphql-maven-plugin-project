@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation marke the type, field or method as a non GraphQL one. Typically, it marked stuff that doesn't come
+ * This annotation marks the type, field or method as a non GraphQL one. Typically, it marks stuff that doesn't come
  * from the GraphQL schema, and is internal to the generated code.
  * 
  * @author etienne-sf

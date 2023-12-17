@@ -48,6 +48,15 @@ public class ObjectType extends AbstractType {
 	private List<Field> fields = new ArrayList<>();
 
 	/**
+	 * true if this type is of its fields is of the JSON or Object custom type, or one if its field is of a type that
+	 * itself is of the JSON or Object custom type (and so on, recursively).<br/>
+	 * This is used to properly manage spring-graphql controllers: these fields are not properly unserialized by
+	 * spring-graphql. The controllers generated for the plugin expects an 'Object' parameter, that is then mapped to
+	 * the relevant object, by using the proper jackson annotations.
+	 */
+	private boolean dependsOnJsonOrObjectCustomScalar = false;
+
+	/**
 	 * One of null, "query", "mutation" or "subscription". This is used for queries, mutations and subscriptions as the
 	 * string to put in the JSON query toward the GraphQL server
 	 */

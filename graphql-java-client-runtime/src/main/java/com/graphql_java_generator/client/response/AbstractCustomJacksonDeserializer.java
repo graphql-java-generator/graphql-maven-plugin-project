@@ -182,6 +182,8 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			case VALUE_NULL:
 				value = null;
 				break;
+			case START_OBJECT:
+				return p.readValueAsTree();
 			default:
 				throw new JsonParseException(p, "Non managed JSON token: " + p.currentToken()); //$NON-NLS-1$
 			}

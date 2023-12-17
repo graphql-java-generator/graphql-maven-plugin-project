@@ -6,21 +6,27 @@ package org.allGraphQLCases.server.impl;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.allGraphQLCases.server.DataFetchersDelegateTheSubscriptionType;
 import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_AllFieldCasesWithoutIdSubtypeInput_SINS;
+import org.allGraphQLCases.server.SINP_InputWithJson_SINS;
+import org.allGraphQLCases.server.SINP_InputWithObject_SINS;
 import org.allGraphQLCases.server.SINP_SubscriptionTestParam_SINS;
 import org.allGraphQLCases.server.STP_AllFieldCasesWithoutIdSubtype_STS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
+import org.allGraphQLCases.server.STP_TypeWithJson_STS;
+import org.allGraphQLCases.server.STP_TypeWithObject_STS;
 import org.allGraphQLCases.server.config.GraphQlException;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
@@ -29,9 +35,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
+import graphql.language.OperationDefinition;
 import graphql.schema.DataFetchingEnvironment;
 import reactor.core.publisher.Flux;
 
@@ -374,6 +384,135 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	public Publisher<Optional<String>> _null(DataFetchingEnvironment dataFetchingEnvironment) {
 		// This method is not implemented (not used in internal tests)
 		return null;
+	}
+
+	@Override
+	public Publisher<Optional<ObjectNode>> json(DataFetchingEnvironment dataFetchingEnvironment,
+			com.fasterxml.jackson.databind.node.ObjectNode jsonParam) {
+		try {
+			ObjectNode json = //
+					(jsonParam == null) ? //
+							new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}",
+									ObjectNode.class)//
+							: jsonParam;
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> Optional.of(json));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Publisher<Optional<List<ObjectNode>>> jsons(DataFetchingEnvironment dataFetchingEnvironment,
+			List<com.fasterxml.jackson.databind.node.ObjectNode> jsonsParam) {
+		try {
+			Optional<List<ObjectNode>> jsons = (jsonsParam == null) ? //
+					Optional.of(Arrays.asList(//
+							new ObjectMapper().readValue("{\"field11\":\"value11\", \"field12\":[11,12]}",
+									ObjectNode.class),
+							new ObjectMapper().readValue("{\"field21\":\"value21\", \"field22\":[21,22]}",
+									ObjectNode.class)))//
+					: Optional.of(jsonsParam);
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> jsons);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Publisher<List<STP_TypeWithJson_STS>> jsonsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			List<SINP_InputWithJson_SINS> input) {
+		logger.debug("Executing subscription jsonsWithInput()");
+		List<STP_TypeWithJson_STS> jsons;
+
+		try {
+			if (input == null) {
+				ObjectNode json = new ObjectMapper()//
+						.readValue(//
+								"{\"field\":\"jsonsWithInput\",\"field2\":[1,2,3]}", //
+								ObjectNode.class);
+				STP_TypeWithJson_STS item = STP_TypeWithJson_STS.builder()//
+						.withTest("jsonsWithInput")//
+						.withDate(Calendar.getInstance().getTime())//
+						.withLong(6789L)//
+						.withBoolean(true)//
+						.withEnum(SEP_Episode_SES.JEDI)//
+						.withJson(json)//
+						.withJsons(Arrays.asList(json, json))//
+						.build();
+				jsons = Arrays.asList(item, item);
+			} else {
+				jsons = input.stream()//
+						.map(i -> {
+
+							STP_TypeWithJson_STS item = new STP_TypeWithJson_STS();
+							item.setTest(i.getTest());
+							item.setDate(i.getDate());
+							item.setLong(i.getLong());
+							item.setBoolean(i.getBoolean());
+							item.setEnum(i.getEnum());
+							item.setJson(i.getJson());// this value will be reused by the TypeWithJson controller
+							item.setJsons(i.getJsons());// this value will be reused by the TypeWithJson controller
+
+							// Let's build the withArguments value, according to the received parameters for this field
+							// Caution: this works properly only in the context of the integration tests
+							item.setWithArguments(//
+									DataFetchersDelegateMyQueryTypeImpl.buildWithArguments(//
+											(OperationDefinition) dataFetchingEnvironment.getDocument().getDefinitions()
+													.get(0)));
+
+							return item;
+						})//
+						.collect(Collectors.toList());
+			}
+
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> jsons);
+
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Publisher<List<STP_TypeWithObject_STS>> objectsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
+			List<SINP_InputWithObject_SINS> input) {
+		logger.debug("Executing subscription jsonsWithInput()");
+		List<STP_TypeWithObject_STS> jsons;
+
+		try {
+			if (input == null) {
+				ObjectNode json = new ObjectMapper()//
+						.readValue(//
+								"{\"field\":\"jsonsWithInput\",\"field2\":[1,2,3]}", //
+								ObjectNode.class);
+				STP_TypeWithObject_STS item = STP_TypeWithObject_STS.builder()//
+						.withTest("jsonsWithInput")//
+						.withDate(Calendar.getInstance().getTime())//
+						.withLong(6789L)//
+						.withBoolean(true)//
+						.withEnum(SEP_Episode_SES.JEDI)//
+						.withObject(json)//
+						.withObjects(Arrays.asList(json, json))//
+						.build();
+				jsons = Arrays.asList(item, item);
+			} else {
+				jsons = input.stream()//
+						.map(item -> mapper.map(item, STP_TypeWithObject_STS.class))//
+						.collect(Collectors.toList());
+			}
+
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> jsons);
+
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

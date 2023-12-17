@@ -15,6 +15,10 @@ scalar Base64String
 """ A scalar to test the issues #154 and #198 """
 scalar CustomId
 
+""" A scalar that encapsulates JSON (see issue #205) """
+scalar Object
+scalar JSON
+
 directive @IDScalarDirective
 on SCALAR
 
@@ -184,6 +188,20 @@ type MyQueryType {
     
     """ Test for issue #174: a custom scalar which Java type is an array """
 	testBase64String(input: Base64String!): Base64String    
+
+    
+    """ Test of JSON scalar, for issue #205 """
+    json(json: JSON): JSON
+    jsons(jsons: [JSON]): [JSON]
+    jsonWithInput(input: InputWithJson!): TypeWithJson!
+    jsonsWithInput(input: [InputWithJson!]!): [TypeWithJson!]!
+    object(object: Object): Object
+    objects(objects: [Object]): [Object]
+    objectWithInput(input: InputWithObject!): TypeWithObject!
+    objectsWithInput(input: [InputWithObject!]!): [TypeWithObject!]!
+
+
+## End of MyQueryType
 }
 
 " A mono line description for AnotherMutationType " 
@@ -242,6 +260,12 @@ type TheSubscriptionType {
 
     "Issue #188: null is not identified as a java keyword"
     null: String
+    
+    """ Test of JSON scalar, for issue #205 """
+    json(json: JSON): JSON
+    jsons(jsons: [JSON]): [JSON]
+    jsonsWithInput(input: [InputWithJson!]!): [TypeWithJson!]!
+    objectsWithInput(input: [InputWithObject!]!): [TypeWithObject!]!
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
@@ -875,4 +899,66 @@ interface InterfaceTestForIssue202 {
 }
 type ClassTestForIssue202 implements InterfaceTestForIssue202 {
 	class: String
+}
+
+#############################
+# test for issue #205:
+# These classes contains Json and Object fields
+input InputWithJson {
+	test: String
+	date: Date!
+	long: Long!
+	boolean: Boolean!
+	enum: Episode!
+	json: JSON!
+	jsons: [JSON!]!
+}
+type TypeWithJson {
+	test: String
+	withArguments(
+		test: String,
+		date: Date!,
+		long: Long!,
+		boolean: Boolean!,
+		enum: Episode!,
+		json: JSON!,
+		jsons: [JSON!]!): String
+	date: Date!
+	long: Long!
+	boolean: Boolean!
+	enum: Episode!
+	json: JSON!
+	jsons: [JSON!]!
+}
+input InputWithObject {
+	test: String
+	date: Date!
+	long: Long!
+	boolean: Boolean!
+	enum: Episode!
+	object: Object!
+	objects: [Object!]!
+}
+type TypeWithObject {
+	test: String
+	withArguments(
+		test: String,
+		date: Date!,
+		long: Long!,
+		boolean: Boolean!,
+		enum: Episode!,
+		object: Object!,
+		objects: [Object!]!): String
+	date: Date!
+	long: Long!
+	boolean: Boolean!
+	enum: Episode!
+	object: Object!
+	objects: [Object!]!
+}
+" A recursive input type, to check the plugin's behaviour when searching for JSON fields "
+input RecursiveTypeWithJsonField {
+	id: ID
+	json: JSON
+	recursion: RecursiveTypeWithJsonField
 }

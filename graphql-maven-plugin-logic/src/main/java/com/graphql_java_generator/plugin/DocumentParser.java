@@ -144,7 +144,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 * {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
 	 */
 	@Getter
-	protected String queryTypeName = DEFAULT_QUERY_NAME;
+	protected String queryTypeName = this.DEFAULT_QUERY_NAME;
 	/** The Query root operation for this Document */
 	@Getter
 	@Setter
@@ -155,7 +155,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 * the {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
 	 */
 	@Getter
-	protected String mutationTypeName = DEFAULT_MUTATION_NAME;
+	protected String mutationTypeName = this.DEFAULT_MUTATION_NAME;
 	/**
 	 * The Mutation root operation for this Document, if defined (that is: if this schema implements one or more
 	 * mutations)
@@ -169,7 +169,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 * overridden in the {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
 	 */
 	@Getter
-	protected String subscriptionTypeName = DEFAULT_SUBSCRIPTION_NAME;
+	protected String subscriptionTypeName = this.DEFAULT_SUBSCRIPTION_NAME;
 	/**
 	 * The Subscription root operation for this Document, if defined (that is: if this schema implements one or more
 	 * subscriptions)
@@ -247,7 +247,7 @@ public abstract class DocumentParser implements InitializingBean {
 		skip.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		skip.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
 		skip.setStandard(true);
-		directives.add(skip);
+		this.directives.add(skip);
 		//
 		// @include
 		DirectiveImpl include = new DirectiveImpl();
@@ -260,7 +260,7 @@ public abstract class DocumentParser implements InitializingBean {
 		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
 		include.setStandard(true);
-		directives.add(include);
+		this.directives.add(include);
 		//
 		// @defer
 		DirectiveImpl defer = new DirectiveImpl();
@@ -271,7 +271,7 @@ public abstract class DocumentParser implements InitializingBean {
 						.build());
 		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		defer.setStandard(true);
-		directives.add(defer);
+		this.directives.add(defer);
 		//
 		// @deprecated
 		DirectiveImpl deprecated = new DirectiveImpl();
@@ -283,7 +283,7 @@ public abstract class DocumentParser implements InitializingBean {
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		deprecated.setStandard(true);
-		directives.add(deprecated);
+		this.directives.add(deprecated);
 
 		logger.debug("Finished DocumentParser's PostConstruct intialization");
 
@@ -296,14 +296,14 @@ public abstract class DocumentParser implements InitializingBean {
 	 * 
 	 */
 	protected void initScalarTypes(Class<?> IDclass) {
-		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", configuration, this));
+		this.scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", this.configuration, this));
 		// GraphQL Float is a double precision number
-		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", configuration, this));
+		this.scalarTypes.add(new ScalarType("Float", "java.lang", "Double", this.configuration, this));
 		// By default, we use the UUID type for the ID GraphQL type
-		scalarTypes.add(
-				new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration, this));
-		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration, this));
-		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration, this));
+		this.scalarTypes.add(new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(),
+				this.configuration, this));
+		this.scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", this.configuration, this));
+		this.scalarTypes.add(new ScalarType("String", "java.lang", "String", this.configuration, this));
 	}
 
 	/**
@@ -318,18 +318,19 @@ public abstract class DocumentParser implements InitializingBean {
 		logger.debug("Starting documents parsing");
 
 		// Configuration of the GraphQL schema parser, from the project configuration
-		ParserOptions newDefault = ParserOptions.newParserOptions().maxTokens(configuration.getMaxTokens()).build();
+		ParserOptions newDefault = ParserOptions.newParserOptions().maxTokens(this.configuration.getMaxTokens())
+				.build();
 		ParserOptions.setDefaultParserOptions(newDefault);
 		SchemaParser schemaParser = new SchemaParser();
 
 		// Let's parse the provided GraphQL schema(s)
-		String concatenatedSchemas = schemaStringProvider.getConcatenatedSchemaStrings();
-		typeDefinitionRegistry = schemaParser.parse(concatenatedSchemas);
+		String concatenatedSchemas = this.schemaStringProvider.getConcatenatedSchemaStrings();
+		this.typeDefinitionRegistry = schemaParser.parse(concatenatedSchemas);
 
 		// The Directives must be read first, as they may be found on almost any kind of definition in the GraphQL
 		// schema
-		typeDefinitionRegistry.getDirectiveDefinitions().values().stream()
-				.forEach(def -> directives.add(readDirectiveDefinition(def)));
+		this.typeDefinitionRegistry.getDirectiveDefinitions().values().stream()
+				.forEach(def -> this.directives.add(readDirectiveDefinition(def)));
 
 		// Then a look at the schema definition, to list the defined queries, mutations and subscriptions (should be
 		// only one of each), but we're ready for more. (for instance if several schema files have been merged)
@@ -337,22 +338,22 @@ public abstract class DocumentParser implements InitializingBean {
 		readSchemaDefinition();
 
 		// Scalar definitions are not returned by the typeDefinitionRegistry.types() method. So we need a specific loop
-		for (ScalarTypeDefinition def : typeDefinitionRegistry.scalars().values()) {
+		for (ScalarTypeDefinition def : this.typeDefinitionRegistry.scalars().values()) {
 			// The scalars() method returns all scalars, whether they are custom or not. But we need here to add only
 			// custom scalars (mainly to be able to properly re-generate the schema afterwards)
 			boolean isCustom = true;
-			for (ScalarType s : scalarTypes) {
+			for (ScalarType s : this.scalarTypes) {
 				if (s.getName().equals(def.getName())) {
 					isCustom = false;
 					break;
 				}
 			}
 			if (isCustom)
-				customScalars.add(readCustomScalarType(def));
+				this.customScalars.add(readCustomScalarType(def));
 		}
 
 		logger.debug("Reading type definitions");
-		for (TypeDefinition<?> def : typeDefinitionRegistry.types().values()) {
+		for (TypeDefinition<?> def : this.typeDefinitionRegistry.types().values()) {
 			// directive
 			if ((Object) def instanceof DirectiveDefinition) {
 				// This test is awful, but without the (Object) there is a compilation error. And I want to be sure that
@@ -363,36 +364,36 @@ public abstract class DocumentParser implements InitializingBean {
 			} else
 			// enum
 			if (def instanceof EnumTypeDefinition) {
-				enumTypes.add(readEnumType(//
-						new EnumType(((EnumTypeDefinition) def).getName(), configuration, this),
+				this.enumTypes.add(readEnumType(//
+						new EnumType(((EnumTypeDefinition) def).getName(), this.configuration, this),
 						(EnumTypeDefinition) def));
 			} else
 			// input object
 			if (def instanceof InputObjectTypeDefinition) {
-				objectTypes.add(readInputType(//
-						new ObjectType(((InputObjectTypeDefinition) def).getName(), configuration, this),
+				this.objectTypes.add(readInputType(//
+						new ObjectType(((InputObjectTypeDefinition) def).getName(), this.configuration, this),
 						(InputObjectTypeDefinition) def));
 			} else
 			// interface
 			if (def instanceof InterfaceTypeDefinition) {
-				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) def));
+				this.interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) def));
 			} else
 			// object
 			if (def instanceof ObjectTypeDefinition) {
 				// Let's check what kind of ObjectDefinition we have
 				ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) def);
-				objectTypes.add(o);
+				this.objectTypes.add(o);
 
 				// Let's register this type as a request, if it is the case
-				if (o.getName().equals(queryTypeName)) {
-					queryType = o;
+				if (o.getName().equals(this.queryTypeName)) {
+					this.queryType = o;
 					o.setRequestType("query");
-				} else if (o.getName().equals(mutationTypeName)) {
+				} else if (o.getName().equals(this.mutationTypeName)) {
 					o.setRequestType("mutation");
-					mutationType = o;
-				} else if (o.getName().equals(subscriptionTypeName)) {
+					this.mutationType = o;
+				} else if (o.getName().equals(this.subscriptionTypeName)) {
 					o.setRequestType("subscription");
-					subscriptionType = o;
+					this.subscriptionType = o;
 				}
 			} else
 			// schema
@@ -413,12 +414,12 @@ public abstract class DocumentParser implements InitializingBean {
 
 		// Once all Types have been properly read, we can read the union types
 		logger.debug("Reading union definitions");
-		typeDefinitionRegistry.types().values().stream()//
+		this.typeDefinitionRegistry.types().values().stream()//
 				.filter(n -> (n instanceof UnionTypeDefinition)) // We want the union definitions
 				.filter(n -> !(n instanceof UnionTypeExtensionDefinition)) // We want their extensions (to avoid doubled
 																			// definitions)
-				.forEach(n -> unionTypes
-						.add(readUnionType(new UnionType(((UnionTypeDefinition) n).getName(), configuration, this),
+				.forEach(n -> this.unionTypes
+						.add(readUnionType(new UnionType(((UnionTypeDefinition) n).getName(), this.configuration, this),
 								(UnionTypeDefinition) n)));
 
 		// Let's finalize some "details":
@@ -441,12 +442,16 @@ public abstract class DocumentParser implements InitializingBean {
 		initListOfInterfaceImplementations();
 
 		// Add the Relay connection capabilities, if configured for it
-		if (configuration.isAddRelayConnections()) {
-			addRelayConnections.addRelayConnections();
+		if (this.configuration.isAddRelayConnections()) {
+			this.addRelayConnections.addRelayConnections();
 		}
 
+		// Identify if one or more input types depends on the JSON custom scalar, to properly generate the
+		// spring-graphql controllers that expect such input types
+		checkInputTypesForDependenciesToJsonOrObjectCustomScalar();
+
 		// We're done
-		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
+		int nbClasses = this.objectTypes.size() + this.enumTypes.size() + this.interfaceTypes.size();
 		logger.debug("classes identified = " + nbClasses);
 		return nbClasses;
 
@@ -461,12 +466,12 @@ public abstract class DocumentParser implements InitializingBean {
 		// Directive are directly added to the types map.
 		// TODO remove this method, and add each type in the types map as it is read
 
-		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
-		customScalars.stream().forEach(s -> types.put(s.getName(), s));
-		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
-		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
-		unionTypes.stream().forEach(u -> types.put(u.getName(), u));
-		enumTypes.stream().forEach(e -> types.put(e.getName(), e));
+		this.scalarTypes.stream().forEach(s -> this.types.put(s.getName(), s));
+		this.customScalars.stream().forEach(s -> this.types.put(s.getName(), s));
+		this.objectTypes.stream().forEach(o -> this.types.put(o.getName(), o));
+		this.interfaceTypes.stream().forEach(i -> this.types.put(i.getName(), i));
+		this.unionTypes.stream().forEach(u -> this.types.put(u.getName(), u));
+		this.enumTypes.stream().forEach(e -> this.types.put(e.getName(), e));
 	}
 
 	/**
@@ -502,7 +507,7 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	public Directive getDirectiveDefinition(String name) {
-		for (Directive d : directives) {
+		for (Directive d : this.directives) {
 			if (d.getName().equals(name)) {
 				return d;
 			}
@@ -553,14 +558,14 @@ public abstract class DocumentParser implements InitializingBean {
 	 */
 	void readSchemaDefinition() {
 		// First step: read the schema definition, if it exists
-		Optional<SchemaDefinition> optSchemaDef = typeDefinitionRegistry.schemaDefinition();
+		Optional<SchemaDefinition> optSchemaDef = this.typeDefinitionRegistry.schemaDefinition();
 		if (optSchemaDef.isPresent()) {
 			// The schema has been defined in the provided schema
 			readOneSchemaDefinition(optSchemaDef.get());
 		}
 
 		// Second step, read the schema extensions, if any
-		for (SchemaExtensionDefinition extDef : typeDefinitionRegistry.getSchemaExtensionDefinitions()) {
+		for (SchemaExtensionDefinition extDef : this.typeDefinitionRegistry.getSchemaExtensionDefinitions()) {
 			readOneSchemaDefinition(extDef);
 		} // for
 	}
@@ -570,13 +575,13 @@ public abstract class DocumentParser implements InitializingBean {
 			TypeName type = opDef.getTypeName();
 			switch (opDef.getName()) {
 			case "query":
-				queryTypeName = type.getName();
+				this.queryTypeName = type.getName();
 				break;
 			case "mutation":
-				mutationTypeName = type.getName();
+				this.mutationTypeName = type.getName();
 				break;
 			case "subscription":
-				subscriptionTypeName = type.getName();
+				this.subscriptionTypeName = type.getName();
 				break;
 			default:
 				throw new RuntimeException(
@@ -584,7 +589,7 @@ public abstract class DocumentParser implements InitializingBean {
 			}// switch
 		} // for
 
-		schemaDirectives.addAll(readAppliedDirectives(def.getDirectives()));
+		this.schemaDirectives.addAll(readAppliedDirectives(def.getDirectives()));
 	}
 
 	/**
@@ -594,12 +599,12 @@ public abstract class DocumentParser implements InitializingBean {
 	 * @return
 	 */
 	public ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
-		ObjectType objectType = new ObjectType(node.getName(), configuration, this);
+		ObjectType objectType = new ObjectType(node.getName(), this.configuration, this);
 		return addObjectTypeDefinition(objectType, node);
 	}
 
 	void manageEnumExtensionDefinitions() {
-		for (List<EnumTypeExtensionDefinition> extList : typeDefinitionRegistry.enumTypeExtensions().values()) {
+		for (List<EnumTypeExtensionDefinition> extList : this.typeDefinitionRegistry.enumTypeExtensions().values()) {
 			for (EnumTypeExtensionDefinition def : extList) {
 				EnumType enumType = getType(def.getName(), EnumType.class, true);
 				readEnumType(enumType, def);
@@ -608,7 +613,7 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	void manageInputExtensionDefinitions() {
-		for (List<InputObjectTypeExtensionDefinition> extList : typeDefinitionRegistry.inputObjectTypeExtensions()
+		for (List<InputObjectTypeExtensionDefinition> extList : this.typeDefinitionRegistry.inputObjectTypeExtensions()
 				.values()) {
 			for (InputObjectTypeExtensionDefinition def : extList) {
 				ObjectType objectType = getType(def.getName(), ObjectType.class, true);
@@ -618,7 +623,7 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	void manageInterfaceExtensionDefinitions() {
-		for (List<InterfaceTypeExtensionDefinition> extList : typeDefinitionRegistry.interfaceTypeExtensions()
+		for (List<InterfaceTypeExtensionDefinition> extList : this.typeDefinitionRegistry.interfaceTypeExtensions()
 				.values()) {
 			for (InterfaceTypeExtensionDefinition def : extList) {
 				InterfaceType interfaceType = getType(def.getName(), InterfaceType.class, true);
@@ -630,7 +635,8 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	void manageScalarExtensionDefinitions() {
-		for (List<ScalarTypeExtensionDefinition> extList : typeDefinitionRegistry.scalarTypeExtensions().values()) {
+		for (List<ScalarTypeExtensionDefinition> extList : this.typeDefinitionRegistry.scalarTypeExtensions()
+				.values()) {
 			for (ScalarTypeExtensionDefinition node : extList) {
 				ScalarType type = getType(node.getName(), ScalarType.class, true);
 				type.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
@@ -642,7 +648,8 @@ public abstract class DocumentParser implements InitializingBean {
 	 * Manages the type extensions found in the read {@link Document}s, and them to the relevant object(s)
 	 */
 	void manageTypeExtensionDefinitions() {
-		for (List<ObjectTypeExtensionDefinition> extList : typeDefinitionRegistry.objectTypeExtensions().values()) {
+		for (List<ObjectTypeExtensionDefinition> extList : this.typeDefinitionRegistry.objectTypeExtensions()
+				.values()) {
 			for (ObjectTypeExtensionDefinition node : extList) {
 				ObjectType objectType = getType(node.getName(), ObjectType.class, true);
 				addObjectTypeDefinition(objectType, node);
@@ -651,7 +658,7 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	void manageUnionExtensionDefinitions() {
-		for (List<UnionTypeExtensionDefinition> extList : typeDefinitionRegistry.unionTypeExtensions().values()) {
+		for (List<UnionTypeExtensionDefinition> extList : this.typeDefinitionRegistry.unionTypeExtensions().values()) {
 			for (UnionTypeExtensionDefinition node : extList) {
 				UnionType unionType = getType(node.getName(), UnionType.class, true);
 				readUnionType(unionType, node);
@@ -752,7 +759,7 @@ public abstract class DocumentParser implements InitializingBean {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration, this);
+		InterfaceType interfaceType = new InterfaceType(node.getName(), this.configuration, this);
 
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
@@ -801,11 +808,11 @@ public abstract class DocumentParser implements InitializingBean {
 		}
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
-			String memberTypeName = (String) graphqlUtils.invokeMethod("getName", memberType);
+			String memberTypeName = (String) this.graphqlUtils.invokeMethod("getName", memberType);
 
 			// We can not use getType yet, as the type list is not filled.
 			ObjectType type = null;
-			for (ObjectType ot : objectTypes) {
+			for (ObjectType ot : this.objectTypes) {
 				if (ot.getName().equals(memberTypeName)) {
 					type = ot;
 					break;
@@ -838,8 +845,8 @@ public abstract class DocumentParser implements InitializingBean {
 		if (!(this instanceof GenerateGraphQLSchemaDocumentParser)) {
 			// An implementation of this custom scalar must have been provided
 			@SuppressWarnings("unchecked")
-			List<CustomScalarDefinition> confCustomScalarDefs = (List<CustomScalarDefinition>) graphqlUtils
-					.invokeGetter(configuration, "customScalars");
+			List<CustomScalarDefinition> confCustomScalarDefs = (List<CustomScalarDefinition>) this.graphqlUtils
+					.invokeGetter(this.configuration, "customScalars");
 			if (confCustomScalarDefs != null) {
 				for (CustomScalarDefinition csd : confCustomScalarDefs) {
 					if (name.equals(csd.getGraphQLTypeName())) {
@@ -854,7 +861,7 @@ public abstract class DocumentParser implements InitializingBean {
 								+ "' custom scalar");
 			}
 		}
-		CustomScalarType customScalarType = new CustomScalarType(name, customScalarDef, configuration, this);
+		CustomScalarType customScalarType = new CustomScalarType(name, customScalarDef, this.configuration, this);
 
 		customScalarType.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
 
@@ -942,11 +949,11 @@ public abstract class DocumentParser implements InitializingBean {
 	FieldImpl readFieldTypeDefinition(AbstractNode<?> fieldDef) {
 		FieldImpl field = FieldImpl.builder().documentParser(this).build();
 
-		field.setName((String) graphqlUtils.invokeMethod("getName", fieldDef));
+		field.setName((String) this.graphqlUtils.invokeMethod("getName", fieldDef));
 		field.setAppliedDirectives(readAppliedDirectives(
-				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
+				(List<graphql.language.Directive>) this.graphqlUtils.invokeMethod("getDirectives", fieldDef)));
 
-		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef)));
+		field.setFieldTypeAST(readFieldTypeAST(this.graphqlUtils.invokeMethod("getType", fieldDef)));
 
 		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -1004,7 +1011,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 * @param name
 	 */
 	String getGeneratedFieldFullClassName(String name) {
-		return ((GenerateCodeCommonConfiguration) configuration).getPackageName() + "." + name;
+		return ((GenerateCodeCommonConfiguration) this.configuration).getPackageName() + "." + name;
 	}
 
 	/**
@@ -1032,7 +1039,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 *             if <I>throwExceptionIfNotFound</I> is true and the type could not be found
 	 */
 	public Type getType(String typeName, boolean throwExceptionIfNotFound) {
-		Type ret = types.get(typeName);
+		Type ret = this.types.get(typeName);
 		if (throwExceptionIfNotFound && ret == null)
 			throw new RuntimeException("The type named '" + typeName + "' could not be found");
 		return ret;
@@ -1052,7 +1059,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 *             if <I>throwExceptionIfNotFound</I> is true and the type could not be found
 	 */
 	public <T> T getType(String typeName, Class<T> classOfType, boolean throwExceptionIfNotFound) {
-		Type ret = types.get(typeName);
+		Type ret = this.types.get(typeName);
 
 		if (ret == null) {
 			if (throwExceptionIfNotFound)
@@ -1075,8 +1082,8 @@ public abstract class DocumentParser implements InitializingBean {
 	 * @see InterfaceType#getImplementingTypes()
 	 */
 	void initListOfInterfaceImplementations() {
-		for (InterfaceType interfaceType : interfaceTypes) {
-			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).forEach((o) -> {
+		for (InterfaceType interfaceType : this.interfaceTypes) {
+			Stream.concat(this.objectTypes.stream(), this.interfaceTypes.stream()).forEach((o) -> {
 				if (o.getImplementz().contains(interfaceType.getName())) {
 					// This object implements the current interface we're looping in.
 					interfaceType.getImplementingTypes().add(o);
@@ -1086,13 +1093,46 @@ public abstract class DocumentParser implements InitializingBean {
 	}
 
 	/**
+	 * Identify if one or more input types depends on the JSON or the Object custom scalar, to properly generate the
+	 * spring-graphql controllers that expect such input types
+	 */
+	private void checkInputTypesForDependenciesToJsonOrObjectCustomScalar() {
+		boolean mustIterateOnceMore = true;
+
+		while (mustIterateOnceMore) {
+
+			// by default it's the last iteration, unless we change the 'dependsOnJsonCustomScalar' status for a type
+			// at least once.
+			mustIterateOnceMore = false;
+
+			for (ObjectType o : this.objectTypes) {
+				if (!o.isDependsOnJsonOrObjectCustomScalar()) {
+					for (Field f : o.getFields()) {
+						if (false || //
+								f.getType().getName().equals("JSON") //
+								|| //
+								f.getType().getName().equals("Object") //
+								|| //
+								(f.getType() instanceof ObjectType
+										&& ((ObjectType) f.getType()).isDependsOnJsonOrObjectCustomScalar())) {
+							o.setDependsOnJsonOrObjectCustomScalar(true);
+							mustIterateOnceMore = true;
+							continue;
+						}
+					}
+				}
+			} // for
+		} // while
+	}
+
+	/**
 	 * Returns the name of the package for utility classes.<BR/>
 	 * In this class, it always return the result of {@link CommonConfiguration#getPackageName()}
 	 * 
 	 * @return
 	 */
 	protected String getUtilPackageName() {
-		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
+		return ((GenerateCodeCommonConfiguration) this.configuration).getPackageName();
 	}
 
 	/**

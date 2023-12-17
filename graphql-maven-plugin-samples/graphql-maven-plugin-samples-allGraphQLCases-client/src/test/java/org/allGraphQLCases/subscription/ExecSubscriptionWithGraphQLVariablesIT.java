@@ -67,16 +67,16 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 	void setup() {
 
 		// matrix
-		matrix.add((List<Double>) (Object) Arrays.asList(list0));
-		matrix.add((List<Double>) (Object) Arrays.asList(list1));
-		matrix.add((List<Double>) (Object) Arrays.asList(list2));
+		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list0));
+		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list1));
+		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list2));
 
 		// oneWithoutIdSubtype
-		oneWithoutIdSubtype.setName("the name");
+		this.oneWithoutIdSubtype.setName("the name");
 
 		// listWithoutIdSubtype
-		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name0").build());
-		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name1").build());
+		this.listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name0").build());
+		this.listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name1").build());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,28 +86,28 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Preparation
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_GraphQLVariables_allGraphQLCasesInput");
-		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
+		SubscriptionCallbackGeneric<CTP_AllFieldCases_CTS> callback = new SubscriptionCallbackGeneric<>(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
 		CINP_AllFieldCasesInput_CINS input = new CINP_AllFieldCasesInput_CINS();
-		input.setId(id);
-		input.setAge(age);
-		input.setDate(date);
-		input.setDates((List<Date>) (Object) Arrays.asList(dates));
-		input.setMatrix(matrix);
-		input.setName(name);
-		input.setPlanets((List<String>) (Object) Arrays.asList(planets));
-		input.setAliases((List<String>) (Object) Arrays.asList(aliases));
-		input.setWithoutIdSubtype(listWithoutIdSubtype);
+		input.setId(this.id);
+		input.setAge(this.age);
+		input.setDate(this.date);
+		input.setDates((List<Date>) (Object) Arrays.asList(this.dates));
+		input.setMatrix(this.matrix);
+		input.setName(this.name);
+		input.setPlanets((List<String>) (Object) Arrays.asList(this.planets));
+		input.setAliases((List<String>) (Object) Arrays.asList(this.aliases));
+		input.setWithoutIdSubtype(this.listWithoutIdSubtype);
 
-		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = this.subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $input: AllFieldCasesInput!){allGraphQLCasesInput(input: $input){id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
 
 		// Go, go, go
 		@SuppressWarnings("unused")
 		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
 				"input", input, //
-				"nbItems", nbItems);
+				"nbItems", this.nbItems);
 
 		// Verification
 
@@ -115,29 +115,29 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
-		assertNull(callback.lastReceivedError, (callback.lastReceivedError == null) ? //
+		assertNull(callback.lastExceptionReceived, (callback.lastExceptionReceived == null) ? //
 				"No error"//
-				: "lastReceivedError should be null, but is " + callback.lastReceivedError.getClass().getName() + ": "
-						+ callback.lastReceivedError.getMessage()//
+				: "lastExceptionReceived should be null, but is " + callback.lastExceptionReceived.getClass().getName()
+						+ ": " + callback.lastExceptionReceived.getMessage()//
 		);
 		assertNotNull(callback.lastReceivedMessage);
 
 		// Let's wait for the subscription to close (the server will send back only one item)
-		callback.latchForClosure.await(20, TimeUnit.SECONDS);
-		assertNull(callback.lastReceivedError);
+		callback.latchForCompleteReception.await(20, TimeUnit.SECONDS);
+		assertNull(callback.lastExceptionReceived);
 		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(name, callback.lastReceivedMessage.getName());
-		assertEquals(age, callback.lastReceivedMessage.getAge());
-		assertEquals(date, callback.lastReceivedMessage.getDate());
+		assertEquals(this.name, callback.lastReceivedMessage.getName());
+		assertEquals(this.age, callback.lastReceivedMessage.getAge());
+		assertEquals(this.date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());
@@ -155,7 +155,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Preparation
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_GraphQLVariables_allGraphQLCasesParam_asBindParameters");
-		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
+		SubscriptionCallbackGeneric<CTP_AllFieldCases_CTS> callback = new SubscriptionCallbackGeneric<>(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
 		// Go, go, go
@@ -163,10 +163,10 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype:
 		// [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
 		@SuppressWarnings({ "unused", "unchecked" })
-		SubscriptionClient sub = subscriptionExecutor.allGraphQLCasesParam(
-				"{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: 15)}", callback, id,
-				name, age, i, date, (List<Date>) (Object) Arrays.asList(dates), matrix, oneWithoutIdSubtype,
-				listWithoutIdSubtype);
+		SubscriptionClient sub = this.subscriptionExecutor.allGraphQLCasesParam(
+				"{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: 15)}", callback,
+				this.id, this.name, this.age, this.i, this.date, (List<Date>) (Object) Arrays.asList(this.dates),
+				this.matrix, this.oneWithoutIdSubtype, this.listWithoutIdSubtype);
 
 		// Verification
 
@@ -174,29 +174,29 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
-		assertNull(callback.lastReceivedError, (callback.lastReceivedError == null) ? //
+		assertNull(callback.lastExceptionReceived, (callback.lastExceptionReceived == null) ? //
 				"No error"//
-				: "lastReceivedError should be null, but is " + callback.lastReceivedError.getClass().getName() + ": "
-						+ callback.lastReceivedError.getMessage()//
+				: "lastExceptionReceived should be null, but is " + callback.lastExceptionReceived.getClass().getName()
+						+ ": " + callback.lastExceptionReceived.getMessage()//
 		);
 		assertNotNull(callback.lastReceivedMessage);
 
 		// Let's wait for the subscription to close (the server will send back only one item)
-		callback.latchForClosure.await(20, TimeUnit.SECONDS);
-		assertNull(callback.lastReceivedError);
+		callback.latchForCompleteReception.await(20, TimeUnit.SECONDS);
+		assertNull(callback.lastExceptionReceived);
 		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(name, callback.lastReceivedMessage.getName());
-		assertEquals(age, callback.lastReceivedMessage.getAge());
-		assertEquals(date, callback.lastReceivedMessage.getDate());
+		assertEquals(this.name, callback.lastReceivedMessage.getName());
+		assertEquals(this.age, callback.lastReceivedMessage.getAge());
+		assertEquals(this.date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());
@@ -218,10 +218,10 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Preparation
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_GraphQLVariables_allGraphQLCasesParam_asGraphQLVariables");
-		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
+		SubscriptionCallbackGeneric<CTP_AllFieldCases_CTS> callback = new SubscriptionCallbackGeneric<>(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
-		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = this.subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: Date!, $dates: [Date!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
 						+ "{allGraphQLCasesParam(id: $id, name: $name, age: $age, integer: $i, date: $date, dates: $dates, matrix: $matrix, oneWithoutIdSubtype: $oneWithoutIdSubtype, listWithoutIdSubtype: $listWithoutIdSubtype)"
 						+ "{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
@@ -229,16 +229,16 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Go, go, go
 		@SuppressWarnings("unused")
 		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
-				"nbItems", nbItems, //
-				"id", id, //
-				"name", name, //
-				"age", age, //
-				"i", i, //
-				"date", date, //
-				"dates", dates, //
-				"matrix", matrix, //
-				"oneWithoutIdSubtype", oneWithoutIdSubtype, //
-				"listWithoutIdSubtype", listWithoutIdSubtype);
+				"nbItems", this.nbItems, //
+				"id", this.id, //
+				"name", this.name, //
+				"age", this.age, //
+				"i", this.i, //
+				"date", this.date, //
+				"dates", this.dates, //
+				"matrix", this.matrix, //
+				"oneWithoutIdSubtype", this.oneWithoutIdSubtype, //
+				"listWithoutIdSubtype", this.listWithoutIdSubtype);
 
 		// Verification
 
@@ -246,29 +246,29 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// (20s will never occur... unless using the debugger to undebug some stuff)
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
-		assertNull(callback.lastReceivedError, (callback.lastReceivedError == null) ? //
+		assertNull(callback.lastExceptionReceived, (callback.lastExceptionReceived == null) ? //
 				"No error"//
-				: "lastReceivedError should be null, but is " + callback.lastReceivedError.getClass().getName() + ": "
-						+ callback.lastReceivedError.getMessage()//
+				: "lastExceptionReceived should be null, but is " + callback.lastExceptionReceived.getClass().getName()
+						+ ": " + callback.lastExceptionReceived.getMessage()//
 		);
 		assertNotNull(callback.lastReceivedMessage);
 
 		// Let's wait for the subscription to close (the server will send back only one item)
-		callback.latchForClosure.await(20, TimeUnit.SECONDS);
-		assertNull(callback.lastReceivedError);
+		callback.latchForCompleteReception.await(20, TimeUnit.SECONDS);
+		assertNull(callback.lastExceptionReceived);
 		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(name, callback.lastReceivedMessage.getName());
-		assertEquals(age, callback.lastReceivedMessage.getAge());
-		assertEquals(date, callback.lastReceivedMessage.getDate());
+		assertEquals(this.name, callback.lastReceivedMessage.getName());
+		assertEquals(this.age, callback.lastReceivedMessage.getAge());
+		assertEquals(this.date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());

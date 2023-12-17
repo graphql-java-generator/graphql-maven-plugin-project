@@ -80,9 +80,9 @@ public class PartialPreparedQueriesDeprecatedWay implements PartialQueries {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withOneMandatoryParamDefaultValueResponse = queryType.getWithOneMandatoryParamDefaultValueResponseBuilder()
+		// withOneMandatoryParamDefaultValueResponse = query.getWithOneMandatoryParamDefaultValueResponseBuilder()
 		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withTwoMandatoryParamDefaultValResponse = queryType.getWithTwoMandatoryParamDefaultValResponseBuilder()
+		// withTwoMandatoryParamDefaultValResponse = query.getWithTwoMandatoryParamDefaultValResponseBuilder()
 		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		withEnumResponse = queryType.getWithEnumResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();

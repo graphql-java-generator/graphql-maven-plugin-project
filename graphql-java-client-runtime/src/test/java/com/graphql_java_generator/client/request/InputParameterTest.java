@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -25,10 +26,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.InputWithJson;
+import com.graphql_java_generator.domain.client.allGraphQLCases.InputWithObject;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
@@ -428,6 +435,70 @@ class InputParameterTest {
 		// Verification
 		String expected = "{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}}";
 		assertEquals(expected, result);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void getValueForGraphqlQuery_InputTypeWithJsonField()
+			throws JsonMappingException, JsonProcessingException, GraphQLRequestExecutionException {
+		// Preparation
+		ObjectNode json = new ObjectMapper().readValue(
+				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
+				ObjectNode.class);
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		InputWithJson input = InputWithJson.builder()//
+				.withTest("getValueForGraphqlQuery_InputTypeWithJsonField")//
+				.withJson(json)//
+				.withJsons(Arrays.asList(json, json))//
+				.build();
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("MySchema", "name",
+				"bindParameterName", InputParameterType.MANDATORY, "InputWithObject", false, 0, false);
+		Map<String, Object> params = new HashMap<>();
+		params.put("bindParameterName", input);
+
+		// Go, go, go
+		String result = inputTypeInputParameter.getStringContentForGraphqlQuery(false, params);
+
+		// Verification
+		assertEquals("{"//
+				+ "test:\"getValueForGraphqlQuery_InputTypeWithJsonField\","
+				+ "json:{field:\"value\",subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},booleans:[true,false]},"
+				+ "jsons:["//
+				+ "{field:\"value\",subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},booleans:[true,false]},"
+				+ "{field:\"value\",subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},booleans:[true,false]}" + "]}",
+				result);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void getValueForGraphqlQuery_InputTypeWithObjectField()
+			throws JsonMappingException, JsonProcessingException, GraphQLRequestExecutionException {
+		// Preparation
+		Map<?, ?> map = new ObjectMapper().readValue(
+				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
+				HashMap.class);
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		InputWithObject input = InputWithObject.builder()//
+				.withTest("getValueForGraphqlQuery_InputTypeWithObjectField")//
+				.withObject(map)//
+				.withObjects(Arrays.asList(map, map))//
+				.build();
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("MySchema", "name",
+				"bindParameterName", InputParameterType.MANDATORY, "InputWithObject", false, 0, false);
+		Map<String, Object> params = new HashMap<>();
+		params.put("bindParameterName", input);
+
+		// Go, go, go
+		String result = inputTypeInputParameter.getStringContentForGraphqlQuery(false, params);
+
+		// Verification
+		assertEquals("{"//
+				+ "test:\"getValueForGraphqlQuery_InputTypeWithObjectField\","
+				+ "object:{subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},field:\"value\",booleans:[true,false]},"
+				+ "objects:["//
+				+ "{subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},field:\"value\",booleans:[true,false]},"
+				+ "{subObject:{field2:[1,2,3],field3:[1.1,22.2,3.3]},field:\"value\",booleans:[true,false]}" + "]}",
+				result);
 	}
 
 	private Date getDateFromDifferentFormat(String dateInString) {

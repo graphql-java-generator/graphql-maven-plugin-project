@@ -15,23 +15,24 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  * 
  * @author etienne-sf
  */
-public class SubscriptionCallbackNullableString implements SubscriptionCallback<String> {
+public class SubscriptionCallbackGeneric<T> implements SubscriptionCallback<T> {
 
 	/** The logger for this class */
-	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackNullableString.class);
+	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackGeneric.class);
 
 	final String clientName;
 	public boolean hasReceveivedAMessage = false;// Becomes true as soon as a message is received
-	public String lastReceivedMessage = null;// The value of the last message: should be true for the
+	public T lastReceivedMessage = null;// The value of the last message: should be true for the
 	public Throwable lastExceptionReceived = null;
 	public boolean closedHasBeenReceived = false;
+	public String closureReason = null;
 
 	/** A latch that will be freed when a the first notification arrives for this subscription */
 	public CountDownLatch latchForCompleteReception = new CountDownLatch(1);
 	public CountDownLatch latchForErrorReception = new CountDownLatch(1);
 	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
 
-	public SubscriptionCallbackNullableString(String clientName) {
+	public SubscriptionCallbackGeneric(String clientName) {
 		this.clientName = clientName;
 	}
 
@@ -41,8 +42,8 @@ public class SubscriptionCallbackNullableString implements SubscriptionCallback<
 	}
 
 	@Override
-	public synchronized void onMessage(String t) {
-		logger.debug("Received this message from the 'subscriptionTest' subscription: {} (for {})", t, this.clientName);
+	public synchronized void onMessage(T t) {
+		logger.debug("Received this message from subscription: {} (for {})", t, this.clientName);
 		this.hasReceveivedAMessage = true;
 		this.lastReceivedMessage = t;
 		this.latchForMessageReception.countDown();
@@ -52,12 +53,13 @@ public class SubscriptionCallbackNullableString implements SubscriptionCallback<
 	public void onClose(int statusCode, String reason) {
 		logger.debug("The subscription is closed (for {})", this.clientName);
 		this.closedHasBeenReceived = true;
+		this.closureReason = reason;
 		this.latchForCompleteReception.countDown();
 	}
 
 	@Override
 	public void onError(Throwable cause) {
-		logger.error("Oups! An error occurred: " + cause.getMessage());
+		logger.error("Oups! An error occurred: " + cause.getMessage() + " (for " + this.clientName + ")");
 		this.lastExceptionReceived = cause;
 		this.latchForErrorReception.countDown();
 		this.latchForMessageReception.countDown();

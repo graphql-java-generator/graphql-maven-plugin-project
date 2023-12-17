@@ -56,6 +56,11 @@
 									<graphQLScalarTypeGetter>org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
+									<graphQLTypeName>JSON</graphQLTypeName>
+									<javaType>com.fasterxml.jackson.databind.node.ObjectNode</javaType>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Json</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>MyBoolean</graphQLTypeName>
 									<javaType>java.lang.Boolean</javaType>
 									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType</graphQLScalarTypeStaticField>
@@ -69,6 +74,11 @@
 									<graphQLTypeName>NonNegativeInt</graphQLTypeName>
 									<javaType>java.lang.Integer</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>Object</graphQLTypeName>
+									<javaType>java.lang.Object</javaType>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Object</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
 						</configuration>
@@ -109,6 +119,11 @@
 		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-extended-scalars</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Mandatory for the JSON custom scalar -->
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
 	</dependencies>

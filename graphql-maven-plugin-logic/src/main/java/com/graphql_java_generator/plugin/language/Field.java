@@ -85,9 +85,9 @@ public interface Field {
 
 	/**
 	 * Returns the java type as it an be used to declare a variable or an attribute, <B>without declaring this type in
-	 * the import list</B>. For instance, a field of GraphQL type <I>[ID]</I>, in client mode (where an ID is a java
-	 * String), the result would be: <I>List&lt;java.lang.String&gt;</I>. This always uses the full class name. So the
-	 * proper import doesn't need to be added into the enclosing java file.
+	 * the import list</B>. For instance, a field of GraphQL type <code>[ID]</code>, in client mode (where an ID is a
+	 * java String), the result would be: <I>List&lt;java.lang.String&gt;</I>. This always uses the full class name. So
+	 * the proper import doesn't need to be added into the enclosing java file.
 	 */
 	default public String getJavaTypeFullClassname() {
 		return getFieldTypeAST().getJavaType(getType().getClassFullName());

@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_InputWithJson_CINS;
 import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
+import org.allGraphQLCases.client.CTP_TypeWithJson_CTS;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.TheSubscriptionTypeExecutorAllGraphQLCases2;
 import org.junit.jupiter.api.Disabled;
@@ -28,6 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.client.GraphQlTransportException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -50,13 +58,13 @@ public class ExecSubscriptionIT {
 
 	public static class SubscribeToAList implements Runnable {
 		final TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
-		final SubscriptionCallbackListInteger callback;
+		final SubscriptionCallbackGeneric<List<Integer>> callback;
 		final String clientName;
 
 		SubscribeToAList(TheSubscriptionTypeExecutorAllGraphQLCases executor, String clientName) {
 			this.subscriptionExecutor = executor;
 			this.clientName = clientName;
-			this.callback = new SubscriptionCallbackListInteger(clientName);
+			this.callback = new SubscriptionCallbackGeneric<>(clientName);
 		}
 
 		@Override
@@ -184,7 +192,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToANullableString");
 
-		SubscriptionCallbackNullableString callback = new SubscriptionCallbackNullableString(
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
 				"test_subscribeToANullableString");
 		SubscriptionClient sub = this.subscriptionExecutor.subscriptionWithNullResponse("", callback);
 
@@ -213,7 +221,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToAListOfDate");
 
-		SubscriptionCallbackToAListOfDates callback = new SubscriptionCallbackToAListOfDates(
+		SubscriptionCallbackGeneric<List<Date>> callback = new SubscriptionCallbackGeneric<>(
 				"test_subscribeToAListOfDate");
 		SubscriptionClient sub = this.subscriptionExecutor.subscribeToAListOfScalars("", callback);
 
@@ -251,7 +259,8 @@ public class ExecSubscriptionIT {
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCompleteAfterFirstNotification(true);
-		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_serverComplete");
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
+				"test_subscribeToADate_serverComplete");
 		this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -284,7 +293,8 @@ public class ExecSubscriptionIT {
 		logger.info("Starting test_subscribeToADate_clientComplete");
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
-		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_clientComplete");
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
+				"test_subscribeToADate_clientComplete");
 		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -311,12 +321,12 @@ public class ExecSubscriptionIT {
 	void test_connectionError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
-		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
+		SubscriptionCallbackGeneric<Date> callback = new SubscriptionCallbackGeneric<>("test_connectionError");
 		SubscriptionClient sub = this.subscriptionExecutor2.issue53("", callback, date);
 		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
-		assertInstanceOf(GraphQlTransportException.class, callback.lastReceivedError);
-		assertTrue(callback.lastReceivedError.getMessage().contains("Connection refused"),
-				"The received error message is: " + callback.lastReceivedError.getMessage());
+		assertInstanceOf(GraphQlTransportException.class, callback.lastExceptionReceived);
+		assertTrue(callback.lastExceptionReceived.getMessage().contains("Connection refused"),
+				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		sub.unsubscribe();
 	}
@@ -338,7 +348,8 @@ public class ExecSubscriptionIT {
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnSubscription(true);
-		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_subscriptionError");
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
+				"test_subscribeToADate_subscriptionError");
 		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -364,7 +375,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscriptionTest_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -372,7 +383,8 @@ public class ExecSubscriptionIT {
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnNext(true);
-		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_nextError");
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
+				"test_subscribeToADate_nextError");
 		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -406,7 +418,7 @@ public class ExecSubscriptionIT {
 
 		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCloseWebSocketBeforeFirstNotification(true);
-		SubscriptionCallbackString callback = new SubscriptionCallbackString(
+		SubscriptionCallbackGeneric<String> callback = new SubscriptionCallbackGeneric<>(
 				"test_subscribeToADate_webSocketCloseError");
 		SubscriptionClient sub = this.subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive an exception
@@ -424,13 +436,21 @@ public class ExecSubscriptionIT {
 		sub.unsubscribe();
 	}
 
-	@Test // Issue 139
+	/**
+	 * Issue 139
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 * @throws GraphQLRequestPreparationException
+	 * @throws InterruptedException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_subscribeToAEnumWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 
-		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
+		SubscriptionCallbackGeneric<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback = new SubscriptionCallbackGeneric<>(
 				"test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 		SubscriptionClient sub = this.subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
@@ -447,13 +467,21 @@ public class ExecSubscriptionIT {
 		sub.unsubscribe();
 	}
 
-	@Test // Issue 139
+	/**
+	 * Issue 139
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 * @throws GraphQLRequestPreparationException
+	 * @throws InterruptedException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 
-		SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues(
+		SubscriptionCallbackGeneric<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> callback = new SubscriptionCallbackGeneric<>(
 				"test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
 		SubscriptionClient sub = this.subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
@@ -475,6 +503,167 @@ public class ExecSubscriptionIT {
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();
+	}
+
+	/**
+	 * Issue 205: Json scalar not properly managed
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test205json() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException,
+			InterruptedException, JsonMappingException, JsonProcessingException {
+
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test205json");
+
+		ObjectNode json = new ObjectMapper().readValue(
+				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
+				ObjectNode.class);
+
+		SubscriptionCallbackGeneric<ObjectNode> callback = new SubscriptionCallbackGeneric<>("test205json");
+		SubscriptionClient sub = this.subscriptionExecutor.json("", callback, json);
+
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
+		assertEquals(
+				"{\"field\":\"value\",\"subObject\":{\"field2\":[1,2,3],\"field3\":[1.1,22.2,3.3]},\"booleans\":[true,false]}",
+				callback.lastReceivedMessage.toString());
+	}
+
+	/**
+	 * Issue 205: Json scalar not properly managed. The Object doesn't work better (before the 205's correction)
+	 * 
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test205jsons() throws JsonMappingException, JsonProcessingException, GraphQLRequestExecutionException,
+			GraphQLRequestPreparationException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test205jsons");
+
+		ObjectNode json = new ObjectMapper().readValue(
+				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
+				ObjectNode.class);
+
+		SubscriptionCallbackGeneric<List<ObjectNode>> callback = new SubscriptionCallbackGeneric<>("test205json");
+		SubscriptionClient sub = this.subscriptionExecutor.jsons("", callback, Arrays.asList(json, json));
+
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
+		assertEquals(2, callback.lastReceivedMessage.size());
+		assertEquals(
+				"{\"field\":\"value\",\"subObject\":{\"field2\":[1,2,3],\"field3\":[1.1,22.2,3.3]},\"booleans\":[true,false]}",
+				callback.lastReceivedMessage.get(0).toString());
+	}
+
+	/**
+	 * Issue 205: Json scalar not properly managed.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws InterruptedException
+	 */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test205jsonsWithInput() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException,
+			JsonMappingException, JsonProcessingException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test205jsons");
+
+		String test = "a global value for test";
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2023 - 1900, 12 - 1, 30);// DateUtils.truncate(new Date(),
+														// java.util.Calendar.DAY_OF_MONTH);
+		Long l = 2345284L;
+		Boolean bool = true;
+		CEP_Episode_CES e = CEP_Episode_CES.NEWHOPE;
+		ObjectNode json = new ObjectMapper().readValue(
+				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
+				ObjectNode.class);
+		List<ObjectNode> jsons = Arrays.asList(json, json);
+		CINP_InputWithJson_CINS input = CINP_InputWithJson_CINS.builder()
+				.withTest("test_Issue205_JsonArgumentsAndInputTypeWithJsonField")//
+				.withDate(date)//
+				.withLong(l)//
+				.withBoolean(bool)//
+				.withEnum(e)//
+				.withJson(json)//
+				.withJsons(Arrays.asList(json, json))//
+				.build();
+
+		SubscriptionCallbackGeneric<List<CTP_TypeWithJson_CTS>> callback = new SubscriptionCallbackGeneric<>(
+				"test205json");
+		SubscriptionClient sub = this.subscriptionExecutor.jsonsWithInput(""//
+				+ "{"//
+				+ "   test"//
+				+ "	  withArguments("//
+				+ "      test: &test,"//
+				+ "      date: &date,"//
+				+ "      long: &long,"//
+				+ "      boolean: &boolean,"//
+				+ "      enum: &enum,"//
+				+ "      json: &json,"//
+				+ "      jsons: &jsons)"//
+				+ "	  long"//
+				+ "	  boolean"//
+				+ "	  enum"//
+				+ "	  json"//
+				+ "	  jsons"//
+				+ "}", //
+				callback, //
+				Arrays.asList(input, input), //
+				"test", test, //
+				"date", date, //
+				"long", l, //
+				"boolean", bool, //
+				"enum", e, //
+				"json", json, //
+				"jsons", jsons);
+
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
+		assertEquals(2, callback.lastReceivedMessage.size());
+		assertEquals(
+				"{\"field\":\"value\",\"subObject\":{\"field2\":[1,2,3],\"field3\":[1.1,22.2,3.3]},\"booleans\":[true,false]}",
+				callback.lastReceivedMessage.get(1).getJson().toString());
+		assertEquals(2, callback.lastReceivedMessage.get(1).getJsons().size());
+		assertEquals(
+				"{\"field\":\"value\",\"subObject\":{\"field2\":[1,2,3],\"field3\":[1.1,22.2,3.3]},\"booleans\":[true,false]}",
+				callback.lastReceivedMessage.get(1).getJsons().get(0).toString());
 	}
 
 	public static CINP_SubscriptionTestParam_CINS getSubscriptionTestParam() {

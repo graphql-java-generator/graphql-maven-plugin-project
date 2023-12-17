@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,6 +15,9 @@ import java.util.UUID;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.annotation.GraphQLIgnore;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
@@ -298,7 +302,7 @@ public class InputParameter {
 
 		if (directive != null) {
 			// Let's find the definition for this directive
-			Directive dirDef = directiveRegistry.getDirective(directive.getName());
+			Directive dirDef = this.directiveRegistry.getDirective(directive.getName());
 			if (dirDef == null) {
 				throw new GraphQLRequestPreparationException(
 						"Could not find directive definition for the directive '" + directive.getName() + "'");
@@ -383,7 +387,7 @@ public class InputParameter {
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = localGraphQLCustomScalarType;
-		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName, schema);
+		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(this.graphQLTypeName, schema);
 		this.mandatory = localMandatory;
 		this.listDepth = localList;
 		this.itemMandatory = localItemMandatory;
@@ -654,11 +658,11 @@ public class InputParameter {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Object getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
@@ -672,8 +676,8 @@ public class InputParameter {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	public Object getValueForGraphqlQuery(Map<String, Object> bindVariables) {
-		return getValueForGraphqlQuery(bindParameterName, bindVariables.get(bindParameterName), listDepth,
-				graphQLScalarType, bindVariables);
+		return getValueForGraphqlQuery(this.bindParameterName, bindVariables.get(this.bindParameterName),
+				this.listDepth, this.graphQLScalarType, bindVariables);
 	}
 
 	public static Object getValueForGraphqlQuery(String parameterName, Object val, int listDepth,
@@ -729,13 +733,13 @@ public class InputParameter {
 			throws GraphQLRequestExecutionException {
 		if (this.bindParameterName == null) {
 			// It's a hard coded value
-			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, this.value, listDepth, graphQLTypeName,
-					graphQLScalarType, false);
+			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, this.value, this.listDepth,
+					this.graphQLTypeName, this.graphQLScalarType, false);
 		}
 		// It's a Bind Variable.
 
 		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
-		if ((type.equals(InputParameterType.MANDATORY) || type.equals(InputParameterType.GRAPHQL_VARIABLE))
+		if ((this.type.equals(InputParameterType.MANDATORY) || this.type.equals(InputParameterType.GRAPHQL_VARIABLE))
 				&& (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
 			throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
 					+ "' must be provided in the BindVariables map");
@@ -745,8 +749,8 @@ public class InputParameter {
 			return null;
 		else
 			return this.getStringContentForGraphqlQuery(writingGraphQLVariables,
-					bindVariables.get(this.bindParameterName), listDepth, graphQLTypeName, graphQLScalarType,
-					type.equals(InputParameterType.GRAPHQL_VARIABLE));
+					bindVariables.get(this.bindParameterName), this.listDepth, this.graphQLTypeName,
+					this.graphQLScalarType, this.type.equals(InputParameterType.GRAPHQL_VARIABLE));
 	}
 
 	/**
@@ -779,14 +783,29 @@ public class InputParameter {
 		} else if (graphQLVariable && !writingGraphQLVariables) {
 			// When writing a GraphQL variable in the query itself, then we write the variable name. The value is
 			// written only in the GraphQL variable field
-			return "$" + bindParameterName;
+			return "$" + this.bindParameterName;
 		} else if (listDepth > 0) {
 			// We expect val to be a list
 			return getStringContentForAListValue(writingGraphQLVariables, val, listDepth, graphQLTypeNameParam,
 					graphQLScalarTypeParam, graphQLVariable);
 		} else if (graphQLScalarTypeParam != null) {
 			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
-			return (ret instanceof String) ? getStringValue((String) ret) : ret.toString();
+			if (ret instanceof String)
+				return getStringValue((String) ret);
+			else if (ret instanceof ObjectNode) {
+				StringBuilder sb = new StringBuilder();
+				appendStringContentForGraphqlQueryFromObjectNode(sb, ((ObjectNode) ret).traverse(), (ObjectNode) ret);
+				return sb.toString();
+			} else if (ret instanceof Map) {
+				StringBuilder sb = new StringBuilder();
+				appendStringContentForGraphqlQueryFromMap(sb, (Map<?, ?>) ret);
+				return sb.toString();
+			} else if (ret instanceof List) {
+				StringBuilder sb = new StringBuilder();
+				appendStringContentForGraphqlQueryFromMapForAListItem(sb, (List<?>) ret);
+				return sb.toString();
+			} else
+				return ret.toString();
 		} else if (writingGraphQLVariables && val.getClass().isEnum()) {
 			// When writing an enum value in the variables section, values should be between double quotes
 			return "\"" + val.toString() + "\"";
@@ -805,6 +824,206 @@ public class InputParameter {
 		} else {
 			return val.toString();
 		}
+	}
+
+	/**
+	 * Write a json {@link ObjectNode} as a valid GraphQL string for an input parameter, into a GraphQL query. This is
+	 * mandatory for the Object scalar.
+	 * 
+	 * @param node
+	 *            The node to be written into the GraphQL request
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	private void appendStringContentForGraphqlQueryFromObjectNode(StringBuilder sb, JsonParser jsonParser,
+			ObjectNode node) throws GraphQLRequestExecutionException {
+		try {
+
+			JsonToken token = jsonParser.nextToken();
+			boolean objectJustStarted = false;
+			boolean inArray = false;
+			boolean arrayJustStarted = false;
+
+			while (jsonParser.hasCurrentToken()) {
+				switch (token) {
+				case START_OBJECT:
+					sb.append("{");
+					objectJustStarted = true;
+					break;
+				case END_OBJECT:
+					sb.append("}");
+					break;
+				case START_ARRAY:
+					sb.append("[");
+					inArray = true;
+					arrayJustStarted = true;
+					break;
+				case END_ARRAY:
+					sb.append("]");
+					break;
+				case FIELD_NAME:
+					if (objectJustStarted) {
+						objectJustStarted = false;
+					} else {
+						sb.append(",");
+					}
+					sb.append(jsonParser.getText());
+					sb.append(":");
+					// Let's recurse once, to read the content of this field (which may be a value, an object or an
+					// array)
+					appendStringContentForGraphqlQueryFromObjectNode(sb, jsonParser, node);
+					break;
+				case VALUE_EMBEDDED_OBJECT:
+					// Placeholder token returned when the input source has a concept of embedded Object that are not
+					// accessible as usual structure (of starting with {@link #START_OBJECT}, having values, ending with
+					// {@link #END_OBJECT}), but as "raw" objects.
+					// Note: this token is never returned by regular JSON readers, but only by readers that expose other
+					// kinds of source (like <code>JsonNode</code>-based JSON trees, Maps, Lists and such).
+					// below is an attempt to render this 'strange' object
+					sb.append(jsonParser.getText());
+					break;
+				case VALUE_STRING:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					sb.append('\"');
+					sb.append(jsonParser.getText());
+					sb.append('\"');
+					break;
+				case VALUE_NUMBER_INT:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					sb.append(jsonParser.getIntValue());
+					break;
+				case VALUE_NUMBER_FLOAT:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					sb.append(jsonParser.getFloatValue());
+					break;
+				case VALUE_TRUE:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					sb.append("true");
+					break;
+				case VALUE_FALSE:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					sb.append("false");
+					break;
+				case VALUE_NULL:
+					if (arrayJustStarted) {
+						arrayJustStarted = false;
+					} else if (inArray) {
+						sb.append(",");
+					}
+					// VALUE_NULL is returned when encountering literal "null" in value context
+					sb.append("null");
+					break;
+				default:
+					throw new GraphQLRequestExecutionException(
+							"Unexpected token type while writing an ObjectNode into the GraphQL request: "
+									+ token.name() + ". The json being read is: " + node.toString());
+				}
+
+				token = jsonParser.nextToken();
+			} // while
+		} catch (IOException e) {
+			throw new GraphQLRequestExecutionException(
+					e.getMessage() + " (while writing an ObjectNode into the GraphQL request)", e);
+		}
+	}
+
+	/**
+	 * Write a map as a valid GraphQL string for an input parameter, into a GraphQL query. This is mandatory for the
+	 * Object scalar.
+	 * 
+	 * @param map
+	 *            The map to be written into the GraphQL request
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	private void appendStringContentForGraphqlQueryFromMap(StringBuilder sb, Map<?, ?> map) {
+		boolean appendComma = false;// false for the first item, then true for others
+		sb.append('{');
+		for (Object key : map.keySet()) {
+
+			// Let's append a comma, starting from the secondary item
+			if (appendComma)
+				sb.append(',');
+			else
+				appendComma = true;
+
+			// Let's append the key (without the ", as this is the difference between GraphQL and json, which makes this
+			// method mandatory
+			sb.append(key);
+			sb.append(':');
+
+			// Let's append the value
+			appendStringContentForGraphqlQueryFromValueItem(sb, map.get(key));
+		}
+		sb.append('}');
+	}
+
+	/**
+	 * Write a list as a valid GraphQL string for an input parameter, into a GraphQL query. This method should only be
+	 * called from {@link #appendStringContentForGraphqlQueryFromMap(StringBuilder, Map)}, in order to render a value of
+	 * the map which is a list.
+	 * 
+	 * @param sb
+	 * @param list
+	 */
+	private void appendStringContentForGraphqlQueryFromMapForAListItem(StringBuilder sb, List<?> list) {
+		boolean appendComma = false;// false for the first item, then true for others
+		sb.append('[');
+		for (Object val : list) {
+
+			// Let's append a comma, starting from the secondary item
+			if (appendComma)
+				sb.append(',');
+			else
+				appendComma = true;
+
+			// Let's append the value
+			appendStringContentForGraphqlQueryFromValueItem(sb, val);
+		}
+		sb.append(']');
+	}
+
+	/**
+	 * Write a list as a valid GraphQL string for an input parameter, into a GraphQL query. This method should only be
+	 * called from {@link #appendStringContentForGraphqlQueryFromMap(StringBuilder, Map)} or
+	 * {@link #appendStringContentForGraphqlQueryFromMapForAListItem(StringBuilder, List)}, in order to render a value
+	 * of the map or a list.
+	 * 
+	 * @param sb
+	 * @param value
+	 * @throws GraphQLRequestExecutionException
+	 */
+	private void appendStringContentForGraphqlQueryFromValueItem(StringBuilder sb, Object value) {
+		if (value instanceof Map)
+			appendStringContentForGraphqlQueryFromMap(sb, (Map<?, ?>) value);
+		else if (value instanceof List)
+			appendStringContentForGraphqlQueryFromMapForAListItem(sb, (List<?>) value);
+		else if (value instanceof String) {
+			sb.append('\"');
+			sb.append(value);
+			sb.append('\"');
+		} else
+			sb.append(value.toString());
 	}
 
 	/**
@@ -853,7 +1072,7 @@ public class InputParameter {
 		} else if (list instanceof List) {
 			localList = (List<?>) list;
 		} else {
-			throw new GraphQLRequestExecutionException("Unexpected type for the parameter  '" + name
+			throw new GraphQLRequestExecutionException("Unexpected type for the parameter  '" + this.name
 					+ "': it should be either a java.lang.List or an Array, but is " + list.getClass().getName());
 		}
 
@@ -909,7 +1128,7 @@ public class InputParameter {
 						fieldListDepth = graphQLScalar.listDepth();
 						fieldGraphQLTypeName = graphQLScalar.graphQLTypeSimpleName();
 						if (fieldGraphQLTypeName != null) {
-							fieldGraphQLType = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
+							fieldGraphQLType = CustomScalarRegistryImpl.getCustomScalarRegistry(this.schema)
 									.getGraphQLCustomScalarType(fieldGraphQLTypeName);
 						}
 					} else if (graphQLNonScalar != null) {
@@ -938,31 +1157,31 @@ public class InputParameter {
 	}
 
 	public String getBindParameterName() {
-		return bindParameterName;
+		return this.bindParameterName;
 	}
 
 	public InputParameterType getType() {
-		return type;
+		return this.type;
 	}
 
 	public String getGraphQLTypeName() {
-		return graphQLTypeName;
+		return this.graphQLTypeName;
 	}
 
 	public GraphQLScalarType getGraphQLScalarType() {
-		return graphQLScalarType;
+		return this.graphQLScalarType;
 	}
 
 	public boolean isItemMandatory() {
-		return itemMandatory;
+		return this.itemMandatory;
 	}
 
 	public int getListDepth() {
-		return listDepth;
+		return this.listDepth;
 	}
 
 	public boolean isMandatory() {
-		return mandatory;
+		return this.mandatory;
 	}
 
 	/**

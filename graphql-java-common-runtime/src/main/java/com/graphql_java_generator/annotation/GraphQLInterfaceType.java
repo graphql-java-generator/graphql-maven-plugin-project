@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(TYPE)
 /**
- * Indicates that the annotated java class represents a GraphQL interface, and give the GraphQL name for this interface.
- * The java name may be different from the GraphQL one, if the GraphQL name is a reserved java keyword.
+ * Indicates that the annotated java class represents a GraphQL interface, and gives the GraphQL name for this
+ * interface. The java name may be different from the GraphQL one, if the GraphQL name is a reserved java keyword.
  * 
  * @author etienne-sf
  */

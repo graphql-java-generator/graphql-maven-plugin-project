@@ -30,7 +30,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * For instance:
  * 
  * <PRE>
- * CIP_Character_CIS character = queryType.withEnum("{id name appearsIn homePlanet friends{name}}", "180");
+ * CIP_Character_CIS character = query.withEnum("{id name appearsIn homePlanet friends{name}}", "180");
  * </PRE>
  * 
  * @author etienne-sf

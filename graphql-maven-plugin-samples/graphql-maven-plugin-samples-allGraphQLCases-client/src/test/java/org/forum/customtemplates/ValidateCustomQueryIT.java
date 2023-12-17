@@ -27,6 +27,7 @@ class ValidateCustomQueryIT {
 	QueryExecutorForum query;
 
 	@Test
+	@SuppressWarnings("static-method")
 	void test_customTemplateInTheProject() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Let's check that our QueryType is generated from the custom template
 		assertTrue(new Subscription().thisIsADummyFieldToCheckThatThisTemplateIsUsed);
@@ -39,7 +40,7 @@ class ValidateCustomQueryIT {
 		assertTrue(new Query().thisIsADummyFieldToCheckThatThisTemplateIsUsed);
 
 		// And that it still works! :)
-		List<Board> response = query.boards("{id name}");
+		List<Board> response = this.query.boards("{id name}");
 		assertNotNull(response);
 		assertTrue(response.size() > 0);
 		assertTrue(response.get(0) instanceof Board);

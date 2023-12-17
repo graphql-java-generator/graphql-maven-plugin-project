@@ -14,8 +14,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
@@ -23,6 +21,8 @@ import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
@@ -140,7 +140,7 @@ class FullQueriesIT {
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request, "value", "the value", "skip", Boolean.FALSE); //$NON-NLS-3$
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request, "value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
 		assertNotNull(resp);
@@ -388,7 +388,7 @@ class FullQueriesIT {
 
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		String value = "\\, \"  trailing antislash \\";
-		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\""); //$NON-NLS-3$ //$NON-NLS-4$
+		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
 		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
@@ -398,7 +398,7 @@ class FullQueriesIT {
 
 		// test 2 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "antislash then escaped double-quote \\\"";
-		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\""); //$NON-NLS-3$ //$NON-NLS-4$
+		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
 		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
@@ -408,7 +408,7 @@ class FullQueriesIT {
 
 		// test 3 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
-		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"); //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
 		request = this.queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();

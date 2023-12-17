@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
+import org.allGraphQLCases.subscription.SubscriptionCallbackGeneric;
 import org.forum.client.Board;
 import org.forum.client.Member;
 import org.forum.client.MemberType;
 import org.forum.client.Post;
-import org.forum.client.Topic;
 import org.forum.client.QueryExecutorForum;
+import org.forum.client.Topic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -67,8 +67,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 
 	@BeforeEach
 	void setup() {
-		assertNotNull(queryTypeAllGraphQLCases);
-		assertNotNull(queryTypeForum);
+		assertNotNull(this.queryTypeAllGraphQLCases);
+		assertNotNull(this.queryTypeForum);
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Starting test_allGraphQLCasesServer");
 
-		List<CIP_Character_CIS> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
+		List<CIP_Character_CIS> list = this.queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
@@ -90,8 +90,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	void test_forumServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Starting test_forumServer");
 
-		// return queryType.boards("{id name publiclyAvailable}");
-		List<Board> boards = queryTypeForum.boards("");
+		// return query.boards("{id name publiclyAvailable}");
+		List<Board> boards = this.queryTypeForum.boards("");
 
 		// Verification
 		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
@@ -115,11 +115,11 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		logger.debug("Starting test_GraphQLRepository_allGraphQLCases");
 
 		// Preparation
-		SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger(
+		SubscriptionCallbackGeneric<List<Integer>> callback = new SubscriptionCallbackGeneric<>(
 				"RequestsAgainstTwoGraphQLServersIT.test_GraphQLRepository_allGraphQLCases");
 
 		// Go, go, go
-		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
+		SubscriptionClient sub = this.graphQLRepoAllGraphQLCases.subscribeToAList(callback);
 
 		// Verification
 		// Let's wait a max of 80 second, until we receive some notifications (this allows some debugging check in the
@@ -141,7 +141,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		Calendar cal = new Calendar.Builder().set(0, 0).build();
 		cal.clear();
 		cal.set(2009, 12 - 1, 20);// Month is 0-based, so this date is 2009, December the 20th
-		List<Topic> topics = graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
+		List<Topic> topics = this.graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
 
 		// The returned list must contain these topics:
 

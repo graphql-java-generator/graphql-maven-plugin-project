@@ -9,6 +9,7 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
  * @author etienne-sf
  */
 @GraphQLObjectType("TheEnumName")
-public class AnEnumType {
+public enum AnEnumType {
 
+	VALUE1, VALUE2, VALUE3
 }

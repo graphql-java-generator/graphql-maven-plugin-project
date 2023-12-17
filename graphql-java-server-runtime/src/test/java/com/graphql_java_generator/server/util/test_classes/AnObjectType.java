@@ -11,4 +11,6 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 @GraphQLObjectType("TheObjectName")
 public class AnObjectType {
 
+	public AnEnumType enumField;
+
 }

@@ -91,7 +91,7 @@ public class IntrospectionIT {
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		// CTP_AllFieldCases_CTS ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
+		// CTP_AllFieldCases_CTS ret = query.allFieldCases("{allFieldCases {id __typename}}", null);
 		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases("{id __typename}", null);
 
 		// Verification

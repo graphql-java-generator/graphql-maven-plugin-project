@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,10 +78,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(61, i, "Nb java files are generated");
+		assertEquals(66, i, "Nb java files are generated");
 		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(37, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
-		assertEquals(8, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(42, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(10, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(20, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, this.generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(this.generateCodeDocumentParser.getQueryType(), "One query");
@@ -678,7 +679,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(64, type.getFields().size());
+		assertEquals(72, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -817,7 +818,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(20, type.getFields().size());
+		assertEquals(24, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -836,6 +837,30 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_checkInputTypesForDependenciesToJsonCustomScalar() throws IOException {
+		// We need to parse the whole document, to get the types map filled.
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
+
+		List<ObjectType> listInputTypesWithDependenciesToJsonCustomScalar = this.generateCodeDocumentParser
+				.getObjectTypes().stream()//
+				.filter(i -> i.isInputType())//
+				.filter(i -> i.isDependsOnJsonOrObjectCustomScalar())//
+				.collect(Collectors.toList());
+
+		assertEquals(3, listInputTypesWithDependenciesToJsonCustomScalar.size());
+		assertEquals(1, listInputTypesWithDependenciesToJsonCustomScalar.stream()
+				.filter(i -> i.getName().equals("InputWithJson")).count(), "InputWithJson must be one of them");
+		assertEquals(1,
+				listInputTypesWithDependenciesToJsonCustomScalar.stream()
+						.filter(i -> i.getName().equals("InputWithObject")).count(),
+				"InputWithObject must be one of them");
+		assertEquals(1,
+				listInputTypesWithDependenciesToJsonCustomScalar.stream()
+						.filter(i -> i.getName().equals("RecursiveTypeWithJsonField")).count(),
+				"RecursiveTypeWithJsonField must be one of them");
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -965,4 +990,5 @@ class DocumentParser_allGraphQLCases_Server_Test {
 			fail(defaultValue.getClass().getName() + " is not managed in unit tests");
 		}
 	}
+
 }

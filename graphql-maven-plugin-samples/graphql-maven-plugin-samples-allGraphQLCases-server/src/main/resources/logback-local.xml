@@ -18,6 +18,7 @@
 
 
 	<logger name="com.graphql_java_generator" level="debug" />
+	<logger name="graphql" level="debug" />
 	<logger name="org.allGraphQLCases" level="trace" />
 	<logger name="org.springframework" level="debug" />
 	<root level="info">

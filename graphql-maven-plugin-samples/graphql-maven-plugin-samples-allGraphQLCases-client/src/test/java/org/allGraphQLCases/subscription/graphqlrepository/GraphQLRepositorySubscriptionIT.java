@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
-import org.allGraphQLCases.subscription.SubscriptionCallbackEnumWithReservedJavaKeywordAsValues;
-import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
+import org.allGraphQLCases.subscription.SubscriptionCallbackGeneric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -33,7 +33,7 @@ public class GraphQLRepositorySubscriptionIT {
 	@Test
 	void test_SubscribeToAList() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger(
+		SubscriptionCallbackGeneric<List<Integer>> callback = new SubscriptionCallbackGeneric<>(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
 
 		// Go, go, go
@@ -47,7 +47,7 @@ public class GraphQLRepositorySubscriptionIT {
 		sub.unsubscribe();
 
 		// We should have received a notification from the subscription
-		assertNull(callback.lastReceivedError);
+		assertNull(callback.lastExceptionReceived);
 		assertNotNull(callback.lastReceivedMessage);
 	}
 
@@ -55,7 +55,7 @@ public class GraphQLRepositorySubscriptionIT {
 	@Test
 	void test_PartialRequest_SubscribeToANullEnum() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
+		SubscriptionCallbackGeneric<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback = new SubscriptionCallbackGeneric<>(
 				"test_PartialRequest_SubscribeToANullEnum");
 
 		// Go, go, go
@@ -78,7 +78,7 @@ public class GraphQLRepositorySubscriptionIT {
 	@Test
 	void test_PartialRequest_SubscribeToAMandatoryEnum() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
+		SubscriptionCallbackGeneric<CEP_EnumWithReservedJavaKeywordAsValues_CES> callback = new SubscriptionCallbackGeneric<>(
 				"test_PartialRequest_SubscribeToAMandatoryEnum");
 
 		// Go, go, go

@@ -43,10 +43,14 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 				"graphql.scalars.ExtendedScalars.GraphQLLong", null));
 		customScalars.add(new CustomScalarDefinition("else", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("JSON", "com.fasterxml.jackson.databind.node.ObjectNode", null,
+				"graphql.scalars.ExtendedScalars.Json", null));
 		customScalars.add(new CustomScalarDefinition("MyBoolean", "java.lang.Boolean", null,
 				"com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType", null));
 		customScalars.add(new CustomScalarDefinition("NonNegativeInt", "java.lang.Integer", null,
 				"graphql.scalars.ExtendedScalars.NonNegativeInt", null));
+		customScalars.add(new CustomScalarDefinition("Object", "java.lang.Object", null,
+				"graphql.scalars.ExtendedScalars.Object", null));
 	}
 
 	@Override

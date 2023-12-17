@@ -12,17 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.subscription.SubscriptionCallbackToADate;
+import org.allGraphQLCases.subscription.SubscriptionCallbackGeneric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -235,7 +235,7 @@ class GraphQLVariablesIT {
 	public void test_GraphQLVariables_subscribeToADate()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate(
+		SubscriptionCallbackGeneric<Date> callback = new SubscriptionCallbackGeneric<>(
 				"test_GraphQLVariables_subscribeToAList");
 		Date date = new GregorianCalendar(2021, 4 - 1, 15).getTime();
 
@@ -252,7 +252,7 @@ class GraphQLVariablesIT {
 		sub.unsubscribe();
 
 		// Verification
-		assertNull(callback.lastReceivedError, "expected no error, but received " + callback.lastReceivedError);
+		assertNull(callback.lastExceptionReceived, "expected no error, but received " + callback.lastExceptionReceived);
 		assertNotNull(callback.lastReceivedMessage, "The subscription should have received a message");
 	}
 
