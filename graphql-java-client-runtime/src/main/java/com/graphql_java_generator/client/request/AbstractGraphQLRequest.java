@@ -354,8 +354,10 @@ public abstract class AbstractGraphQLRequest {
 				if (requestTypeHasBeenRead) {
 					localQueryName = token;
 				} else {
-					throw new GraphQLRequestPreparationException(
-							"Unknown token '" + token + " while reading the GraphQL request: " + graphQLRequest); //$NON-NLS-1$ //$NON-NLS-2$
+					// there was no query, mutation or subscription keyword. The default one is 'query'
+					this.requestType = RequestType.query;
+					requestTypeHasBeenRead = true;
+					localQueryName = token;
 				}
 			}
 		}
