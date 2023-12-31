@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 # 2.4
 
 Dependencies upgrade:
@@ -10,6 +11,14 @@ Client and server modes:
 
 Client mode:
 * When executing full requests, the `query` keyword was mandatory, whereas it is optional in the GraphQL specs.
+=======
+# Not published yet
+
+* Upgrade of plexus-utils to the 3.0.24 (to get rid of CVE vulnerabilities)
+
+
+
+>>>>>>> branch 'master_2.x' of https://github.com/graphql-java-generator/graphql-maven-plugin-project.git
 
 # 2.3.2
 
