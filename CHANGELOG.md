@@ -1,5 +1,5 @@
 
-# Not released yet
+# 2.4
 
 Client and server modes:
 * Issues #205 and #207: The JSON and Object custom scalars are now properly managed

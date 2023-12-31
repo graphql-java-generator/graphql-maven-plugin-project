@@ -1,7 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* Issue to confirm, with field parameter of name boolean
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
 * Optimize `getStringContentForGraphqlQuery`: use a `StringBuilder` instead of returning and concatenating strings
