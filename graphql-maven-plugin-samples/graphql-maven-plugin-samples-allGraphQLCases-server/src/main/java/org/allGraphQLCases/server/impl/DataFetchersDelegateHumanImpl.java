@@ -7,11 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.SIP_Character_SIS;
-import org.allGraphQLCases.server.SEP_Episode_SES;
-import org.allGraphQLCases.server.STP_Human_STS;
-import org.allGraphQLCases.server.SINP_HumanInput_SINS;
 import org.allGraphQLCases.server.DataFetchersDelegateHuman;
+import org.allGraphQLCases.server.SEP_Episode_SES;
+import org.allGraphQLCases.server.SIP_Character_SIS;
+import org.allGraphQLCases.server.STP_Human_STS;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
@@ -31,23 +30,23 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Override
 	public CompletableFuture<SIP_Character_SIS> bestFriend(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, SIP_Character_SIS> dataLoader, STP_Human_STS source) {
-		UUID key = generator.generateInstance(UUID.class);
+		UUID key = this.generator.generateInstance(UUID.class);
 		return dataLoader.load(key);
 	}
 
 	@Override
 	public SIP_Character_SIS bestFriend(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS origin) {
-		return generator.generateInstance(SIP_Character_SIS.class);
+		return this.generator.generateInstance(SIP_Character_SIS.class);
 	}
 
 	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS source) {
-		return generator.generateInstanceList(SIP_Character_SIS.class, 6);
+		return this.generator.generateInstanceList(SIP_Character_SIS.class, 6);
 	}
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS source) {
-		return generator.generateInstanceList(String.class, 10);
+		return this.generator.generateInstanceList(String.class, 10);
 
 	}
 
@@ -63,12 +62,19 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 					.map(s -> SEP_Episode_SES.fromGraphQlValue(s))//
 					.collect(Collectors.toList());
 		else
-			return generator.generateInstanceList(SEP_Episode_SES.class, 2);
+			return this.generator.generateInstanceList(SEP_Episode_SES.class, 2);
 	}
 
 	@Override
 	public List<STP_Human_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(STP_Human_STS.class, keys.size());
+		return this.generator.generateInstanceList(STP_Human_STS.class, keys.size());
+	}
+
+	/** Custom field data fetchers are available since release 2.5 */
+	@Override
+	public String name(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS origin, Boolean uppercase) {
+		return ((uppercase != null && origin.getName() != null && uppercase) ? origin.getName().toUpperCase()
+				: origin.getName());
 	}
 
 }

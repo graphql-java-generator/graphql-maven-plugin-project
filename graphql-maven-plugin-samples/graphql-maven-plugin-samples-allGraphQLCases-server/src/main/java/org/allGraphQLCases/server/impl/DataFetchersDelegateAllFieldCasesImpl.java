@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCases;
+import org.allGraphQLCases.server.SEP_Unit_SES;
 import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_FieldParameterInput_SINS;
 import org.allGraphQLCases.server.STP_AllFieldCasesWithIdSubtype_STS;
@@ -29,6 +30,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author etienne-sf
  *
  */
+
 @Component
 public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelegateAllFieldCases {
 
@@ -42,7 +44,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getComments();
 		else
-			return generator.generateInstanceList(String.class, 10);
+			return this.generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
@@ -52,22 +54,22 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getBooleans();
 		else
-			return generator.generateInstanceList(Boolean.class, 10);
+			return this.generator.generateInstanceList(Boolean.class, 10);
 	}
 
 	@Override
 	public List<String> aliases(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS source) {
-		return generator.generateInstanceList(String.class, 10);
+		return this.generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<String> planets(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS source) {
-		return generator.generateInstanceList(String.class, 10);
+		return this.generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<STP_Human_STS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS source) {
-		return generator.generateInstanceList(STP_Human_STS.class, 10);
+		return this.generator.generateInstanceList(STP_Human_STS.class, 10);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<STP_AllFieldCases_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(STP_AllFieldCases_STS.class, keys.size());
+		return this.generator.generateInstanceList(STP_AllFieldCases_STS.class, keys.size());
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public STP_AllFieldCasesWithIdSubtype_STS oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
 			STP_AllFieldCases_STS origin, Boolean uppercase) {
-		return generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
+		return this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
 	}
 
 	@Override
@@ -117,7 +119,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			DataLoader<UUID, STP_AllFieldCasesWithIdSubtype_STS> dataLoader, STP_AllFieldCases_STS origin, Long nbItems,
 			Date date, List<Date> dates, Boolean uppercaseName, String textToAppendToTheForname) {
 
-		List<UUID> uuids = generator.generateInstanceList(UUID.class, nbItems.intValue());
+		List<UUID> uuids = this.generator.generateInstanceList(UUID.class, nbItems.intValue());
 
 		// We store the parameter that'll allow the datafetcher to return a STP_AllFieldCasesWithIdSubtype_STS that
 		// respects
@@ -137,7 +139,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public List<STP_AllFieldCasesWithIdSubtype_STS> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			STP_AllFieldCases_STS source, Long nbItems, Date date, List<Date> dates, Boolean uppercaseName,
 			String textToAppendToTheForname) {
-		List<STP_AllFieldCasesWithIdSubtype_STS> list = generator
+		List<STP_AllFieldCasesWithIdSubtype_STS> list = this.generator
 				.generateInstanceList(STP_AllFieldCasesWithIdSubtype_STS.class, 3);
 
 		for (STP_AllFieldCasesWithIdSubtype_STS item : list) {
@@ -157,7 +159,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getOneWithoutIdSubType();
 		} else {
-			STP_AllFieldCasesWithoutIdSubtype_STS ret = generator
+			STP_AllFieldCasesWithoutIdSubtype_STS ret = this.generator
 					.generateInstance(STP_AllFieldCasesWithoutIdSubtype_STS.class);
 
 			if (input != null && input.getUppercase() != null && input.getUppercase()) {
@@ -179,7 +181,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getListWithoutIdSubTypes();
 		} else {
-			List<STP_AllFieldCasesWithoutIdSubtype_STS> list = generator
+			List<STP_AllFieldCasesWithoutIdSubtype_STS> list = this.generator
 					.generateInstanceList(STP_AllFieldCasesWithoutIdSubtype_STS.class, nbItems.intValue());
 
 			for (STP_AllFieldCasesWithoutIdSubtype_STS item : list) {
@@ -199,14 +201,14 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		if (source.getDates() != null)
 			return source.getDates();
 		else
-			return generator.generateInstanceList(Date.class, 5);
+			return this.generator.generateInstanceList(Date.class, 5);
 	}
 
 	@Override
 	public List<STP_AllFieldCasesWithoutIdSubtype_STS> issue65(DataFetchingEnvironment dataFetchingEnvironment,
 			STP_AllFieldCases_STS origin, List<SINP_FieldParameterInput_SINS> inputs) {
 
-		List<STP_AllFieldCasesWithoutIdSubtype_STS> ret = generator
+		List<STP_AllFieldCasesWithoutIdSubtype_STS> ret = this.generator
 				.generateInstanceList(STP_AllFieldCasesWithoutIdSubtype_STS.class, inputs.size());
 
 		// Let's put in uppercase the name, for items in the return list that match the inputs that have uppercase set
@@ -233,6 +235,47 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			List<SINP_AllFieldCasesInput_SINS> input) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/** Custom field data fetchers are available since release 2.5 */
+	@Override
+	public String forname(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin,
+			Boolean uppercase, String textToAppendToTheForname) {
+		return ((uppercase != null && origin.getForname() != null && uppercase) ? origin.getForname().toUpperCase()
+				: origin.getForname())//
+				+ ((textToAppendToTheForname == null) ? "" : textToAppendToTheForname);
+	}
+
+	/** Custom field data fetchers are available since release 2.5 */
+	@Override
+	public String _break(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin, String _if) {
+		return origin.getBreak();
+	}
+
+	/** Custom field data fetchers are available since release 2.5 */
+	@Override
+	public Long age(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin, SEP_Unit_SES unit) {
+		if (unit == null)
+			return null;
+
+		// The origin's age is in years
+		switch (unit) {
+		case YEAR:
+			return origin.getAge();
+		case DAY:
+			return origin.getAge() * 365;// Let's say here that all years have 265 days.
+		case HOUR:
+			return origin.getAge();
+		case MINUTE:
+			return origin.getAge();
+		case MONTH:
+			return origin.getAge();
+		case SECOND:
+			return origin.getAge();
+		default:
+			throw new RuntimeException("unknown unit: " + unit);
+		}
+
 	}
 
 }

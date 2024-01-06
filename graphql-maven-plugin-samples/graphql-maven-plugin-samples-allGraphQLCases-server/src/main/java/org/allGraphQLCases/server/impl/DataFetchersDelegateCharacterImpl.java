@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.SIP_Character_SIS;
-import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.DataFetchersDelegateCharacter;
+import org.allGraphQLCases.server.SEP_Episode_SES;
+import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
@@ -28,17 +28,24 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 
 	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS source) {
-		return generator.generateInstanceList(SIP_Character_SIS.class, 4);
+		return this.generator.generateInstanceList(SIP_Character_SIS.class, 4);
 	}
 
 	@Override
 	public List<SEP_Episode_SES> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS source) {
-		return generator.generateInstanceList(SEP_Episode_SES.class, 2);
+		return this.generator.generateInstanceList(SEP_Episode_SES.class, 2);
 	}
 
 	@Override
 	public List<SIP_Character_SIS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(SIP_Character_SIS.class, keys.size());
+		return this.generator.generateInstanceList(SIP_Character_SIS.class, keys.size());
+	}
+
+	/** Custom field data fetchers are available since release 2.5 */
+	@Override
+	public String name(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS origin, Boolean uppercase) {
+		return ((uppercase != null && origin.getName() != null && uppercase) ? origin.getName().toUpperCase()
+				: origin.getName());
 	}
 
 }

@@ -62,6 +62,7 @@ public class AllGraphQLCases_ClientPojo_SpringConfiguration extends AbstractSpri
 		configuration.mode = PluginMode.client;
 		configuration.customScalars = customScalars;
 		configuration.setGenerateJacksonAnnotations(false);
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;
 		configuration.generateUtilityClasses = false;
 		configuration.separateUtilityClasses = true;
 	}

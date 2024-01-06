@@ -13,6 +13,7 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * This class represents a GraphQL Data Fetcher. It's a piece of code which responsability is to read non scalar fields
@@ -31,7 +32,8 @@ public class DataFetcherImpl implements DataFetcher {
 
 	private Field field;
 
-	private DataFetchersDelegate dataFetcherDelegate;
+	@ToString.Exclude
+	private DataFetchersDelegate dataFetchersDelegate;
 
 	/**
 	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
@@ -82,7 +84,7 @@ public class DataFetcherImpl implements DataFetcher {
 	public DataFetcherImpl(Field field, DataFetchersDelegate dataFetcherDelegate, boolean declareInGraphQLProvider,
 			boolean completableFuture, Type graphQLOriginType) {
 		this.field = field;
-		this.dataFetcherDelegate = dataFetcherDelegate;
+		this.dataFetchersDelegate = dataFetcherDelegate;
 		this.completableFuture = completableFuture;
 		this.graphQLOriginType = graphQLOriginType;
 
@@ -91,7 +93,7 @@ public class DataFetcherImpl implements DataFetcher {
 
 	@Override
 	public String getName() {
-		return field.getCamelCaseName();
+		return this.field.getCamelCaseName();
 	}
 
 	/** {@inheritDoc} */

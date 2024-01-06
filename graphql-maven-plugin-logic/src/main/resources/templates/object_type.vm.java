@@ -9,6 +9,11 @@ package ${configuration.packageName};
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import org.dataloader.DataLoader;
+
+import graphql.schema.DataFetchingEnvironment;
 
 #if ($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,3 +1,5 @@
+
+
 #################################################################################################################
 ## Import of common.vm  (commons Velocity macro and definitions)
 #################################################################################################################
@@ -24,6 +26,11 @@
 		// No action
 	}
 
+####################################################################################################################################################
+####################################################################################################################################################
+############### Creation of the class attributes [start] ###########################################################################################
+####################################################################################################################################################
+####################################################################################################################################################
 #foreach ($field in $object.fields)
 ##
 ##
@@ -44,7 +51,17 @@
 
 
 #end
+####################################################################################################################################################
+####################################################################################################################################################
+############### Creation of the class attributes [end] #############################################################################################
+####################################################################################################################################################
+####################################################################################################################################################
 
+####################################################################################################################################################
+####################################################################################################################################################
+############### Creation of the class setters and getters [start] ##################################################################################
+####################################################################################################################################################
+####################################################################################################################################################
 #foreach ($field in $object.fields)
 ## 
 ## If the field's name is either class or Class, then a getClass attribute would be generated, which generates a compile time error, as the getClass() method
@@ -295,7 +312,83 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	}
 #end
 
-#end ##end of test "if ($field.fieldJavaFullClassnamesFromImplementedInterface.size() == 0)"
+#########################
+## Let's add the data fetcher for this field if:
+## 1) Be in the generateServer 
+## 2) there is one Data Fetcher
+## 3) the generateDataFetcherForEveryFieldsWithArguments configuration parameter is true
+## 4) we're not in a query, mutation or subscription type (which already have data fetcher for all their fields)
+## 5) there is at least one input parameter for this field
+##
+#if (   ( $generateServerCodeConfigurationClass.isInstance($configuration)
+		&& ! $generatePojoConfigurationClass.isInstance($configuration)
+		&& $configuration.mode == 'server'
+		)
+		&& $field.dataFetcher 
+		&& $configuration.generateDataFetcherForEveryFieldsWithArguments
+		&& ! $object.requestType
+		&& $field.inputParameters.size() > 0)
+#set ($dataFetcher = $field.dataFetcher)
+	/**
+	 * This method calls the <code>${field.name}</code> data fetcher, configured in the <code>${field.dataFetcher.dataFetchersDelegate.pascalCaseName}</code>
+	 * data fetchers delegate implementation you have provided.<br/>
+	 * This method should only be used by spring-graphql, when fetching data, according to the incoming request.
+	 */
+##### COMPLETABLE_FUTURE [start] 
+## If this dataFetcher is a completableFuture, we add a DataLoader parameter
+#if ($dataFetcher.completableFuture)
+#appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
+	public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(
+		DataFetchingEnvironment dataFetchingEnvironment, 
+		DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
+		${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
+#appliedDirectives(${argument.appliedDirectives}, "			")
+		${argument.javaTypeFullClassname} ${argument.javaName}#end) {
+		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+				.${field.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+	}
+#end ## #if (${dataFetcher.completableFuture})
+##### COMPLETABLE_FUTURE [end]
+##
+#appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
+##
+#if ($dataFetchersDelegate.type.requestType == "subscription")
+## The returned type for subscription is embeded in a Publisher 
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
+	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(
+			DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), 
+			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
+#appliedDirectives(${argument.appliedDirectives}, "			")
+			${argument.javaTypeFullClassname} ${argument.javaName}#end) {
+		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+				.${field.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+	}
+#else
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
+	public ${dataFetcher.field.javaTypeFullClassname} ${dataFetcher.javaName}(
+			DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType),
+			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
+#appliedDirectives(${argument.appliedDirectives}, "			")
+			${argument.javaTypeFullClassname} ${argument.javaName}#end) {
+		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+				.${field.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+	}
+#end 
+#####
+#end  ##if($field.dataFetcher && $configuration.generateDataFetcherForEveryFieldsWithArguments)
+#########################
+
+#end
+####################################################################################################################################################
+####################################################################################################################################################
+############### Creation of the class setters and getters [end] ####################################################################################
 ####################################################################################################################################################
 ####################################################################################################################################################
 ##
@@ -359,6 +452,10 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #end
 #end
 
+
+##################################################################################################################
+#############  Generation of the instance Builder ################################################################
+##################################################################################################################
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
 #foreach ($comment in $field.comments)

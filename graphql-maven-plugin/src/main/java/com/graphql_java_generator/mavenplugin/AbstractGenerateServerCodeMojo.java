@@ -79,6 +79,28 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	/**
 	 * <P>
+	 * (only for server mode, since 2.5) Defines if a data fetcher is needed for every GraphQL field that has input
+	 * argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an
+	 * easy access to the field's parameters.
+	 * </P>
+	 * <P>
+	 * With this argument to false, the data fetchers are generated only for field which type is a type (not a scalar or
+	 * an enum), and for the query, mutation and subscription types.
+	 * </P>
+	 * <P>
+	 * With this argument to true, the data fetchers are generated for all GraphQL fields which type is a type (not a
+	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
+	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateDataFetcherForEveryFieldsWithArguments", defaultValue = GenerateServerCodeConfiguration.DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT)
+	public boolean generateDataFetcherForEveryFieldsWithArguments;
+
+	/**
+	 * <P>
 	 * (only for server mode) Indicates whether the plugin should generate the JPA annotations, for generated objects.
 	 * </P>
 	 * <P>
@@ -171,7 +193,7 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	@Override
 	public String getJavaTypeForIDType() {
-		return javaTypeForIDType;
+		return this.javaTypeForIDType;
 	}
 
 	/** The mode is forced to {@link PluginMode#server} */
@@ -182,27 +204,32 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	@Override
 	public Packaging getPackaging() {
-		return Packaging.valueOf(project.getPackaging());
+		return Packaging.valueOf(this.project.getPackaging());
 	}
 
 	@Override
 	public boolean isGenerateBatchLoaderEnvironment() {
-		return generateBatchLoaderEnvironment;
+		return this.generateBatchLoaderEnvironment;
+	}
+
+	@Override
+	public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
+		return this.generateDataFetcherForEveryFieldsWithArguments;
 	}
 
 	@Override
 	public boolean isGenerateJPAAnnotation() {
-		return generateJPAAnnotation;
+		return this.generateJPAAnnotation;
 	}
 
 	@Override
 	public boolean isGenerateDataLoaderForLists() {
-		return generateDataLoaderForLists;
+		return this.generateDataLoaderForLists;
 	}
 
 	@Override
 	public String getScanBasePackages() {
-		return scanBasePackages;
+		return this.scanBasePackages;
 	}
 
 	protected AbstractGenerateServerCodeMojo(Class<?> springConfigurationClass) {

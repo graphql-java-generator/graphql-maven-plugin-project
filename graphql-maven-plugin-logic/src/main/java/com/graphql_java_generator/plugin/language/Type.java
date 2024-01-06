@@ -26,6 +26,19 @@ public interface Type {
 	}
 
 	/**
+	 * Returns the {@link DataFetcher} that is associated to this type. This is used only when generating server side
+	 * code: it allows to manage GraphQL fields that have arguments. For these fields, if
+	 * <i>generateDataFetcherForAllFieldsWithArgument</i> is true, then data fetcher is generated even if the field is a
+	 * scalar or an enum.
+	 * 
+	 * @return
+	 */
+
+	default public DataFetcher getDataFetcher() {
+		return null; // Default is to have no DataFetcher associated to this type
+	}
+
+	/**
 	 * The GraphQL name of the object type
 	 * 
 	 * @return

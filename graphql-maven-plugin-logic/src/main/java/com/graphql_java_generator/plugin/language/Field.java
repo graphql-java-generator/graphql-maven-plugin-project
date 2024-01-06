@@ -177,6 +177,9 @@ public interface Field {
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	public List<Field> getInputParameters();
 
+	/** Returns the data fetcher associated to this field, or null if this field has no data fetcher */
+	public DataFetcher getDataFetcher();
+
 	/**
 	 * Contains the default value.. Only used if this field is an input parameter. For enums, it contains the label of
 	 * the enum, not the value of the enum.<BR/>

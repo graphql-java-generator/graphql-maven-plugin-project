@@ -63,6 +63,7 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 		configuration.mode = PluginMode.client;
 		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;
 		configuration.separateUtilityClasses = false;
 		configuration.addRelayConnections = true;
 	}

@@ -246,7 +246,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 					throw new RuntimeException("Non manager value type: " + arg.getValue().getClass().getName());
 				}
 
-				if (uppercase) {
+				if (uppercase != null && uppercase) {
 					val = val.toUpperCase();
 				}
 				ret.add(val);

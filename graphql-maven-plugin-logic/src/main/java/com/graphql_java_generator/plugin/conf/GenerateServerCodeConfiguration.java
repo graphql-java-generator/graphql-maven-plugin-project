@@ -23,6 +23,7 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "true";
+	public final String DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT = "false";
 	public final String DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS = "false";
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_JAVA_TYPE_FOR_ID_TYPE = "java.util.UUID";
@@ -139,6 +140,29 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * </P>
 	 */
 	public boolean isGenerateBatchLoaderEnvironment();
+
+	/**
+	 * <P>
+	 * (only for server mode, since 2.5) Defines if a data fetcher is needed for every GraphQL field that has input
+	 * argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an
+	 * easy access to the field's parameters.
+	 * </P>
+	 * <P>
+	 * With this argument to false, the data fetchers are generated only for field which type is a type (not a scalar or
+	 * an enum), and for the query, mutation and subscription types.
+	 * </P>
+	 * <P>
+	 * With this argument to true, the data fetchers are generated for all GraphQL fields which type is a type (not a
+	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
+	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * </P>
+	 * 
+	 * @return
+	 */
+	public boolean isGenerateDataFetcherForEveryFieldsWithArguments();
 
 	/**
 	 * <P>

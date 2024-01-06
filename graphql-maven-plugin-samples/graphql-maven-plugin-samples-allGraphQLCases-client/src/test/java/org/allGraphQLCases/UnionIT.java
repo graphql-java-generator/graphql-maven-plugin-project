@@ -47,42 +47,42 @@ class UnionIT {
 	@BeforeEach
 	void setup() {
 		// A useful init for some tests
-		humanInput1 = new CINP_HumanInput_CINS();
-		humanInput1.setName("name human1");
+		this.humanInput1 = new CINP_HumanInput_CINS();
+		this.humanInput1.setName("name human1");
 		List<CEP_Episode_CES> episodes = new ArrayList<>();
 		episodes.add(CEP_Episode_CES.JEDI);
-		humanInput1.setAppearsIn(episodes);
-		humanInput1.setHomePlanet("planet1");
+		this.humanInput1.setAppearsIn(episodes);
+		this.humanInput1.setHomePlanet("planet1");
 
-		humanInput2 = new CINP_HumanInput_CINS();
-		humanInput2.setName("name human2");
+		this.humanInput2 = new CINP_HumanInput_CINS();
+		this.humanInput2.setName("name human2");
 		episodes = new ArrayList<>();
 		episodes.add(CEP_Episode_CES.JEDI);
 		episodes.add(CEP_Episode_CES.EMPIRE);
-		humanInput2.setAppearsIn(episodes);
-		humanInput2.setHomePlanet("planet2");
+		this.humanInput2.setAppearsIn(episodes);
+		this.humanInput2.setHomePlanet("planet2");
 
-		droidInput1 = new CINP_DroidInput_CINS();
-		droidInput1.setName("name droid1");
+		this.droidInput1 = new CINP_DroidInput_CINS();
+		this.droidInput1.setName("name droid1");
 		episodes = new ArrayList<>();
 		episodes.add(CEP_Episode_CES.NEWHOPE);
-		droidInput1.setAppearsIn(episodes);
-		droidInput1.setPrimaryFunction("primary function 1");
+		this.droidInput1.setAppearsIn(episodes);
+		this.droidInput1.setPrimaryFunction("primary function 1");
 
-		droidInput2 = new CINP_DroidInput_CINS();
-		droidInput2.setName("name droid2");
+		this.droidInput2 = new CINP_DroidInput_CINS();
+		this.droidInput2.setName("name droid2");
 		episodes = new ArrayList<>();
 		episodes.add(CEP_Episode_CES.EMPIRE);
 		episodes.add(CEP_Episode_CES.NEWHOPE);
-		droidInput2.setAppearsIn(episodes);
-		droidInput2.setPrimaryFunction("primary function 2");
+		this.droidInput2.setAppearsIn(episodes);
+		this.droidInput2.setPrimaryFunction("primary function 2");
 
-		params.put("human1", humanInput1);
-		params.put("human2", humanInput2);
-		params.put("droid1", droidInput1);
-		params.put("droid2", droidInput2);
-		params.put("uppercaseFalse", false);
-		params.put("uppercaseTrue", true);
+		this.params.put("human1", this.humanInput1);
+		this.params.put("human2", this.humanInput2);
+		this.params.put("droid1", this.droidInput1);
+		this.params.put("droid2", this.droidInput2);
+		this.params.put("uppercaseFalse", false);
+		this.params.put("uppercaseTrue", true);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -90,7 +90,7 @@ class UnionIT {
 	void test_unionTest_withAFragmentForEachMember()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Character { ...id appearsIn } " //
 				+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
@@ -101,7 +101,7 @@ class UnionIT {
 		);
 
 		// Go, go, go
-		List<CUP_AnyCharacter_CUS> unionTest = GraphQLRequestAllGraphQLCases.execQuery(params).getUnionTest();
+		List<CUP_AnyCharacter_CUS> unionTest = GraphQLRequestAllGraphQLCases.execQuery(this.params).getUnionTest();
 
 		// Verification
 		assertNotNull(unionTest);
@@ -115,7 +115,7 @@ class UnionIT {
 		// possible test there
 		assertNull(human1.getFriends(), "no friends requested for humans");
 		assertNotNull(human1.getHomePlanet());
-		assertEquals("name human1", human1.getName(), "to uppercase field parameter set to true");
+		assertEquals("NAME HUMAN1", human1.getName(), "to uppercase field parameter set to true");
 		// Human2
 		assertTrue(unionTest.get(2) instanceof CTP_Human_CTS);
 		CTP_Human_CTS human2 = (CTP_Human_CTS) unionTest.get(2);
@@ -125,7 +125,7 @@ class UnionIT {
 		// possible test there
 		assertNull(human2.getFriends(), "no friends requested for humans");
 		assertNotNull(human2.getHomePlanet());
-		assertEquals("name human2", human2.getName(), "to uppercase field parameter set to true");
+		assertEquals("NAME HUMAN2", human2.getName(), "to uppercase field parameter set to true");
 		// droidInput1
 		assertTrue(unionTest.get(1) instanceof CTP_Droid_CTS);
 		CTP_Droid_CTS droid1 = (CTP_Droid_CTS) unionTest.get(1);
@@ -135,7 +135,7 @@ class UnionIT {
 		// possible test there
 		assertNotNull(droid1.getFriends(), "friends are requested for humans");
 		assertNotNull(droid1.getPrimaryFunction());
-		assertEquals("name droid1", droid1.getName(), "to uppercase field parameter set to false");
+		assertEquals("NAME DROID1", droid1.getName(), "to uppercase field parameter set to true");
 		// droidInput2
 		assertTrue(unionTest.get(3) instanceof CTP_Droid_CTS);
 		CTP_Droid_CTS droid2 = (CTP_Droid_CTS) unionTest.get(3);
@@ -145,7 +145,7 @@ class UnionIT {
 		// possible test there
 		assertNotNull(droid2.getFriends(), "friends are requested for humans");
 		assertNotNull(droid2.getPrimaryFunction());
-		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
+		assertEquals("NAME DROID2", droid2.getName(), "to uppercase field parameter set to true");
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -153,7 +153,7 @@ class UnionIT {
 	void test_unionTest_withMissingFragments()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases graphQLRequest_withoutFragmentForHuman = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases graphQLRequest_withoutFragmentForHuman = this.myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Droid { id primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
 				+ "  } "//
@@ -161,7 +161,8 @@ class UnionIT {
 		);
 
 		// Go, go, go
-		List<CUP_AnyCharacter_CUS> unionTest = graphQLRequest_withoutFragmentForHuman.execQuery(params).getUnionTest();
+		List<CUP_AnyCharacter_CUS> unionTest = graphQLRequest_withoutFragmentForHuman.execQuery(this.params)
+				.getUnionTest();
 
 		// Verification
 		assertNotNull(unionTest);
@@ -192,7 +193,7 @@ class UnionIT {
 		assertNull(droid1.getAppearsIn());
 		assertNotNull(droid1.getFriends(), "friends are requested for humans");
 		assertNotNull(droid1.getPrimaryFunction());
-		assertEquals("name droid1", droid1.getName(), "to uppercase field parameter set to false");
+		assertEquals("NAME DROID1", droid1.getName(), "to uppercase field parameter set to true");
 		//
 		// droidInput2
 		assertTrue(unionTest.get(3) instanceof CTP_Droid_CTS);
@@ -201,6 +202,6 @@ class UnionIT {
 		assertNull(droid2.getAppearsIn());
 		assertNotNull(droid2.getFriends(), "friends are requested for humans");
 		assertNotNull(droid2.getPrimaryFunction());
-		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
+		assertEquals("NAME DROID2", droid2.getName(), "to uppercase field parameter set to true");
 	}
 }

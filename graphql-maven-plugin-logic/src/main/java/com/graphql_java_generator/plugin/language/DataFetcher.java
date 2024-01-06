@@ -66,7 +66,7 @@ public interface DataFetcher {
 	 * 
 	 * @return
 	 */
-	public DataFetchersDelegate getDataFetcherDelegate();
+	public DataFetchersDelegate getDataFetchersDelegate();
 
 	/**
 	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the fields to

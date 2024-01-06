@@ -65,7 +65,7 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 			if (argVal instanceof VariableReference) {
 				String varName = ((VariableReference) argVal).getName();
 				Boolean uppercase = (Boolean) dataFetchingEnvironment.getVariables().get(varName);
-				if (uppercase) {
+				if (uppercase != null && uppercase) {
 					ret.setName(human.getName().toUpperCase());
 				}
 			}

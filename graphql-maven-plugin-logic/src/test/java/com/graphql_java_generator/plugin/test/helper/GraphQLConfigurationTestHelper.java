@@ -33,9 +33,10 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false;
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
-	public boolean generateBatchLoaderEnvironment = true; 
+	public boolean generateBatchLoaderEnvironment = true;
+	public boolean generateDataFetcherForEveryFieldsWithArguments = false;
 	public boolean generateDataLoaderForLists = false;
-	public boolean generateDeprecatedRequestResponse = false; 
+	public boolean generateDeprecatedRequestResponse = false;
 	private Boolean generateJacksonAnnotations = null; // See below: isGenerateJacksonAnnotations() either
 														// generateJacksonAnnotations if it is not null, or true id
 														// client mode, or false if server mode. Because of this rule,
@@ -80,10 +81,10 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
-		logger = LoggerFactory.getLogger(caller.getClass());
+		this.logger = LoggerFactory.getLogger(caller.getClass());
 
 		try {
-			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
+			this.projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
 					new File(".") : new File("./graphql-maven-plugin-logic");
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
@@ -92,10 +93,10 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
-		if (generateJacksonAnnotations != null)
-			return generateJacksonAnnotations;
+		if (this.generateJacksonAnnotations != null)
+			return this.generateJacksonAnnotations;
 		else
-			return mode.equals(PluginMode.client);
+			return this.mode.equals(PluginMode.client);
 	}
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {

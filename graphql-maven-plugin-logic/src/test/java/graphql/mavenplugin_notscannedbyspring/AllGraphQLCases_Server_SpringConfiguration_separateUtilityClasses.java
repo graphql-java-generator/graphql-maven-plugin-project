@@ -60,6 +60,7 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.customScalars = customScalars;
 		configuration.generateBatchLoaderEnvironment = true;
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;
 		configuration.mode = PluginMode.server;
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.schemaPersonalizationFile = new File(this.mavenTestHelper.getModulePathFile(),

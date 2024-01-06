@@ -290,25 +290,25 @@ public abstract class AbstractIT {
 		assertEquals(CEP_extends_CES.DOUBLE, this.partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
 	}
 
-	public static void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+	public static void checkCharacter(CIP_Character_CIS c, String testDescription, boolean idShouldBeNull,
 			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
-			assertNull(c.getId(), testDecription + " (id)");
+			assertNull(c.getId(), testDescription + " (id)");
 		else
-			assertNotNull(c.getId(), testDecription + " (id)");
+			assertNotNull(c.getId(), testDescription + " (id)");
 
 		assertTrue(c.getName().startsWith(nameStartsWith),
-				testDecription + " (name starts with " + nameStartsWith + ")");
+				testDescription + " (name starts with " + nameStartsWith + ") - name=" + c.getName());
 
 		// nbFriends is the number of friends... before any call to addFriend
 		if (nbFriends == 0) {
 			// c.getFriends() may be null
 			if (c.getFriends() != null) {
-				assertTrue(c.getFriends().size() >= 0, testDecription + " (friends)");
+				assertTrue(c.getFriends().size() >= 0, testDescription + " (friends)");
 			}
 		} else {
-			assertTrue(c.getFriends().size() >= nbFriends, testDecription + " (friends)");
+			assertTrue(c.getFriends().size() >= nbFriends, testDescription + " (friends)");
 			for (CIP_Character_CIS friend : c.getFriends()) {
 				// Expected fields: id and name
 				assertNotNull(friend.getId());
@@ -321,10 +321,10 @@ public abstract class AbstractIT {
 		if (nbAppearsIn == 0) {
 			// c.getAppearsIn() may be null
 			if (c.getAppearsIn() != null) {
-				assertTrue(c.getAppearsIn().size() >= 0, testDecription + " (getAppearsIn)");
+				assertTrue(c.getAppearsIn().size() >= 0, testDescription + " (getAppearsIn)");
 			}
 		} else {
-			assertTrue(c.getAppearsIn().size() >= nbAppearsIn, testDecription + " (getAppearsIn)");
+			assertTrue(c.getAppearsIn().size() >= nbAppearsIn, testDescription + " (getAppearsIn)");
 		}
 
 	}

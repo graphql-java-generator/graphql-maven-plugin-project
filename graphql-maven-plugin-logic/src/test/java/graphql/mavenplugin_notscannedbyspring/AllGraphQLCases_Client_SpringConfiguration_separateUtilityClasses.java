@@ -64,6 +64,7 @@ public class AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses e
 		configuration.schemaPersonalizationFile = new File(this.mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/schema_personalization_for_code_generation.json");
 		configuration.customScalars = customScalars;
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;
 		configuration.separateUtilityClasses = true;
 	}
 }

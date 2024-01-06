@@ -54,6 +54,7 @@ import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -75,11 +76,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeGenerator.class);
 
-	private final static String COMMON_RUNTIME_SOURCE_FILENAME = "/graphql-java-common-runtime-sources.jar"; //$NON-NLS-1$
-	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar"; //$NON-NLS-1$
-	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar"; //$NON-NLS-1$
+	private final static String COMMON_RUNTIME_SOURCE_FILENAME = "/graphql-java-common-runtime-sources.jar";
+	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar";
+	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar";
 
-	private final static String SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLPluginAutoConfiguration"; //$NON-NLS-1$
+	private final static String SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLPluginAutoConfiguration";
 
 	@Autowired
 	ApplicationContext ctx;
@@ -110,23 +111,23 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	public void afterPropertiesSet() {
 		// Initialization for Velocity
 		this.velocityEngine = new VelocityEngine();
-		this.velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,file,str"); //$NON-NLS-1$
+		this.velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,file,str");
 
 		// Configuration for 'real' executions of the plugin (that is: from the plugin's packaged jar)
-		this.velocityEngine.setProperty("resource.loader.classpath.description", "Velocity Classpath Resource Loader"); //$NON-NLS-1$ //$NON-NLS-2$
-		this.velocityEngine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName()); //$NON-NLS-1$
+		this.velocityEngine.setProperty("resource.loader.classpath.description", "Velocity Classpath Resource Loader");
+		this.velocityEngine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
 
 		// Used for a workaround of a gradle issue: Velocity doesn't seem to properly find templates that are in another
 		// jar. See the generateOneFile() method for the usage
-		this.velocityEngine.setProperty("resource.loader.str.description", "Velocity String Resource Loader"); //$NON-NLS-1$ //$NON-NLS-2$
-		this.velocityEngine.setProperty("resource.loader.str.class", StringResourceLoader.class.getName()); //$NON-NLS-1$
+		this.velocityEngine.setProperty("resource.loader.str.description", "Velocity String Resource Loader");
+		this.velocityEngine.setProperty("resource.loader.str.class", StringResourceLoader.class.getName());
 
 		// Configuration for the unit tests (that is: from the file system)
-		this.velocityEngine.setProperty("resource.loader.file.description", "Velocity File Resource Loader"); //$NON-NLS-1$ //$NON-NLS-2$
-		this.velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName()); //$NON-NLS-1$
-		this.velocityEngine.setProperty("resource.loader.file.path", //$NON-NLS-1$
+		this.velocityEngine.setProperty("resource.loader.file.description", "Velocity File Resource Loader");
+		this.velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
+		this.velocityEngine.setProperty("resource.loader.file.path",
 				this.configuration.getProjectDir().getAbsolutePath());
-		this.velocityEngine.setProperty("resource.loader.file.cache", Boolean.TRUE); //$NON-NLS-1$
+		this.velocityEngine.setProperty("resource.loader.file.cache", Boolean.TRUE);
 
 		this.velocityEngine.init();
 	}
@@ -143,19 +144,19 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	@Override
 	public int generateCode() throws IOException {
 
-		logger.debug("Starting code generation"); //$NON-NLS-1$
+		logger.debug("Starting code generation");
 
 		int i = 0;
-		logger.debug("Generating objects"); //$NON-NLS-1$
+		logger.debug("Generating objects");
 		i += generateTargetFilesForTypeList(this.generateCodeDocumentParser.getObjectTypes(), TargetFileType.OBJECT,
 				CodeTemplate.OBJECT, false);
-		logger.debug("Generating interfaces"); //$NON-NLS-1$
+		logger.debug("Generating interfaces");
 		i += generateTargetFilesForTypeList(this.generateCodeDocumentParser.getInterfaceTypes(),
 				TargetFileType.INTERFACE, CodeTemplate.INTERFACE, false);
-		logger.debug("Generating unions"); //$NON-NLS-1$
+		logger.debug("Generating unions");
 		i += generateTargetFilesForTypeList(this.generateCodeDocumentParser.getUnionTypes(), TargetFileType.UNION,
 				CodeTemplate.UNION, false);
-		logger.debug("Generating enums"); //$NON-NLS-1$
+		logger.debug("Generating enums");
 		i += generateTargetFilesForTypeList(this.generateCodeDocumentParser.getEnumTypes(), TargetFileType.ENUM,
 				CodeTemplate.ENUM, false);
 
@@ -171,29 +172,29 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		if (this.configuration.isCopyRuntimeSources()) {
 			copyRuntimeSources();
 		} else if (this.configuration instanceof GeneratePojoConfiguration) {
-			logger.info("You're using the generatePojo goal/task with copyRuntimeSources set to false. " //$NON-NLS-1$
-					+ "To avoid adding plugin dependencies, the recommended value for the plugin parameter 'copyRuntimeSources' is true. " //$NON-NLS-1$
-					+ "Please note that the default value changed from true to false since 2.0."); //$NON-NLS-1$
+			logger.info("You're using the generatePojo goal/task with copyRuntimeSources set to false. "
+					+ "To avoid adding plugin dependencies, the recommended value for the plugin parameter 'copyRuntimeSources' is true. "
+					+ "Please note that the default value changed from true to false since 2.0.");
 		}
 		logger.info(
-				i + " java classes have been generated from the schema(s) '" + this.configuration.getSchemaFilePattern() //$NON-NLS-1$
-						+ "' in the package '" + this.configuration.getPackageName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				i + " java classes have been generated from the schema(s) '" + this.configuration.getSchemaFilePattern()
+						+ "' in the package '" + this.configuration.getPackageName() + "'");
 		return i;
 	}
 
 	private int generateClientFiles() throws IOException {
 		int i = 0;
-		logger.debug("Starting client specific code generation"); //$NON-NLS-1$
+		logger.debug("Starting client specific code generation");
 
 		// Custom Deserializers and array deserialization (always generated)
 		VelocityContext context = getVelocityContext();
-		context.put("customDeserializers", this.generateCodeDocumentParser.getCustomDeserializers()); //$NON-NLS-1$
-		context.put("customSerializers", this.generateCodeDocumentParser.getCustomSerializers()); //$NON-NLS-1$
+		context.put("customDeserializers", this.generateCodeDocumentParser.getCustomDeserializers());
+		context.put("customSerializers", this.generateCodeDocumentParser.getCustomSerializers());
 
 		if (this.configuration.isGenerateJacksonAnnotations()) {
-			i += generateOneJavaFile("CustomJacksonDeserializers", true, "Generating custom deserializers", context, //$NON-NLS-1$ //$NON-NLS-2$
+			i += generateOneJavaFile("CustomJacksonDeserializers", true, "Generating custom deserializers", context,
 					CodeTemplate.JACKSON_DESERIALIZERS);
-			i += generateOneJavaFile("CustomJacksonSerializers", true, "Generating custom serializers", context, //$NON-NLS-1$ //$NON-NLS-2$
+			i += generateOneJavaFile("CustomJacksonSerializers", true, "Generating custom serializers", context,
 					CodeTemplate.JACKSON_SERIALIZERS);
 		}
 
@@ -202,93 +203,93 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			// Generation of the query/mutation/subscription classes
 			if (((GenerateClientCodeConfiguration) this.configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
-				logger.debug("Generating query"); //$NON-NLS-1$
+				logger.debug("Generating query");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getQueryType(), TargetFileType.QUERY,
 						CodeTemplate.QUERY_MUTATION, true);
-				logger.debug("Generating mutation"); //$NON-NLS-1$
+				logger.debug("Generating mutation");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getMutationType(),
 						TargetFileType.MUTATION, CodeTemplate.QUERY_MUTATION, true);
-				logger.debug("Generating subscription"); //$NON-NLS-1$
+				logger.debug("Generating subscription");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 						TargetFileType.SUBSCRIPTION, CodeTemplate.SUBSCRIPTION, true);
 			}
 
-			logger.debug("Generating client side mapping from graphql type to java type"); //$NON-NLS-1$
+			logger.debug("Generating client side mapping from graphql type to java type");
 			i += generateClientTypeMapping();
 
 			// Generation of the query/mutation/subscription executor classes
-			logger.debug("Generating query executor"); //$NON-NLS-1$
+			logger.debug("Generating query executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getQueryType(), TargetFileType.EXECUTOR,
 					CodeTemplate.QUERY_MUTATION_EXECUTOR, true);
-			logger.debug("Generating query reactive executor"); //$NON-NLS-1$
+			logger.debug("Generating query reactive executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getQueryType(),
 					TargetFileType.REACTIVE_EXECUTOR, CodeTemplate.QUERY_MUTATION_REACTIVE_EXECUTOR, true);
-			logger.debug("Generating mutation executor"); //$NON-NLS-1$
+			logger.debug("Generating mutation executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getMutationType(), TargetFileType.EXECUTOR,
 					CodeTemplate.QUERY_MUTATION_EXECUTOR, true);
-			logger.debug("Generating mutation reactive executor"); //$NON-NLS-1$
+			logger.debug("Generating mutation reactive executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getMutationType(),
 					TargetFileType.REACTIVE_EXECUTOR, CodeTemplate.QUERY_MUTATION_REACTIVE_EXECUTOR, true);
-			logger.debug("Generating subscription executor"); //$NON-NLS-1$
+			logger.debug("Generating subscription executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 					TargetFileType.EXECUTOR, CodeTemplate.SUBSCRIPTION_EXECUTOR, true);
-			logger.debug("Generating subscription reactive executor"); //$NON-NLS-1$
+			logger.debug("Generating subscription reactive executor");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 					TargetFileType.REACTIVE_EXECUTOR, CodeTemplate.SUBSCRIPTION_REACTIVE_EXECUTOR, true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (((GenerateClientCodeConfiguration) this.configuration).isGenerateDeprecatedRequestResponse()) {
-				logger.debug("Generating query response"); //$NON-NLS-1$
+				logger.debug("Generating query response");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getQueryType(), TargetFileType.RESPONSE,
 						CodeTemplate.QUERY_RESPONSE, true);
-				logger.debug("Generating mutation response"); //$NON-NLS-1$
+				logger.debug("Generating mutation response");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getMutationType(),
 						TargetFileType.RESPONSE, CodeTemplate.QUERY_RESPONSE, true);
-				logger.debug("Generating subscription response"); //$NON-NLS-1$
+				logger.debug("Generating subscription response");
 				i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 						TargetFileType.RESPONSE, CodeTemplate.QUERY_RESPONSE, true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
-			logger.debug("Generating query root response"); //$NON-NLS-1$
+			logger.debug("Generating query root response");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getQueryType(), TargetFileType.ROOT_RESPONSE,
 					CodeTemplate.ROOT_RESPONSE, true);
-			logger.debug("Generating mutation root response"); //$NON-NLS-1$
+			logger.debug("Generating mutation root response");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getMutationType(),
 					TargetFileType.ROOT_RESPONSE, CodeTemplate.ROOT_RESPONSE, true);
-			logger.debug("Generating subscription root response"); //$NON-NLS-1$
+			logger.debug("Generating subscription root response");
 			i += generateTargetFileForType(this.generateCodeDocumentParser.getSubscriptionType(),
 					TargetFileType.ROOT_RESPONSE, CodeTemplate.ROOT_RESPONSE, true);
 
 			// Generation of the GraphQLRequest classes
-			logger.debug("Generating GraphQL Request class"); //$NON-NLS-1$
+			logger.debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest(false);
-			logger.debug("Generating GraphQL Reactive Request class"); //$NON-NLS-1$
+			logger.debug("Generating GraphQL Reactive Request class");
 			i += generateGraphQLRequest(true);
 
 			// Files for Custom Scalars
-			logger.debug("Generating CustomScalarRegistryInitializer"); //$NON-NLS-1$
-			i += generateOneJavaFile("CustomScalarRegistryInitializer", true, //$NON-NLS-1$
-					"Generating CustomScalarRegistryInitializer", getVelocityContext(), //$NON-NLS-1$
+			logger.debug("Generating CustomScalarRegistryInitializer");
+			i += generateOneJavaFile("CustomScalarRegistryInitializer", true,
+					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER);
 
 			// Files for Directives
-			logger.debug("Generating DirectiveRegistryInitializer"); //$NON-NLS-1$
-			i += generateOneJavaFile("DirectiveRegistryInitializer", true, "Generating DirectiveRegistryInitializer", //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("Generating DirectiveRegistryInitializer");
+			i += generateOneJavaFile("DirectiveRegistryInitializer", true, "Generating DirectiveRegistryInitializer",
 					getVelocityContext(), CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER);
 
 			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
-			logger.debug("Generating Spring autoconfiguration class"); //$NON-NLS-1$
+			logger.debug("Generating Spring autoconfiguration class");
 			i += generateOneJavaFile(
-					SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? "" //$NON-NLS-1$
+					SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? ""
 							: this.configuration.getSpringBeanSuffix()),
-					true, "generating SpringConfiguration", context, //$NON-NLS-1$
+					true, "generating SpringConfiguration", context,
 					CodeTemplate.CLIENT_SPRING_AUTO_CONFIGURATION_CLASS);
 
 			// Spring auto-configuration management
-			logger.debug("Generating Spring autoconfiguration generation"); //$NON-NLS-1$
-			String autoConfClass = this.configuration.getSpringAutoConfigurationPackage() + "." //$NON-NLS-1$
-					+ SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? "" //$NON-NLS-1$
+			logger.debug("Generating Spring autoconfiguration generation");
+			String autoConfClass = this.configuration.getSpringAutoConfigurationPackage() + "."
+					+ SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? ""
 							: this.configuration.getSpringBeanSuffix());
 			i += generateSpringAutoConfigurationDeclaration(autoConfClass);
 		}
@@ -303,20 +304,20 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 */
 	private int generateClientTypeMapping() {
 		VelocityContext context = getVelocityContext();
-		context.put("types", this.generateCodeDocumentParser.getTypes()); //$NON-NLS-1$
+		context.put("types", this.generateCodeDocumentParser.getTypes());
 
 		// Generation of the GraphQLTypeMapping file
-		generateOneJavaFile("GraphQLTypeMapping", true, "generating GraphQLTypeMapping", context, //$NON-NLS-1$ //$NON-NLS-2$
+		generateOneJavaFile("GraphQLTypeMapping", true, "generating GraphQLTypeMapping", context,
 				CodeTemplate.TYPE_MAPPING);
 
 		// Generation of the typeMapping.csv file
-		String relativePath = "typeMapping" //$NON-NLS-1$
+		String relativePath = "typeMapping"
 				+ ((this.configuration.getSpringBeanSuffix() == null) ? "" : this.configuration.getSpringBeanSuffix())
 				+ ".csv";
 		File targetFile = new File(this.configuration.getTargetResourceFolder(), relativePath);
-		logger.debug("Generating typeMapping.csv into {}", targetFile); //$NON-NLS-1$
+		logger.debug("Generating typeMapping.csv into {}", targetFile);
 		targetFile.getParentFile().mkdirs();
-		generateOneFile(targetFile, "Generating typeMapping.csv", context, CodeTemplate.TYPE_MAPPING_CSV); //$NON-NLS-1$
+		generateOneFile(targetFile, "Generating typeMapping.csv", context, CodeTemplate.TYPE_MAPPING_CSV);
 
 		return 2;
 	}
@@ -329,7 +330,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 * @throws IOException
 	 */
 	private int generateSpringAutoConfigurationDeclaration(String autoConfClass) throws IOException {
-		String springAutoConfigurationPath = "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"; //$NON-NLS-1$
+		String springAutoConfigurationPath = "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports";
 		File springFactories = new File(this.configuration.getTargetResourceFolder(), springAutoConfigurationPath);
 		Set<String> autoConfClasses = new TreeSet<>();
 		autoConfClasses.add(autoConfClass);
@@ -348,8 +349,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		}
 
 		VelocityContext context = getVelocityContext();
-		context.put("springAutoConfigurationClasses", String.join("\n", autoConfClasses)); //$NON-NLS-1$ //$NON-NLS-2$
-		generateOneFile(getResourceFile(springAutoConfigurationPath), "Generating " + springAutoConfigurationPath, //$NON-NLS-1$
+		context.put("springAutoConfigurationClasses", String.join("\n", autoConfClasses));
+		generateOneFile(getResourceFile(springAutoConfigurationPath), "Generating " + springAutoConfigurationPath,
 				context, CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE);
 
 		return 1;
@@ -374,22 +375,22 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 					continue;
 
 				// We skip the /META-INF/ folder that just contains the MANIFEST file
-				if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/") //$NON-NLS-1$ //$NON-NLS-2$
-						|| entry.getName().equals("resources/")) { //$NON-NLS-1$
+				if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+						|| entry.getName().equals("resources/")) {
 					continue;
 				}
-				if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) { //$NON-NLS-1$ //$NON-NLS-2$
-					throw new RuntimeException("The entries in the '" + COMMON_RUNTIME_SOURCE_FILENAME //$NON-NLS-1$
-							+ "' file should start either by 'java' or by 'resources', but this entry doesn't: " //$NON-NLS-1$
+				if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+					throw new RuntimeException("The entries in the '" + COMMON_RUNTIME_SOURCE_FILENAME
+							+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
 							+ entry.getName());
 				}
 
-				targetFilename = entry.getName().substring("java".length() + 1); //$NON-NLS-1$
+				targetFilename = entry.getName().substring("java".length() + 1);
 
 				boolean copyFile = true;// Default is to copy the file
 				if (this.configuration instanceof GeneratePojoConfiguration) {
 					// if the goal/task is generatePojo, then only part of the dependencies should be copied.
-					copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation"); //$NON-NLS-1$
+					copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation");
 				}
 
 				if (copyFile) {
@@ -417,32 +418,32 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 						continue;
 
 					// We skip the /META-INF/ folder that just contains the MANIFEST file
-					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/") //$NON-NLS-1$ //$NON-NLS-2$
-							|| entry.getName().equals("resources/")) { //$NON-NLS-1$
+					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+							|| entry.getName().equals("resources/")) {
 						continue;
 					}
-					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) { //$NON-NLS-1$ //$NON-NLS-2$
-						throw new RuntimeException("The entries in the '" + CLIENT_RUNTIME_SOURCE_FILENAME //$NON-NLS-1$
-								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: " //$NON-NLS-1$
+					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+						throw new RuntimeException("The entries in the '" + CLIENT_RUNTIME_SOURCE_FILENAME
+								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
 								+ entry.getName());
 					}
 
-					boolean resources = entry.getName().startsWith("resources"); //$NON-NLS-1$
+					boolean resources = entry.getName().startsWith("resources");
 					if (resources) {
-						targetFilename = entry.getName().substring("resources".length() + 1); //$NON-NLS-1$
+						targetFilename = entry.getName().substring("resources".length() + 1);
 					} else {
-						targetFilename = entry.getName().substring("java".length() + 1); //$NON-NLS-1$
+						targetFilename = entry.getName().substring("java".length() + 1);
 					}
 
 					boolean copyFile = true;// Default is to copy the file
 					if (this.configuration instanceof GeneratePojoConfiguration) {
 						// if the goal/task is generatePojo, then only part of the dependencies should be copied.
-						copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation") //$NON-NLS-1$
+						copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation")
 								|| (this.configuration.isGenerateJacksonAnnotations() && //
 										(targetFilename
-												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject") //$NON-NLS-1$
-												|| targetFilename.contains("AbstractCustomJacksonSerializer") //$NON-NLS-1$
-												|| targetFilename.contains("AbstractCustomJacksonDeserializer"))); //$NON-NLS-1$
+												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+												|| targetFilename.contains("AbstractCustomJacksonSerializer")
+												|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
 					}
 
 					if (copyFile) {
@@ -474,27 +475,27 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 						continue;
 
 					// We skip the /META-INF/ folder that just contains the MANIFEST file
-					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/") //$NON-NLS-1$ //$NON-NLS-2$
-							|| entry.getName().equals("resources/")) { //$NON-NLS-1$
+					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+							|| entry.getName().equals("resources/")) {
 						continue;
 					}
-					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) { //$NON-NLS-1$ //$NON-NLS-2$
-						throw new RuntimeException("The entries in the '" + SERVER_RUNTIME_SOURCE_FILENAME //$NON-NLS-1$
-								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: " //$NON-NLS-1$
+					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+						throw new RuntimeException("The entries in the '" + SERVER_RUNTIME_SOURCE_FILENAME
+								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
 								+ entry.getName());
 					}
 
-					targetFilename = entry.getName().substring("java".length() + 1); //$NON-NLS-1$
+					targetFilename = entry.getName().substring("java".length() + 1);
 
 					boolean copyFile = true; // Default is to copy the file
 					if (this.configuration instanceof GeneratePojoConfiguration) {
 						// if the goal/task is generatePojo, then only part of the dependencies should be copied.
-						copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation") //$NON-NLS-1$
+						copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation")
 								|| (this.configuration.isGenerateJacksonAnnotations() && //
 										(targetFilename
-												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject") //$NON-NLS-1$
-												|| targetFilename.contains("AbstractCustomJacksonSerializer") //$NON-NLS-1$
-												|| targetFilename.contains("AbstractCustomJacksonDeserializer"))); //$NON-NLS-1$
+												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+												|| targetFilename.contains("AbstractCustomJacksonSerializer")
+												|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
 					}
 
 					if (copyFile) {
@@ -554,17 +555,17 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		if (object == null) {
 			return 0;
 		} else {
-			String classname = (String) execWithOneParam("getTargetFileName", object, type, TargetFileType.class); //$NON-NLS-1$
+			String classname = (String) execWithOneParam("getTargetFileName", object, type, TargetFileType.class);
 			if ((type.equals(TargetFileType.EXECUTOR) || type.equals(TargetFileType.REACTIVE_EXECUTOR))
 					&& this.configuration.getSpringBeanSuffix() != null) {
 				classname += this.configuration.getSpringBeanSuffix();
 			}
 
 			VelocityContext context = getVelocityContext();
-			context.put("object", object); //$NON-NLS-1$
-			context.put("type", type); //$NON-NLS-1$
+			context.put("object", object);
+			context.put("type", type);
 
-			generateOneJavaFile(classname, utilityClass, "Generating file for " + type + " '" + object.getName() + "'", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			generateOneJavaFile(classname, utilityClass, "Generating file for " + type + " '" + object.getName() + "'", //$NON-NLS-3$
 					context, templateCode);
 			return 1;
 		}
@@ -577,18 +578,17 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	int generateGraphQLRequest(boolean reactive) {
 		VelocityContext context = getVelocityContext();
 
-		context.put("query", this.generateCodeDocumentParser.getQueryType()); //$NON-NLS-1$
-		context.put("mutation", this.generateCodeDocumentParser.getMutationType()); //$NON-NLS-1$
-		context.put("subscription", this.generateCodeDocumentParser.getSubscriptionType()); //$NON-NLS-1$
+		context.put("query", this.generateCodeDocumentParser.getQueryType());
+		context.put("mutation", this.generateCodeDocumentParser.getMutationType());
+		context.put("subscription", this.generateCodeDocumentParser.getSubscriptionType());
 
-		String classname = (reactive) ? "GraphQLReactiveRequest" : "GraphQLRequest"; //$NON-NLS-1$ //$NON-NLS-2$
+		String classname = (reactive) ? "GraphQLReactiveRequest" : "GraphQLRequest";
 		CodeTemplate codeTemplate = (reactive) ? CodeTemplate.GRAPHQL_REACTIVE_REQUEST : CodeTemplate.GRAPHQL_REQUEST;
 
 		return generateOneJavaFile(//
 				(this.configuration.getSpringBeanSuffix() == null) ? classname
 						: classname + this.configuration.getSpringBeanSuffix(),
-				true, "generating GraphQLRequest", context, //$NON-NLS-1$
-				codeTemplate);
+				true, "generating GraphQLRequest", context, codeTemplate);
 	}
 
 	/**
@@ -599,10 +599,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 */
 	int generateServerFiles() throws IOException {
 		int ret = 0;
-		logger.debug("Starting server specific code generation"); //$NON-NLS-1$
+		logger.debug("Starting server specific code generation");
 
 		if (this.configuration.isGenerateUtilityClasses()) {
-			logger.debug("Generating server utility classes"); //$NON-NLS-1$
+			logger.debug("Generating server utility classes");
 
 			VelocityContext context = getVelocityServerContext();
 
@@ -611,43 +611,47 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			for (org.springframework.core.io.Resource res : this.resourceSchemaStringProvider.schemas(false)) {
 				schemaFiles.add(res.getFilename());
 			}
-			context.put("schemaFiles", schemaFiles); //$NON-NLS-1$
+			context.put("schemaFiles", schemaFiles);
 
-			logger.debug("Generating GraphQLServerMain"); //$NON-NLS-1$
-			ret += generateOneJavaFile("GraphQLServerMain", true, "generating GraphQLServerMain", context, //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("Generating GraphQLServerMain");
+			ret += generateOneJavaFile("GraphQLServerMain", true, "generating GraphQLServerMain", context,
 					CodeTemplate.SERVER);
 
-			logger.debug("Generating GraphQLWiring"); //$NON-NLS-1$
-			ret += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("Generating GraphQLWiring");
+			ret += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
+
+			logger.debug("Generating DataFetchersDelegateRegistry");
+			ret += generateOneJavaFile("DataFetchersDelegateRegistry", true, "generating DataFetchersDelegateRegistry",
+					context, CodeTemplate.DATA_FETCHERS_DELEGATES_REGISTRY);
 
 			for (DataFetchersDelegate dataFetcherDelegate : this.generateCodeDocumentParser.dataFetchersDelegates) {
-				context.put("dataFetchersDelegate", dataFetcherDelegate); //$NON-NLS-1$
-				context.put("dataFetchersDelegates", this.generateCodeDocumentParser.getDataFetchersDelegates()); //$NON-NLS-1$
-				context.put("batchLoaders", this.generateCodeDocumentParser.getBatchLoaders()); //$NON-NLS-1$
+				context.put("dataFetchersDelegate", dataFetcherDelegate);
+				context.put("dataFetchersDelegates", this.generateCodeDocumentParser.getDataFetchersDelegates());
+				context.put("batchLoaders", this.generateCodeDocumentParser.getBatchLoaders());
 
 				String entityControllerName = this.graphqlUtils.getJavaName(dataFetcherDelegate.getType().getName())
-						+ "Controller"; //$NON-NLS-1$
-				logger.debug("Generating " + entityControllerName); //$NON-NLS-1$
-				ret += generateOneJavaFile(entityControllerName, true, "generating " + entityControllerName, context, //$NON-NLS-1$
+						+ "Controller";
+				logger.debug("Generating " + entityControllerName);
+				ret += generateOneJavaFile(entityControllerName, true, "generating " + entityControllerName, context,
 						CodeTemplate.ENTITY_CONTROLLER);
 
-				logger.debug("Generating " + dataFetcherDelegate.getPascalCaseName()); //$NON-NLS-1$
+				logger.debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 				ret += generateOneJavaFile(dataFetcherDelegate.getPascalCaseName(), true,
-						"generating " + dataFetcherDelegate.getPascalCaseName(), context, //$NON-NLS-1$
+						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 						CodeTemplate.DATA_FETCHER_DELEGATE);
 			}
 
 			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
-			logger.debug("Generating Spring autoconfiguration class"); //$NON-NLS-1$
-			String className = SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? "" //$NON-NLS-1$
+			logger.debug("Generating Spring autoconfiguration class");
+			String className = SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? ""
 					: this.configuration.getSpringBeanSuffix());
-			ret += generateOneJavaFile(className, true, "generating SpringConfiguration", context, //$NON-NLS-1$
+			ret += generateOneJavaFile(className, true, "generating SpringConfiguration", context,
 					CodeTemplate.SERVER_SPRING_AUTO_CONFIGURATION_CLASS);
 
 			// Spring auto-configuration management
-			logger.debug("Generating Spring autoconfiguration generation"); //$NON-NLS-1$
-			String autoConfClass = this.configuration.getSpringAutoConfigurationPackage() + "." //$NON-NLS-1$
-					+ SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? "" //$NON-NLS-1$
+			logger.debug("Generating Spring autoconfiguration generation");
+			String autoConfClass = this.configuration.getSpringAutoConfigurationPackage() + "."
+					+ SPRING_AUTO_CONFIGURATION_CLASS + (this.configuration.getSpringBeanSuffix() == null ? ""
 							: this.configuration.getSpringBeanSuffix());
 			ret += generateSpringAutoConfigurationDeclaration(autoConfClass);
 		}
@@ -743,7 +747,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 				@Override
 				public String getResourceEncoding() {
-					return "UTF-8"; //$NON-NLS-1$
+					return "UTF-8";
 				}
 
 				@Override
@@ -789,7 +793,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 */
 	private void copySchemaFilesToGraphqlFolder() throws IOException {
 		String standardSpringGraphqlSchemaPath = new File(this.configuration.getProjectDir(),
-				"src/main/resources/graphql").getCanonicalPath(); //$NON-NLS-1$
+				"src/main/resources/graphql").getCanonicalPath();
 		if (!this.configuration.getSchemaFileFolder().getCanonicalPath().equals(standardSpringGraphqlSchemaPath)) {
 			// The schema file(s) is(are) not where spring-graphql expects it (that is in the graphql of the
 			// classpath).
@@ -799,7 +803,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 						this.configuration.getTargetSchemaSubFolder());
 				File f = new File(folder, r.getFilename());
 
-				logger.debug("Copying {} from  {} to {}", r.getFilename(), r.getFile().getAbsolutePath(), //$NON-NLS-1$
+				logger.debug("Copying {} from  {} to {}", r.getFilename(), r.getFile().getAbsolutePath(),
 						f.getAbsolutePath());
 
 				f.getParentFile().mkdirs();
@@ -829,10 +833,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	int generateOneJavaFile(String classname, boolean utilityClass, String msg, VelocityContext context,
 			CodeTemplate templateCode) {
 
-		context.put("targetFileName", classname); //$NON-NLS-1$
+		context.put("targetFileName", classname);
 
 		File targetFile = getJavaFile(classname, utilityClass);
-		logger.debug("Generating {} into {}", msg, targetFile); //$NON-NLS-1$
+		logger.debug("Generating {} into {}", msg, targetFile);
 		targetFile.getParentFile().mkdirs();
 
 		return generateOneFile(targetFile, msg, context, templateCode);
@@ -858,19 +862,19 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		String resolvedTemplate = resolveTemplate(templateCode);
 
 		try {
-			template = this.velocityEngine.getTemplate(resolvedTemplate, "UTF-8"); //$NON-NLS-1$
+			template = this.velocityEngine.getTemplate(resolvedTemplate, "UTF-8");
 		} catch (ResourceNotFoundException e) {
 			// When in Gradle, Velocity doesn't seem to be able to load templates that are packaged in another jar. So
 			// we load these templates with a spring resource
 			try {
-				Resource resource = this.ctx.getResource("classpath:" + resolvedTemplate); //$NON-NLS-1$
-				try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF_8")) { //$NON-NLS-1$
+				Resource resource = this.ctx.getResource("classpath:" + resolvedTemplate);
+				try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF_8")) {
 					theTemplate = FileCopyUtils.copyToString(reader);
 				}
 				StringResourceLoader.getRepository().putStringResource(theTemplate, resolvedTemplate);
 			} catch (Exception e2) {
-				logger.warn("Could not load the resource in a the Spring resource. Got this exception: " //$NON-NLS-1$
-						+ e2.getClass().getSimpleName() + " (" + e2.getMessage() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.warn("Could not load the resource in a the Spring resource. Got this exception: "
+						+ e2.getClass().getSimpleName() + " (" + e2.getMessage() + ")");
 				// If we can't load the resource here, we send the original exception.
 				throw new ResourceNotFoundException(e.getMessage(), e);
 			}
@@ -878,7 +882,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 		try {
 
-			logger.debug("Generating {} into {}", msg, targetFile); //$NON-NLS-1$
+			logger.debug("Generating {} into {}", msg, targetFile);
 			targetFile.getParentFile().mkdirs();
 
 			try (Writer writer = (this.configuration.getSourceEncoding() != null)
@@ -894,7 +898,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			return 1;
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {
-			throw new RuntimeException("Error when " + msg + "; " + e.getMessage(), e); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new RuntimeException("Error when " + msg + "; " + e.getMessage(), e);
 		}
 	}
 
@@ -920,7 +924,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 					: this.configuration.getPackageName();
 		}
 
-		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java"; //$NON-NLS-1$
+		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(this.configuration.getTargetSourceFolder(), relativePath);
 		file.getParentFile().mkdirs();
 		return file;
@@ -957,8 +961,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			return getType.invoke(object);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '" //$NON-NLS-1$ //$NON-NLS-2$
-					+ object.getClass().getName() + "': " + e.getMessage(), e); //$NON-NLS-1$
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}
 
@@ -978,8 +982,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			return getType.invoke(object, param);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			throw new RuntimeException("Error when trying to execute '" + methodName + "' (with a String param) on '" //$NON-NLS-1$ //$NON-NLS-2$
-					+ object.getClass().getName() + "': " + e.getMessage(), e); //$NON-NLS-1$
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' (with a String param) on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}
 
@@ -990,23 +994,23 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 */
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
-		context.put("carriageReturn", "\r"); //$NON-NLS-1$ //$NON-NLS-2$
-		context.put("configuration", this.configuration); //$NON-NLS-1$
-		context.put("dollar", "$"); //$NON-NLS-1$ //$NON-NLS-2$
-		context.put("lineFeed", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		context.put("exceptionThrower", new ExceptionThrower()); //$NON-NLS-1$
-		context.put("graphqlUtils", this.graphqlUtils); //$NON-NLS-1$
-		context.put("javaKeywordPrefix", GraphqlUtils.JAVA_KEYWORD_PREFIX); //$NON-NLS-1$
-		context.put("sharp", "#"); //$NON-NLS-1$ //$NON-NLS-2$
-		context.put("velocityUtils", VelocityUtils.velocityUtils); //$NON-NLS-1$
+		context.put("carriageReturn", "\r");
+		context.put("configuration", this.configuration);
+		context.put("dollar", "$");
+		context.put("lineFeed", "\n");
+		context.put("exceptionThrower", new ExceptionThrower());
+		context.put("graphqlUtils", this.graphqlUtils);
+		context.put("javaKeywordPrefix", GraphqlUtils.JAVA_KEYWORD_PREFIX);
+		context.put("sharp", "#");
+		context.put("velocityUtils", VelocityUtils.velocityUtils);
 
 		// Velocity can't access to enum values. So we add it into the context
-		context.put("isPluginModeClient", Boolean.valueOf(this.configuration.getMode() == PluginMode.client)); //$NON-NLS-1$
+		context.put("isPluginModeClient", Boolean.valueOf(this.configuration.getMode() == PluginMode.client));
 
-		context.put("customScalars", this.generateCodeDocumentParser.getCustomScalars()); //$NON-NLS-1$
-		context.put("directives", this.generateCodeDocumentParser.getDirectives()); //$NON-NLS-1$
-		context.put("packageUtilName", this.generateCodeDocumentParser.getUtilPackageName()); //$NON-NLS-1$
-		context.put("subscriptionType", this.generateCodeDocumentParser.getSubscriptionType()); //$NON-NLS-1$
+		context.put("customScalars", this.generateCodeDocumentParser.getCustomScalars());
+		context.put("directives", this.generateCodeDocumentParser.getDirectives());
+		context.put("packageUtilName", this.generateCodeDocumentParser.getUtilPackageName());
+		context.put("subscriptionType", this.generateCodeDocumentParser.getSubscriptionType());
 
 		return context;
 	}
@@ -1017,10 +1021,15 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	private VelocityContext getVelocityServerContext() {
 		if (this.serverContext == null) {
 			this.serverContext = getVelocityContext();
-			this.serverContext.put("dataFetchersDelegates", this.generateCodeDocumentParser.getDataFetchersDelegates()); //$NON-NLS-1$
-			this.serverContext.put("batchLoaders", this.generateCodeDocumentParser.getBatchLoaders()); //$NON-NLS-1$
-			this.serverContext.put("interfaces", this.generateCodeDocumentParser.getInterfaceTypes()); //$NON-NLS-1$
-			this.serverContext.put("unions", this.generateCodeDocumentParser.getUnionTypes()); //$NON-NLS-1$
+			this.serverContext.put("dataFetchersDelegates", this.generateCodeDocumentParser.getDataFetchersDelegates());
+			this.serverContext.put("batchLoaders", this.generateCodeDocumentParser.getBatchLoaders());
+			this.serverContext.put("interfaces", this.generateCodeDocumentParser.getInterfaceTypes());
+			this.serverContext.put("unions", this.generateCodeDocumentParser.getUnionTypes());
+
+			// To check instanceof in velocity, one must put the class to test in the context (velocity syntax doesn't
+			// allow it)
+			this.serverContext.put("generateServerCodeConfigurationClass", GenerateServerCodeConfiguration.class);
+			this.serverContext.put("generatePojoConfigurationClass", GeneratePojoConfiguration.class);
 		}
 		return this.serverContext;
 	}

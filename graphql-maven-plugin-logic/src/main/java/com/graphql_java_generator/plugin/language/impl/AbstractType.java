@@ -21,6 +21,7 @@ import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.Comment;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public abstract class AbstractType implements Type {
@@ -32,6 +33,7 @@ public abstract class AbstractType implements Type {
 	final CommonConfiguration configuration;
 
 	/** The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema definition */
+	@ToString.Exclude
 	final DocumentParser documentParser;
 
 	/** The name of the object type */
@@ -93,7 +95,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public GraphQlType getGraphQlType() {
-		return graphQlType;
+		return this.graphQlType;
 	}
 
 	/** {@inheritDoc} */
@@ -127,7 +129,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(name);
+		StringBuilder sb = new StringBuilder(this.name);
 
 		if (getComments() == null) {
 			sb.append(", comments=null");
@@ -164,12 +166,12 @@ public abstract class AbstractType implements Type {
 
 			// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
 			boolean useJakartaEE9 = false;
-			if (configuration instanceof GenerateCodeCommonConfiguration) {
-				useJakartaEE9 = ((GenerateCodeCommonConfiguration) configuration).isUseJakartaEE9();
+			if (this.configuration instanceof GenerateCodeCommonConfiguration) {
+				useJakartaEE9 = ((GenerateCodeCommonConfiguration) this.configuration).isUseJakartaEE9();
 			}
 
 			// We only import if it's another simple classname
-			addImport(imports, targetPackageName, classname, useJakartaEE9);
+			addImport(this.imports, targetPackageName, classname, useJakartaEE9);
 		}
 	}
 
@@ -178,11 +180,11 @@ public abstract class AbstractType implements Type {
 
 		// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
 		boolean useJakartaEE9 = false;
-		if (configuration instanceof GenerateCodeCommonConfiguration) {
-			useJakartaEE9 = ((GenerateCodeCommonConfiguration) configuration).isUseJakartaEE9();
+		if (this.configuration instanceof GenerateCodeCommonConfiguration) {
+			useJakartaEE9 = ((GenerateCodeCommonConfiguration) this.configuration).isUseJakartaEE9();
 		}
 
-		addImport(importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
+		addImport(this.importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
 	}
 
 	/**

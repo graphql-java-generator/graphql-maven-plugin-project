@@ -9,6 +9,7 @@ import java.util.List;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
+import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
@@ -20,6 +21,7 @@ import graphql.language.Comment;
 import graphql.language.Value;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author etienne-sf
@@ -61,6 +63,10 @@ public class FieldImpl implements Field {
 	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
 	private List<Field> inputParameters = new ArrayList<>();
 
+	/** The data fetcher associated to this field, or null if this field has no data fetcher */
+	@ToString.Exclude
+	DataFetcher dataFetcher = null;
+
 	/**
 	 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
 	 * the value of the enum.<BR/>
@@ -94,7 +100,7 @@ public class FieldImpl implements Field {
 
 	@Override
 	public Type getType() {
-		return documentParser.getType(getGraphQLTypeSimpleName());
+		return this.documentParser.getType(getGraphQLTypeSimpleName());
 	}
 
 	@Override
@@ -104,10 +110,10 @@ public class FieldImpl implements Field {
 
 	@Override
 	public boolean isId() {
-		if (id == null) {
+		if (this.id == null) {
 			return getGraphQLTypeSimpleName().equals("ID");
 		} else {
-			return id;
+			return this.id;
 		}
 	}
 
@@ -176,26 +182,21 @@ public class FieldImpl implements Field {
 
 		// Field's type
 		sb.append(", type:");
-		appendType(sb, getFieldTypeAST());
+		sb.append(getFieldTypeAST().getGraphQLType());
 
 		// Field's parameters
 		sb.append(", params:[");
 		boolean appendSeparator = false;
-		for (Field param : inputParameters) {
+		for (Field param : this.inputParameters) {
 			if (appendSeparator)
 				sb.append(",");
 			else
 				appendSeparator = true;
 			sb.append(param.getName()).append(":");
-			appendType(sb, param.getFieldTypeAST());
+			sb.append(param.getFieldTypeAST().getGraphQLType());
 		} // for
 		sb.append("]}");
 
 		return sb.toString();
 	}
-
-	private void appendType(StringBuilder sb, FieldTypeAST fieldTypeAST) {
-		sb.append(fieldTypeAST.getGraphQLType());
-	}
-
 }

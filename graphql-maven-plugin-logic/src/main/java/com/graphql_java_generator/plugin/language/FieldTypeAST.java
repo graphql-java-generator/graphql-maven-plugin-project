@@ -78,11 +78,11 @@ public class FieldTypeAST {
 	 * The aim of this recursive method is to manage list of list of list of list...
 	 */
 	public String getJavaType(String classSimpleName) {
-		if (listDepth > 0)
+		if (this.listDepth > 0)
 			return new StringBuilder()//
-					.append(listDepth > 0 ? "List<" : "")//
-					.append(listItemFieldTypeAST.getJavaType(classSimpleName))//
-					.append(listDepth > 0 ? ">" : "")//
+					.append(this.listDepth > 0 ? "List<" : "")//
+					.append(this.listItemFieldTypeAST.getJavaType(classSimpleName))//
+					.append(this.listDepth > 0 ? ">" : "")//
 					.toString();
 		else
 			return classSimpleName;
@@ -93,27 +93,27 @@ public class FieldTypeAST {
 	 * everything is mandatory would be <I>[[String!]!]!</I>
 	 */
 	public String getGraphQLType() {
-		if (listDepth > 0)
+		if (this.listDepth > 0)
 			return new StringBuilder()//
-					.append(listDepth > 0 ? "[" : "")//
-					.append(listItemFieldTypeAST.getGraphQLType())//
-					.append(listDepth > 0 ? "]" : "")//
-					.append(mandatory ? "!" : "")//
+					.append(this.listDepth > 0 ? "[" : "")//
+					.append(this.listItemFieldTypeAST.getGraphQLType())//
+					.append(this.listDepth > 0 ? "]" : "")//
+					.append(this.mandatory ? "!" : "")//
 					.toString();
 		else
-			return graphQLTypeSimpleName + (mandatory ? "!" : "");
+			return this.graphQLTypeSimpleName + (this.mandatory ? "!" : "");
 	}
 
 	public String getGraphQLTypeSimpleName() {
-		if (listDepth > 0)
-			return listItemFieldTypeAST.getGraphQLTypeSimpleName();
+		if (this.listDepth > 0)
+			return this.listItemFieldTypeAST.getGraphQLTypeSimpleName();
 		else
-			return graphQLTypeSimpleName;
+			return this.graphQLTypeSimpleName;
 	}
 
 	public void setGraphQLTypeName(String graphQLTypeName) {
-		if (listDepth > 0)
-			listItemFieldTypeAST.setGraphQLTypeName(graphQLTypeName);
+		if (this.listDepth > 0)
+			this.listItemFieldTypeAST.setGraphQLTypeName(graphQLTypeName);
 		else
 			this.graphQLTypeSimpleName = graphQLTypeName;
 	}

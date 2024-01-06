@@ -61,6 +61,7 @@ public class AllGraphQLCases_ServerPojo_SpringConfiguration extends AbstractSpri
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.mode = PluginMode.server;
 		configuration.customScalars = customScalars;
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;
 		configuration.generateUtilityClasses = false;
 		configuration.separateUtilityClasses = true;
 	}
