@@ -1,3 +1,5 @@
+[TOC]
+
 # Main enhancement in the 2.x releases
 
 * The generated code uses spring-graphql
