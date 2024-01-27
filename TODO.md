@@ -1,12 +1,11 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* Ajouter le paramètre generateDataFetchersForFields dans les tutoriels
-* Replace DataFetchersDelegateRegistry attributes by proper autowired spring fields
-* The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
-    * See https://www.graphql-java.com/documentation/v20/data-fetching/
+* Add the generateDataFetchersForFields parameter in the tutorials
+* graphql-java 21 requires java 11
 * Optimize `getStringContentForGraphqlQuery`: use a `StringBuilder` instead of returning and concatenating strings
-* Use [[_TOC_]] for the wiki pages (and the README)
+* Issue #186 : Allow usage of @GraphQLRepository in native mode
+* Use [[_TOC_]] for the wiki pages (and the README)  ==> doesn't work??
 * Refresh the GitHub and Shopify samples
 * Review the plugin documentation (goal and parameters)
 * Issue Gradle-project #15: redundant cast to Long 

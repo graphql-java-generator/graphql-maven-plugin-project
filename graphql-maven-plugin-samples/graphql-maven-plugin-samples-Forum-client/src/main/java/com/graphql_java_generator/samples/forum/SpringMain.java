@@ -13,6 +13,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
+import com.graphql_java_generator.samples.forum.client.graphql.GraphQLRepositoryPartialRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
@@ -35,6 +36,9 @@ public class SpringMain implements CommandLineRunner {
 	PartialPreparedRequests partialPreparedRequests;
 
 	@Autowired
+	GraphQLRepositoryPartialRequests partialGraphQLRepositoryRequests;
+
+	@Autowired
 	SubscriptionRequests subscriptionRequests;
 
 	public static void main(String[] args) {
@@ -51,19 +55,25 @@ public class SpringMain implements CommandLineRunner {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		exec(partialDirectRequests, null);
+		exec(this.partialDirectRequests, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(partialPreparedRequests, null);
+		exec(this.partialPreparedRequests, null);
+
+		System.out.println("");
+		System.out.println("============================================================================");
+		System.out.println("======= EASIEST WAY: WITH A GRAPHQL REPOSITORY =============================");
+		System.out.println("============================================================================");
+		exec(this.partialGraphQLRepositoryRequests, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= LET'S EXECUTE A SUBSCRIPTION      ==================================");
 		System.out.println("============================================================================");
-		subscriptionRequests.execSubscription();
+		this.subscriptionRequests.execSubscription();
 
 		System.out.println("");
 		System.out.println("");

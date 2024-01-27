@@ -148,6 +148,11 @@
 					</executions>
 				</plugin>
 				<plugin>
+					<groupId>org.graalvm.buildtools</groupId>
+					<artifactId>native-maven-plugin</artifactId>
+					<version>0.9.28</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>3.5.0</version>
