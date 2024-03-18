@@ -23,6 +23,7 @@ All modes:
 
 Server mode:
 * Add of the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an easy access to the field's parameters.
+* Issue #209: error with subscription that returns enum, when the implementation returns a Publisher that is not a Flux
 
 
 ## 2.4

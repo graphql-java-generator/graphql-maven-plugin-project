@@ -29,6 +29,7 @@ import org.allGraphQLCases.server.STP_TypeWithJson_STS;
 import org.allGraphQLCases.server.STP_TypeWithObject_STS;
 import org.allGraphQLCases.server.config.GraphQlException;
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -280,17 +281,28 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.map((l) -> Optional.ofNullable("a value for _implements")); //$NON-NLS-1$
 	}
 
-	@Override
-	public Flux<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> enumWithReservedJavaKeywordAsValues(
+	@Override	
+	public Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> enumWithReservedJavaKeywordAsValues(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		return Flux//
-				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> {
-					if (l % 2 == 0)
-						return Optional.of(SEP_EnumWithReservedJavaKeywordAsValues_SES._instanceof);
-					else
-						return Optional.empty();
-				});
+		// Test of the issue #209 - subscription return enums (when the server implementation is not a Flux)
+
+		// This implementation returns an implementation of the basic interface, Publisher, to check that the plugin
+		// code will then properly transform the enum values into strings.
+		// The previous implementation was KO, as it expected the server implementation to return Flux.
+		return new Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>>() {
+			@Override
+			public void subscribe(Subscriber<? super Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> s) {
+				Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> publisher = Flux//
+						.interval(Duration.ofMillis(100))// A message every 0.1 second
+						.map((l) -> {
+							if (l % 2 == 0)
+								return Optional.of(SEP_EnumWithReservedJavaKeywordAsValues_SES._instanceof);
+							else
+								return Optional.empty();
+						});
+				publisher.subscribe(s);
+			}
+		};
 	}
 
 	@Override
