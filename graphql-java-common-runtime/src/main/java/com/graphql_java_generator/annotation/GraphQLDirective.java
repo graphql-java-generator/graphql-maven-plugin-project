@@ -13,8 +13,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import graphql.language.Value;
-
 /**
  * This annotation contains the information for a directive that was applied to a GraphQL item in the GraphQL schema
  * used to generate the code. It allows to retrieve at runtime the directives that were defined in the GraphQL
@@ -55,7 +53,8 @@ public @interface GraphQLDirective {
 	 * representation. These values much match exactly the {@link #parameterNames()} content: same parameters, in the
 	 * exact same order. <br/>
 	 * If {@link #parameterNames()} is null or empty, it may be null or empty.<br/>
-	 * The value is the string representation of the {@link Value} class that match this value. For instance:
+	 * The value is the string representation of the {@link graphql.language.Value} class that match this value. For
+	 * instance:
 	 * 
 	 * <pre>
 	&#64;GraphQLDirective(

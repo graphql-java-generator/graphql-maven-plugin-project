@@ -17,6 +17,10 @@
 
 ## Not released yet
 
+
+All modes:
+* Remove a bad java import, which could cause compilation error when just generating POJO
+
 Server mode:
 * Add of the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an easy access to the field's parameters.
 
