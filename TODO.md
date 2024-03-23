@@ -1,7 +1,11 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* Indicates in the Gradle tutorials that there are two versions of the plugin
+* Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
+    * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
 * Ajouter le paramètre generateDataFetchersForFields dans les tutoriels
+* Dozer is deprecated. Replace it by [mapstruct](https://github.com/mapstruct/mapstruct) or [modelmapper](https://github.com/modelmapper/modelmapper)
 * Replace DataFetchersDelegateRegistry attributes by proper autowired spring fields
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
