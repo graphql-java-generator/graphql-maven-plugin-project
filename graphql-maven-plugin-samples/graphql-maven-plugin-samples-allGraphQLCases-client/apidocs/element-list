@@ -1,10 +1,10 @@
 com.generated.graphql.samples.customscalar
 org.allGraphQLCases.annotation
 org.allGraphQLCases.client
-org.allGraphQLCases.client_spring_autoconfiguration
+org.allGraphQLCases.client.spring_autoconfiguration
+org.allGraphQLCases.client.util
 org.allGraphQLCases.client2
-org.allGraphQLCases.client2.spring_autoconfiguration
-org.allGraphQLCases.client2.util
+org.allGraphQLCases.client2_spring_autoconfiguration
 org.allGraphQLCases.demo
 org.allGraphQLCases.demo.impl
 org.allGraphQLCases.demo.subscription
