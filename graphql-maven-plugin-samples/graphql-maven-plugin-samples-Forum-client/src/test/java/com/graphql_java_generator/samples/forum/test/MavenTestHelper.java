@@ -1,7 +1,8 @@
-package com.graphql_java_generator.plugin.test.helper;
+package com.graphql_java_generator.samples.forum.test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MavenTestHelper {
 
-	final static String MODULE_NAME = "graphql-maven-plugin-logic";
+	final static String MODULE_SAMPLE_NAME = "graphql-maven-plugin-samples";
+	final static String MODULE_NAME = "graphql-maven-plugin-samples-Forum-client";
 	final static String TARGET_RESOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-resources";
 	final static String TARGET_SOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-src";
 	final static String RUNTIME_BASE_PACKAGE_FOLDER = "com/graphql_java_generator";
@@ -30,22 +32,15 @@ public class MavenTestHelper {
 		String path = new File(".").getAbsolutePath();
 		File f = null;
 		if (path.contains(MODULE_NAME)) {
-			f = new File(path);
+			// The current path is the full one
+			return new File(path);
+		} else if (path.contains(MODULE_SAMPLE_NAME)) {
+			// Only samples are being build
+			return new File(path, MODULE_NAME);
 		} else {
-			f = new File(path, MODULE_NAME);
+			// The current folder is the main project
+			return new File(path, MODULE_NAME + "/" + MODULE_SAMPLE_NAME);
 		}
-		return f;
-	}
-
-	/**
-	 * Returns a File, from a local name
-	 * 
-	 * @param path
-	 *            A local name, relative to the current project's root
-	 * @return
-	 */
-	public File getFile(String path) {
-		return new File(getModulePathFile(), path);
 	}
 
 	/**
@@ -134,6 +129,26 @@ public class MavenTestHelper {
 	public String readFile(String relativePath) {
 		String path = ((relativePath.startsWith("/") || (relativePath.startsWith("\\"))) ? "" : "/") + relativePath;
 		return readFile(new File(getModulePathFile(), path));
+	}
+
+	/**
+	 * Write a string into a file in the current maven module.
+	 * 
+	 * @param content
+	 *            The string that will be written in the file
+	 * @param relativePath
+	 *            The relative path from the project's base dir (e.g.: /src/test/resources/test.txt or
+	 *            src/test/resources/test.txt)
+	 * @return The content of the file, which is expected to be a text file
+	 */
+	public void writeFile(String relativePath, String content) {
+		String path = ((relativePath.startsWith("/") || (relativePath.startsWith("\\"))) ? "" : "/") + relativePath;
+		File file = new File(getModulePathFile(), path);
+		try (FileWriter writer = new FileWriter(file)) {
+			writer.write(content);
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot write file " + file.getPath(), e);
+		}
 	}
 
 	/**

@@ -22,10 +22,6 @@ import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
- * 
- */
-
-/**
  * Overrides the {@link GraphQLJavaToolsAutoConfiguration#schemaStringProvider()} bean, to loads our graphqls files,
  * from the given schemaFilePattern plugin parameter
  * 
@@ -36,7 +32,7 @@ public class ResourceSchemaStringProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceSchemaStringProvider.class);
 
-	final String INTROSPECTION_SCHEMA = "classpath:/introspection.graphqls";
+	final public String INTROSPECTION_SCHEMA = "classpath:/introspection.graphqls";
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -59,23 +55,23 @@ public class ResourceSchemaStringProvider {
 	 */
 	public List<org.springframework.core.io.Resource> schemas(boolean addIntrospectionSchema) throws IOException {
 		String fullPathPattern;
-		if (configuration.getSchemaFilePattern().startsWith("classpath:")) {
+		if (this.configuration.getSchemaFilePattern().startsWith("classpath:")) {
 			// We take the file pattern as is
-			fullPathPattern = configuration.getSchemaFilePattern();
+			fullPathPattern = this.configuration.getSchemaFilePattern();
 		} else {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
-				configuration.getSchemaFileFolder().getCanonicalPath();
+				logger.debug("Before getCanonicalPath(" + this.configuration.getSchemaFileFolder() + ")");
+				this.configuration.getSchemaFileFolder().getCanonicalPath();
 			}
-			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
-					+ ((configuration.getSchemaFilePattern().startsWith("/")
-							|| (configuration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
-					+ configuration.getSchemaFilePattern();
+			fullPathPattern = "file:///" + this.configuration.getSchemaFileFolder().getCanonicalPath()
+					+ ((this.configuration.getSchemaFilePattern().startsWith("/")
+							|| (this.configuration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
+					+ this.configuration.getSchemaFilePattern();
 		}
 
 		// Let's look for the GraphQL schema files
 		List<org.springframework.core.io.Resource> ret = new ArrayList<>(
-				Arrays.asList(applicationContext.getResources(fullPathPattern)));
+				Arrays.asList(this.applicationContext.getResources(fullPathPattern)));
 
 		// A little debug may be useful
 		if (logger.isDebugEnabled()) {
@@ -93,20 +89,31 @@ public class ResourceSchemaStringProvider {
 		// We musts have found at least one schema
 		if (ret.size() == 0) {
 			throw new RuntimeException("No GraphQL schema found (the searched file pattern is: '"
-					+ configuration.getSchemaFilePattern() + "', and search folder is '"
-					+ configuration.getSchemaFileFolder().getCanonicalPath() + "')");
+					+ this.configuration.getSchemaFilePattern() + "', and search folder is '"
+					+ this.configuration.getSchemaFileFolder().getCanonicalPath() + "')");
 		}
 
 		// In client mode, we need to read the introspection schema
 		if (addIntrospectionSchema) {
-			org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
-			if (!introspection.exists()) {
-				throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
-			}
-			ret.add(introspection);
+			ret.add(getIntrospectionSchema());
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Returns a {@link Resource} that points to the Introspection GraphQL schema file
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	Resource getIntrospectionSchema() throws IOException {
+		org.springframework.core.io.Resource introspection = this.applicationContext
+				.getResource(this.INTROSPECTION_SCHEMA);
+		if (!introspection.exists()) {
+			throw new IOException("The introspection GraphQL schema doesn't exist (" + this.INTROSPECTION_SCHEMA + ")");
+		}
+		return introspection;
 	}
 
 	/**
@@ -126,13 +133,13 @@ public class ResourceSchemaStringProvider {
 
 	public List<String> schemaStrings() throws IOException {
 		// In client mode, we need to read the introspection schema
-		boolean readIntrospectionSchema = configuration instanceof GenerateCodeCommonConfiguration
-				&& ((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client);
+		boolean readIntrospectionSchema = this.configuration instanceof GenerateCodeCommonConfiguration
+				&& ((GenerateCodeCommonConfiguration) this.configuration).getMode().equals(PluginMode.client);
 
 		List<org.springframework.core.io.Resource> resources = schemas(readIntrospectionSchema);
 		if (resources.size() == 0) {
 			throw new IllegalStateException("No graphql schema files found on classpath with location pattern '"
-					+ configuration.getSchemaFilePattern());
+					+ this.configuration.getSchemaFilePattern());
 		}
 
 		return resources.stream().map(this::readSchema).collect(Collectors.toList());
@@ -149,6 +156,7 @@ public class ResourceSchemaStringProvider {
 	}
 
 	public String getSchemaFilePattern() {
-		return configuration.getSchemaFilePattern();
+		return this.configuration.getSchemaFilePattern();
 	}
+
 }

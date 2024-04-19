@@ -27,6 +27,7 @@ public interface CommonConfiguration {
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_ADD_RELAY_CONNECTIONS = "false";
+	public final String DEFAULT_JSON_GRAPHQL_SCHEMA_FILE = "";
 	public final String DEFAULT_MAX_TOKENS = "2147483647"; // Integer.MAX_VALUE
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_PREFIX = "";
@@ -78,6 +79,25 @@ public interface CommonConfiguration {
 	public String getInterfaceSuffix();
 
 	/**
+	 * <p>
+	 * If defined, the plugin loads the GraphQL schema from this json file. This allows to generate the code from the
+	 * result of a GraphQL introspection query executed against an existing GraphQL server, for instance if you don't
+	 * have its GraphQL schema file.
+	 * </p>
+	 * <p>
+	 * This json file should have been retrieved by the full introspection query. You can find the introspection query
+	 * from the <code>getIntrospectionQuery</code> of the
+	 * <a href="https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts">graphql-js</a>
+	 * or from this <a href=
+	 * "https://github.com/graphql-java/graphql-java/blob/master/src/main/java/graphql/introspection/IntrospectionQuery.java">graphql-java</a>
+	 * class. You then have to run it against the GraphQL server, and store the response into a schema.json file.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public String getJsonGraphqlSchemaFilename();
+
+	/**
 	 * <I>(Useless, since 1.18.7)</I>Defines the options that maximum number of tokens that the GraphQL schema parser
 	 * may read. The default value is Integer.MAX_VALUE (=2147483647). If the schema contains more than
 	 * <I>maxTokens</I>, the build will fail with an error.
@@ -95,8 +115,16 @@ public interface CommonConfiguration {
 	public File getProjectDir();
 
 	/**
-	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
-	 * schema(s) are expected to be: in this folder, or one of these subfolders
+	 * <p>
+	 * The folder which contains the GraphQL schema file(s) , typically <code>/src/main/resources</code> of the current
+	 * project. That's where the GraphQL schema(s) are expected to be: in this folder, or one of these subfolders. If
+	 * the <code>jsonSchemaFilename</code> is set, then this parameter controls where this json schema file is.
+	 * </p>
+	 * <p>
+	 * <u>Caution:</u> this default value for this folder is <code>/src/main/resources</code>, for compatibility with
+	 * first versions of this plugin. It's different from the spring-graphql default one, which is
+	 * <i>/src/main/resources/graphql</i>
+	 * </p>
 	 */
 	public File getSchemaFileFolder();
 
@@ -235,6 +263,7 @@ public interface CommonConfiguration {
 			logger.debug("  Common parameters:");
 			logger.debug("    addRelayConnections: " + isAddRelayConnections());
 			logger.debug("    defaultTargetSchemaFileName: " + getDefaultTargetSchemaFileName());
+			logger.debug("    jsonGraphqlSchemaFilename: " + getJsonGraphqlSchemaFilename());
 			logger.debug("    parserOptions.maxTokens: " + getMaxTokens());
 			logger.debug("    projectDir: " + getProjectDir().getAbsolutePath());
 			logger.debug("    schemaFileFolder: " + getSchemaFileFolder());

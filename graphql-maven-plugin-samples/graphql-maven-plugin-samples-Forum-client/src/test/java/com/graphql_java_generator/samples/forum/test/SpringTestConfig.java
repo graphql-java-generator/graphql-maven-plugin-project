@@ -37,8 +37,8 @@ import reactor.core.publisher.Mono;
 
 @TestConfiguration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, Query.class, PartialPreparedRequests.class,
-		DirectQueriesWithFieldInputParameters.class })
+@ComponentScan(basePackageClasses = { SpringTestConfig.class, GraphqlClientUtils.class, Query.class,
+		PartialPreparedRequests.class, DirectQueriesWithFieldInputParameters.class })
 @EnableGraphQLRepositories({ "com.graphql_java_generator.samples.forum.client.graphql" })
 public class SpringTestConfig {
 

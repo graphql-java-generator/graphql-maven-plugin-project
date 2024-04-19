@@ -23,6 +23,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public Logger logger;
 
 	public boolean addRelayConnections = false;
+	public String jsonGraphqlSchemaFilename = null;
 	public String packageName = "my.test.package";
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public File projectDir = new File("./graphql-maven-plugin-logic");
@@ -50,7 +51,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GenerateGraphQLSchemaConfigurationTestHelper(Object caller) {
-		logger = LoggerFactory.getLogger(caller.getClass());
+		this.logger = LoggerFactory.getLogger(caller.getClass());
 	}
 
 }

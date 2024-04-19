@@ -3,7 +3,10 @@
  */
 package com.graphql_java_generator.plugin;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -43,6 +47,7 @@ import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.introspection.IntrospectionResultToSchema;
 import graphql.language.AbstractDescribedNode;
 import graphql.language.AbstractNode;
 import graphql.language.Argument;
@@ -324,8 +329,23 @@ public abstract class DocumentParser implements InitializingBean {
 		SchemaParser schemaParser = new SchemaParser();
 
 		// Let's parse the provided GraphQL schema(s)
-		String concatenatedSchemas = this.schemaStringProvider.getConcatenatedSchemaStrings();
-		this.typeDefinitionRegistry = schemaParser.parse(concatenatedSchemas);
+		if (this.configuration.getJsonGraphqlSchemaFilename() != null
+				&& !"".equals(this.configuration.getJsonGraphqlSchemaFilename())) {
+			// Let's load the GraphQL schema from a json file, that is the result of an introspection query
+			Map<String, Object> map = loadJsonGraphqlSchemaFile();
+			Document document = new IntrospectionResultToSchema().createSchemaDefinition(map);
+			this.typeDefinitionRegistry = schemaParser.buildRegistry(document);
+
+			// Let's load and merge the Introspection schema with the above one, as this is need for the plugin.
+			try (InputStream is = this.schemaStringProvider.getIntrospectionSchema().getInputStream()) {
+				this.typeDefinitionRegistry.merge(schemaParser.parse(is));
+			}
+		} else {
+			// Let's load the GraphQL schema from regular GraphQL schema file(s)
+			// Note: getConcatenatedSchemaStrings returns a GraphQL schema that contains the Introspection schema
+			String concatenatedSchemas = this.schemaStringProvider.getConcatenatedSchemaStrings();
+			this.typeDefinitionRegistry = schemaParser.parse(concatenatedSchemas);
+		}
 
 		// The Directives must be read first, as they may be found on almost any kind of definition in the GraphQL
 		// schema
@@ -455,6 +475,25 @@ public abstract class DocumentParser implements InitializingBean {
 		logger.debug("classes identified = " + nbClasses);
 		return nbClasses;
 
+	}
+
+	/**
+	 * Reads the json schema file, and return the json content as a map.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> loadJsonGraphqlSchemaFile() throws IOException {
+		// Let's read the json schema files
+		File jsonFile = new File(this.configuration.getSchemaFileFolder(),
+				this.configuration.getJsonGraphqlSchemaFilename());
+		logger.debug("Reading GraphQL schema from this json file: {}", jsonFile);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		try (InputStream isFlowJson = new FileInputStream(jsonFile)) {
+			return objectMapper.readValue(isFlowJson, Map.class);
+		}
 	}
 
 	/**

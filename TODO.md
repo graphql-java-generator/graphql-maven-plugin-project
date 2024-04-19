@@ -1,6 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* Add a test for the GraphQL json schema
 * Indicates in the Gradle tutorials that there are two versions of the plugin
 * Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
     * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)

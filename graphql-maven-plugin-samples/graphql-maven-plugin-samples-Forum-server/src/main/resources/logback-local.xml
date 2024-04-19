@@ -13,10 +13,10 @@
 		</encoder>
 	</appender>
 
-	<logger name="org.forum" level="trace" />
-	<logger name="com.graphql_java_generator" level="trace" />
-	<logger name="graphql" level="trace" />
-	<logger name="org.springframework" level="trace" />
+	<logger name="org.forum" level="debug" />
+	<logger name="com.graphql_java_generator" level="debug" />
+	<logger name="graphql" level="debug" />
+	<logger name="org.springframework" level="debug" />
 	<root level="info">
 		<appender-ref ref="File" />
 		<appender-ref ref="Console" />

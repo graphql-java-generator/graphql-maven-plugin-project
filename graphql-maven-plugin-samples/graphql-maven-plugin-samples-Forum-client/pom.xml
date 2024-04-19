@@ -58,6 +58,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<jsonGraphqlSchemaFilename>forum_GraphQLSchema.json</jsonGraphqlSchemaFilename>
 					<packageName>com.graphql_java_generator.samples.forum.client.graphql.forum.client</packageName>
 					<customScalars>
 						<customScalar>

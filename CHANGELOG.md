@@ -15,6 +15,10 @@
 
 # 2.x versions
 
+## Not released yet
+
+* Issue #113: base the code generation on a json schema (from an introspection query), instead of regular graphqls GraphQL schema files. This is done with the help of this new plugin parameter: `jsonGraphqlSchemaFilename`
+
 ## 2.5
 
 Gradle:

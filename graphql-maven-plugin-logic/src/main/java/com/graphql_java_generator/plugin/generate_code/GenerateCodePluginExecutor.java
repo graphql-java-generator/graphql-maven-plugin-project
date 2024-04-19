@@ -105,23 +105,31 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	}
 
 	private boolean skipGenerationIfSchemaHasNotChanged() throws IOException {
+		long schemaLastModified;
 
 		// First, we look for the last modification date of all the given schema.
-		OptionalLong optSchemaLastModification = this.resourceSchemaStringProvider.schemas(false).stream()//
-				.mapToLong((r) -> {
-					try {
-						return r.lastModified();
-					} catch (IOException e) {
-						throw new RuntimeException(e.getMessage(), e);
-					}
-				})//
-				.max();
-		if (!optSchemaLastModification.isPresent()) {
-			logger.warn(
-					"No schema found when checking their lasModified date! (let's got to the generate source process)");
-			return false;
+		if (this.configuration.getJsonGraphqlSchemaFilename() != null
+				&& !"".equals(this.configuration.getJsonGraphqlSchemaFilename())) {
+			File jsonFile = new File(this.configuration.getSchemaFileFolder(),
+					this.configuration.getJsonGraphqlSchemaFilename());
+			schemaLastModified = jsonFile.lastModified();
+		} else {
+			OptionalLong optSchemaLastModification = this.resourceSchemaStringProvider.schemas(false).stream()//
+					.mapToLong((r) -> {
+						try {
+							return r.lastModified();
+						} catch (IOException e) {
+							throw new RuntimeException(e.getMessage(), e);
+						}
+					})//
+					.max();
+			if (!optSchemaLastModification.isPresent()) {
+				logger.warn(
+						"No schema found when checking their lasModified date! (let's got to the generate source process)");
+				return false;
+			}
+			schemaLastModified = optSchemaLastModification.getAsLong();
 		}
-		long schemaLastModified = optSchemaLastModification.getAsLong();
 
 		// Then, we get the maximum last modification date for all the generated sources. This makes sure that the code
 		// is generated if the schema is newer, and that it is not renegerated even if an old file remains for instance

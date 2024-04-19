@@ -769,9 +769,13 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				@Override
 				public boolean isSkipGenerationIfSchemaHasNotChanged() {
 					// If we're here, it means the the code generation is done. So the addRelayConnection schema
-					// must be
-					// always created. We won't skip it.
+					// must be always created. We won't skip it.
 					return false;
+				}
+
+				@Override
+				public String getJsonGraphqlSchemaFilename() {
+					return null;
 				}
 			};
 			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(this.generateCodeDocumentParser,
