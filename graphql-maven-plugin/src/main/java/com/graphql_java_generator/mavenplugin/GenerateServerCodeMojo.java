@@ -60,7 +60,7 @@ import graphql.ThreadSafe;
  * 
  * @author etienne-sf
  */
-@Mojo(name = "generateServerCode", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
+@Mojo(name = "generateServerCode", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true, threadSafe = true)
 @ThreadSafe
 // No need to add the @Component spring annotation: AbstractCommonMojo added this instance into the spring context, to
 // use the instance which attributs has been set with the pom content

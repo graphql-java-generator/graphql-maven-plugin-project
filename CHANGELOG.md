@@ -18,6 +18,7 @@
 ## Not released yet
 
 * Issue #113: base the code generation on a json schema (from an introspection query), instead of regular graphqls GraphQL schema files. This is done with the help of this new plugin parameter: `jsonGraphqlSchemaFilename`
+* Issue #208: the plugin is now marked as thread safe (no more warning when using maven parallel builds)
 
 ## 2.5
 
