@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
@@ -63,13 +62,14 @@ public class SpringTestConfig {
 	public WebClient webClient(//
 			ReactiveClientRegistrationRepository clientRegistrations, //
 			String graphqlEndpoint, //
-			CodecCustomizer defaultCodecCustomizer, //
+			// @Qualifier("defaultCodecCustomizer") CodecCustomizer defaultCodecCustomizer, //
 			@Autowired ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction) {
 
 		return WebClient.builder()//
 				.baseUrl(graphqlEndpoint)//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint))//
+				// .codecs(configurer -> configurer.defaultCodecs()) //
 				.filter(serverOAuth2AuthorizedClientExchangeFilterFunction)//
 				.build();
 	}

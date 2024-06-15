@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MavenTestHelper {
 
-	final static String MODULE_SAMPLE_NAME = "graphql-maven-plugin-samples";
-	final static String MODULE_NAME = "graphql-maven-plugin-samples-Forum-client";
+	final static String MODULE_SAMPLE_NAME = "graphql-xxx-plugin-samples";
+	final static String MODULE_NAME = "graphql-xxx-plugin-samples-Forum-client";
 	final static String TARGET_RESOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-resources";
 	final static String TARGET_SOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-src";
 	final static String RUNTIME_BASE_PACKAGE_FOLDER = "com/graphql_java_generator";
@@ -30,16 +30,19 @@ public class MavenTestHelper {
 	 */
 	public File getModulePathFile() {
 		String path = new File(".").getAbsolutePath();
-		File f = null;
-		if (path.contains(MODULE_NAME)) {
+		String mavenOrGradle = path.contains("graphql-gradle-plugin") ? "gradle" : "maven";
+		String moduleName = MODULE_NAME.replace("xxx", mavenOrGradle);
+		String moduleSampleName = MODULE_SAMPLE_NAME.replace("xxx", mavenOrGradle);
+
+		if (path.contains(moduleName)) {
 			// The current path is the full one
 			return new File(path);
-		} else if (path.contains(MODULE_SAMPLE_NAME)) {
+		} else if (path.contains(moduleSampleName)) {
 			// Only samples are being build
-			return new File(path, MODULE_NAME);
+			return new File(path, moduleName);
 		} else {
 			// The current folder is the main project
-			return new File(path, MODULE_NAME + "/" + MODULE_SAMPLE_NAME);
+			return new File(path, moduleName + "/" + moduleSampleName);
 		}
 	}
 
