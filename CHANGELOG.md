@@ -1,24 +1,33 @@
 [TOC]
 
-# Main enhancement in the 2.x releases
-
-* The generated code uses spring-graphql
-* Since 2.5, the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs.
-    * The default is false, to backward compatibility.
-
 
 # Breaking changes to come with the 3.x releases
 
 * The default value for `generateDataFetcherForEveryFieldsWithArguments` will be changed to true, which makes more Data Fetchers to implement
 
 
-
 # 2.x versions
 
-## Not released yet
+## Main enhancement in the 2.x releases
 
+* The generated code uses spring-graphql
+* Since 2.5, the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs.
+    * The default is false, to backward compatibility.
+
+## Breaking changes in 2.x versions
+
+* 2.5
+     * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+
+## 2.6
+
+Gradle:
+* issue #21: dependencies for spring framework6 are enforced for graphql-gradle-plugin3 
+
+All modes (client and server):
 * Issue #113: base the code generation on a json schema (from an introspection query), instead of regular graphqls GraphQL schema files. This is done with the help of this new plugin parameter: `jsonGraphqlSchemaFilename`
 * Issue #208: the plugin is now marked as thread safe (no more warning when using maven parallel builds)
+
 
 ## 2.5
 
