@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.stereotype.Component;
 
+import graphql.schema.GraphQLScalarType;
+
 /**
  * Thanks to spring-graphql, the POJO classes are auto-magically discovered and mapped. But the custom scalars still needs to be 'manually' wired.
  * This is the objective of this class.
@@ -33,15 +35,18 @@ public class GraphQLWiring implements RuntimeWiringConfigurer {
 ##
 ## Step 1: wiring the custom scalar definitions
 ##
+			.scalar(GraphQLScalarType.newScalar(
 #if (${customScalar.customScalarDefinition.graphQLScalarTypeClass})
-			.scalar(new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}())
+				new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}())
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
-			.scalar(${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
+				${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
-			.scalar(${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
+				${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
 #else
 			.scalar(): ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end
+				.name("${customScalar.name}")
+				.build())
 #end
 			//
 			// Let's finish the job

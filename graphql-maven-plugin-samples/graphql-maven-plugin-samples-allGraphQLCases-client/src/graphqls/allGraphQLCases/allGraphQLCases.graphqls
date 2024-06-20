@@ -1,8 +1,8 @@
-scalar Date 
+scalar MyCustomScalarForADate 
 	@testDirective(value:"on Scalar") @anotherTestDirective 
 
-""" The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
-scalar DateTime
+""" The MyCustomScalarForADateTime uses the ExtendedScalars#MyCustomScalarForADateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
+scalar MyCustomScalarForADateTime
 @testDirective(value:"directive on a custom scalar")
 
 scalar Long
@@ -131,7 +131,7 @@ type MyQueryType {
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, 
     that was not properly serialized/deserialized
     """
-    issue53(date: Date!): Date!
+    issue53(date: MyCustomScalarForADate!): MyCustomScalarForADate!
     issue200(param: MyBoolean): MyBoolean
     
     """
@@ -225,14 +225,14 @@ type TheSubscriptionType {
 	
 	""" Issue 54 """
 	subscribeToAList: [Int]!
-	subscribeToAListOfScalars: [Date]
+	subscribeToAListOfScalars: [MyCustomScalarForADate]
 
     """ issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized """
-    issue53(date: Date!): Date!
+    issue53(date: MyCustomScalarForADate!): MyCustomScalarForADate!
     
     """ Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization) """
     allGraphQLCasesInput(input: AllFieldCasesInput!): AllFieldCases!
-    allGraphQLCasesParam(id: String!, name: String!, age: Long!, integer: Int!, date: Date!, dates: [Date]!, matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
+    allGraphQLCasesParam(id: String!, name: String!, age: Long!, integer: Int!, date: MyCustomScalarForADate!, dates: [MyCustomScalarForADate]!, matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
     
     """
     A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
@@ -292,9 +292,9 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     forname: String
     break: String
     age: Long!
-    date: Date
-    dateTime: DateTime
-    dates: [Date]!
+    date: MyCustomScalarForADate
+    dateTime: MyCustomScalarForADateTime
+    dates: [MyCustomScalarForADate]!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -314,7 +314,7 @@ input AllFieldCasesWithIdSubtypeInput {
 
 input FieldParameterInput {
 	uppercase: Boolean
-	date: Date
+	date: MyCustomScalarForADate
 }
 
 input AllFieldCasesWithoutIdSubtypeInput {
@@ -339,9 +339,9 @@ type AllFieldCases implements WithID @testDirective(value:"on Object\n With a li
     break(if: String!): String
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     aFloat: Float
-    date: Date
-    dateTime: DateTime
-    dates: [Date]!
+    date: MyCustomScalarForADate
+    dateTime: MyCustomScalarForADateTime
+    dates: [MyCustomScalarForADate]!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -350,7 +350,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object\n With a li
     friends: [Human!]
     matrix: [[Float]]!
     oneWithIdSubType(uppercase: Boolean @testDirective(value:"on uppercase parameter")): AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Long!, date: MyCustomScalarForADate, dates: [MyCustomScalarForADate]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
        @generateDataLoaderForLists
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
@@ -522,7 +522,7 @@ directive @testDirective(
   aBoolean: Boolean
   anID: ID
   anEnum: Episode = JEDI
-  aCustomScalarDate: Date = "2000-12-31"
+  aCustomScalarDate: MyCustomScalarForADate = "2000-12-31"
 ) on
 # ExecutableDirectiveLocation
 	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
@@ -879,7 +879,7 @@ type ReservedJavaKeywordAllFieldCases {
     import: String
 	
 	""" A field with a java reserved name which is a scalar (custom) """
-    instanceof: Date
+    instanceof: MyCustomScalarForADate
     
 	""" A field with a java reserved name which is an object type """
     int: Human
@@ -906,7 +906,7 @@ type ClassTestForIssue202 implements InterfaceTestForIssue202 {
 # These classes contains Json and Object fields
 input InputWithJson {
 	test: String
-	date: Date!
+	date: MyCustomScalarForADate!
 	long: Long!
 	boolean: Boolean!
 	enum: Episode!
@@ -917,13 +917,13 @@ type TypeWithJson {
 	test: String
 	withArguments(
 		test: String,
-		date: Date!,
+		date: MyCustomScalarForADate!,
 		long: Long!,
 		boolean: Boolean!,
 		enum: Episode!,
 		json: JSON!,
 		jsons: [JSON!]!): String
-	date: Date!
+	date: MyCustomScalarForADate!
 	long: Long!
 	boolean: Boolean!
 	enum: Episode!
@@ -932,7 +932,7 @@ type TypeWithJson {
 }
 input InputWithObject {
 	test: String
-	date: Date!
+	date: MyCustomScalarForADate!
 	long: Long!
 	boolean: Boolean!
 	enum: Episode!
@@ -943,13 +943,13 @@ type TypeWithObject {
 	test: String
 	withArguments(
 		test: String,
-		date: Date!,
+		date: MyCustomScalarForADate!,
 		long: Long!,
 		boolean: Boolean!,
 		enum: Episode!,
 		object: Object!,
 		objects: [Object!]!): String
-	date: Date!
+	date: MyCustomScalarForADate!
 	long: Long!
 	boolean: Boolean!
 	enum: Episode!

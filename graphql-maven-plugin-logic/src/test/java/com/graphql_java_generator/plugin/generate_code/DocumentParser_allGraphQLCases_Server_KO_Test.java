@@ -31,8 +31,8 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	@AfterEach
 	void cleanUp() {
-		if (ctx != null) {
-			ctx.close();
+		if (this.ctx != null) {
+			this.ctx.close();
 		}
 	}
 
@@ -40,21 +40,22 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_allGraphQLCases() throws IOException {
 		// Preparation
-		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
-		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		this.ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
+		GenerateCodeDocumentParser documentParser = this.ctx.getBean(GenerateCodeDocumentParser.class);
 
 		// Go, go, go
 		Exception e = assertThrows(Exception.class, () -> documentParser.parseGraphQLSchemas());
-		assertTrue(e.getMessage().contains("must provide an implementation for the Custom Scalar 'Date'"));
+		assertTrue(e.getMessage()
+				.contains("must provide an implementation for the Custom Scalar 'MyCustomScalarForADate'"));
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_allGraphQLCases_relayConnTrue_defaultGraphqlsFolder() throws IOException {
 		// Preparation
-		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
-		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		GraphQLConfigurationTestHelper pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
+		this.ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		GenerateCodeDocumentParser documentParser = this.ctx.getBean(GenerateCodeDocumentParser.class);
+		GraphQLConfigurationTestHelper pluginConfiguration = this.ctx.getBean(GraphQLConfigurationTestHelper.class);
 
 		// Let's update some configuration parameters AFTER the documents are loaded, to check the control tests, when
 		// the parsing starts

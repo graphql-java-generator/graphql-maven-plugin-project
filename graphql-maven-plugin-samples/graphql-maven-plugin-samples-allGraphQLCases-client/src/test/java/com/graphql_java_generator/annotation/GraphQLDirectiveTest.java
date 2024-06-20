@@ -49,17 +49,17 @@ public class GraphQLDirectiveTest {
 		}
 
 		ExpectedDirective withParamName(String paramName) {
-			parameterNames.add(paramName);
+			this.parameterNames.add(paramName);
 			return this;
 		}
 
 		ExpectedDirective withParamType(String paramType) {
-			parameterTypes.add(paramType);
+			this.parameterTypes.add(paramType);
 			return this;
 		}
 
 		ExpectedDirective withParamValue(String paramValue) {
-			parameterValues.add(paramValue);
+			this.parameterValues.add(paramValue);
 			return this;
 		}
 	};
@@ -120,8 +120,8 @@ public class GraphQLDirectiveTest {
 								//
 								.withParamType("String!").withParamType("String").withParamType("Int")
 								.withParamType("Float").withParamType("Boolean").withParamType("ID")
-								.withParamType("Episode").withParamType("Date").withParamType("[String!]")
-								.withParamType("CharacterInput")
+								.withParamType("Episode").withParamType("MyCustomScalarForADate")
+								.withParamType("[String!]").withParamType("CharacterInput")
 								//
 								.withParamValue("on Enum").withParamValue("69").withParamValue("666")
 								.withParamValue("666.666").withParamValue("true")

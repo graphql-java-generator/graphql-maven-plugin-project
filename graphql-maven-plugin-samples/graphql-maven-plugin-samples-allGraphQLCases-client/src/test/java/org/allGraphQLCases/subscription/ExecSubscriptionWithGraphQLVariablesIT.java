@@ -222,7 +222,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
 		GraphQLRequestAllGraphQLCases subscriptionRequest = this.subscriptionExecutor.getGraphQLRequest(
-				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: Date!, $dates: [Date!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
+				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: MyCustomScalarForADate!, $dates: [MyCustomScalarForADate!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
 						+ "{allGraphQLCasesParam(id: $id, name: $name, age: $age, integer: $i, date: $date, dates: $dates, matrix: $matrix, oneWithoutIdSubtype: $oneWithoutIdSubtype, listWithoutIdSubtype: $listWithoutIdSubtype)"
 						+ "{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
 

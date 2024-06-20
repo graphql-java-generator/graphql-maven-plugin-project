@@ -789,6 +789,7 @@ public class InputParameter {
 			return getStringContentForAListValue(writingGraphQLVariables, val, listDepth, graphQLTypeNameParam,
 					graphQLScalarTypeParam, graphQLVariable);
 		} else if (graphQLScalarTypeParam != null) {
+			// This parameter is a scalar. We must apply its coercing method.
 			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
 			if (ret instanceof String)
 				return getStringValue((String) ret);

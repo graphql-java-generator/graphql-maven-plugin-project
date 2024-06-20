@@ -15,13 +15,18 @@ public interface CustomScalarRegistry {
 	/**
 	 * Manually register one {@link GraphQLScalarType}.
 	 * 
+	 * @param typeName
+	 *            The name of the custom scalar type, as defined in the provided GaphQL schema. It may be different from
+	 *            the provided <code>graphQLScalarType</code>
 	 * @param graphQLScalarType
+	 *            The GraphQL custom scalar class, that contain the coercing rules to serialize and unserialize this
+	 *            custom scalar
 	 * @param valueClazz
 	 *            The java The java type that will contain values for this custom scalar. This is needed to properly
 	 *            create the data from the value read in a string, especially when reading a GraphQL request, when in
 	 *            client mode
 	 */
-	public void registerGraphQLScalarType(GraphQLScalarType graphQLScalarType, Class<?> valueClazz);
+	public void registerGraphQLScalarType(String typeName, GraphQLScalarType graphQLScalarType, Class<?> valueClazz);
 
 	/**
 	 * Retrieves the registered {@link GraphQLScalarType} for this GraphQL CustomScalar.

@@ -241,7 +241,7 @@ class GraphQLVariablesIT {
 
 		// Go, go, go
 		GraphQLRequestAllGraphQLCases subscription = this.subscriptionExecutor.getGraphQLRequest(
-				"subscription sub($aCustomScalarParam: Date!) {issue53(date: $aCustomScalarParam){}}");
+				"subscription sub($aCustomScalarParam: MyCustomScalarForADate!) {issue53(date: $aCustomScalarParam){}}");
 		SubscriptionClient sub = subscription.execSubscription(callback, Date.class, "aCustomScalarParam", date);
 
 		// Let's wait a max of 10 second, until we receive some notifications (my PC is really slow, especially when the

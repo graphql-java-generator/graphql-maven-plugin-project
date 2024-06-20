@@ -42,13 +42,13 @@
 									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
-									<graphQLTypeName>Date</graphQLTypeName>
+									<graphQLTypeName>MyCustomScalarForADate</graphQLTypeName>
 									<javaType>java.util.Date</javaType>
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date
 									</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
-									<graphQLTypeName>DateTime</graphQLTypeName>
+									<graphQLTypeName>MyCustomScalarForADateTime</graphQLTypeName>
 									<javaType>java.time.OffsetDateTime</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.DateTime</graphQLScalarTypeStaticField>
 								</customScalar>

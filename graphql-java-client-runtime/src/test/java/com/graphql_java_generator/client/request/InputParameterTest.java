@@ -366,8 +366,8 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Long_OK() throws GraphQLRequestExecutionException {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		// We add a specific custom scalar for this test, as this test is about the Long custom scalar
-		CustomScalarRegistryImpl.getCustomScalarRegistry("MySchema")
-				.registerGraphQLScalarType(ExtendedScalars.GraphQLLong, Long.class);
+		CustomScalarRegistryImpl.getCustomScalarRegistry("MySchema").registerGraphQLScalarType("Long",
+				ExtendedScalars.GraphQLLong, Long.class);
 
 		GraphQLScalarType graphQLScalarTypeLong = ExtendedScalars.GraphQLLong;
 		String name = "aName";

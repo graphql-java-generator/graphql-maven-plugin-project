@@ -36,19 +36,35 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	Map<String, CustomScalar> customScalarTypes = new HashMap<>();
 
 	@Override
-	public void registerGraphQLScalarType(GraphQLScalarType type, Class<?> valueClazz) {
-		customScalarTypes.put(type.getName(), new CustomScalar(type, valueClazz));
+	public void registerGraphQLScalarType(String typeName, GraphQLScalarType type, Class<?> valueClazz) {
+		this.customScalarTypes.put(//
+				typeName, //
+				new CustomScalar(GraphQLScalarType.newScalar(type).name(typeName).build(), valueClazz));
 	}
 
 	@Override
 	public GraphQLScalarType getGraphQLCustomScalarType(String graphQLTypeName) {
-		CustomScalar scalar = customScalarTypes.get(graphQLTypeName);
+		CustomScalar scalar = this.customScalarTypes.get(graphQLTypeName);
 		return (scalar == null) ? null : scalar.getGraphQLScalarType();
 	}
 
 	@Override
 	public CustomScalar getCustomScalar(String graphQLTypeName) {
-		return customScalarTypes.get(graphQLTypeName);
+		return this.customScalarTypes.get(graphQLTypeName);
+	}
+
+	/**
+	 * Indicates whether the {@link CustomScalarRegistry} for the given schema has been initialized.
+	 * 
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
+	 * @return true if this registry is already initialized
+	 * @throws IllegalArgumentException
+	 *             If no {@link CustomScalarRegistry} has been defined for the given schema
+	 */
+	static public boolean isCustomScalarRegistryInitialized(String schema) {
+		return customScalarRegistries.get(schema) != null;
 	}
 
 	/**

@@ -16,21 +16,22 @@ public class CustomScalarRegistryInitializer {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 		// Registering the ID parser, for client mode
-		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);
+		customScalarRegistry.registerGraphQLScalarType("ID", GraphQLScalarTypeIDClient.ID, String.class);
 
-		customScalarRegistry.registerGraphQLScalarType(
+		customScalarRegistry.registerGraphQLScalarType("Date",
 				com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, java.util.Date.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.DateTime,
+		customScalarRegistry.registerGraphQLScalarType("DateTime", graphql.scalars.ExtendedScalars.DateTime,
 				java.time.OffsetDateTime.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.GraphQLLong,
+		customScalarRegistry.registerGraphQLScalarType("Long", graphql.scalars.ExtendedScalars.GraphQLLong,
 				java.lang.Long.class);
-		customScalarRegistry.registerGraphQLScalarType(
+		customScalarRegistry.registerGraphQLScalarType("Base64String",
 				com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String,
 				byte[].class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.Object, java.lang.Object.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.Json,
+		customScalarRegistry.registerGraphQLScalarType("Object", graphql.scalars.ExtendedScalars.Object,
+				java.lang.Object.class);
+		customScalarRegistry.registerGraphQLScalarType("JSON", graphql.scalars.ExtendedScalars.Json,
 				com.fasterxml.jackson.databind.node.ObjectNode.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.NonNegativeInt,
+		customScalarRegistry.registerGraphQLScalarType("NonNegativeInt", graphql.scalars.ExtendedScalars.NonNegativeInt,
 				java.lang.Integer.class);
 
 		CustomScalarRegistryImpl.setCustomScalarRegistry("MySchema", customScalarRegistry);

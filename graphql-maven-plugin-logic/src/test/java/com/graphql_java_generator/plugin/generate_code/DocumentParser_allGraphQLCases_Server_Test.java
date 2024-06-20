@@ -144,15 +144,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// date: Date
-		checkField(objectType, j, "date", 0, false, null, "Date", "Date");
+		checkField(objectType, j, "date", 0, false, null, "MyCustomScalarForADate", "Date");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// dateTime: DateTime
-		checkField(objectType, j, "dateTime", 0, false, null, "DateTime", "OffsetDateTime");
+		checkField(objectType, j, "dateTime", 0, false, null, "MyCustomScalarForADateTime", "OffsetDateTime");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// dates: [Date]!
-		checkField(objectType, j, "dates", 1, true, false, "Date", "Date");
+		checkField(objectType, j, "dates", 1, true, false, "MyCustomScalarForADate", "Date");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// nbComments: Int
@@ -195,8 +195,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				"STP_AllFieldCasesWithIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 5);
 		checkInputParameter(objectType, j, 0, "nbItems", 0, true, null, "Long", "Long", null);
-		checkInputParameter(objectType, j, 1, "date", 0, false, null, "Date", "Date", null);
-		checkInputParameter(objectType, j, 2, "dates", 1, true, false, "Date", "Date", null);
+		checkInputParameter(objectType, j, 1, "date", 0, false, null, "MyCustomScalarForADate", "Date", null);
+		checkInputParameter(objectType, j, 2, "dates", 1, true, false, "MyCustomScalarForADate", "Date", null);
 		checkInputParameter(objectType, j, 3, "uppercaseName", 0, false, null, "Boolean", "Boolean", null);
 		checkInputParameter(objectType, j, 4, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
@@ -251,13 +251,13 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("anotherTestDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 
 		// On Scalar
-		assertEquals(2, this.generateCodeDocumentParser.getType("Date").getAppliedDirectives().size(),
+		assertEquals(2, this.generateCodeDocumentParser.getType("MyCustomScalarForADate").getAppliedDirectives().size(),
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
 		// checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
 		// Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, String aCustomScalarDate,
 		// boolean containsAnotherTestDirective, int nbOtherDirectives)
-		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Date"), true, "on Scalar", null, null, null,
-				null, null, null, null, true, 0);
+		checkDirectivesOnType(this.generateCodeDocumentParser.getType("MyCustomScalarForADate"), true, "on Scalar",
+				null, null, null, null, null, null, null, true, 0);
 
 		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null,
 				null, null, null, false, 1);
