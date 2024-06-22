@@ -20,7 +20,7 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-@Component
+@Component("graphQLWiring${configuration.springBeanSuffix}")
 @SuppressWarnings("unused")
 public class GraphQLWiring implements RuntimeWiringConfigurer {
 
@@ -28,6 +28,9 @@ public class GraphQLWiring implements RuntimeWiringConfigurer {
 	protected Logger logger = LoggerFactory.getLogger(GraphQLWiring.class);
 
 	public void configure(graphql.schema.idl.RuntimeWiring.Builder builder) {
+#if ($customScalars.size() == 0)
+		// No configured custom scalars
+#else
 		builder //
 				//
 				// Wiring every custom scalar definitions
@@ -47,9 +50,8 @@ public class GraphQLWiring implements RuntimeWiringConfigurer {
 #end
 				.name("${customScalar.name}")
 				.build())
-#end
-			//
-			// Let's finish the job
-			.build();
+#end ##foreach
+			;
+#end ##if
 	}
 }

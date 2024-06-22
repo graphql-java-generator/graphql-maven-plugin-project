@@ -47,12 +47,13 @@ public enum CodeTemplate {
 
 	// Server files (alphabetic order)
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
-	DATA_FETCHERS_DELEGATES_REGISTRY(CodeTemplateScope.SERVER, "templates/server_DataFetchersDelegatesRegistry.vm.java"), //
+	DATA_FETCHERS_DELEGATES_REGISTRY(CodeTemplateScope.SERVER,
+			"templates/server_DataFetchersDelegatesRegistry.vm.java"), //
 	ENTITY_CONTROLLER(CodeTemplateScope.SERVER, "templates/server_EntityController.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java"), //
 	SERVER_SPRING_AUTO_CONFIGURATION_CLASS(CodeTemplateScope.SERVER,
 			"templates/server_spring_auto_configuration.vm.java"), //
-	WIRING(CodeTemplateScope.SERVER, "templates/server_GraphQLWiring.vm.java"), //
+	WIRING(CodeTemplateScope.COMMON, "templates/GraphQLWiring.vm.java"), //
 
 	// Template for the GraphQL relay schema generation
 	RELAY_SCHEMA(CodeTemplateScope.GENERATE_RELAY_SCHEMA, "templates/generateRelaySchema.vm.graphqls");

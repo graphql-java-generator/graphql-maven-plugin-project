@@ -272,6 +272,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			i += generateOneJavaFile("CustomScalarRegistryInitializer", true,
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+			logger.debug("Generating GraphQLWiring");
+			i += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
 			// Files for Directives
 			logger.debug("Generating DirectiveRegistryInitializer");
