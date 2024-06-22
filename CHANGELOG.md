@@ -19,6 +19,18 @@
 * 2.5
      * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
 
+## 2.7
+
+Client mode:
+* Issue #213: The GraphQL custom scalars are wired according to spring-graphql needs. This fixes bean error at startup, in some specific cases
+
+All modes (client and server):
+* Issue #213: The GraphQL custom scalars which names in the provided schema is different that the GraphQL type name in the provided GraphQL scalar implementation would throw an error at execution.
+
+Internal:
+* The `server_GraphQLWiring.vm.java` custom template has been renamed to `GraphQLWiring.vm.java`, as this template is now used for both the client and the server mode.
+
+
 ## 2.6
 
 Gradle:

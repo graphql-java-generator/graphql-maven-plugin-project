@@ -1,7 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* (re)Publish the wiki for the 2.6 release
+* Make the TOC action work again, now that the default branch is `master_2.x`
 * Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
 * Add a test for the GraphQL json schema
 * Indicates in the Gradle tutorials that there are two versions of the plugin
