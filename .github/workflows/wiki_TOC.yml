@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: ${{github.repository}}.wiki
-          ref: master_2.x
+          ref: master
       - run: |
           ls
           #curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc -o gh-md-toc
