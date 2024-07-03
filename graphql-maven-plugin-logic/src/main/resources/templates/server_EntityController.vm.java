@@ -119,7 +119,7 @@ public class ${entity}Controller {
 	 *             generated code will take care of the {@link NoSuchElementException} exception.
 	 */
 	@SchemaMapping(field = "${dataFetcher.field.name}") // This annotation is used to maintain compatibility with earlier version of the
-									// plugin. Code that uses Spring Boot annotations should use remove this method
+									// plugin. Code that uses Spring Boot annotations should remove this annotation
 									// and use the @BatchMapping annotation instead
 ## The line above is probably useless. But it's a complex one, and we won"t remove it until beeing sure it's useless
 ##set($return="#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end#if($isEnum)#if($isList)List<#{end}String#if($isList)>#end#else${dataFetcher.field.javaTypeFullClassname}#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.completableFuture})>#end")

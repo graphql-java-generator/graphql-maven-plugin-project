@@ -15,6 +15,9 @@ import org.allGraphQLCases.server.STP_Droid_STS;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
+import graphql.execution.MergedField;
+import graphql.language.Directive;
+import graphql.language.StringValue;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -29,7 +32,25 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 
 	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS source) {
-		return this.generator.generateInstanceList(SIP_Character_SIS.class, 5);
+		List<SIP_Character_SIS> chars = this.generator.generateInstanceList(SIP_Character_SIS.class, 5);
+
+		// For the OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden() integration test, we check if
+		// the testDirective directive has been set with the relevant value
+		MergedField field = dataFetchingEnvironment.getExecutionStepInfo().getField();
+		List<Directive> directives = field.getSingleField().getDirectives();
+		if (directives.size() == 1 && directives.get(0).getName().equals("testDirective")) {
+			// Let's check the @testDirective arguments
+			Directive dir = directives.get(0);
+			StringValue value = (StringValue) dir.getArguments().get(0).getValue();
+			String s = value.getValue();
+			if (dir.getArguments().size() == 1 && dir.getArguments().get(0).getName().equals("value")
+					&& ((StringValue) dir.getArguments().get(0).getValue()).getValue()
+							.equals("checkThatTheCharacterControllerIsOverridden")) {
+				chars.stream()
+						.forEach(c -> c.setName(c.getName() + " overriden by DataFetchersDelegateDroidImpl.friends()"));
+			}
+		}
+		return chars;
 	}
 
 	@Override

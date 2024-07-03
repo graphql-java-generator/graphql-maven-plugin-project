@@ -1,9 +1,19 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
-* Make the TOC action work again, now that the default branch is `master_2.x`
+* Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`
+```
+		// String req = "{name(uppercase:true) @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
+		String req = "{name @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
+		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
+```
+* Issue #216: `DataFetchersDelegate` method should return an object, as the spring controllers manage these cases:
+    * A resolved value of any type.
+    * Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in [Reactive DataFetcher](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/216#execution-reactive-datafetcher).
+    * java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be configured with an Executor.
+* Update the samples to the 2.7 release
+    * Update the dependencies in the README (or better : remove them)
 * Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
-* Add a test for the GraphQL json schema
 * Indicates in the Gradle tutorials that there are two versions of the plugin
 * Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
     * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
