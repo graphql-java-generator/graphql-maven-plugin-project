@@ -44,6 +44,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 														// So this attribute must be private
 	public boolean generateJPAAnnotation = true;
 	public boolean generateUtilityClasses = true;
+	public String ignoredSpringMappings = "";
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public String jsonGraphqlSchemaFilename = null;
 	public PluginMode mode = null;

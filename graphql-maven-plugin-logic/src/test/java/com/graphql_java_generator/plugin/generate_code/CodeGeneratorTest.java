@@ -81,8 +81,7 @@ class CodeGeneratorTest {
 		}
 
 		this.codeGenerator = this.context.getBean(GenerateCodeGenerator.class);
-		this.codeGenerator.generateCodeDocumentParser = new GenerateCodeDocumentParser();
-		this.codeGenerator.generateCodeDocumentParser.configuration = this.pluginConfiguration;
+		this.codeGenerator.generateCodeDocumentParser = new GenerateCodeDocumentParser(this.pluginConfiguration);
 	}
 
 	@AfterEach

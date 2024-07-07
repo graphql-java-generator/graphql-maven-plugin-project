@@ -1,16 +1,20 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
+* In the migration guide and the wiki (FAQ server) : explains that the overriding bean must have a different name (and may not extend the generated controller)
 * Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`
 ```
 		// String req = "{name(uppercase:true) @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
 		String req = "{name @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
 		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
 ```
+* Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
 * Issue #216: `DataFetchersDelegate` method should return an object, as the spring controllers manage these cases:
     * A resolved value of any type.
     * Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in [Reactive DataFetcher](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/216#execution-reactive-datafetcher).
     * java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be configured with an Executor.
+* Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
 * Update the samples to the 2.7 release
     * Update the dependencies in the README (or better : remove them)
 * Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials

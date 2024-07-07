@@ -19,6 +19,15 @@
 * 2.5
      * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
 
+
+## Not released yet
+
+Server mode:
+* Issues #214 and #215: the new `ignoredSpringMappings` plugin parameter allows to ignore a list of type and field mappings.
+    * An ignored type mapping prevent the generation of its `DataFetcherDelegate`, and its entity Spring Controller. The [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented.
+    * An ignored field mapping prevent the generation of the method for this field in the `DataFetcherDelegate`, and its entity Spring Controller. A [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented for this field.
+
+
 ## 2.7
 
 Client mode:

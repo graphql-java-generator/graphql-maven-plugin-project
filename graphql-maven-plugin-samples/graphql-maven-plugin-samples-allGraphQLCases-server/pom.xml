@@ -27,6 +27,11 @@
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<generateDataFetcherForEveryFieldsWithArguments>true</generateDataFetcherForEveryFieldsWithArguments>
+							<!-- The ignored mappings below are checked in the 'GenerateCodeDocumentParserTest' test class -->
+							<ignoredSpringMappings>
+								Bar140 ,
+								IBar140 Character.name MyQueryType.checkOverriddenController 
+							</ignoredSpringMappings>
 							<packageName>org.allGraphQLCases.server</packageName>
 							<separateUtilityClasses>false</separateUtilityClasses>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>

@@ -41,11 +41,4 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 		return this.generator.generateInstanceList(SIP_Character_SIS.class, keys.size());
 	}
 
-	/** Custom field data fetchers are available since release 2.5 */
-	@Override
-	public String name(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS origin, Boolean uppercase) {
-		return ((uppercase != null && origin.getName() != null && uppercase) ? origin.getName().toUpperCase()
-				: origin.getName());
-	}
-
 }

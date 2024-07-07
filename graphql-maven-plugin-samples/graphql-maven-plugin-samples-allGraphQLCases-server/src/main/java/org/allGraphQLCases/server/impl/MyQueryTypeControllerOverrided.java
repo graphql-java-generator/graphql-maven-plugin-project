@@ -11,9 +11,8 @@ import graphql.schema.DataFetchingEnvironment;
  */
 @Controller
 @SchemaMapping(typeName = "MyQueryType")
-public class MyQueryTypeController extends org.allGraphQLCases.server.MyQueryTypeController {
+public class MyQueryTypeControllerOverrided {
 
-	@Override
 	@SchemaMapping(field = "checkOverriddenController")
 	public String checkOverriddenController(DataFetchingEnvironment dataFetchingEnvironment) {
 		return "Welcome from the overridden controller";
