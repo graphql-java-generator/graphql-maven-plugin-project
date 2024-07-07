@@ -140,6 +140,9 @@ type MyQueryType {
     """
     issue82Float(aFloat: Float!): Float!
     issue82ID(aID: ID!): ID!
+    
+    """ Issue 217: issue when a field name starts with an uppercase letter """
+    Issue217(AnArg: String!): String!
 
 	""" test for issue #128 (compilation error when a Query returns a type 'Client') """
 	issue128: Client

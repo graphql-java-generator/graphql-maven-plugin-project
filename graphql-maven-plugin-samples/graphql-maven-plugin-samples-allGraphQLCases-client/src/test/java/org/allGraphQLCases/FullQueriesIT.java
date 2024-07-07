@@ -525,4 +525,16 @@ class FullQueriesIT {
 		assertNotNull(response.getCreateHuman());
 		assertNotNull("test name", response.getCreateHuman().getName());
 	}
+
+	/**
+	 * Issue 217: compilation error when a field first letter is in uppercase.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 */
+	@Test
+	void testIssue217() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		CTP_MyQueryType_CTS resp = this.queryExecutor.exec("query {Issue217(AnArg: \"A test for the issue 217\")}");
+		assertEquals("A test for the issue 217", resp.getIssue217());
+	}
 }

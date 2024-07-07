@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.allGraphQLCases.GraphQLTransportWS.GraphQLTransportWSSpringConfiguration;
+import org.allGraphQLCases.GraphQLTransportWSIT.GraphQLTransportWSSpringConfiguration;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
@@ -57,10 +57,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 @SpringBootTest(classes = GraphQLTransportWSSpringConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-public class GraphQLTransportWS {
+public class GraphQLTransportWSIT {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(GraphQLTransportWS.class);
+	private static Logger logger = LoggerFactory.getLogger(GraphQLTransportWSIT.class);
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases myQuery;

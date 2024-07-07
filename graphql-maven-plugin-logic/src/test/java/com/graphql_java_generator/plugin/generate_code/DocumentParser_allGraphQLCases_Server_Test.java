@@ -679,7 +679,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(72, type.getFields().size());
+		assertEquals(73, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 

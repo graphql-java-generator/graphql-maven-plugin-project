@@ -792,4 +792,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			return null;
 		}
 	}
+
+	@Override
+	public String Issue217(DataFetchingEnvironment dataFetchingEnvironment, String AnArg) {
+		return AnArg;
+	}
 }

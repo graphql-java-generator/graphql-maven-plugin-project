@@ -93,7 +93,7 @@ public class DataFetcherImpl implements DataFetcher {
 
 	@Override
 	public String getName() {
-		return this.field.getCamelCaseName();
+		return this.field.getName();
 	}
 
 	/** {@inheritDoc} */

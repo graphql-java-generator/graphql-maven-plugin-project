@@ -25,7 +25,7 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
-class AbstractDocumentParser_Forum_Client {
+abstract class AbstractDocumentParser_Forum_Client {
 
 	AbstractApplicationContext ctx = null;
 	GenerateCodeDocumentParser documentParser;
