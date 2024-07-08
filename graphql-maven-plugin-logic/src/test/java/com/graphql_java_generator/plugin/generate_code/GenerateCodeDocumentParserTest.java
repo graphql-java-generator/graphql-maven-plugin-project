@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -39,15 +38,22 @@ public class GenerateCodeDocumentParserTest {
 	Field fieldDroidFriends;
 	Field fieldHumanFriends;
 
-	@BeforeEach
-	void setup() throws NoSuchFieldException, IOException {
+	/**
+	 * This method loads the context, based on the given ignoredSpringMappings value
+	 * 
+	 * @param ignoredSpringMappings
+	 *            The value for this parameter to use when parsing the schema
+	 * @throws NoSuchFieldException
+	 * @throws IOException
+	 */
+	void setupOneTest(String ignoredSpringMappings) throws NoSuchFieldException, IOException {
 		this.ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
 		this.generateCodeDocumentParser = this.ctx.getBean(GenerateCodeDocumentParser.class);
 		this.graphQLConfigurationTestHelper = (GraphQLConfigurationTestHelper) this.ctx
 				.getBean(CommonConfiguration.class);
 		//
 		this.graphQLConfigurationTestHelper.generateDataFetcherForEveryFieldsWithArguments = true;
-		this.graphQLConfigurationTestHelper.ignoredSpringMappings = this.IGNORED_SPRING_MAPPINGS_CONF;
+		this.graphQLConfigurationTestHelper.ignoredSpringMappings = ignoredSpringMappings;
 		//
 		this.generateCodeDocumentParser.afterPropertiesSet();
 		this.generateCodeDocumentParser.parseGraphQLSchemas();
@@ -73,11 +79,17 @@ public class GenerateCodeDocumentParserTest {
 	 * {@link GenerateCodeDocumentParser#isTypeSpringMappingIgnored(com.graphql_java_generator.plugin.language.impl.ObjectType)}
 	 * and
 	 * {@link GenerateCodeDocumentParser#isFieldSpringMappingIgnored(com.graphql_java_generator.plugin.language.impl.ObjectType, com.graphql_java_generator.plugin.language.Field)}
+	 * 
+	 * @throws IOException
+	 * @throws NoSuchFieldException
 	 */
 	@Test
-	void test_xxxSpringMappingIgnored_methods() {
+	void test_xxxSpringMappingIgnored_methods() throws NoSuchFieldException, IOException {
 		RuntimeException e;
 		Set<String> set;
+
+		// Let's parse the schema
+		setupOneTest(this.IGNORED_SPRING_MAPPINGS_CONF);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// The correct configuration has been set by the setup()
@@ -303,7 +315,16 @@ public class GenerateCodeDocumentParserTest {
 		assertFalse(this.generateCodeDocumentParser.isFieldSpringMappingIgnored(this.fieldDroidAppearsIn));
 		assertFalse(this.generateCodeDocumentParser.isFieldSpringMappingIgnored(this.fieldDroidFriends));
 		assertFalse(this.generateCodeDocumentParser.isFieldSpringMappingIgnored(this.fieldHumanFriends));
+	}
 
+	@Test
+	void testAllMappingsIgnored() throws NoSuchFieldException, IOException {
+		// Let's parse the schema
+		setupOneTest("*");
+
+		// No controller and no DataFetchersDelegate
+		assertEquals(0, this.generateCodeDocumentParser.getDataFetchersDelegates().size(),
+				"There should be no DataFetchersDelegate (which leads to no controllers");
 	}
 
 	/**

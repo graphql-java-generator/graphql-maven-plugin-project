@@ -1,6 +1,8 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
+* `ignoredSpringMappings`: add the star value, that would disallow the generation of all controllers and all DataFetcherDelegates
+* Check the generated doc for the `ignoredSpringMappings` plugin parameter
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
 * In the migration guide and the wiki (FAQ server) : explains that the overriding bean must have a different name (and may not extend the generated controller)
 * Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`
@@ -9,6 +11,10 @@ Here are the next tasks listed, as a TODO list:
 		String req = "{name @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
 		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
 ```
+* plugin doc:
+    * Add the since parameter
+    * Just have a summary in the starting table (not the full doc)
+    * Find and correct the dead links
 * Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
 * Issue #216: `DataFetchersDelegate` method should return an object, as the spring controllers manage these cases:
     * A resolved value of any type.

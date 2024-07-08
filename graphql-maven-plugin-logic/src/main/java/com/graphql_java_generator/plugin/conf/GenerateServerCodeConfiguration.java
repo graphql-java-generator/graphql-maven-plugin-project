@@ -47,12 +47,18 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * <code>Ambiguous mapping. Cannot map 'xxxController' method [...] to 'Type.field': there is already 'yyy' bean method [...] mapped.</code>
 	 * </P>
 	 * <P>
-	 * The parameter contains a list of:
+	 * The parameter may contain:
 	 * </P>
+	 * <UL>
+	 * <LI>The '*' character: this would mark all controllers and DataFetchersDeleagate to be ignored. That is: none
+	 * would be generated, and it's up to the specific implementation to manage them. In this mode, you still benefit of
+	 * the POJO generation, the type wiring, the custom scalars mapping...</LI>
+	 * <LI>A list of:</LI>
 	 * <UL>
 	 * <LI>GraphQL type name: The full controller class for this type is ignored, and won't be generated</LI>
 	 * <LI>GraphQL type's field name: The method in the controller of this type, for this field, is ignored, and won't
 	 * be generated. The field must be written like this: <code>{type name}.{field name}</code></LI>
+	 * </UL>
 	 * </UL>
 	 * <P>
 	 * The accepted separators for the values are: comma, space, carriage return, end of line, space, tabulation. At

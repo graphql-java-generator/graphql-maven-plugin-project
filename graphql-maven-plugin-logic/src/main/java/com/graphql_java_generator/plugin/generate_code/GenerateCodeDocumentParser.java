@@ -913,8 +913,15 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 				while (st.hasMoreElements()) {
 					s = st.nextToken();
+
+					// If the ignoredSpringMappings contains a star, then all types that may have a controller must be
+					// ignored
+					if (s.equals("*")) {
+						Stream.concat(getObjectTypes().stream(), getInterfaceTypes().stream())
+								.forEach(t -> this.typeSpringMappingIgnored.add(t.getName()));
+					}
 					// Here, we ignore field mapping
-					if (!s.contains(".")) {
+					else if (!s.contains(".")) {
 						// s must be a valid GraphQL type
 						getType(s);// Would through an exception if s is not a valid typename
 						this.typeSpringMappingIgnored.add(s);
