@@ -28,6 +28,9 @@ Server mode:
     * An ignored field mapping prevent the generation of the method for this field in the `DataFetcherDelegate`, and its entity Spring Controller. A [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented for this field.
 * Issue #217: compilation error when a field first letter is in uppercase.
 
+Internal API:
+* The `DataFetcher.completableFuture` has been renamed to `DataFetcher.withDataLoader`. This impacts these templates: `object_content.vm.java`, `server_EntityController.vm.java` and `server_GraphQLDataFetchersDelegate.vm.java`
+
 ## 2.7
 
 Client mode:

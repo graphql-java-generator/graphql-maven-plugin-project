@@ -50,7 +50,7 @@ public class DataFetcherImpl implements DataFetcher {
 	 */
 	private Type graphQLOriginType = null;
 
-	private boolean completableFuture = false;
+	private boolean withDataLoader = false;
 
 	/**
 	 * 
@@ -66,7 +66,7 @@ public class DataFetcherImpl implements DataFetcher {
 	 *            without. In this case, one data fetcher is registered in the GraphQLProvider. And this data fetcher is
 	 *            also declared in the GraphQLDataFetchers class, and is responsible to all the relevant method in the
 	 *            {@link DataFetchersDelegate}.
-	 * @param completableFuture
+	 * @param withDataLoader
 	 *            indicates that this DataFetcher will be actually loaded later, with the help of a {@link BatchLoader}.
 	 * @param graphQLOriginType
 	 *            The origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
@@ -82,10 +82,10 @@ public class DataFetcherImpl implements DataFetcher {
 	 *            </UL>
 	 */
 	public DataFetcherImpl(Field field, DataFetchersDelegate dataFetcherDelegate, boolean declareInGraphQLProvider,
-			boolean completableFuture, Type graphQLOriginType) {
+			boolean withDataLoader, Type graphQLOriginType) {
 		this.field = field;
 		this.dataFetchersDelegate = dataFetcherDelegate;
-		this.completableFuture = completableFuture;
+		this.withDataLoader = withDataLoader;
 		this.graphQLOriginType = graphQLOriginType;
 
 		dataFetcherDelegate.getDataFetchers().add(this);

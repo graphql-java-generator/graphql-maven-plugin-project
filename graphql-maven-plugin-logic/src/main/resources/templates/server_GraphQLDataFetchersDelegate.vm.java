@@ -48,8 +48,8 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 ##
 ##
 ##
-## If this dataFetcher is a completableFuture, we add a DataLoader parameter
-#if ($dataFetcher.completableFuture)
+## If this dataFetcher needs a DataLoader parameter
+#if ($dataFetcher.withDataLoader)
 	/**
 #if ($dataFetcher.field.description)
 	 * Description for the ${dataFetcher.field.name} field: <br/>
@@ -59,20 +59,35 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 * <br/>
 	 * 
 #end
-	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. 
+	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. It is called by 
+	 * the ${dataFetcher.graphQLOriginType.name}Controller, which is <a href="https://docs.spring.io/spring-graphql/reference/controllers.html">spring-graphql 
+	 * controller</a>. It may return whatever is accepted by the Spring Controller, that is:
+	 * <ul>
+	 * <li>A resolved value of any type</li>
+	 * <li>Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in Reactive DataFetcher.</li>
+	 * <li>Kotlin coroutine and Flow are adapted to Mono and Flux</li>
+	 * <li>java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be 
+	 *     configured with an Executor</li>
+	 * <li>(not directlty documented) A CompletableFuture<?>, for instance CompletableFuture<${dataFetcher.field.javaTypeFullClassname}>. This 
+	 *     allows to use <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
+	 *     number of requests to the server. The principle is this one: The data loader collects all the data to load, avoid to load several 
+	 *     times the same data, and allows parallel execution of the queries, if multiple queries are to be run.</li>
+	 * <li></li>
+	 * </ul>
+	 * 
 	 * <BR/>
-	 * For optimization, this method returns a CompletableFuture. This allows to use 
-	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
-	 * number of requests to the server.<BR/>
-	 * The principle is this one: The data loader collects all the data to load, avoid to load several times the same data, 
-	 * and allows parallel execution of the queries, if multiple queries are to be run.<BR/>
 	 * You can implements this method like this:
 	 * <PRE>
 	 * @Override
-	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader, Human origin) {
-	 *     List<${configuration.javaTypeForIDType}> friendIds = origin.getFriendIds();
-	 *     DataLoader<${configuration.javaTypeForIDType}, CharacterImpl> dataLoader = environment.getDataLoader("Character");
-	 *     return dataLoader.loadMany(friendIds);
+	 * public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(
+	 *         DataFetchingEnvironment environment, 
+	 *         DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
+	 *         ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
+	 *         #appliedDirectives(${argument.appliedDirectives}, "			")
+	 *         ${argument.javaTypeFullClassname} ${argument.javaName}#end
+	 * ) {
+	 *     List<${configuration.javaTypeForIDType}> ${dataFetcher.javaName} = origin.get${dataFetcher.pascalCaseName}();
+	 *     return dataLoader.loadMany(${dataFetcher.javaName});
 	 * }
 	 * </PRE>
 	 * <BR/>
@@ -100,13 +115,13 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
 #appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
-	public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(
+	public Object ${dataFetcher.javaName}(
 			DataFetchingEnvironment dataFetchingEnvironment, 
 			DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
 			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
 #appliedDirectives(${argument.appliedDirectives}, "			")
 			${argument.javaTypeFullClassname} ${argument.javaName}#end);
-#end ## #if (${dataFetcher.completableFuture})
+#end ## #if (${dataFetcher.withDataLoader})
 
 	/**
 #if ($dataFetcher.field.description)
@@ -117,42 +132,58 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 * <br/>
 	 *
 #end
-	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. 
-	 * <BR/>
+	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. It may return whatever is 
+	 * accepted by the Spring Controller, that is:
+	 * <ul>
+	 * <li>A resolved value of any type</li>
+	 * <li>Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in Reactive DataFetcher.</li>
+	 * <li>Kotlin coroutine and Flow are adapted to Mono and Flux</li>
+	 * <li>java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be 
+	 *     configured with an Executor</li>
+	 * </ul>
+	 * As a complement to the spring-graphql documentation, you may also return:
+	 * <ul>
+	 * <li>A CompletableFuture<?>, for instance CompletableFuture<${dataFetcher.field.javaTypeFullClassname}>. This 
+	 *     allows to use <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
+	 *     number of requests to the server. The principle is this one: The data loader collects all the data to load, avoid to load several 
+	 *     times the same data, and allows parallel execution of the queries, if multiple queries are to be run.</li>
+	 * <li>A Publisher (instead of a Flux), for Subscription for instance</li>
+	 * </ul>
+	 * For instance, your method may return:
+	 * <ul>
+#if ($dataFetchersDelegate.type.requestType == "subscription")
+	 * <li>Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
+	 * <li>Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
+#else
+	 * <li>Mono<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
+	 * <li>CompletableFuture<${dataFetcher.field.javaTypeFullClassname}></li>
+	 * <li>${dataFetcher.field.javaTypeFullClassname}</li>
+#end
+	 * </ul> 
 	 * 
 	 * @param dataFetchingEnvironment 
 	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
-	#if($dataFetcher.graphQLOriginType)
+#if($dataFetcher.graphQLOriginType)
 	 * @param origin 
 	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
 	 *    of the <I>origin</I>, which is an instance of {$dataFetcher.graphQLOriginType}. It depends on your data modle, but it typically contains 
 	 *    the id to use in the query.
-	#end
-	#foreach($argument in $dataFetcher.field.inputParameters)
+#end
+#foreach($argument in $dataFetcher.field.inputParameters)
 	 * @param ${argument.camelCaseName} 
 	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
-	#end
+#end
 	 * @throws NoSuchElementException 
 	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
 #appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
-#if ($dataFetchersDelegate.type.requestType == "subscription")
-## The returned type for subscription is embeded in a Publisher 
-	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(
-			DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), 
-			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
-#appliedDirectives(${argument.appliedDirectives}, "			")
-			${argument.javaTypeFullClassname} ${argument.javaName}#end);
-#else
-	public ${dataFetcher.field.javaTypeFullClassname} ${dataFetcher.javaName}(
+	public Object ${dataFetcher.javaName}(
 			DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType),
 			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
 #appliedDirectives(${argument.appliedDirectives}, "			")
 			${argument.javaTypeFullClassname} ${argument.javaName}#end);
-#end 
-
 ##
 ##
 ##
@@ -164,7 +195,10 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 ##
 ##
 
-#end
+#end   ## #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
+##
+##
+##
 #foreach ($batchLoader in $dataFetchersDelegate.batchLoaders)
 	/**
 #if ($dataFetcher.field.description)

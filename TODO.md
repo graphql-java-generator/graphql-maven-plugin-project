@@ -1,7 +1,10 @@
 Here are the next tasks listed, as a TODO list:
 
+## TODO list for the 3.x branch
+* Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
+
 ## TODO list for the 2.x branch
-* `ignoredSpringMappings`: add the star value, that would disallow the generation of all controllers and all DataFetcherDelegates
+* Test a DataFetcher that returns a `CompletableFuture`
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
 * In the migration guide and the wiki (FAQ server) : explains that the overriding bean must have a different name (and may not extend the generated controller)

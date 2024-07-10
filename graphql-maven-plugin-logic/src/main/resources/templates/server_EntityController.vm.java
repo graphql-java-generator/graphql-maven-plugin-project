@@ -122,7 +122,7 @@ public class ${entity}Controller {
 									// plugin. Code that uses Spring Boot annotations should remove this annotation
 									// and use the @BatchMapping annotation instead
 ## The line above is probably useless. But it's a complex one, and we won"t remove it until beeing sure it's useless
-##set($return="#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end#if($isEnum)#if($isList)List<#{end}String#if($isList)>#end#else${dataFetcher.field.javaTypeFullClassname}#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.completableFuture})>#end")
+##set($return="#if(${dataFetcher.withDataLoader})CompletableFuture<#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end#if($isEnum)#if($isList)List<#{end}String#if($isList)>#end#else${dataFetcher.field.javaTypeFullClassname}#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.withDataLoader})>#end")
 ##
 ##
 #macro(argumentType $argument)
@@ -164,7 +164,7 @@ ${argument.javaName}##
 #end
 ########################
 	public Object ${dataFetcher.field.javaName}(DataFetchingEnvironment dataFetchingEnvironment##
-#if(${dataFetcher.completableFuture})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
+#if(${dataFetcher.withDataLoader})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
 #if($dataFetcher.graphQLOriginType)			, ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
 			@Argument("${argument.name}") #argumentType($argument) #argumentName($argument)#end) {
 ##
@@ -177,7 +177,7 @@ ${argument.javaName}##
 		$argument.javaTypeFullClassname ${argument.javaName} = ($argument.javaTypeFullClassname) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(#argumentName($argument), ${argument.type.classFullName}.class, ${argument.fieldTypeAST.listDepth}, "${entity}", "${argument.name}");
 #end
 #end ##foreach($argument)
-		return #if($isEnum)graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
+		return #if($isEnum)graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.withDataLoader}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
 #end ##foreach($dataFetcher)

@@ -94,16 +94,16 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
-		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the dataLoader one");
+		assertTrue(dataFetcher.isWithDataLoader(), "oneWithIdSubType: the dataLoader one");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes", 1);
-		assertTrue(dataFetcher.isCompletableFuture(), "listWithIdSubTypes is annotated by @generateDataLoaderForLists");
+		assertTrue(dataFetcher.isWithDataLoader(), "listWithIdSubTypes is annotated by @generateDataLoaderForLists");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithoutIdSubType", 1);
-		assertFalse(dataFetcher.isCompletableFuture(), "oneWithoutIdSubType (only standard dataFetcher here)");
+		assertFalse(dataFetcher.isWithDataLoader(), "oneWithoutIdSubType (only standard dataFetcher here)");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithoutIdSubTypes", 1);
-		assertFalse(dataFetcher.isCompletableFuture(), "listWithoutIdSubTypes (only standard dataFetcher here)");
+		assertFalse(dataFetcher.isWithDataLoader(), "listWithoutIdSubTypes (only standard dataFetcher here)");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks if input types for the AllFieldCases object are correctly read

@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.plugin.language;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
@@ -74,11 +72,12 @@ public interface DataFetcher {
 	 * There are two kinds of {@link DataFetcher}:
 	 * <UL>
 	 * <LI>{@link DataFetcher} for fields of object, interface(...). These {@link DataFetcher} need to have access to
-	 * the object instance, that contains the field (or attribute) it fetches. This instance is the orgin, and will be a
-	 * parameter in the DataFetcher call, that contains the instance of the object, for which this field is
+	 * the object instance, that contains the field (or attribute) it fetches. This instance is the origin, and will be
+	 * a parameter in the DataFetcher call, that contains the instance of the object, for which this field is
 	 * fetched.</LI>
 	 * <LI>{@link DataFetcher} for query/mutation/subscription. In these case, the field that is fetched by this
-	 * {@link DataFetcher} has no origin: it's the start of the request.</LI>
+	 * {@link DataFetcher} has no origin: it's the start of the request. To check that, you must check the owning
+	 * {@link DataFetchersDelegate}, its type, then check the request type.</LI>
 	 * </UL>
 	 * 
 	 * @return the GraphQL name of the type that contains this field, or null if this is a request ()
@@ -86,14 +85,15 @@ public interface DataFetcher {
 	public Type getGraphQLOriginType();
 
 	/**
-	 * Returns true if this DataFetcher returns a {@link CompletableFuture}, which will be used within a
-	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to optimize the
-	 * accesses to the database. <BR/>
+	 * Returns true if this DataFetcher needs a <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java
+	 * java-dataloader</A> to optimize the accesses to the database. <BR/>
 	 * For instance, the DataDetcher would return CompletableFuture<List<Human>> (if completableFuture is true) or
-	 * List<Human> (if completableFuture is false).
+	 * List<Human> (if completableFuture is false).<br/>
+	 * This plugin behavior on this subject is controlled by the generateDataLoaderForLists plugin parameter and the
+	 * generateDataLoaderForLists directive (that can associated directly to the GraphQL field)
 	 * 
 	 * @return
 	 */
-	public boolean isCompletableFuture();
+	public boolean isWithDataLoader();
 
 }

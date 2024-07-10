@@ -664,7 +664,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// not
 						boolean withDataLoader = field.getType().getIdentifier() != null;
 						if (field.getFieldTypeAST().getListDepth() > 0) {
-							// In versions before 1.18.3, there was be no CompletableFuture for field that are lists
+							// In versions before 1.18.3, there was be no DataLoader for fields that are lists
 							// This behavior is controlled by the generateDataLoaderForLists plugin parameter and the
 							// generateDataLoaderForLists directive (that can associated directly to the GraphQL field)
 							withDataLoader = ((GenerateServerCodeConfiguration) this.configuration)

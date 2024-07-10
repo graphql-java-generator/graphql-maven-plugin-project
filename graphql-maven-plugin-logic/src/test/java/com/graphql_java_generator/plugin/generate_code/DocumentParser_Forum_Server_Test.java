@@ -272,7 +272,7 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
 		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
-		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
+		assertEquals(completableFuture, dataFetcher.isWithDataLoader(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		if (sourceName == null)
 			assertNull(dataFetcher.getGraphQLOriginType(), "sourceName");

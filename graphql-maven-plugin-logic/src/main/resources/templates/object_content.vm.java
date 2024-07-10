@@ -336,7 +336,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	 */
 ##### COMPLETABLE_FUTURE [start] 
 ## If this dataFetcher is a completableFuture, we add a DataLoader parameter
-#if ($dataFetcher.completableFuture)
+#if ($dataFetcher.withDataLoader)
 #appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
@@ -350,7 +350,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
 				.${field.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 	}
-#end ## #if (${dataFetcher.completableFuture})
+#end ## #if (${dataFetcher.withDataLoader})
 ##### COMPLETABLE_FUTURE [end]
 ##
 #appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
