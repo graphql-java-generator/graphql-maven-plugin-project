@@ -120,15 +120,10 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * Spring configuration class.
 	 */
 	default public String getSpringAutoConfigurationPackage() {
-		if (isSeparateUtilityClasses()) {
-			// The Spring auto-configuration file can be in subpackage of the provided package.
-			return getPackageName() + ".spring_autoconfiguration";
-		} else {
-			// When all classes are generated in the same package, the Spring auto configuration class must be generated
-			// in a package that is not a subpackage of the main one (otherwise it will be read as a standard
-			// configuration class, and the @ConditionalOnMissingBean annotation will not work properly)
-			return getPackageName() + "_spring_autoconfiguration";
-		}
+		// The Spring auto configuration class must be generated in a package that is not a subpackage of the main one
+		// (otherwise it will be read as a standard configuration class, and the @ConditionalOnMissingBean annotation
+		// will not work properly)
+		return getPackageName() + "_spring_autoconfiguration";
 	}
 
 	/**
