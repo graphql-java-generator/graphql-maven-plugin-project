@@ -18,6 +18,9 @@
 
 * 2.5
      * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+* 2.8
+    * [server mode] When the `generateDataLoaderForLists` plugin parameter is set to true, the plugin no more generates two methods per field (for field that return lists)
+        * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error: you would then have to remive the implementation for this useless method.
 
 
 ## Not released yet

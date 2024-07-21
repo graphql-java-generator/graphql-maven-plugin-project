@@ -59,11 +59,10 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 		return dataLoader.load(source.getAuthorId());
 	}
 
-	@Override
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, Long memberId,
 			String memberName, Date since) {
 
-		logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
+		this.logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
 				memberId, memberName, since);
 
 		if (since == null) {
@@ -76,28 +75,29 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 			// since
 			if (memberId == null && memberName == null) {
-				logger.debug("Loading posts of topic {}, with since={}", source.getId(), since);
-				return graphqlUtils.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+				this.logger.debug("Loading posts of topic {}, with since={}", source.getId(), since);
+				return this.graphqlUtils
+						.iterableToList(this.postRepository.findByTopicIdAndSince(source.getId(), since));
 			}
 			// memberId, since
 			else if (memberName == null) {
-				logger.debug("Loading posts of topic {}, with memberId={} and since={}", source.getId(), memberId,
+				this.logger.debug("Loading posts of topic {}, with memberId={} and since={}", source.getId(), memberId,
 						since);
-				return graphqlUtils.iterableToList(
-						postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
+				return this.graphqlUtils.iterableToList(
+						this.postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
 			}
 			// memberName,since
 			else if (memberId == null) {
-				logger.debug("Loading posts of topic {}, with memberName={} and since={}", source.getId(), memberName,
-						since);
-				return graphqlUtils.iterableToList(
-						postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
+				this.logger.debug("Loading posts of topic {}, with memberName={} and since={}", source.getId(),
+						memberName, since);
+				return this.graphqlUtils.iterableToList(
+						this.postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
 			}
 			// memberId, memberName, since
 			else {
-				logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
-						memberId, memberName, since);
-				return graphqlUtils.iterableToList(postRepository
+				this.logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}",
+						source.getId(), memberId, memberName, since);
+				return this.graphqlUtils.iterableToList(this.postRepository
 						.findByTopicIdAndMemberIdAndMemberNameAndSince(source.getId(), memberId, memberName, since));
 			}
 		}
@@ -115,7 +115,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 			ids.add(post.getId());
 		}
 
-		if (logger.isDebugEnabled()) {
+		if (this.logger.isDebugEnabled()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Retrieving posts for topic {id=");
 			sb.append(origin.getId());
@@ -128,7 +128,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 				sb.append(" ");
 				sb.append(id);
 			}
-			logger.debug(sb.toString());
+			this.logger.debug(sb.toString());
 		}
 
 		return dataLoader.loadMany(ids);
@@ -136,13 +136,8 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public List<Topic> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
-		logger.debug("Batch loading {} topics", keys.size());
-		return topicRepository.findByIds(keys);
-	}
-
-	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
-		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> null);
+		this.logger.debug("Batch loading {} topics", keys.size());
+		return this.topicRepository.findByIds(keys);
 	}
 
 }

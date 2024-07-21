@@ -94,12 +94,6 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 	}
 
 	@Override
-	public STP_AllFieldCasesWithIdSubtype_STS oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			STP_AllFieldCasesInterfaceType_STS origin) {
-		return this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
-	}
-
-	@Override
 	public List<STP_AllFieldCasesWithIdSubtype_STS> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			STP_AllFieldCasesInterfaceType_STS source, Integer nbItems, Boolean uppercaseName,
 			String textToAppendToTheForname) {

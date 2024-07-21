@@ -93,12 +93,6 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 	}
 
 	@Override
-	public STP_AllFieldCasesWithIdSubtype_STS oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			SIP_AllFieldCasesInterface_SIS origin) {
-		return this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
-	}
-
-	@Override
 	public List<STP_AllFieldCasesWithIdSubtype_STS> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			SIP_AllFieldCasesInterface_SIS source, Integer nbItems, Boolean uppercaseName,
 			String textToAppendToTheForname) {

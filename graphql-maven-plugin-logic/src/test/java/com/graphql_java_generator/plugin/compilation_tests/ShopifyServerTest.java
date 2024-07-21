@@ -18,7 +18,7 @@ class ShopifyServerTest extends AbstractIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
-		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
+		((GraphQLConfigurationTestHelper) configuration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("shopify.graphqls");
 	}
 

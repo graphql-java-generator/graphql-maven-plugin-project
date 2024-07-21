@@ -46,83 +46,6 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ##
-##
-##
-## If this dataFetcher needs a DataLoader parameter
-#if ($dataFetcher.withDataLoader)
-	/**
-#if ($dataFetcher.field.description)
-	 * Description for the ${dataFetcher.field.name} field: <br/>
-#foreach ($line in $dataFetcher.field.description.lines)
-	 * ${line}
-#end
-	 * <br/>
-	 * 
-#end
-	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. It is called by 
-	 * the ${dataFetcher.graphQLOriginType.name}Controller, which is <a href="https://docs.spring.io/spring-graphql/reference/controllers.html">spring-graphql 
-	 * controller</a>. It may return whatever is accepted by the Spring Controller, that is:
-	 * <ul>
-	 * <li>A resolved value of any type</li>
-	 * <li>Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in Reactive DataFetcher.</li>
-	 * <li>Kotlin coroutine and Flow are adapted to Mono and Flux</li>
-	 * <li>java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be 
-	 *     configured with an Executor</li>
-	 * <li>(not directlty documented) A CompletableFuture<?>, for instance CompletableFuture<${dataFetcher.field.javaTypeFullClassname}>. This 
-	 *     allows to use <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
-	 *     number of requests to the server. The principle is this one: The data loader collects all the data to load, avoid to load several 
-	 *     times the same data, and allows parallel execution of the queries, if multiple queries are to be run.</li>
-	 * <li></li>
-	 * </ul>
-	 * 
-	 * <BR/>
-	 * You can implements this method like this:
-	 * <PRE>
-	 * @Override
-	 * public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(
-	 *         DataFetchingEnvironment environment, 
-	 *         DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
-	 *         ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
-	 *         #appliedDirectives(${argument.appliedDirectives}, "			")
-	 *         ${argument.javaTypeFullClassname} ${argument.javaName}#end
-	 * ) {
-	 *     List<${configuration.javaTypeForIDType}> ${dataFetcher.javaName} = origin.get${dataFetcher.pascalCaseName}();
-	 *     return dataLoader.loadMany(${dataFetcher.javaName});
-	 * }
-	 * </PRE>
-	 * <BR/>
-	 * 
-	 * @param dataFetchingEnvironment 
-	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
-	 * @param dataLoader
-	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
-	 *            issues, and greatly optimizes the response time.<BR/>
-	 *            You'll find more informations here: <A HREF=
-	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
-#if($dataFetcher.graphQLOriginType)
-	 * @param origin 
-	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
-	 *    of the <I>origin</I>, which is an instance of {$dataFetcher.graphQLOriginType}. It depends on your data modle, but it typically contains 
-	 *    the id to use in the query.
-#end
-#foreach($argument in $dataFetcher.field.inputParameters)
-	 * @param ${argument.camelCaseName} 
-	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
-#end
-	 * @throws NoSuchElementException 
-	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
-	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
-	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
-	 */
-#appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
-	public Object ${dataFetcher.javaName}(
-			DataFetchingEnvironment dataFetchingEnvironment, 
-			DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
-			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
-#appliedDirectives(${argument.appliedDirectives}, "			")
-			${argument.javaTypeFullClassname} ${argument.javaName}#end);
-#end ## #if (${dataFetcher.withDataLoader})
-
 	/**
 #if ($dataFetcher.field.description)
 	 * Description for the ${dataFetcher.field.name} field: <br/>
@@ -163,6 +86,13 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 * 
 	 * @param dataFetchingEnvironment 
 	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
+#if ($dataFetcher.withDataLoader)
+	 * @param dataLoader
+	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
+	 *            issues, and greatly optimizes the response time.<BR/>
+	 *            You'll find more informations here: <A HREF=
+	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
+#end
 #if($dataFetcher.graphQLOriginType)
 	 * @param origin 
 	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
@@ -180,9 +110,10 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 */
 #appliedDirectives(${dataFetcher.field.appliedDirectives}, "	")
 	public Object ${dataFetcher.javaName}(
-			DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType),
+			DataFetchingEnvironment dataFetchingEnvironment#if ($dataFetcher.withDataLoader),
+			DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end#if($dataFetcher.graphQLOriginType),
 			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
-#appliedDirectives(${argument.appliedDirectives}, "			")
+			#appliedDirectives(${argument.appliedDirectives}, "			")
 			${argument.javaTypeFullClassname} ${argument.javaName}#end);
 ##
 ##

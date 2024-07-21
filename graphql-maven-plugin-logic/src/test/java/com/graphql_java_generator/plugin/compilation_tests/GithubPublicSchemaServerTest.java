@@ -18,7 +18,7 @@ class GithubPublicSchemaServerTest extends AbstractIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
-		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
+		((GraphQLConfigurationTestHelper) configuration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("github.schema.public.graphqls");
 	}
 

@@ -19,10 +19,7 @@ Here are the next tasks listed, as a TODO list:
     * Just have a summary in the starting table (not the full doc)
     * Find and correct the dead links
 * Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
-* Issue #216: `DataFetchersDelegate` method should return an object, as the spring controllers manage these cases:
-    * A resolved value of any type.
-    * Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in [Reactive DataFetcher](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/216#execution-reactive-datafetcher).
-    * java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be configured with an Executor.
+* Do additional tests on the generated code, in the plugin-logic module
 * Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
 * Update the samples to the 2.7 release
     * Update the dependencies in the README (or better : remove them)

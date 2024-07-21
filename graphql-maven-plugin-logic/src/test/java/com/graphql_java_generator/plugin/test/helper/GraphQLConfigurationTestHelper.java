@@ -33,20 +33,20 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false;
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
-	public boolean generateBatchLoaderEnvironment = true;
-	public boolean generateDataFetcherForEveryFieldsWithArguments = false;
-	public boolean generateDataLoaderForLists = false;
-	public boolean generateDeprecatedRequestResponse = false;
-	private Boolean generateJacksonAnnotations = null; // See below: isGenerateJacksonAnnotations() either
-														// generateJacksonAnnotations if it is not null, or true id
-														// client mode, or false if server mode. Because of this rule,
-														// Velocity MUST call the isGenerateJacksonAnnotations() method.
-														// So this attribute must be private
-	public boolean generateJPAAnnotation = true;
-	public boolean generateUtilityClasses = true;
-	public String ignoredSpringMappings = "";
-	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
-	public String jsonGraphqlSchemaFilename = null;
+	public boolean generateBatchLoaderEnvironment = true; // Server side
+	public boolean generateDataFetcherForEveryFieldsWithArguments = false;// Server side
+	public boolean generateDataLoaderForLists = false;// Server side
+	public boolean generateDeprecatedRequestResponse = false;// Client side
+	private Boolean generateJacksonAnnotations = null; // (for POJO only)See below: isGenerateJacksonAnnotations()
+														// either generateJacksonAnnotations if it is not null, or true
+														// id client mode, or false if server mode. Because of this
+														// rule, Velocity MUST call the isGenerateJacksonAnnotations()
+														// method. So this attribute must be private
+	public boolean generateJPAAnnotation = true;// Server side
+	public boolean generateUtilityClasses = true;// Both sides
+	public String ignoredSpringMappings = "";// Server side
+	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;// Server side
+	public String jsonGraphqlSchemaFilename = null;// Both sides
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
@@ -57,7 +57,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
-	public boolean separateUtilityClasses = false;
+	public boolean separateUtilityClasses = false;// Both sides
 	public boolean skipGenerationIfSchemaHasNotChanged = true;
 	public String sourceEncoding = "UTF-8";
 	public String springBeanSuffix = "MySchema";

@@ -14,7 +14,7 @@ class AllGraphQLCasesClient_separateUtilityClasses_Test extends AbstractIntegrat
 
 	@BeforeEach
 	public void setUp() {
-		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
+		((GraphQLConfigurationTestHelper) configuration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases*.graphqls");
 	}
 

@@ -35,11 +35,6 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	}
 
 	@Override
-	public SIP_Character_SIS bestFriend(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS origin) {
-		return this.generator.generateInstance(SIP_Character_SIS.class);
-	}
-
-	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS source) {
 		return this.generator.generateInstanceList(SIP_Character_SIS.class, 6);
 	}

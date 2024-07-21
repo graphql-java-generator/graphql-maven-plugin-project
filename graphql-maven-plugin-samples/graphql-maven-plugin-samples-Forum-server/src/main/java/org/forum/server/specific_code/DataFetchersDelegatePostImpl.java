@@ -41,16 +41,9 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 	}
 
 	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
-		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> {
-			return null;
-		});
-	}
-
-	@Override
 	public List<Post> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
-		logger.debug("Batch loading {} posts", keys.size());
-		return postRepository.findByIds(keys);
+		this.logger.debug("Batch loading {} posts", keys.size());
+		return this.postRepository.findByIds(keys);
 	}
 
 }

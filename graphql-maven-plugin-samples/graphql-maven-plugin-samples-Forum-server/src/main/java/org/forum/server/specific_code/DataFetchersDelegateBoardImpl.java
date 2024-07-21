@@ -40,18 +40,17 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	@Resource
 	BoardRepository boardRepository;
 
-	@Override
 	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, Date since) {
 		if (since == null)
-			return topicRepository.findByBoardId(source.getId());
+			return this.topicRepository.findByBoardId(source.getId());
 		else
-			return topicRepository.findByBoardIdAndSince(source.getId(), since);
+			return this.topicRepository.findByBoardIdAndSince(source.getId(), since);
 	}
 
 	@Override
 	public List<Board> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
-		logger.debug("Batch loading {} topics", keys.size());
-		return boardRepository.findByIds(keys);
+		this.logger.debug("Batch loading {} topics", keys.size());
+		return this.boardRepository.findByIds(keys);
 	}
 
 	@Override

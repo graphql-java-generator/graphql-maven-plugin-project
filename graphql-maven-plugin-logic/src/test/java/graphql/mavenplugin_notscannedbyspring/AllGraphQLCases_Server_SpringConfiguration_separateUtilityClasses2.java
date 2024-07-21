@@ -28,7 +28,7 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.client.graphqlrepository.*") })
-public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses extends AbstractSpringConfiguration {
+public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses2 extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;
 	static {
@@ -63,12 +63,13 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 		configuration.customScalars = customScalars;
 
 		// Parameters that control the server generation
-		configuration.addRelayConnections = false;
-		configuration.generateBatchLoaderEnvironment = false; // true testé dans separateUtilityClasses2_Test
-		configuration.generateDataFetcherForEveryFieldsWithArguments = false;// true testé dans
-																				// separateUtilityClasses2_Test
-		configuration.generateDataLoaderForLists = false;// true testé dans separateUtilityClasses2_Test
-		configuration.generateJPAAnnotation = false;// true testé dans separateUtilityClasses2_Test
+		configuration.addRelayConnections = false; // same as in
+													// AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses
+		configuration.generateBatchLoaderEnvironment = true;// false testé dans separateUtilityClasses_Test
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;// false testé dans
+																			// separateUtilityClasses_Test
+		configuration.generateDataLoaderForLists = true;// false testé dans separateUtilityClasses_Test
+		configuration.generateJPAAnnotation = true;// false testé dans separateUtilityClasses_Test
 		configuration.generateUtilityClasses = true;
 		configuration.ignoredSpringMappings = "";
 		configuration.javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;

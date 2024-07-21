@@ -656,14 +656,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// We'll add a data fetcher with a data loader, to use a Batch Loader, if:
 						// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 						// 2) That target object has an id (it can be either a list or a single object)
-						// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not
-						// a
-						// list
-						// graphql-java will then determines at runtime if a dataloader is needed in the running case,
-						// or
-						// not
+						// 3a) Until 1.18.2 : the Relation toward the target object is OneToOne or ManyToOne. That is
+						// this field is not a list.
+						// 3b) From 1.1.8.3 : This field is not a list OR (this field is a list and
+						// generateDataLoaderForLists is true)
 						boolean withDataLoader = field.getType().getIdentifier() != null;
-						if (field.getFieldTypeAST().getListDepth() > 0) {
+						if (withDataLoader && field.getFieldTypeAST().getListDepth() > 0) {
 							// In versions before 1.18.3, there was be no DataLoader for fields that are lists
 							// This behavior is controlled by the generateDataLoaderForLists plugin parameter and the
 							// generateDataLoaderForLists directive (that can associated directly to the GraphQL field)

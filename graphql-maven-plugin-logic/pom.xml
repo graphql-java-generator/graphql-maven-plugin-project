@@ -100,9 +100,10 @@
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ClientPojo_SpringConfiguration/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_addRelayConnections/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses2/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Client_SpringConfiguration/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Server_SpringConfiguration/generated-src</source>

@@ -3,9 +3,9 @@ package org.allGraphQLCases.server.impl.relayConnection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.allGraphQLCases.server.STP_Human_STS;
-import org.allGraphQLCases.server.STP_HumanEdge_STS;
 import org.allGraphQLCases.server.DataFetchersDelegateHumanEdge;
+import org.allGraphQLCases.server.STP_HumanEdge_STS;
+import org.allGraphQLCases.server.STP_Human_STS;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +13,6 @@ import graphql.schema.DataFetchingEnvironment;
 
 @Component
 public class DataFetchersDelegateHumanEdgeImpl implements DataFetchersDelegateHumanEdge {
-
-	@Override
-	public STP_Human_STS node(DataFetchingEnvironment dataFetchingEnvironment, STP_HumanEdge_STS origin) {
-		return origin.getNode();
-	}
 
 	@Override
 	public CompletableFuture<STP_Human_STS> node(DataFetchingEnvironment dataFetchingEnvironment,
