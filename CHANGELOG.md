@@ -20,12 +20,14 @@
      * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
 * 2.8
     * [server mode] When the `generateDataLoaderForLists` plugin parameter is set to true, the plugin no more generates two methods per field (for field that return lists)
-        * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error: you would then have to remive the implementation for this useless method.
+        * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
 
 
 ## Not released yet
 
 Server mode:
+* The new `generateBatchMappingDataFetchers` plugin parameters allows to generate data fetchers with the <code>@BatchMapping</code> annotation (instead of the `@SchemaMapping` one). This allows to manage the N+1 select problem: so this allows much better performances, by highly diminishing the number of executed requests
+    * The new `batchMappingDataFetcherReturnType` allows to control the return type of these data fetchers
 * Issues #214 and #215: the new `ignoredSpringMappings` plugin parameter allows to ignore a list of type and field mappings (or all mappings, when this parameter is set to the star character, "*").
     * An ignored type mapping prevent the generation of its `DataFetcherDelegate`, and its entity Spring Controller. The [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented.
     * An ignored field mapping prevent the generation of the method for this field in the `DataFetcherDelegate`, and its entity Spring Controller. A [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented for this field.

@@ -1,10 +1,13 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -15,15 +18,16 @@ import javax.persistence.Transient;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.execution.BatchLoaderRegistry;
 
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses2;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_util_allTrue;
 import graphql.schema.DataFetchingEnvironment;
 
-class AllGraphQLCasesServer_separateUtilityClasses2_Test extends AbstractIntegrationTest {
+class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
-	public AllGraphQLCasesServer_separateUtilityClasses2_Test() {
-		super(AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses2.class);
+	public AllGraphQLCasesServer_util_allTrue_Test() {
+		super(AllGraphQLCases_Server_SpringConfiguration_util_allTrue.class);
 	}
 
 	@BeforeEach
@@ -33,6 +37,15 @@ class AllGraphQLCasesServer_separateUtilityClasses2_Test extends AbstractIntegra
 
 	@Override
 	protected void doAdditionalChecks() throws Exception {
+		Class<?> queryControllerClass = loadGeneratedClass("MyQueryTypeController", FileType.UTIL);
+		assertNotNull(queryControllerClass);
+		//
+		Class<?> mutationControllerClass = loadGeneratedClass("AnotherMutationTypeController", FileType.UTIL);
+		assertNotNull(mutationControllerClass);
+		//
+		Class<?> subscriptionControllerClass = loadGeneratedClass("TheSubscriptionTypeController", FileType.UTIL);
+		assertNotNull(subscriptionControllerClass);
+		//
 		Class<?> allFieldCasesClass = loadGeneratedClass("AllFieldCases", FileType.POJO);
 		assertNotNull(allFieldCasesClass);
 		//
@@ -64,6 +77,31 @@ class AllGraphQLCasesServer_separateUtilityClasses2_Test extends AbstractIntegra
 						List.class, //
 						BatchLoaderEnvironment.class),
 				"There should be a batchLoader(List,BatchLoaderEnvironment) method");
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		// generateBatchMappingDataFetchers
+		assertFalse(this.configuration.isGenerateBatchMappingDataFetchers(),
+				"generateBatchMappingDataFetchers should be false in this test");
+		//
+		// query, mutation and subscription should have no method with @BatchMapping annotation
+		assertEquals(0,
+				Arrays.stream(queryControllerClass.getDeclaredMethods())
+						.filter(m -> m.getAnnotation(BatchMapping.class) != null).count(),
+				"query, mutation and subscription should have no method with @BatchMapping annotation");
+		assertEquals(0,
+				Arrays.stream(mutationControllerClass.getDeclaredMethods())
+						.filter(m -> m.getAnnotation(BatchMapping.class) != null).count(),
+				"query, mutation and subscription should have no method with @BatchMapping annotation");
+		assertEquals(0,
+				Arrays.stream(subscriptionControllerClass.getDeclaredMethods())
+						.filter(m -> m.getAnnotation(BatchMapping.class) != null).count(),
+				"query, mutation and subscription should have no method with @BatchMapping annotation");
+		//
+		// No method in the controllers and DataFetcherDelegates should have the @BatchMapping annotation
+		assertEquals(0,
+				Arrays.stream(allFieldCasesControllerClass.getDeclaredMethods())
+						.filter(m -> m.getAnnotation(BatchMapping.class) != null).count(),
+				"type's controllers have no method with @BatchMapping annotation");
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateDataFetcherForEveryFieldsWithArguments

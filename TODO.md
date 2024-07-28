@@ -4,8 +4,23 @@ Here are the next tasks listed, as a TODO list:
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 
 ## TODO list for the 2.x branch
-* Test a DataFetcher that returns a `CompletableFuture`
+* Test all parameter values for BatchMappingDataFetcherReturnType
+* generateBatchMappingDataFetchers:
+    * Check that the returned sub-objects are link to their 
+    * Complete the doc for the plugin parameter
+        * Add a link to https://github.com/spring-projects/spring-graphql/issues/232
+    * Check all four possible return types: BatchMappingDataFetcherReturnType
+    * Complete AllGraphQLCasesServer_util_batchMapping_Test
+* Issue with the generateBatchMappingDataFetchers:
+    * These data fetcher can not have access to the field arguments (see [issue #232](https://github.com/spring-projects/spring-graphql/issues/232) of spring-graphql)
+        * This is ok if this field has no argument
+        * What should be done if this field has arguments ?
+            * This would be a minority of cases, so do nothing, that is: 
+                * Generate a standard data fetcher
+                * try to still use a BatchLoader, but with a Context 
+                
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
+* Instead of having to parameterize what to do with controllers, the plugin should be able to analyse the existing code by the implementor, find the defined controllers, and just define the others
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
 * In the migration guide and the wiki (FAQ server) : explains that the overriding bean must have a different name (and may not extend the generated controller)
 * Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`

@@ -112,8 +112,8 @@ abstract class AbstractIntegrationTest {
 			break;
 		case UTIL:
 			if (this.configuration.isSeparateUtilityClasses()) {
-				fullClassname = this.configuration.getPackageName() + "."
-						+ GenerateCodeDocumentParser.UTIL_PACKAGE_NAME + "." + simpleClassname;
+				fullClassname = this.configuration.getPackageName() + "." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME
+						+ "." + simpleClassname;
 			} else {
 				fullClassname = this.configuration.getPackageName() + "." + simpleClassname;
 			}

@@ -41,7 +41,7 @@ class FieldTest {
 	// //
 	// fields = new ArrayList<>(tfoo1.getField("bar").getFieldJavaTypeNamesFromImplementedInterface());
 	// assertEquals(1, fields.size());
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar1",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar1",
 	// fields.get(0));
 	//
 	// Type tfoo12 = documentParser.getType("TFoo12");
@@ -52,9 +52,9 @@ class FieldTest {
 	// //
 	// fields = new ArrayList<>(new TreeSet<>(tfoo12.getField("bar").getFieldJavaTypeNamesFromImplementedInterface()));
 	// assertEquals(2, fields.size());
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar1",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar1",
 	// fields.get(0));
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar2",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar2",
 	// fields.get(1));
 	//
 	// Type tfoo3 = documentParser.getType("TFoo3");
@@ -65,11 +65,11 @@ class FieldTest {
 	// //
 	// fields = new ArrayList<>(new TreeSet<>(tfoo3.getField("bar").getFieldJavaTypeNamesFromImplementedInterface()));
 	// assertEquals(3, fields.size());
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar1",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar1",
 	// fields.get(0));
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar12",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar12",
 	// fields.get(1));
-	// assertEquals("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.IBar2",
+	// assertEquals("org.junittest.allgraphqlcases_client_springconfiguration.IBar2",
 	// fields.get(2));
 	// }
 	//

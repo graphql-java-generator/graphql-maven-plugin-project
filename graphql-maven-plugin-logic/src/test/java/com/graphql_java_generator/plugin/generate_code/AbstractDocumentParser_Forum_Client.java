@@ -106,7 +106,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.Date.class)\n" //
 				+ "\t@GraphQLScalar( fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = java.util.Date.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
-				+ "\t@GraphQLNonScalar( fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = org.graphql.mavenplugin.junittest.forum_client_springconfiguration.Member.class, listDepth = 0)");
+				+ "\t@GraphQLNonScalar( fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = org.junittest.forum_client_springconfiguration.Member.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", ""//
 				+ "@JsonProperty(\"publiclyAvailable\")\n"//
 				+ "\t@GraphQLScalar( fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = java.lang.Boolean.class, listDepth = 0)");
@@ -123,7 +123,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 				+ "@JsonProperty(\"posts\")\n"//
 				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.ListPost.class)\n"//
 				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"}, mandatories = {false, false, true}, listDepths = {0, 0, 0}, itemsMandatory = {false, false, false})\n"
-				+ "\t@GraphQLNonScalar( fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.graphql.mavenplugin.junittest.forum_client_springconfiguration.Post.class, listDepth = 1)");
+				+ "\t@GraphQLNonScalar( fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.junittest.forum_client_springconfiguration.Post.class, listDepth = 1)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -142,7 +142,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
 				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, listDepths = {0, 0}, itemsMandatory = {false, false})\n"
-				+ "	@GraphQLNonScalar( fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = org.graphql.mavenplugin.junittest.forum_client_springconfiguration.Board.class, listDepth = 0)");
+				+ "	@GraphQLNonScalar( fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = org.junittest.forum_client_springconfiguration.Board.class, listDepth = 0)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -160,7 +160,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
 				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, listDepths = {0, 0}, itemsMandatory = {false, false})\n"
-				+ "\t@GraphQLNonScalar( fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = org.graphql.mavenplugin.junittest.forum_client_springconfiguration.Board.class, listDepth = 0)");
+				+ "\t@GraphQLNonScalar( fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = org.junittest.forum_client_springconfiguration.Board.class, listDepth = 0)");
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */

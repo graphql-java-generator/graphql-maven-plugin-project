@@ -352,6 +352,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object\n With a li
     planets: [String!]!
     friends: [Human!]
     matrix: [[Float]]!
+    oneWithoutFieldParameter: AllFieldCasesWithIdSubtype
     oneWithIdSubType(uppercase: Boolean @testDirective(value:"on uppercase parameter")): AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Long!, date: MyCustomScalarForADate, dates: [MyCustomScalarForADate]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
        @generateDataLoaderForLists

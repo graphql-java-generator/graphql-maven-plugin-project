@@ -3,13 +3,9 @@
  */
 package org.forum.server.specific_code;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
-import org.dataloader.DataLoader;
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.Topic;
 import org.forum.server.graphql.util.DataFetchersDelegateBoard;
@@ -19,8 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import graphql.schema.DataFetchingEnvironment;
+import graphql.GraphQLContext;
 import jakarta.annotation.Resource;
+import reactor.core.publisher.Flux;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -40,30 +37,32 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	@Resource
 	BoardRepository boardRepository;
 
-	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, Date since) {
-		if (since == null)
-			return this.topicRepository.findByBoardId(source.getId());
-		else
-			return this.topicRepository.findByBoardIdAndSince(source.getId(), since);
-	}
-
 	@Override
-	public List<Board> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
-		this.logger.debug("Batch loading {} topics", keys.size());
-		return this.boardRepository.findByIds(keys);
+	public Flux<List<Topic>> topics(//
+			BatchLoaderEnvironment batchLoaderEnvironment, //
+			GraphQLContext graphQLContext, //
+			List<Board> boards //
+	// @Argument("since") java.util.Date since//
+	) {
+		java.util.Date since = null;
+		return Flux.fromIterable(boards).map(b -> {
+			if (since == null)
+				return this.topicRepository.findByBoardId(b.getId());
+			else
+				return this.topicRepository.findByBoardIdAndSince(b.getId(), since);
+		});
+
+		// Mono.create(callback -> {
+		// this.logger.debug("Batch loading {} topics", boards.size());
+		// Map<Board, List<Topic>> map = new HashMap<>();
+		// for (Board b : boards) {
+		// if (since == null)
+		// map.put(b, this.topicRepository.findByBoardId(b.getId()));
+		// else
+		// map.put(b, this.topicRepository.findByBoardIdAndSince(b.getId(), since));
+		// }
+		// callback.success(map);
+		// });
 	}
 
-	@Override
-	public CompletableFuture<List<Topic>> topics(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, Topic> dataLoader, Board origin, Date since) {
-		// When the data is modeled this way (that is: in a relational database), using Data Loader is not an
-		// optimization.
-		// But this is used here for integration tests
-		List<Long> ids = new ArrayList<>();
-		for (Topic topic : topics(dataFetchingEnvironment, origin, since)) {
-			ids.add(topic.getId());
-		}
-		return dataLoader.loadMany(ids);
-
-	}
 }

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
+import com.graphql_java_generator.plugin.conf.BatchMappingDataFetcherReturnType;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
@@ -28,7 +29,7 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.client.graphqlrepository.*") })
-public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses extends AbstractSpringConfiguration {
+public class AllGraphQLCases_Server_SpringConfiguration_util_batchMapping extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;
 	static {
@@ -63,23 +64,26 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 		configuration.customScalars = customScalars;
 
 		// Parameters that control the server generation
-		configuration.addRelayConnections = false;
-		configuration.generateBatchLoaderEnvironment = false; // true testé dans separateUtilityClasses2_Test
-		configuration.generateDataFetcherForEveryFieldsWithArguments = false;// true testé dans
-																				// separateUtilityClasses2_Test
-		configuration.generateDataLoaderForLists = false;// true testé dans separateUtilityClasses2_Test
-		configuration.generateJPAAnnotation = false;// true testé dans separateUtilityClasses2_Test
+		configuration.batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX_V;
+		configuration.addRelayConnections = false; // same as in
+													// AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses
+		configuration.generateBatchLoaderEnvironment = true;// false testé dans separateUtilityClasses_Test
+		configuration.generateBatchMappingDataFetchers = true;
+		configuration.generateDataFetcherForEveryFieldsWithArguments = true;// false testé dans
+																			// separateUtilityClasses_Test
+		configuration.generateDataLoaderForLists = false;// forcé à true par false testé dans
+															// separateUtilityClasses_Test
+		configuration.generateJPAAnnotation = true;// false testé dans separateUtilityClasses_Test
 		configuration.generateUtilityClasses = true;
 		configuration.ignoredSpringMappings = "";
 		configuration.javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 		configuration.queryMutationExecutionProtocol = QueryMutationExecutionProtocol.http;
-		configuration.separateUtilityClasses = false;
+		configuration.separateUtilityClasses = true;
 
 		// Other parameters
 		configuration.mode = PluginMode.server;
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.schemaPersonalizationFile = new File(this.mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/schema_personalization_for_code_generation.json");
-		configuration.separateUtilityClasses = true;
 	}
 }

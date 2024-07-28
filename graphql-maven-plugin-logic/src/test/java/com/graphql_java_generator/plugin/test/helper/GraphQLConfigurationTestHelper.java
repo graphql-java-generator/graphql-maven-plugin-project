@@ -10,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.graphql_java_generator.plugin.conf.BatchMappingDataFetcherReturnType;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
@@ -30,10 +31,12 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	public Logger logger;
 
+	public BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX_V;
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false;
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
 	public boolean generateBatchLoaderEnvironment = true; // Server side
+	public boolean generateBatchMappingDataFetchers = false; // Server side
 	public boolean generateDataFetcherForEveryFieldsWithArguments = false;// Server side
 	public boolean generateDataLoaderForLists = false;// Server side
 	public boolean generateDeprecatedRequestResponse = false;// Client side

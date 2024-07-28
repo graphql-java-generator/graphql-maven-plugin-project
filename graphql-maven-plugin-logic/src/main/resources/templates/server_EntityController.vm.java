@@ -12,15 +12,19 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.execution.BatchLoaderRegistry;
 import org.springframework.stereotype.Controller;
 
 import com.graphql_java_generator.server.util.GraphqlServerUtils;
 import com.graphql_java_generator.util.GraphqlUtils;
+
+import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -70,57 +74,6 @@ public class ${entity}Controller {
 ## But this prevents the automatic mapping of spring-graphql to work. So enum values are returned as String
 #set ($isEnum=$dataFetcher.field.type.isEnum())
 #set ($isList=($dataFetcher.field.fieldTypeAST.listDepth>0))
-
-	/**
-	 * This method loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}. <BR/>
-	 * For optimization, this method returns a CompletableFuture. This allows to use
-	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
-	 * number of requests to the server.<BR/>
-	 * The principle is this one: The data loader collects all the data to load, avoid to load several times the same
-	 * data, and allows parallel execution of the queries, if multiple queries are to be run.<BR/>
-	 * You can implements this method like the sample below:
-	 * 
-	 * <PRE>
-	 * &#64;Override
-	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment,
-	 * 		DataLoader<Long, Member> dataLoader, Human origin) {
-	 * 	List<java.lang.Long> friendIds = origin.getFriendIds();
-	 * 	DataLoader<java.lang.Long, CharacterImpl> dataLoader = environment.getDataLoader("Character");
-	 * 	return dataLoader.loadMany(friendIds);
-	 * }
-	 * </PRE>
-	 * 
-	 * <BR/>
-#if($isEnum)
- 	 * To manage enum values that are java keyword, enum values like if, else (...) are stored in enum values prefixed by _ (like _if, _else...)
-	 * But this prevents the automatic mapping of spring-graphql to work. So enum values are returned as String
-#end
-	 * 
-	 * @param dataFetchingEnvironment
-	 *            The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this
-	 *            DataFetcher
-	 * @param dataLoader
-	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
-	 *            issues, and greatly optimizes the response time.<BR/>
-	 *            You'll find more informations here: <A HREF=
-	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
-	 * @param origin
-	 *            The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the
-	 *            author attribute of the <I>origin</I>, which is an instance of {ObjectType {name:Post,
-	 *            fields:{Field{name:id, type:ID!, params:[]},Field{name:date, type:Date!, params:[]},Field{name:author,
-	 *            type:Member, params:[]},Field{name:publiclyAvailable, type:Boolean, params:[]},Field{name:title,
-	 *            type:String!, params:[]},Field{name:content, type:String!, params:[]},Field{name:authorId, type:ID,
-	 *            params:[]},Field{name:topicId, type:ID, params:[]}}, comments ""}. It depends on your data modle, but
-	 *            it typically contains the id to use in the query.
-	 * @throws NoSuchElementException
-	 *             This method may return a {@link NoSuchElementException} exception. In this case, the exception is
-	 *             trapped by the calling method, and the return is consider as null. This allows to use the
-	 *             {@link Optional#get()} method directly, without caring of whether or not there is a value. The
-	 *             generated code will take care of the {@link NoSuchElementException} exception.
-	 */
-	@SchemaMapping(field = "${dataFetcher.field.name}") // This annotation is used to maintain compatibility with earlier version of the
-									// plugin. Code that uses Spring Boot annotations should remove this annotation
-									// and use the @BatchMapping annotation instead
 ## The line above is probably useless. But it's a complex one, and we won"t remove it until beeing sure it's useless
 ##set($return="#if(${dataFetcher.withDataLoader})CompletableFuture<#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end#if($isEnum)#if($isList)List<#{end}String#if($isList)>#end#else${dataFetcher.field.javaTypeFullClassname}#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.withDataLoader})>#end")
 ##
@@ -151,7 +104,72 @@ ${argument.javaName}##
 #end
 ##
 ##
-########################
+#if(${dataFetcher.batchMapper})
+	/**
+	 * This methods loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}. It is generated as the 
+	 * <code>generateBatchMappingDataFetchers</code> is true. <br/>
+	 * 
+	 * @param batchLoaderEnvironment
+	 * 		The environement for this batch loaded. You can extract the GraphQLContext from this parameter.
+	 * @param graphQLContext
+	 * @param keys
+	 * 		The objects for which the value for the ${dataFetcher.field.name} field must be retrieved.
+	 * @return This method returns <code>${dataFetcher.batchMapperReturnType.value}</code>, as defined by the
+	 * 		<code>batchMappingDataFetcherReturnType</code> plugin parameter. <br/>
+	 * 		Please look at the spring-graphql annotation for a documentation on how to return the proper values
+	 */
+	@BatchMapping(field = "${dataFetcher.field.name}")
+	public ${dataFetcher.batchMapperReturnType.value} ${dataFetcher.field.javaName}(//
+			BatchLoaderEnvironment batchLoaderEnvironment, //
+			GraphQLContext graphQLContext, //
+			List<${dataFetcher.graphQLOriginType.classFullName}> keys);
+
+#else        ## that is: ${dataFetcher.batchMapper} is false
+	/**
+	 * This method loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}.  It returns an Object: the data 
+	 * fetcher implementation may return any type that is accepted by a spring-graphql controller<BR/>
+	 * 
+#if($isEnum)
+ 	 * Note about enumerations: to manage enum values that are java keyword, enum values like if, else (...) are stored in enum 
+ 	 * values prefixed by _ (like _if, _else...). But this prevents the automatic mapping of spring-graphql to work. So enum values 
+ 	 * are returned as String by the generated controller.
+#end
+	 * 
+	 * @param dataFetchingEnvironment
+	 *            The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this
+	 *            DataFetcher
+#if(${dataFetcher.withDataLoader})
+	 * @param dataLoader
+	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
+	 *            issues, and greatly optimizes the response time.<BR/>
+	 *            You'll find more informations here: <A HREF=
+	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
+#end
+	 * @param origin
+	 *            The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the
+	 *            author attribute of the <I>origin</I>, which is an instance of {ObjectType {name:Post,
+	 *            fields:{Field{name:id, type:ID!, params:[]},Field{name:date, type:Date!, params:[]},Field{name:author,
+	 *            type:Member, params:[]},Field{name:publiclyAvailable, type:Boolean, params:[]},Field{name:title,
+	 *            type:String!, params:[]},Field{name:content, type:String!, params:[]},Field{name:authorId, type:ID,
+	 *            params:[]},Field{name:topicId, type:ID, params:[]}}, comments ""}. It depends on your data modle, but
+	 *            it typically contains the id to use in the query.
+	 * @throws NoSuchElementException
+	 *             This method may return a {@link NoSuchElementException} exception. In this case, the exception is
+	 *             trapped by the calling method, and the return is consider as null. This allows to use the
+	 *             {@link Optional#get()} method directly, without caring of whether or not there is a value. The
+	 *             generated code will take care of the {@link NoSuchElementException} exception.
+#foreach($argument in $dataFetcher.field.inputParameters)
+	 * @param #argumentName($argument)
+	 *             The parameter that will receive the field argument of the same name for the current data to fetch
+#end
+	 * @return 
+	 * 		It may return any value that is valid for a spring-graphql controller, annotated by 
+	 * 		the <code>@SchemaMapping</code> annotation
+	 */
+	@SchemaMapping(field = "${dataFetcher.field.name}") // This annotation is used to maintain compatibility with earlier version of the
+									// plugin. Code that uses Spring Boot annotations should remove this annotation
+									// and use the @BatchMapping annotation instead
+#########################
 ## If at least one parameter is a list of enums, there would be a cast warning. Let's prevent that.
 #set($suppressWarning=false)
 #foreach($argument in $dataFetcher.field.inputParameters)
@@ -180,5 +198,9 @@ ${argument.javaName}##
 		return #if($isEnum)graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.withDataLoader}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
+##
+##
+#end ##if(${dataFetcher.batchMapper})
+##
 #end ##foreach($dataFetcher)
 }

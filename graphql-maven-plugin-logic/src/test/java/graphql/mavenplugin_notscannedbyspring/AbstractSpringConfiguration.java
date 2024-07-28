@@ -47,13 +47,14 @@ public abstract class AbstractSpringConfiguration {
 	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		GraphQLConfigurationTestHelper configuration = new GraphQLConfigurationTestHelper(this);
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "/src/test/resources");
-		if (schemaFileSubFolder != null) {
-			configuration.schemaFileFolder = new File(configuration.schemaFileFolder, schemaFileSubFolder);
+		if (this.schemaFileSubFolder != null) {
+			configuration.schemaFileFolder = new File(configuration.schemaFileFolder, this.schemaFileSubFolder);
 		}
 
 		String classname = this.getClass().getSimpleName();
 		int firstDollar = classname.indexOf('$');
-		configuration.packageName = BASE_PACKAGE + "." + classname.substring(0, firstDollar).toLowerCase();
+		configuration.packageName = BASE_PACKAGE + "."
+				+ classname.substring(0, firstDollar).toLowerCase();
 		configuration.projectDir = mavenTestHelper.getModulePathFile();
 		configuration.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);
