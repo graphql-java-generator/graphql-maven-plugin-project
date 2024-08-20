@@ -22,9 +22,10 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE = "Flux<V>";
+	public final String DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE = "FLUX";
 	public final String DEFAULT_IGNORED_SPRING_MAPPINGS = "";
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "true";
+	public final String DEFAULT_GENERATE_BATCH_MAPPING_DATA_FETCHERS = "false";
 	public final String DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT = "false";
 	public final String DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS = "false";
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
@@ -42,21 +43,24 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * The allowed values are (where K is the key type, that is: the parent object, and V is the value to be loaded in
 	 * batch):
 	 * </P>
-	 * <P
-	 * <UL>
-	 * <LI>Mono&lt;Map&lt;K, V&gt;&gt;</LI>
-	 * <LI>Map&lt;K, V&gt;</LI>
-	 * <LI>Flux&lt;V&gt;</LI>
-	 * <LI>Collection&lt;V&gt;</LI>
-	 * </UL>
+	 * <TABLE>
+	 * <ROW>
+	 * <TH>Value</TH>
+	 * <TH>Return type</TH></ROW> <ROW>
+	 * <TD>MONO_MAP</TD></TD>Mono&lt;Map&lt;K,V&gt;&gt;</TD></ROW> <ROW>
+	 * <TD>MAP</TD>
+	 * <TD>Map&lt;K,V&gt;</TD></ROW> <ROW>
+	 * <TD>FLUX></TD>
+	 * <TD>Flux&lt;V&gt;</TD></ROW> <ROW>
+	 * <TD>COLLECTION</TD>
+	 * <TD>Collection&lt;V&gt;</TD></ROW>
+	 * </TABLE>
 	 * <P>
 	 * The default value is <code>Flux&lt;V&gt;</code>
 	 * </P>
 	 * <P>
 	 * For an easier use of this parameter, the comment of the generated data fetchers details the exact expected type.
 	 * </P>
-	 * 
-	 * @return
 	 */
 	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType();
 
@@ -233,10 +237,8 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * When setting this parameter to <i>true</i>, the main changes are:
 	 * </P>
 	 * <UL>
-	 * <LI>The <code>@BatchMapping</code> annotation may not be applied on a field with argument(s). This is a choice,
-	 * as this annotation is a shortcut to avoid boilerplate code, for the most common cases. See
-	 * <a href="https://github.com/spring-projects/spring-graphql/issues/232">this discussion</a> for more information
-	 * on this.</LI>
+	 * <LI>The <code>@BatchMapping</code> annotation may be applied to all data fetchers without argument(s) that return
+	 * either a List, a Type, an Interface or an Union.</LI>
 	 * <LI>The return type must be defined in the controller: it may not be `Object`, as spring-graphql builds the
 	 * proper BatchLoader while loading the controllers, when the server starts. The return type for this method is
 	 * managed by the <code>batchMappingMethodReturnType</code> plugin parameter</LI>
@@ -258,8 +260,12 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * 		GraphQLContext graphQLContext, //
 	 * 		List<Board> boards);
 	 * </PRE>
-	 * 
-	 * @return
+	 * <P>
+	 * Please note that the <code>@BatchMapping</code> annotation is a shortcut to avoid boilerplate code, for the most
+	 * common cases. See <a href="https://github.com/spring-projects/spring-graphql/issues/232">this discussion</a> for
+	 * more information on this. For most complex cases, the use of a DataLoader is recommended by the spring-graphql
+	 * case. And in these cases, the plugin will generate a method with the <code>@SchemaMapping</code> annotation
+	 * </P>
 	 */
 	public boolean isGenerateBatchMappingDataFetchers();
 

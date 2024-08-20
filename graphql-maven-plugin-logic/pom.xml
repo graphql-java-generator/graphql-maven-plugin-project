@@ -102,7 +102,10 @@
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_allFalse/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_allTrue/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Collection/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Flux/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Map/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_MonoMap/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo_SpringConfiguration/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>

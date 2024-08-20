@@ -29,7 +29,7 @@ import lombok.Setter;
 @Import({ JacksonAutoConfiguration.class })
 public abstract class AbstractSpringConfiguration {
 
-	private static String BASE_PACKAGE = "org.graphql.mavenplugin.junittest";
+	private static String BASE_PACKAGE = "org.junittest";
 
 	@Getter
 	@Setter
@@ -53,8 +53,7 @@ public abstract class AbstractSpringConfiguration {
 
 		String classname = this.getClass().getSimpleName();
 		int firstDollar = classname.indexOf('$');
-		configuration.packageName = BASE_PACKAGE + "."
-				+ classname.substring(0, firstDollar).toLowerCase();
+		configuration.packageName = BASE_PACKAGE + "." + classname.substring(0, firstDollar).toLowerCase();
 		configuration.projectDir = mavenTestHelper.getModulePathFile();
 		configuration.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);

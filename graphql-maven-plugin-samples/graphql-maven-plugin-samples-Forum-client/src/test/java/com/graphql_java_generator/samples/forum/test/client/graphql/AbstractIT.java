@@ -114,7 +114,7 @@ abstract class AbstractIT {
 		Member author12 = topic12.getAuthor();// All its fields have been loaded
 		assertNotNull(author12);
 		assertEquals("12", author12.getId());
-		assertEquals("[BL] Name 12", author12.getName());
+		assertEquals("[BM] Name 12", author12.getName());
 		assertEquals("Alias of Name 12", author12.getAlias());
 		assertEquals("name.12@graphql-java.com", author12.getEmail());
 		assertEquals(MemberType.STANDARD, author12.getType());
@@ -133,7 +133,7 @@ abstract class AbstractIT {
 		Member author12bis = post232.getAuthor();// This one is partially loaded: author{name email alias}
 		assertNotNull(author12bis);
 		assertEquals(null, author12bis.getId());
-		assertEquals("[BL] Name 12", author12bis.getName());
+		assertEquals("[BM] Name 12", author12bis.getName());
 		assertEquals("Alias of Name 12", author12bis.getAlias());
 		assertEquals("name.12@graphql-java.com", author12bis.getEmail());
 		assertEquals(null, author12bis.getType());

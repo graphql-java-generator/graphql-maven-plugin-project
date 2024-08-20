@@ -66,6 +66,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<generateBatchMappingDataFetchers>true</generateBatchMappingDataFetchers>
 					<generateDataLoaderForLists>true</generateDataLoaderForLists>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>

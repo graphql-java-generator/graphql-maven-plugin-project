@@ -7,19 +7,22 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 
 import graphql.GraphQLContext;
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_util_batchMapping;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-class AllGraphQLCasesServer_util_batchMapping_Test extends AbstractIntegrationTest {
+abstract class AllGraphQLCasesServer_util_batchMapping_Test extends AbstractIntegrationTest {
 
-	public AllGraphQLCasesServer_util_batchMapping_Test() {
-		super(AllGraphQLCases_Server_SpringConfiguration_util_batchMapping.class);
+	public AllGraphQLCasesServer_util_batchMapping_Test(Class<?> clz) {
+		super(clz);
 	}
 
 	@BeforeEach
@@ -40,6 +43,9 @@ class AllGraphQLCasesServer_util_batchMapping_Test extends AbstractIntegrationTe
 		Class<?> subscriptionControllerClass = loadGeneratedClass("TheSubscriptionTypeController", FileType.UTIL);
 		assertNotNull(subscriptionControllerClass);
 		//
+		Class<?> batchMappingTypeClass = loadGeneratedClass("BatchMappingTypeController", FileType.UTIL);
+		assertNotNull(batchMappingTypeClass);
+		//
 		Class<?> allFieldCasesClass = loadGeneratedClass("AllFieldCases", FileType.POJO);
 		assertNotNull(allFieldCasesClass);
 		//
@@ -59,12 +65,25 @@ class AllGraphQLCasesServer_util_batchMapping_Test extends AbstractIntegrationTe
 		assertTrue(this.configuration.isGenerateBatchMappingDataFetchers(),
 				"generateBatchMappingDataFetchers should be true in this test");
 		//
-		assertEquals(0, allFieldCasesControllerClass.getConstructors().length,
-				"There should be no constructor in the Controller");
-		assertEquals(0,
-				Arrays.stream(dataFetchersDelegateAllFieldCases.getMethods())
-						.filter(m -> m.getName().equals("batchLoader")).count(),
-				"There should be no batchLoader(List) method");
+		//
+		// The tests below are deactivated for now: we still need the Controller's constructor, to declare the
+		// DataLoader, in case one field of this type has field parameters.
+		//
+		// assertEquals(0, batchMappingTypeClass.getConstructors().length,
+		// "There should be no constructor in the BatchMappingTypeClass Controller");
+		// method = batchMappingTypeClass.getMethod("friends", BatchLoaderEnvironment.class, GraphQLContext.class,
+		// List.class);
+		// assertNotNull(method);
+		// //
+		// assertEquals(1, allFieldCasesControllerClass.getConstructors().length,
+		// "There should be one constructor in the AllFieldCases Controller");
+		// constructor = allFieldCasesControllerClass.getConstructor(BatchLoaderRegistry.class);
+		// assertNotNull(constructor);
+		// //
+		// assertEquals(0,
+		// Arrays.stream(dataFetchersDelegateAllFieldCases.getMethods())
+		// .filter(m -> m.getName().equals("batchLoader")).count(),
+		// "There should be no batchLoader(List) method");
 
 		// query, mutation and subscription should have no method with @BatchMapping annotation
 		assertEquals(0,
@@ -80,20 +99,39 @@ class AllGraphQLCasesServer_util_batchMapping_Test extends AbstractIntegrationTe
 						.filter(m -> m.getAnnotation(BatchMapping.class) != null).count(),
 				"query, mutation and subscription should have no method with @BatchMapping annotation");
 		//
-		// All methods in the controllers and DataFetcherDelegates should have the @BatchMapping annotation
-		assertEquals(0,
-				Arrays.stream(allFieldCasesControllerClass.getDeclaredMethods())
-						.filter(m -> m.getAnnotation(BatchMapping.class) == null).count(),
-				"type's controllers have all their methods with @BatchMapping annotation");
-
+		// All fields without argument in the controllers and DataFetcherDelegates should have the @BatchMapping
+		// annotation.
+		assertEquals(8, Arrays.stream(allFieldCasesControllerClass.getDeclaredMethods())
+				.filter(m -> m.getAnnotation(BatchMapping.class) != null).count());
 		//
 		method = allFieldCasesControllerClass.getMethod("oneWithoutFieldParameter", BatchLoaderEnvironment.class,
 				GraphQLContext.class, List.class);
 		assertNotNull(method,
 				"There should be a oneWithoutFieldParameter(BatchLoaderEnvironment,GraphQLContext,List) method");
 		assertNotNull(method.getAnnotation(BatchMapping.class));
+		switch (this.configuration.getBatchMappingDataFetcherReturnType()) {
+		case COLLECTION:
+			assertEquals(Collection.class, method.getReturnType());
+			break;
+		case FLUX:
+			assertEquals(Flux.class, method.getReturnType());
+			break;
+		case MAP:
+			assertEquals(Map.class, method.getReturnType());
+			break;
+		case MONO_MAP:
+			assertEquals(Mono.class, method.getReturnType());
+			break;
+		default:
+			fail("Unexpected value for batchMappingDataFetcherReturnType: "
+					+ this.configuration.getBatchMappingDataFetcherReturnType());
+		}
 
-		fail("Ok for now. But there should be more things to test");
+		//
+		method = allFieldCasesControllerClass.getMethod("dates", BatchLoaderEnvironment.class, GraphQLContext.class,
+				List.class);
+		assertNotNull(method, "There should be a dates(BatchLoaderEnvironment,GraphQLContext,List) method");
+		assertNotNull(method.getAnnotation(BatchMapping.class));
 	}
 
 }

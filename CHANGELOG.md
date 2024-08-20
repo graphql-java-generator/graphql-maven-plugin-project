@@ -26,8 +26,10 @@
 ## Not released yet
 
 Server mode:
-* The new `generateBatchMappingDataFetchers` plugin parameters allows to generate data fetchers with the <code>@BatchMapping</code> annotation (instead of the `@SchemaMapping` one). This allows to manage the N+1 select problem: so this allows much better performances, by highly diminishing the number of executed requests
+* The new `generateBatchMappingDataFetchers` plugin parameters is in __beta version__ in this release. It allows to generate data fetchers with the <code>@BatchMapping</code> annotation (instead of the `@SchemaMapping` one). This allows to manage the N+1 select problem: so this allows much better performances, by highly diminishing the number of executed requests
     * The new `batchMappingDataFetcherReturnType` allows to control the return type of these data fetchers
+    * Please note that the behaviour for this parameter may change a little for GraphQL schema that use field parameters. 
+    * For GraphQL schemas that don't use field parameters, its behaviour can be considered as stable
 * Issues #214 and #215: the new `ignoredSpringMappings` plugin parameter allows to ignore a list of type and field mappings (or all mappings, when this parameter is set to the star character, "*").
     * An ignored type mapping prevent the generation of its `DataFetcherDelegate`, and its entity Spring Controller. The [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented.
     * An ignored field mapping prevent the generation of the method for this field in the `DataFetcherDelegate`, and its entity Spring Controller. A [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented for this field.

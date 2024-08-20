@@ -43,8 +43,8 @@ public class IntrospectionIT {
 
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "break", "age", "aFloat", "date", "dateTime",
 			"dates", "nbComments", "comments", "booleans", "aliases", "planets", "friends", "matrix",
-			"oneWithIdSubType", "listWithIdSubTypes", "oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65",
-			"issue66", "extendedField" };
+			"oneWithoutFieldParameter", "oneWithIdSubType", "listWithIdSubTypes", "oneWithoutIdSubType",
+			"listWithoutIdSubTypes", "issue65", "issue66", "extendedField" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
 	@Autowired
@@ -55,7 +55,8 @@ public class IntrospectionIT {
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP___Schema_CTS schema = myQuery.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
+		CTP___Schema_CTS schema = this.myQuery
+				.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
 
 		// Verification
 		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
@@ -72,7 +73,7 @@ public class IntrospectionIT {
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP___Type_CTS type = myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}",
+		CTP___Type_CTS type = this.myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}",
 				"AllFieldCases");
 
 		// Verification
@@ -92,7 +93,7 @@ public class IntrospectionIT {
 
 		// Go, go, go
 		// CTP_AllFieldCases_CTS ret = query.allFieldCases("{allFieldCases {id __typename}}", null);
-		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases("{id __typename}", null);
+		CTP_AllFieldCases_CTS ret = this.myQuery.allFieldCases("{id __typename}", null);
 
 		// Verification
 		assertEquals("AllFieldCases", ret.get__typename());
@@ -104,7 +105,7 @@ public class IntrospectionIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		List<CIP_Character_CIS> ret = myQuery.withoutParameters(" {id __typename}");
+		List<CIP_Character_CIS> ret = this.myQuery.withoutParameters(" {id __typename}");
 
 		// Verification
 		assertTrue(ret.size() >= 10);
@@ -121,7 +122,7 @@ public class IntrospectionIT {
 		// See the 'spring.codec.max-in-memory-size' parameter in the application.properties file.
 		// See https://github.com/spring-projects/spring-framework/issues/23961
 		String query = IntrospectionQuery.INTROSPECTION_QUERY;
-		CTP_MyQueryType_CTS response = myQuery.exec(query);
+		CTP_MyQueryType_CTS response = this.myQuery.exec(query);
 
 		assertNotNull(response.get__schema());
 		assertEquals("AnotherMutationType", response.get__schema().getMutationType().getName());

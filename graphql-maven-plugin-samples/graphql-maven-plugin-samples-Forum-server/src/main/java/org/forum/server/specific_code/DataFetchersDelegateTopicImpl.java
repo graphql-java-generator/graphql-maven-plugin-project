@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
@@ -24,8 +25,10 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
+import reactor.core.publisher.Flux;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -54,9 +57,24 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	GraphqlUtils graphqlUtils;
 
 	@Override
-	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, Member> dataLoader, Topic source) {
-		return dataLoader.load(source.getAuthorId());
+	public Flux<Member> author(BatchLoaderEnvironment batchLoaderEnvironment, GraphQLContext graphQLContext,
+			List<Topic> keys) {
+		if (this.logger.isDebugEnabled()) {
+			List<String> ids = keys.stream().map(p -> p.getAuthorId().toString()).collect(Collectors.toList());
+			this.logger.debug("Before returning Flux to load this list of topics authors: {}", String.join(",", ids));
+		}
+		return Flux.fromIterable(keys).map(obj -> {
+			this.logger.debug("Before loading Member {} ", obj.getAuthorId());
+			Member ret = this.memberRepository.findById(obj.getAuthorId()).orElse(null);
+
+			// To check that this member is loaded from the @BatchMapping controller method, we prefix the member's name
+			if (!ret.getName().startsWith("[BM] ")) {
+				ret.setName("[BM] " + ret.getName());
+			}
+
+			this.logger.debug("After loading Member {}: ", obj.getAuthorId(), ret);
+			return ret;
+		});
 	}
 
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, Long memberId,

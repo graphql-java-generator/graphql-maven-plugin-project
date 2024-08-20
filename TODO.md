@@ -4,6 +4,8 @@ Here are the next tasks listed, as a TODO list:
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 
 ## TODO list for the 2.x branch
+* Issue #220: use immutable classes or records instead of classes
+* Rename the generated `DataFetchersDelegateRegistry` class (as a `Registry` type in the GraphQL schema would generate a name collision)
 * Test all parameter values for BatchMappingDataFetcherReturnType
 * generateBatchMappingDataFetchers:
     * Check that the returned sub-objects are link to their 
@@ -11,6 +13,7 @@ Here are the next tasks listed, as a TODO list:
         * Add a link to https://github.com/spring-projects/spring-graphql/issues/232
     * Check all four possible return types: BatchMappingDataFetcherReturnType
     * Complete AllGraphQLCasesServer_util_batchMapping_Test
+    * 
 * Issue with the generateBatchMappingDataFetchers:
     * These data fetcher can not have access to the field arguments (see [issue #232](https://github.com/spring-projects/spring-graphql/issues/232) of spring-graphql)
         * This is ok if this field has no argument

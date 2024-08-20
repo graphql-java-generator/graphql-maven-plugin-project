@@ -50,7 +50,8 @@ public class DataFetcherImpl implements DataFetcher {
 	 */
 	private Type graphQLOriginType = null;
 
-	private boolean withDataLoader = false;
+	private final boolean batchMapping;
+	private final boolean withDataLoader;
 
 	/**
 	 * 
@@ -66,6 +67,9 @@ public class DataFetcherImpl implements DataFetcher {
 	 *            without. In this case, one data fetcher is registered in the GraphQLProvider. And this data fetcher is
 	 *            also declared in the GraphQLDataFetchers class, and is responsible to all the relevant method in the
 	 *            {@link DataFetchersDelegate}.
+	 * @param batchMapping
+	 *            Indicates if this DataFetcher should be annotated with the <code>@BatchMapping</code> annotation. This
+	 *            is controlled by the <code>generateBatchMappingDataFetchers</code> plugin parameter
 	 * @param withDataLoader
 	 *            indicates that this DataFetcher will be actually loaded later, with the help of a {@link BatchLoader}.
 	 * @param graphQLOriginType
@@ -82,9 +86,10 @@ public class DataFetcherImpl implements DataFetcher {
 	 *            </UL>
 	 */
 	public DataFetcherImpl(Field field, DataFetchersDelegate dataFetcherDelegate, boolean declareInGraphQLProvider,
-			boolean withDataLoader, Type graphQLOriginType) {
+			boolean batchMapping, boolean withDataLoader, Type graphQLOriginType) {
 		this.field = field;
 		this.dataFetchersDelegate = dataFetcherDelegate;
+		this.batchMapping = batchMapping;
 		this.withDataLoader = withDataLoader;
 		this.graphQLOriginType = graphQLOriginType;
 

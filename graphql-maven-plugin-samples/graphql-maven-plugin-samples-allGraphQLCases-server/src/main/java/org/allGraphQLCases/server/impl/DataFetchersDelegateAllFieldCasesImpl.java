@@ -25,6 +25,7 @@ import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import reactor.core.publisher.Mono;
 
 /**
  * @author etienne-sf
@@ -233,7 +234,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		case YEAR:
 			return origin.getAge();
 		case DAY:
-			return origin.getAge() * 365;// Let's say here that all years have 265 days.
+			return origin.getAge() * 365;// Let's say here that all years have 365 days.
 		case HOUR:
 			return origin.getAge();
 		case MINUTE:
@@ -248,4 +249,10 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	}
 
+	@Override
+	public Object oneWithoutFieldParameter(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, STP_AllFieldCasesWithIdSubtype_STS> dataLoader, STP_AllFieldCases_STS origin) {
+		// Renvoi d'un Mono
+		return Mono.fromCallable(() -> this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class));
+	}
 }

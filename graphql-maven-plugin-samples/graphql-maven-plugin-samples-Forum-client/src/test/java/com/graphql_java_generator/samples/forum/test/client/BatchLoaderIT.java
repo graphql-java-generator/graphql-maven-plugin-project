@@ -76,12 +76,12 @@ public class BatchLoaderIT {
 
 	/**
 	 * Verifications: all the author names should be retrieved by the BatchLoader implemented in the
-	 * graphql-maven-plugin-samples-Forum-server project. So their name should start by one [BL] (not two, and no
+	 * graphql-maven-plugin-samples-Forum-server project. So their name should start by one [BM] (not two, and no
 	 * [SL])<BR/>
 	 */
 	private void checkNameLoadedByBatchLoader(String name) {
-		assertTrue(name.startsWith("[BL] "));
-		assertFalse(name.startsWith("[BL] [BL] "));
+		assertTrue(name.startsWith("[BM] "));
+		assertFalse(name.startsWith("[BM] [BM] "));
 		assertFalse(name.startsWith("[SL] ")); // Ok, this one is quite useless! But it makes me satisfied... ;-)
 	}
 }

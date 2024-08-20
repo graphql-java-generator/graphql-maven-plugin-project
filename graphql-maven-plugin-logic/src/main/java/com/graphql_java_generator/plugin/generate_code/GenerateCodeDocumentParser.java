@@ -617,10 +617,10 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				if (!isFieldSpringMappingIgnored(field)) {
 					if (type.getRequestType() != null) {
 						// For query/mutation/subscription, we take the argument read in the schema as is: all the
-						// needed
-						// informations is already parsed.
+						// needed informations is already parsed.
 						// There is no source for requests, as they are the root of the hierarchy
-						this.dataFetchers.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, null));
+						this.dataFetchers
+								.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, false, null));
 					} else if (false
 							// A data fetcher is needed to:
 							// 1) manage lists
@@ -653,7 +653,18 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// list.add(inputParameter);
 						// }
 
-						// We'll add a data fetcher with a data loader, to use a Batch Loader, if:
+						// if the generateBatchMappingDataFetchers plugin parameter is set to to true, the data fetcher
+						// is a spring-graphql BathMapper (that is, is annotated by @BathMapper) if one of these
+						// conditions is true:
+						// 1) The field's type is not a scalar
+						// 2) The field'stype is a list
+						boolean batchMapping = //
+								((GenerateServerCodeConfiguration) this.configuration)
+										.isGenerateBatchMappingDataFetchers() //
+										&& field.getInputParameters().size() == 0//
+										&& (!field.getType().isScalar() || field.getFieldTypeAST().getListDepth() > 0);
+						//
+						// This data fetcher needs a data loader parameter if one of these conditions is true:
 						// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 						// 2) That target object has an id (it can be either a list or a single object)
 						// 3a) Until 1.18.2 : the Relation toward the target object is OneToOne or ManyToOne. That is
@@ -674,7 +685,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 											.orElse(null);
 						}
 
-						DataFetcher df = new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type);
+						DataFetcher df = new DataFetcherImpl(newField, dataFetcherDelegate, true, batchMapping,
+								withDataLoader, type);
 						this.dataFetchers.add(df);
 						newField.setDataFetcher(df);
 					}

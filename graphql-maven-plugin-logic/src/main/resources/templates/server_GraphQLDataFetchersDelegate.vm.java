@@ -19,10 +19,8 @@ import org.reactivestreams.Publisher;
 import com.graphql_java_generator.annotation.GraphQLDirective;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
-#if($configuration.generateBatchLoaderEnvironment)
-import org.dataloader.BatchLoaderEnvironment;
-#end
 
 /**
 #if ($dataFetcherDelegate.type.description)
@@ -46,6 +44,38 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ##
+#if(${dataFetcher.batchMapping})
+	/**
+	 * This methods loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}. It is generated as the 
+	 * <code>generateBatchMappingDataFetchers</code> plugin parameter is true. <br/>
+	 * 
+	 * @param batchLoaderEnvironment
+	 * 		The environement for this batch loaded. You can extract the GraphQLContext from this parameter.
+	 * @param graphQLContext
+	 * @param keys
+	 * 		The objects for which the value for the ${dataFetcher.field.name} field must be retrieved.
+	 * @return This method returns <code>${dataFetcher.batchMappingReturnType.value}</code>, as defined by the
+	 * 		<code>batchMappingDataFetcherReturnType</code> plugin parameter. <br/>
+	 * 		Please look at the spring-graphql annotation for a documentation on how to return the proper values
+	 */
+#if ($configuration.batchMappingDataFetcherReturnType == "MONO_MAP")
+#set($return = "reactor.core.publisher.Mono<java.util.Map<${dataFetcher.graphQLOriginType.classFullName}, ${dataFetcher.field.type.classFullName}>>")
+#elseif ($configuration.batchMappingDataFetcherReturnType == "MAP")
+#set($return = "java.util.Map<${dataFetcher.graphQLOriginType.classFullName}, ${dataFetcher.field.type.classFullName}>")
+#elseif ($configuration.batchMappingDataFetcherReturnType == "FLUX")
+#set($return = "reactor.core.publisher.Flux<${dataFetcher.field.type.classFullName}>")
+#elseif ($configuration.batchMappingDataFetcherReturnType == "COLLECTION")
+#set($return = "java.util.Collection<${dataFetcher.field.type.classFullName}>")
+#else
+#error Unexpected value for batchMappingDataFetcherReturnType: $configuration.batchMappingDataFetcherReturnType 
+#end
+##
+	public #evaluate($return) ${dataFetcher.field.javaName}(//
+			BatchLoaderEnvironment batchLoaderEnvironment, //
+			GraphQLContext graphQLContext, //
+			List<${dataFetcher.graphQLOriginType.classFullName}> keys);
+
+#else        ## that is: ${dataFetcher.batchMapping} is false
 	/**
 #if ($dataFetcher.field.description)
 	 * Description for the ${dataFetcher.field.name} field: <br/>
@@ -58,11 +88,12 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. It may return whatever is 
 	 * accepted by the Spring Controller, that is:
 	 * <ul>
-	 * <li>A resolved value of any type</li>
-	 * <li>Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in Reactive DataFetcher.</li>
+	 * <li>A resolved value of any type (typically, a ${dataFetcher.field.javaTypeFullClassname})</li>
+	 * <li>Mono and Flux for asynchronous value(s). Supported for controller methods and for any DataFetcher as described in Reactive DataFetcher. 
+	 * This would typically be a Mono&lt;${dataFetcher.field.javaTypeFullClassname}&gt; or a Flux&lt;${dataFetcher.field.javaTypeFullClassname}&gt;</li>
 	 * <li>Kotlin coroutine and Flow are adapted to Mono and Flux</li>
 	 * <li>java.util.concurrent.Callable to have the value(s) produced asynchronously. For this to work, AnnotatedControllerConfigurer must be 
-	 *     configured with an Executor</li>
+	 *     configured with an Executor. This would typically by a Callable&lt;${dataFetcher.field.javaTypeFullClassname}&gt;</li>
 	 * </ul>
 	 * As a complement to the spring-graphql documentation, you may also return:
 	 * <ul>
@@ -72,17 +103,6 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 *     times the same data, and allows parallel execution of the queries, if multiple queries are to be run.</li>
 	 * <li>A Publisher (instead of a Flux), for Subscription for instance</li>
 	 * </ul>
-	 * For instance, your method may return:
-	 * <ul>
-#if ($dataFetchersDelegate.type.requestType == "subscription")
-	 * <li>Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
-	 * <li>Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
-#else
-	 * <li>Mono<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end></li>
-	 * <li>CompletableFuture<${dataFetcher.field.javaTypeFullClassname}></li>
-	 * <li>${dataFetcher.field.javaTypeFullClassname}</li>
-#end
-	 * </ul> 
 	 * 
 	 * @param dataFetchingEnvironment 
 	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
@@ -126,6 +146,7 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 ##
 ##
 
+#end   ## #if(${dataFetcher.batchMapping})
 #end   ## #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ##

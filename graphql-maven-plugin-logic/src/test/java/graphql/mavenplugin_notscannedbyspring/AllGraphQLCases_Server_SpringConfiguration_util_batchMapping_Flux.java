@@ -29,7 +29,7 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.client.graphqlrepository.*") })
-public class AllGraphQLCases_Server_SpringConfiguration_util_batchMapping extends AbstractSpringConfiguration {
+public class AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Flux extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;
 	static {
@@ -64,7 +64,7 @@ public class AllGraphQLCases_Server_SpringConfiguration_util_batchMapping extend
 		configuration.customScalars = customScalars;
 
 		// Parameters that control the server generation
-		configuration.batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX_V;
+		configuration.batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX;
 		configuration.addRelayConnections = false; // same as in
 													// AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses
 		configuration.generateBatchLoaderEnvironment = true;// false testé dans separateUtilityClasses_Test

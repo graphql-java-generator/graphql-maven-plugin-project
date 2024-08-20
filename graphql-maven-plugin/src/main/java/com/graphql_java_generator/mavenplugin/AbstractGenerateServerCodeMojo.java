@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.dataloader.BatchLoaderEnvironment;
 
+import com.graphql_java_generator.plugin.conf.BatchMappingDataFetcherReturnType;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Packaging;
@@ -25,6 +26,39 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
  */
 public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCodeCommonMojo
 		implements GenerateServerCodeConfiguration {
+
+	/**
+	 * <P>
+	 * This parameter is used only when generateBatchMappingDataFetchers is set to <i>true</i>. It determines the return
+	 * type of the data fetchers, as defined in the <a href=
+	 * "https://docs.spring.io/spring-graphql/reference/controllers.html#controllers.batch-mapping.return.values">spring-graphql
+	 * documentation</a>.
+	 * </P>
+	 * <P>
+	 * The allowed values are (where K is the key type, that is: the parent object, and V is the value to be loaded in
+	 * batch):
+	 * </P>
+	 * <TABLE>
+	 * <ROW>
+	 * <TH>Value</TH>
+	 * <TH>Return type</TH></ROW> <ROW>
+	 * <TD>MONO_MAP</TD></TD>Mono&lt;Map&lt;K,V&gt;&gt;</TD></ROW> <ROW>
+	 * <TD>MAP</TD>
+	 * <TD>Map&lt;K,V&gt;</TD></ROW> <ROW>
+	 * <TD>FLUX></TD>
+	 * <TD>Flux&lt;V&gt;</TD></ROW> <ROW>
+	 * <TD>COLLECTION</TD>
+	 * <TD>Collection&lt;V&gt;</TD></ROW>
+	 * </TABLE>
+	 * <P>
+	 * The default value is <code>Flux&lt;V&gt;</code>
+	 * </P>
+	 * <P>
+	 * For an easier use of this parameter, the comment of the generated data fetchers details the exact expected type.
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.batchMappingDataFetcherReturnType", defaultValue = GraphQLConfiguration.DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE)
+	public BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType;
 
 	/**
 	 * <P>
@@ -76,6 +110,50 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateBatchLoaderEnvironment", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT)
 	public boolean generateBatchLoaderEnvironment;
+
+	/**
+	 * <P>
+	 * If this parameter is set to <i>true</i>, the spring GraphQL controller methods will be annotated with the
+	 * <code>@BatchMapping</code> (instead of the <code>@SchemaMapping</code>). This allows to manage the of the N+1
+	 * select problem: so this allows much better performances, by highly diminishing the number of executed requests
+	 * (avoid to execute several times the same "sub-query")
+	 * <P>
+	 * </P>
+	 * When setting this parameter to <i>true</i>, the main changes are:
+	 * </P>
+	 * <UL>
+	 * <LI>The <code>@BatchMapping</code> annotation may be applied to all data fetchers without argument(s) that return
+	 * either a List, a Type, an Interface or an Union.</LI>
+	 * <LI>The return type must be defined in the controller: it may not be `Object`, as spring-graphql builds the
+	 * proper BatchLoader while loading the controllers, when the server starts. The return type for this method is
+	 * managed by the <code>batchMappingMethodReturnType</code> plugin parameter</LI>
+	 * <LI>DataLoader is managed transparently by spring (instead of having to declare it in the generated controller,
+	 * and having it as a parameter in the generated data fetchers)</LI>
+	 * <LI>The batch mapping is generalized on all data fetchers</LI>
+	 * <LI>The <code>DataFetchersDelegate</code> method's signature changes</LI>
+	 * <LI>The <code>generateBatchLoaderEnvironment</code>, <code>generateDataFetcherForEveryFieldsWithArguments</code>
+	 * and <code>generateDataLoaderForLists</code> plugin parameters are ignored</LI>
+	 * </UL>
+	 * <P>
+	 * A typical method signature for a data fetcher would be as below, where the return type is controller by the
+	 * <code>batchMappingMethodReturnType</code> plugin parameter :
+	 * </P>
+	 * 
+	 * <PRE>
+	 * public Flux<Topic> topics(//
+	 * 		BatchLoaderEnvironment batchLoaderEnvironment, //
+	 * 		GraphQLContext graphQLContext, //
+	 * 		List<Board> boards);
+	 * </PRE>
+	 * <P>
+	 * Please note that the <code>@BatchMapping</code> annotation is a shortcut to avoid boilerplate code, for the most
+	 * common cases. See <a href="https://github.com/spring-projects/spring-graphql/issues/232">this discussion</a> for
+	 * more information on this. For most complex cases, the use of a DataLoader is recommended by the spring-graphql
+	 * case. And in these cases, the plugin will generate a method with the <code>@SchemaMapping</code> annotation
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateBatchMappingDataFetchers", defaultValue = GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_MAPPING_DATA_FETCHERS)
+	public boolean generateBatchMappingDataFetchers;
 
 	/**
 	 * <P>
@@ -239,6 +317,11 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	String scanBasePackages;
 
 	@Override
+	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
+		return this.batchMappingDataFetcherReturnType;
+	}
+
+	@Override
 	public String getIgnoredSpringMappings() {
 		return this.ignoredSpringMappings;
 	}
@@ -262,6 +345,11 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	@Override
 	public boolean isGenerateBatchLoaderEnvironment() {
 		return this.generateBatchLoaderEnvironment;
+	}
+
+	@Override
+	public boolean isGenerateBatchMappingDataFetchers() {
+		return this.generateBatchMappingDataFetchers;
 	}
 
 	@Override

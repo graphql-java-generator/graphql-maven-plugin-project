@@ -78,9 +78,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(66, i, "Nb java files are generated");
+		assertEquals(67, i, "Nb java files are generated");
 		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(42, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(43, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(10, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(20, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, this.generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
@@ -181,6 +181,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// matrix: [[Float]]!
 		checkField(objectType, j, "matrix", 2, true, false, "Float", "Double");
+		checkNbInputParameter(objectType, j, 0);
+		j += 1;
+		// oneWithoutFieldParameter: AllFieldCasesWithIdSubtype
+		checkField(objectType, j, "oneWithoutFieldParameter", 0, false, null, "AllFieldCasesWithIdSubtype",
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype

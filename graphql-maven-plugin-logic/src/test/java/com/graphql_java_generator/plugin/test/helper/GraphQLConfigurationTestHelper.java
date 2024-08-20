@@ -31,7 +31,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	public Logger logger;
 
-	public BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX_V;
+	public BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType = BatchMappingDataFetcherReturnType.FLUX;
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false;
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();

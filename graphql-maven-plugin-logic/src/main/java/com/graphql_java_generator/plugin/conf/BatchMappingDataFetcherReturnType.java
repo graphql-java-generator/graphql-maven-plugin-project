@@ -12,15 +12,19 @@ package com.graphql_java_generator.plugin.conf;
  */
 public enum BatchMappingDataFetcherReturnType {
 
-	MONO_MAP_K_V("Mono<Map<K, V>>"), MAP_K_V("Map<K, V>"), FLUX_V("Flux<V>"), COLLECTION_V("Collection<V>");
+	MONO_MAP("Mono<Map<K,V>>"), //
+	MAP("Map<K, V>"), //
+	FLUX("Flux<V>"), //
+	COLLECTION("Collection<V>");
 
-	BatchMappingDataFetcherReturnType(String value) {
+	final private String value;
+
+	private BatchMappingDataFetcherReturnType(String value) {
 		this.value = value;
 	}
-
-	private final String value;
 
 	public String value() {
 		return this.value;
 	}
+
 }

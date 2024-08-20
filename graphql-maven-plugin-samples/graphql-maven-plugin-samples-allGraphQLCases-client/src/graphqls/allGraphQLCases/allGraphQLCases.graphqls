@@ -446,6 +446,15 @@ input SubscriptionTestParam {
 	messages: [String!]
 }
 
+"""
+A test type, to test the @batchMapping spring-graphql annotation
+"""
+type BatchMappingType {
+	id: ID!
+	name: String!
+	friends: [Character]
+}
+
 ##############################################################################################################
 ################  STAR WARS SCHEMA  ##########################################################################
 ##############################################################################################################

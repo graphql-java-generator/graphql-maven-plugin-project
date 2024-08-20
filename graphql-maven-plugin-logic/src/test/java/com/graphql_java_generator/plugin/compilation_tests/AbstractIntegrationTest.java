@@ -46,6 +46,8 @@ abstract class AbstractIntegrationTest {
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
+		this.urlClassLoader = null;
+
 		this.ctx = new AnnotationConfigApplicationContext(this.springConfClass);
 		this.generateCodeDocumentParser = this.ctx.getBean(DocumentParser.class);
 		this.codeGenerator = this.ctx.getBean(Generator.class);

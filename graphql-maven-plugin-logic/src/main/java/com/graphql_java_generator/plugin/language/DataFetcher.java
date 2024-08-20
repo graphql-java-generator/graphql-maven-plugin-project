@@ -85,6 +85,14 @@ public interface DataFetcher {
 	public Type getGraphQLOriginType();
 
 	/**
+	 * Returns true if this DataFetcher should be annotated with the <code>@BatchMapping</code> annotation. This is
+	 * controlled by the <code>generateBatchMappingDataFetchers</code> plugin parameter
+	 * 
+	 * @return
+	 */
+	public boolean isBatchMapping();
+
+	/**
 	 * Returns true if this DataFetcher needs a <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java
 	 * java-dataloader</A> to optimize the accesses to the database. <BR/>
 	 * For instance, the DataDetcher would return CompletableFuture<List<Human>> (if completableFuture is true) or

@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_AllFieldCasesWithIdSubtype_CTS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_ReservedJavaKeywordAllFieldCases_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
@@ -304,6 +305,15 @@ public class PartialQueryIT {
 		assertNotNull(response.getInstanceof());
 		assertNotNull(response.getInt());
 		assertNotNull(response.getInterface());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_oneWithoutFieldParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		CTP_AllFieldCasesWithIdSubtype_CTS allFieldCasesWithIdSubtype = this.queryExecutor
+				.allFieldCases("{oneWithoutFieldParameter}", null).getOneWithoutFieldParameter();
+
+		assertNotNull(allFieldCasesWithIdSubtype);
 	}
 
 }
