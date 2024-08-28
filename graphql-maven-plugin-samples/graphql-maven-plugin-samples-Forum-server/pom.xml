@@ -66,6 +66,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<batchMappingDataFetcherReturnType>FLUX</batchMappingDataFetcherReturnType>
 					<generateBatchMappingDataFetchers>true</generateBatchMappingDataFetchers>
 					<generateDataLoaderForLists>true</generateDataLoaderForLists>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
