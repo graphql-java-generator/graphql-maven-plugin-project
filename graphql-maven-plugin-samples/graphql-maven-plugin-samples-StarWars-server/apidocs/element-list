@@ -3,7 +3,7 @@ com.graphql_java_generator.customscalars
 com.graphql_java_generator.server.util
 com.graphql_java_generator.util
 org.starwars.server
+org.starwars.server_spring_autoconfiguration
 org.starwars.server.datafetchersdelegate
 org.starwars.server.jpa
-org.starwars.server.spring_autoconfiguration
 org.starwars.server.util

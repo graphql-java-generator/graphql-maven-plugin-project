@@ -1,5 +1,5 @@
 com.generated.graphql
-com.generated.graphql.spring_autoconfiguration
+com.generated.graphql_spring_autoconfiguration
 com.generated.graphql.util
 com.graphql_java_generator.annotation
 com.graphql_java_generator.client
