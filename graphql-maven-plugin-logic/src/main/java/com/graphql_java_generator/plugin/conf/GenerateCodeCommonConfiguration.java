@@ -214,12 +214,14 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		logger.debug("    mode: " + getMode());
 		logger.debug("    packageName: " + getPackageName());
 		logger.debug("    queryMutationExecutionProtocol: " + getQueryMutationExecutionProtocol());
+		logger.debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
 		logger.debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		logger.debug("    sourceEncoding: " + getSourceEncoding());
 		logger.debug("    springBeanSuffix: " + getSpringBeanSuffix());
 		logger.debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
 		logger.debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
 		logger.debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());
+		logger.debug("    useJakartaEE9: " + isUseJakartaEE9());
 		logCommonConfiguration();
 	}
 

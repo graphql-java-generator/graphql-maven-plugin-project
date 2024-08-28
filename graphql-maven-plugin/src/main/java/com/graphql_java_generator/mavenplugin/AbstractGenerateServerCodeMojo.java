@@ -57,7 +57,7 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * For an easier use of this parameter, the comment of the generated data fetchers details the exact expected type.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.batchMappingDataFetcherReturnType", defaultValue = GraphQLConfiguration.DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.batchMappingDataFetcherReturnType", defaultValue = GraphQLConfiguration.DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE_STR)
 	public BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType;
 
 	/**

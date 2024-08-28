@@ -55,6 +55,7 @@ public interface GenerateClientCodeConfiguration extends GenerateCodeCommonConfi
 			logger.debug("-- start configuration --");
 			logger.debug("The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
 			logger.debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
+			logger.debug("    generateJacksonAnnotations: " + isGenerateJacksonAnnotations());
 			logGenerateCodeCommonConfiguration();
 			logger.debug("-- end configuration --");
 		}

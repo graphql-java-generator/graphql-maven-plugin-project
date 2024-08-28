@@ -22,7 +22,8 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE = "FLUX";
+	public final String DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE_STR = "FLUX";
+	public final BatchMappingDataFetcherReturnType DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE = BatchMappingDataFetcherReturnType.FLUX;
 	public final String DEFAULT_IGNORED_SPRING_MAPPINGS = "";
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "true";
 	public final String DEFAULT_GENERATE_BATCH_MAPPING_DATA_FETCHERS = "false";
@@ -372,8 +373,15 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	public default void logGenerateServerCodeConfiguration() {
 		Logger logger = LoggerFactory.getLogger(getClass());
 		logger.debug("  Parameters specific to the generateServerCode task/goal:");
+		logger.debug("    batchMappingDataFetcherReturnType: " + getBatchMappingDataFetcherReturnType());
 		logger.debug("    generateBatchLoaderEnvironment: " + isGenerateBatchLoaderEnvironment());
+		logger.debug("    generateBatchMappingDataFetchers: " + isGenerateBatchMappingDataFetchers());
+		logger.debug("    generateDataFetcherForEveryFieldsWithArguments: "
+				+ isGenerateDataFetcherForEveryFieldsWithArguments());
+		logger.debug("    generateDataLoaderForLists: " + isGenerateDataLoaderForLists());
+		logger.debug("    generateJacksonAnnotations: " + isGenerateJacksonAnnotations());
 		logger.debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
+		logger.debug("    ignoredSpringMappings: " + getIgnoredSpringMappings());
 		logger.debug("    javaTypeForIDType: " + getJavaTypeForIDType());
 		logger.debug("    packaging: " + getPackaging());
 		logger.debug("    scanBasePackages: " + getScanBasePackages());

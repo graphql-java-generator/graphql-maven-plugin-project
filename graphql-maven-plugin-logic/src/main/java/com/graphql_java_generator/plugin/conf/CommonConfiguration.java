@@ -275,14 +275,14 @@ public interface CommonConfiguration {
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: ""));
-			logger.debug("    typePrefix: " + getTypePrefix());
-			logger.debug("    typeSuffix: " + getTypeSuffix());
-			logger.debug("    inputPrefix: " + getInputPrefix());
-			logger.debug("    inputSuffix: " + getInputSuffix());
 			logger.debug("    enumPrefix: " + getEnumPrefix());
 			logger.debug("    enumSuffix: " + getEnumSuffix());
+			logger.debug("    inputPrefix: " + getInputPrefix());
+			logger.debug("    inputSuffix: " + getInputSuffix());
 			logger.debug("    interfacePrefix: " + getInterfacePrefix());
 			logger.debug("    interfaceSuffix: " + getInterfaceSuffix());
+			logger.debug("    typePrefix: " + getTypePrefix());
+			logger.debug("    typeSuffix: " + getTypeSuffix());
 			logger.debug("    unionPrefix: " + getUnionPrefix());
 			logger.debug("    unionSuffix: " + getUnionSuffix());
 		}
