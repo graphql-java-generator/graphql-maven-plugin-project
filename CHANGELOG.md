@@ -23,7 +23,7 @@
         * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
 
 
-## Not released yet
+## 2.8
 
 Server mode:
 * The new `generateBatchMappingDataFetchers` plugin parameters is in __beta version__ in this release. It allows to generate data fetchers with the <code>@BatchMapping</code> annotation (instead of the `@SchemaMapping` one). This allows to manage the N+1 select problem: so this allows much better performances, by highly diminishing the number of executed requests
