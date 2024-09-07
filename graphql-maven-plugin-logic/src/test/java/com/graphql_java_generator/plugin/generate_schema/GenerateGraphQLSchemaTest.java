@@ -62,41 +62,42 @@ class GenerateGraphQLSchemaTest {
 
 	@BeforeEach
 	void setUp() {
-		deepComparator = new DeepComparator();
+		this.deepComparator = new DeepComparator();
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
-		deepComparator.addIgnoredClass(AddRelayConnections.class);
-		deepComparator.addIgnoredClass(Document.class);
-		deepComparator.addIgnoredClass(GenerateGraphQLSchemaConfigurationTestHelper.class);
-		deepComparator.addIgnoredClass(GraphqlUtils.class);
-		deepComparator.addIgnoredClass(TypeDefinitionRegistry.class);
+		this.deepComparator.addIgnoredClass(AddRelayConnections.class);
+		this.deepComparator.addIgnoredClass(Document.class);
+		this.deepComparator.addIgnoredClass(GenerateGraphQLSchemaConfigurationTestHelper.class);
+		this.deepComparator.addIgnoredClass(GraphqlUtils.class);
+		this.deepComparator.addIgnoredClass(TypeDefinitionRegistry.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Id fields //////////////////////////////////////////////////////////////////////////
-		deepComparator.addIdField(CustomScalarType.class, "name");
-		deepComparator.addIdField(DirectiveImpl.class, "name");
-		deepComparator.addIdField(EnumType.class, "name");
-		deepComparator.addIdField(InterfaceType.class, "name");
-		deepComparator.addIdField(ObjectType.class, "name");
-		deepComparator.addIdField(UnionType.class, "name");
-		deepComparator.addIdField(FieldImpl.class, "name");
+		this.deepComparator.addIdField(CustomScalarType.class, "name");
+		this.deepComparator.addIdField(DirectiveImpl.class, "name");
+		this.deepComparator.addIdField(EnumType.class, "name");
+		this.deepComparator.addIdField(InterfaceType.class, "name");
+		this.deepComparator.addIdField(ObjectType.class, "name");
+		this.deepComparator.addIdField(UnionType.class, "name");
+		this.deepComparator.addIdField(FieldImpl.class, "name");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
-		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
-		deepComparator.addIgnoredFields(Description.class, "content");
-		deepComparator.addIgnoredFields(DocumentParser.class, "schemaDirectives");
-		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "configuration");
-		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
-		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "documents");
-		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "objectTypeExtensionDefinitions");
-		deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "applicationContext");
-		deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "configuration");
+		this.deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
+		this.deepComparator.addIgnoredFields(Description.class, "content");
+		this.deepComparator.addIgnoredFields(DocumentParser.class, "schemaDirectives");
+		this.deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "configuration");
+		this.deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
+		this.deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "documents");
+		this.deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class,
+				"objectTypeExtensionDefinitions");
+		this.deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "applicationContext");
+		this.deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "configuration");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// To break the cycle where comparing the type of a FieldImpl, we define some specific comparison rules:
-		deepComparator.addSpecificComparisonRules(FieldImpl.class, "owningType", new ComparisonRule() {
+		this.deepComparator.addSpecificComparisonRules(FieldImpl.class, "owningType", new ComparisonRule() {
 			@Override
 			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
 				Type type1 = (Type) o1;
@@ -110,7 +111,7 @@ class GenerateGraphQLSchemaTest {
 				return null;
 			}
 		});
-		deepComparator.addSpecificComparisonRules(UnionType.class, "memberTypes", new ComparisonRule() {
+		this.deepComparator.addSpecificComparisonRules(UnionType.class, "memberTypes", new ComparisonRule() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
@@ -124,7 +125,7 @@ class GenerateGraphQLSchemaTest {
 				for (ObjectType m : members2) {
 					lst2.add(m.getName());
 				}
-				return deepComparator.differences(lst1, lst2, nbMaxDifferences);
+				return GenerateGraphQLSchemaTest.this.deepComparator.differences(lst1, lst2, nbMaxDifferences);
 			}
 		});
 	}
@@ -205,19 +206,19 @@ class GenerateGraphQLSchemaTest {
 		ctx.close();
 
 		// Let's check the two DocumentParser instances, to check they are the same
-		List<Difference> differences = deepComparator.differences(sourceDocumentParser, generatedDocumentParser,
+		List<Difference> differences = this.deepComparator.differences(sourceDocumentParser, generatedDocumentParser,
 				Integer.MAX_VALUE);
 		if (differences.size() > 0) {
 			String firstLine = test + ": " + differences.size()
 					+ " differences found between the two parsers (details in the log file: target/JUnit-tests.log)";
-			logger.info(firstLine);
+			this.logger.info(firstLine);
 
 			for (Difference d : differences) {
-				logger.info("   " + d.path + " [diff: " + d.type + "] ");
-				logger.info("        val1: " + d.value1);
-				logger.info("        val2: " + d.value2);
+				this.logger.info("   " + d.path + " [diff: " + d.type + "] ");
+				this.logger.info("        val1: " + d.value1);
+				this.logger.info("        val2: " + d.value2);
 				if (d.info != null)
-					logger.info("        info: " + d.info);
+					this.logger.info("        info: " + d.info);
 			}
 
 			fail(firstLine);

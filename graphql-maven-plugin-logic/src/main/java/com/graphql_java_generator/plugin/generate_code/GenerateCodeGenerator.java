@@ -673,6 +673,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				}
 
 				@Override
+				public File getProjectBuildDir() {
+					return GenerateCodeGenerator.this.configuration.getProjectBuildDir();
+				}
+
+				@Override
 				public File getProjectDir() {
 					return GenerateCodeGenerator.this.configuration.getProjectDir();
 				}

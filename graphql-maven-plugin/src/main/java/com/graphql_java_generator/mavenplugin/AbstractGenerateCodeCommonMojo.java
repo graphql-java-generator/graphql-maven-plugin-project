@@ -160,11 +160,19 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	String springBeanSuffix;
 
 	/** The folder where resources will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = "${project.build.directory}"
+			+ GenerateCodeCommonConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
 	File targetResourceFolder;
 
-	/** The folder where source code for the generated classes will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
+	/**
+	 * <P>
+	 * The folder where source code for the generated classes will be generated
+	 * </P>
+	 * <P>
+	 * The default value is $
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = "${project.build.directory}"
+			+ GenerateCodeCommonConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	File targetSourceFolder;
 
 	/**
@@ -206,13 +214,9 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		return springBeanSuffix;
 	}
 
-	public File getTargetFolder() {
-		return new File(project.getBasedir(), "target");
-	}
-
 	@Override
 	public File getTargetClassFolder() {
-		return new File(getTargetFolder(), "classes");
+		return new File(getProjectBuildDir(), "classes");
 	}
 
 	@Override

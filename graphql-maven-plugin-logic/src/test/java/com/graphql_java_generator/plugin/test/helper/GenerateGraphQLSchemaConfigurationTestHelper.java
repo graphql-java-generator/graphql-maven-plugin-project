@@ -26,6 +26,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public String jsonGraphqlSchemaFilename = null;
 	public String packageName = "my.test.package";
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
+	public File projectBuildDir = new File("./target/junittest_merge");
 	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

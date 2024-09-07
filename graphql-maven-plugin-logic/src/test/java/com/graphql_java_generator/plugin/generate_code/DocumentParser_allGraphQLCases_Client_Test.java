@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -37,12 +38,17 @@ class DocumentParser_allGraphQLCases_Client_Test {
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
-		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Client_SpringConfiguration.class);
-		generateCodeDocumentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+		this.ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		this.generateCodeDocumentParser = this.ctx.getBean(GenerateCodeDocumentParser.class);
+		this.pluginConfiguration = this.ctx.getBean(GraphQLConfiguration.class);
 
-		generateCodeDocumentParser.afterPropertiesSet();
-		generateCodeDocumentParser.parseGraphQLSchemas();
+		this.generateCodeDocumentParser.afterPropertiesSet();
+		this.generateCodeDocumentParser.parseGraphQLSchemas();
+	}
+
+	@AfterEach
+	void afterEach() {
+		this.ctx.close();
 	}
 
 	@Test
@@ -56,7 +62,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 		// Let's check that there are two CustomJacksonDeserializers for Float, with depth of 1 and 2
 		boolean foundDepth1 = false;
 		boolean foundDepth2 = false;
-		for (CustomDeserializer cd : generateCodeDocumentParser.getCustomDeserializers()) {
+		for (CustomDeserializer cd : this.generateCodeDocumentParser.getCustomDeserializers()) {
 			if (cd.getGraphQLTypeName().equals("Float")) {
 				if (cd.getListDepth() == 1) {
 					foundDepth1 = true;
@@ -80,7 +86,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 		// Verification
 
 		// enum
-		EnumType e = generateCodeDocumentParser.getType("Unit", EnumType.class, true);
+		EnumType e = this.generateCodeDocumentParser.getType("Unit", EnumType.class, true);
 		assertEquals(1, e.getAppliedDirectives().stream()
 				.filter(d -> d.getDirective().getName().equals("testExtendKeyword")).count(),
 				"The @testExtendKeyword directive has been added to the enum");
@@ -98,7 +104,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 				"The SECOND value has been added to the enum");
 
 		// input
-		ObjectType input = generateCodeDocumentParser.getType("AllFieldCasesInput", ObjectType.class, true);
+		ObjectType input = this.generateCodeDocumentParser.getType("AllFieldCasesInput", ObjectType.class, true);
 		assertTrue(input.isInputType(), "Our input is actually an input");
 		assertEquals(1,
 				input.getAppliedDirectives().stream()
@@ -108,7 +114,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 				"The extendedField field has been added to the input type");
 
 		// interface
-		InterfaceType i = generateCodeDocumentParser.getType("AllFieldCasesInterface", InterfaceType.class, true);
+		InterfaceType i = this.generateCodeDocumentParser.getType("AllFieldCasesInterface", InterfaceType.class, true);
 		// Interface extension may not add implemented interface to an existing interface (as of juin 2018 GraphQL
 		// specs)
 		// assertTrue(i.getImplementz().contains("interfaceToTestExtendKeyword"),
@@ -120,23 +126,23 @@ class DocumentParser_allGraphQLCases_Client_Test {
 				"The extendedField field has been added to the interface");
 
 		// scalar
-		ScalarType s = generateCodeDocumentParser.getType("Long", ScalarType.class, true);
+		ScalarType s = this.generateCodeDocumentParser.getType("Long", ScalarType.class, true);
 		assertEquals(1, s.getAppliedDirectives().stream()
 				.filter(d -> d.getDirective().getName().equals("testExtendKeyword")).count(),
 				"The @testExtendKeyword directive has been added to the scalar");
 
 		// schema
 		assertEquals(1,
-				generateCodeDocumentParser.getSchemaDirectives().stream()
+				this.generateCodeDocumentParser.getSchemaDirectives().stream()
 						.filter(d -> d.getDirective().getName().equals("testExtendKeyword")).count(),
 				"The @testExtendKeyword directive has been added to the schema");
-		assertNotNull(generateCodeDocumentParser.getSubscriptionType(),
+		assertNotNull(this.generateCodeDocumentParser.getSubscriptionType(),
 				"The subscription has been added to the schema (not null)");
-		assertEquals("TheSubscriptionType", generateCodeDocumentParser.getSubscriptionType().getName(),
+		assertEquals("TheSubscriptionType", this.generateCodeDocumentParser.getSubscriptionType().getName(),
 				"The subscription has been added to the schema (name)");
 
 		// type
-		ObjectType t = generateCodeDocumentParser.getType("AllFieldCasesInterface", ObjectType.class, true);
+		ObjectType t = this.generateCodeDocumentParser.getType("AllFieldCasesInterface", ObjectType.class, true);
 		assertFalse(t.isInputType(), "Our type is not an input");
 		// Interface extension can not add implemented interface yet
 		// assertTrue(t.getImplementz().contains("interfaceToTestExtendKeyword"),
@@ -148,7 +154,7 @@ class DocumentParser_allGraphQLCases_Client_Test {
 				"The extendedField field has been added to the interface");
 
 		// union
-		UnionType u = generateCodeDocumentParser.getType("AnyCharacter", UnionType.class, true);
+		UnionType u = this.generateCodeDocumentParser.getType("AnyCharacter", UnionType.class, true);
 		assertEquals(1, u.getAppliedDirectives().stream()
 				.filter(d -> d.getDirective().getName().equals("testExtendKeyword")).count(),
 				"The @testExtendKeyword directive has been added to the union");

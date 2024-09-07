@@ -27,8 +27,8 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "true";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
-	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "./target/generated-resources/graphql-maven-plugin";
-	public final String DEFAULT_TARGET_SOURCE_FOLDER = "./target/generated-sources/graphql-maven-plugin";
+	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "/generated-resources/graphql-maven-plugin";
+	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
 	public final String DEFAULT_USE_JAKARTA_EE9 = "false";
 
 	/**

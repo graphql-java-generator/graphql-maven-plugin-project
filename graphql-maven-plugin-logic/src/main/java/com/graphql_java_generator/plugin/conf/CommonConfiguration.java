@@ -107,6 +107,15 @@ public interface CommonConfiguration {
 	public Integer getMaxTokens();
 
 	/**
+	 * Returns the folder that will contain all project build artefacts. It is typically
+	 * <code>{$projectDir}/target</code> for maven and <code>{$projectDir}/build</code> for gradle. But it may be
+	 * overridden by project configuration.
+	 * 
+	 * @return
+	 */
+	public File getProjectBuildDir();
+
+	/**
 	 * Get the {@link File} for the current project's directory. This allows to compute the full path of file that are
 	 * within this project (like custom templates for instance)
 	 * 

@@ -54,7 +54,8 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String packageName = "org.my.test.package";
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public Packaging packaging = null;
-	public File projectDir;// Initialized in the constructor
+	public File projectBuildDir;// Initialized in the test constructors
+	public File projectDir;// Initialized in the test constructor
 	public QueryMutationExecutionProtocol queryMutationExecutionProtocol = QueryMutationExecutionProtocol.http;
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
@@ -86,10 +87,10 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
-		this.logger = LoggerFactory.getLogger(caller.getClass());
+		logger = LoggerFactory.getLogger(caller.getClass());
 
 		try {
-			this.projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
+			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
 					new File(".") : new File("./graphql-maven-plugin-logic");
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
@@ -98,10 +99,10 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
-		if (this.generateJacksonAnnotations != null)
-			return this.generateJacksonAnnotations;
+		if (generateJacksonAnnotations != null)
+			return generateJacksonAnnotations;
 		else
-			return this.mode.equals(PluginMode.client);
+			return mode.equals(PluginMode.client);
 	}
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {

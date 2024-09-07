@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class MavenTestHelper {
 
 	final static String MODULE_NAME = "graphql-maven-plugin-logic";
+	final static String TARGET_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME";
 	final static String TARGET_RESOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-resources";
 	final static String TARGET_SOURCE_FOLDER = "/target/junittest_graphql/UNIT_TEST_NAME/generated-src";
 	final static String RUNTIME_BASE_PACKAGE_FOLDER = "com/graphql_java_generator";
@@ -46,6 +47,18 @@ public class MavenTestHelper {
 	 */
 	public File getFile(String path) {
 		return new File(getModulePathFile(), path);
+	}
+
+	/**
+	 * Get the folder that mimics the maven projectBuildDir, calculated from the given test name. <BR/>
+	 * For instance, for test 'Basic', the folder would be something like
+	 * File("${project_folder}/target/junittest/basic")
+	 * 
+	 * @param unitTestName
+	 * @return
+	 */
+	public File getTargetFolder(String unitTestName) {
+		return new File(getModulePathFile(), TARGET_FOLDER.replace("UNIT_TEST_NAME", unitTestName));
 	}
 
 	/**

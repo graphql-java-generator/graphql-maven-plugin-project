@@ -9,7 +9,14 @@
 
 	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-client</artifactId>
 
+	<description>
+		This module test a maximum of different cases:
+		- Connection to three different GraphQL servers
+		- A different target/build folder
+	</description>
+
 	<build>
+		<directory>${project.basedir}/target2</directory>
 		<plugins>
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
@@ -31,7 +38,6 @@
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/allGraphQLCases/</schemaFileFolder>
-							<targetFolder>${basedir}/target/generated-resources/graphql-merge</targetFolder>
 							<targetSchemaFileName>merged_schemas.graphqls</targetSchemaFileName>
 						</configuration>
 					</execution>
@@ -43,7 +49,7 @@
 						<configuration>
 							<generateDeprecatedRequestResponse>true</generateDeprecatedRequestResponse>
 							<packageName>org.allGraphQLCases.client</packageName>
-							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
+							<schemaFileFolder>${project.build.directory}/generated-resources/graphql-maven-plugin_generate-relay-schema/</schemaFileFolder>
 							<schemaPersonalizationFile>/src/graphqls/schema_personalization/schema_personalization.json</schemaPersonalizationFile>
 							<springBeanSuffix>AllGraphQLCases</springBeanSuffix>
 							<customScalars>
@@ -126,11 +132,11 @@
 								need to add this runtime as a dependency -->
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.client2</packageName>
-							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
+							<schemaFileFolder>${project.build.directory}/generated-resources/graphql-maven-plugin_generate-relay-schema/</schemaFileFolder>
 							<separateUtilityClasses>false</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<springBeanSuffix>AllGraphQLCases2</springBeanSuffix>
-							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin2</targetSourceFolder>
+							<targetSourceFolder>${project.build.directory}/generated-sources/graphql-maven-plugin2</targetSourceFolder>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Base64String</graphQLTypeName>
@@ -199,7 +205,7 @@
 							<separateUtilityClasses>false</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<springBeanSuffix>Forum</springBeanSuffix>
-							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin_forum</targetSourceFolder>
+							<targetSourceFolder>${project.build.directory}/generated-sources/graphql-maven-plugin_forum</targetSourceFolder>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
@@ -279,7 +285,7 @@
 							<skip>${skipTests}</skip>
 							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
 							<workingDir>OAuth-authorization-server</workingDir>
-							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
+							<processLogFile>${project.build.directory}/OAuth-authorization-server.log</processLogFile>
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
 							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
@@ -300,7 +306,7 @@
 							<skip>${skipTests}</skip>
 							<name>allGraphQLCases sample GraphQL server</name>
 							<workingDir>allGraphQLCases_graphql_server</workingDir>
-							<!-- processLogFile>${basedir}/target/allGraphQLCases_graphql_server.log</processLogFile -->
+							<!-- processLogFile>${project.build.directory}/allGraphQLCases_graphql_server.log</processLogFile -->
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
 							<healthcheckUrl>http://localhost:8180/helloworld.html</healthcheckUrl>

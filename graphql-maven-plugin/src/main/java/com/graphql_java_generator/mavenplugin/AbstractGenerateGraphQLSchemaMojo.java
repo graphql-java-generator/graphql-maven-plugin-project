@@ -25,7 +25,8 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 	String resourceEncoding;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = "${project.build.directory}"
+			+ GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER)
 	File targetFolder;
 
 	/**
@@ -69,12 +70,12 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 
 	@Override
 	public Map<String, String> getTemplates() {
-		return this.templates;
+		return templates;
 	}
 
 	@Override
 	public boolean isAddRelayConnections() {
-		return this.addRelayConnections;
+		return addRelayConnections;
 	}
 
 	@Override

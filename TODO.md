@@ -5,6 +5,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
 * Issue #220: use immutable classes or records instead of classes
+* Issue #218: Default target folder based on <directory>target</directory>
 * Rename the generated `DataFetchersDelegateRegistry` class (as a `Registry` type in the GraphQL schema would generate a name collision)
 * Test all parameter values for BatchMappingDataFetcherReturnType
 * generateBatchMappingDataFetchers:

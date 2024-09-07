@@ -36,6 +36,9 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	@Component
 	protected BuildContext buildContext;
 
+	@Parameter(defaultValue = "${project.build.directory}")
+	private File projectBuildDir;
+
 	@Component
 	protected MavenProjectHelper projectHelper;
 
@@ -266,6 +269,11 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	@Override
 	public Integer getMaxTokens() {
 		return this.maxTokens;
+	}
+
+	@Override
+	public File getProjectBuildDir() {
+		return this.projectBuildDir;
 	}
 
 	@Override

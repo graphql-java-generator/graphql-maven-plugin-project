@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -69,6 +70,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		SchemaParser schemaParser = new SchemaParser();
 		this.typeDefinitionRegistry = schemaParser.parse(schemaStringProvider.getConcatenatedSchemaStrings());
+	}
+
+	@AfterEach
+	void afterEach() {
+		this.ctx.close();
 	}
 
 	@Test

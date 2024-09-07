@@ -8,14 +8,14 @@
 	</appender>
 	<appender name="BeanPostProcessorFile" class="ch.qos.logback.core.FileAppender">
 		<append>false</append>
-		<file>target/JUnit-BeanPostProcessor.log</file>
+		<file>target2/JUnit-BeanPostProcessor.log</file>
 		<encoder>
 			<pattern>%date [%thread] %msg%n</pattern>
 		</encoder>
 	</appender>
 	<appender name="JUnitFile" class="ch.qos.logback.core.FileAppender">
 		<append>false</append>
-		<file>target/JUnit-tests.log</file>
+		<file>target2/JUnit-tests.log</file>
 		<encoder>
 			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
 		</encoder>

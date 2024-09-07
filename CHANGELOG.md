@@ -23,6 +23,11 @@
         * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
 
 
+## Not released yet
+
+All modes (client and server):
+* Issue #218: Default target folder was based on "target" (on both the Maven and Gradle plugins)
+
 ## 2.8
 
 Server mode:
