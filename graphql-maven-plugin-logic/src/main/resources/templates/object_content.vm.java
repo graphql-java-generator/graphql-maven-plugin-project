@@ -347,7 +347,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 		${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
 #appliedDirectives(${argument.appliedDirectives}, "			")
 		${argument.javaTypeFullClassname} ${argument.javaName}#end) {
-		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+		return ${packageUtilName}.RegistryForDataFetchersDelegates.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
 				.${field.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 	}
 #end ## #if (${dataFetcher.withDataLoader})
@@ -365,7 +365,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
 #appliedDirectives(${argument.appliedDirectives}, "			")
 			${argument.javaTypeFullClassname} ${argument.javaName}#end) {
-		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+		return ${packageUtilName}.RegistryForDataFetchersDelegates.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
 				.${field.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 	}
 #else
@@ -377,7 +377,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters),
 #appliedDirectives(${argument.appliedDirectives}, "			")
 			${argument.javaTypeFullClassname} ${argument.javaName}#end) {
-		return ${packageUtilName}.DataFetchersDelegateRegistry.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
+		return ${packageUtilName}.RegistryForDataFetchersDelegates.dataFetchersDelegateRegistry.get${dataFetcher.dataFetchersDelegate.pascalCaseName}()
 				.${field.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 	}
 #end 

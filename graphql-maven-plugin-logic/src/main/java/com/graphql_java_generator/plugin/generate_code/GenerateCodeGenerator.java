@@ -622,8 +622,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			logger.debug("Generating GraphQLWiring");
 			ret += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
-			logger.debug("Generating DataFetchersDelegateRegistry");
-			ret += generateOneJavaFile("DataFetchersDelegateRegistry", true, "generating DataFetchersDelegateRegistry",
+			logger.debug("Generating RegistryForDataFetchersDelegates");
+			ret += generateOneJavaFile("RegistryForDataFetchersDelegates", true, "generating RegistryForDataFetchersDelegates",
 					context, CodeTemplate.DATA_FETCHERS_DELEGATES_REGISTRY);
 
 			for (DataFetchersDelegate dataFetcherDelegate : this.generateCodeDocumentParser.dataFetchersDelegates) {
