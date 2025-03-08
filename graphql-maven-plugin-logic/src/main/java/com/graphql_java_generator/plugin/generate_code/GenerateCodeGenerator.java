@@ -373,8 +373,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			while ((entry = jar.getNextJarEntry()) != null) {
 
 				// Folders are ignored here.
-				if (entry.isDirectory())
+				if (entry.isDirectory()) {
 					continue;
+				}
 
 				// We skip the /META-INF/ folder that just contains the MANIFEST file
 				if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
@@ -416,8 +417,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				while ((entry = jar.getNextJarEntry()) != null) {
 
 					// Folders are ignored here.
-					if (entry.isDirectory())
+					if (entry.isDirectory()) {
 						continue;
+					}
 
 					// We skip the /META-INF/ folder that just contains the MANIFEST file
 					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
@@ -449,10 +451,11 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 					}
 
 					if (copyFile) {
-						if (resources)
+						if (resources) {
 							file = new java.io.File(this.configuration.getTargetResourceFolder(), targetFilename);
-						else
+						} else {
 							file = new java.io.File(this.configuration.getTargetSourceFolder(), targetFilename);
+						}
 
 						file.getParentFile().mkdirs();
 						try (OutputStream fos = new FileOutputStream(file)) {
@@ -473,8 +476,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 				while ((entry = jar.getNextJarEntry()) != null) {
 
 					// Folders are ignored here.
-					if (entry.isDirectory())
+					if (entry.isDirectory()) {
 						continue;
+					}
 
 					// We skip the /META-INF/ folder that just contains the MANIFEST file
 					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
@@ -623,8 +627,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			ret += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
 			logger.debug("Generating RegistryForDataFetchersDelegates");
-			ret += generateOneJavaFile("RegistryForDataFetchersDelegates", true, "generating RegistryForDataFetchersDelegates",
-					context, CodeTemplate.DATA_FETCHERS_DELEGATES_REGISTRY);
+			ret += generateOneJavaFile("RegistryForDataFetchersDelegates", true,
+					"generating RegistryForDataFetchersDelegates", context,
+					CodeTemplate.DATA_FETCHERS_DELEGATES_REGISTRY);
 
 			for (DataFetchersDelegate dataFetcherDelegate : this.generateCodeDocumentParser.dataFetchersDelegates) {
 				context.put("dataFetchersDelegate", dataFetcherDelegate);
@@ -775,8 +780,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 
 				@Override
 				public boolean isSkipGenerationIfSchemaHasNotChanged() {
-					// If we're here, it means the the code generation is done. So the addRelayConnection schema
-					// must be always created. We won't skip it.
+					// If we're here, it means the the code generation is done. So the addRelayConnection schema must be
+					// always created. We won't skip it.
 					return false;
 				}
 
@@ -806,8 +811,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		String standardSpringGraphqlSchemaPath = new File(this.configuration.getProjectDir(),
 				"src/main/resources/graphql").getCanonicalPath();
 		if (!this.configuration.getSchemaFileFolder().getCanonicalPath().equals(standardSpringGraphqlSchemaPath)) {
-			// The schema file(s) is(are) not where spring-graphql expects it (that is in the graphql of the
-			// classpath).
+			// The schema file(s) is(are) not where spring-graphql expects it (that is in the graphql of the classpath).
 			// So we copy it/them in the correct location
 			for (Resource r : this.resourceSchemaStringProvider.schemas(false)) {
 				File folder = new File(this.configuration.getTargetResourceFolder(),
@@ -871,6 +875,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		Template template = null;
 		String theTemplate = null;
 		String resolvedTemplate = resolveTemplate(templateCode);
+
+		context.put("templateName", templateCode.name());
 
 		try {
 			template = this.velocityEngine.getTemplate(resolvedTemplate, "UTF-8");
