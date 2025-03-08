@@ -96,25 +96,25 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ClientPojo_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_addRelayConnections/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_allFalse/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_allTrue/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Collection/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Flux/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_Map/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_util_batchMapping_MonoMap/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ClientPojo/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_addRelayConnections/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allFalse/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allTrue/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Collection/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Flux/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Map/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_MonoMap/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo/generated-src</source>
 								<source>${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/Forum_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/Forum_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/StarWars_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/StarWars_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Client/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Server/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/Forum_Client/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/Forum_Server/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/StarWars_Client/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/StarWars_Server/generated-src</source>
 							</sources>
 						</configuration>
 					</execution>

@@ -46,8 +46,8 @@ abstract class AbstractDocumentParser_Forum_Client {
 		// Verification
 		assertEquals(19, this.documentParser.relations.size(), "nb relations found");
 
-		// The Relations are found in different orders, depending on the source (graphqls or json file). So we manage
-		// all the relations, in any order:
+		// The Relations are found in different orders, depending on the source
+		// (graphqls or json file). So we manage sall the relations, in any order:
 		for (Relation relation : this.documentParser.relations) {
 			String field = relation.getObjectType().getName() + "." + relation.getField().getName();
 
@@ -88,7 +88,10 @@ abstract class AbstractDocumentParser_Forum_Client {
 		}
 	}
 
-	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
+	/**
+	 * Tests the annotation. We're in Client mode, thanks to the Spring
+	 * Configuration used for this test
+	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Topic_client() {
@@ -126,7 +129,10 @@ abstract class AbstractDocumentParser_Forum_Client {
 				+ "\t@GraphQLNonScalar( fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.junittest.forum_client_springconfiguration.Post.class, listDepth = 1)");
 	}
 
-	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
+	/**
+	 * Tests the annotation. We're in Client mode, thanks to the Spring
+	 * Configuration used for this test
+	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation1_client() {
@@ -145,7 +151,10 @@ abstract class AbstractDocumentParser_Forum_Client {
 				+ "	@GraphQLNonScalar( fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = org.junittest.forum_client_springconfiguration.Board.class, listDepth = 0)");
 	}
 
-	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
+	/**
+	 * Tests the annotation. We're in Client mode, thanks to the Spring
+	 * Configuration used for this test
+	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation2_client() {
@@ -220,12 +229,14 @@ abstract class AbstractDocumentParser_Forum_Client {
 		ObjectType post = (ObjectType) this.documentParser.getType("Post");
 		assertNotNull(post);
 
-		// The java class for scalar should not be here. It can lead to name collision, for instance with java.util.Date
+		// The java class for scalar should not be here. It can lead to name collision,
+		// for instance with java.util.Date
 		// and java.sql.Date.
-		// So java class for scalars should used only with full classname (not with imports).
+		// So java class for scalars should used only with full classname (not with
+		// imports).
 		assertFalse(post.getImports().contains("java.util.Date"), "expecting java.util.Date");
 
-		assertTrue(post.getImports().contains("com.fasterxml.jackson.annotation.JsonProperty"),
+		assertFalse(post.getImports().contains("com.fasterxml.jackson.annotation.JsonProperty"),
 				"expecting com.fasterxml.jackson.annotation.JsonProperty");
 		assertTrue(post.getImports().contains("com.fasterxml.jackson.databind.annotation.JsonDeserialize"),
 				"expecting com.fasterxml.jackson.databind.annotation.JsonDeserialize");

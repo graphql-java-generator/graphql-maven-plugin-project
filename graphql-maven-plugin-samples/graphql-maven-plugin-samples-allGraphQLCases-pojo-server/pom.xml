@@ -26,6 +26,7 @@
 							<copyRuntimeSources>true</copyRuntimeSources>
 							<!-- Choosing client or server is useless. It's here only to check that if used, everything is still Ok -->
 							<mode>server</mode>
+							<generateJacksonAnnotations>true</generateJacksonAnnotations>
 							<packageName>org.allGraphQLCases.server.pojo</packageName>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
 							<customScalars>
