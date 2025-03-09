@@ -105,23 +105,14 @@ public class ObjectType extends AbstractType {
 	}
 
 	@Override
-	public Field getIdentifier() {
+	public List<Field> getIdentifiers() {
 		List<Field> identifiers = new ArrayList<>();
 		for (Field f : getFields()) {
 			if (f.isId()) {
 				identifiers.add(f);
 			}
 		}
-
-		switch (identifiers.size()) {
-		case 0:
-			return null;
-		case 1:
-			return identifiers.get(0);
-		default:
-			throw new RuntimeException("Only one identifier per object is expected. But " + identifiers.size() //$NON-NLS-1$
-					+ " were found for " + getName()); //$NON-NLS-1$
-		}
+		return identifiers;
 	}
 
 	@Override
@@ -158,10 +149,11 @@ public class ObjectType extends AbstractType {
 		sb.append(", fields:{"); //$NON-NLS-1$
 		addSeparator = false;
 		for (Field f : getFields()) {
-			if (addSeparator)
+			if (addSeparator) {
 				sb.append(","); //$NON-NLS-1$
-			else
+			} else {
 				addSeparator = true;
+			}
 			sb.append(f.toString());
 		}
 		sb.append("}"); //$NON-NLS-1$

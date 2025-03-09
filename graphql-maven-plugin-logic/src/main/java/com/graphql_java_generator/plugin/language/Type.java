@@ -196,10 +196,11 @@ public interface Type {
 	 *         syntax. In this cas, this method will return a classname different from the name
 	 */
 	default public String getClassFullName() {
-		if (getPackageName() == null)
+		if (getPackageName() == null) {
 			return getClassSimpleName();
-		else
+		} else {
 			return getPackageName() + "." + getClassSimpleName(); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -233,10 +234,33 @@ public interface Type {
 	/**
 	 * Returns the identifier for this type. Typically : the field which has an ID as a type.
 	 * 
+	 * @return The identifier for this type, or null of this type has no identifier
+	 * @Throws RuntimeException If this type has multiplier identifiers (that is multiple fields of ID type)
+	 */
+	default public Field getIdentifier() {
+		List<Field> identifiers = getIdentifiers();
+		switch (identifiers.size()) {
+		case 0:
+			return null;
+		case 1:
+			return identifiers.get(0);
+		default:
+			throw new RuntimeException("Only one identifier per object is expected. But " + identifiers.size() //$NON-NLS-1$
+					+ " were found for " + getName()); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Returns the list of identifiers for this type, that is, the list of fields which have ID as a type.<br/>
+	 * Note: the GraphQL specifications states that "<i>The ID scalar type represents a unique identifier, often used to
+	 * refetch an object or as the key for a cache</i>", which means that an object type may not have multiple ID
+	 * fields. And it must be noted that multiple ID fields would break the data loader capacity, which relies on this
+	 * unicity of ID field.
+	 * 
 	 * @return The identifier for this type, or null of this type has no identifier or multiplier identifiers (that is:
 	 *         multiple identifiers or identifier based on several fields are not currently managed)
 	 */
-	public Field getIdentifier();
+	public List<Field> getIdentifiers();
 
 	/** Returns true if this type is a GraphQL InputObjectType, false otherwise */
 	public boolean isInputType();

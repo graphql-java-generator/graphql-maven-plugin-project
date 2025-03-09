@@ -48,8 +48,8 @@ public class EnumType extends AbstractType {
 	 * @return null
 	 */
 	@Override
-	public Field getIdentifier() {
-		return null;
+	public List<Field> getIdentifiers() {
+		return new ArrayList<>();
 	}
 
 	@Override

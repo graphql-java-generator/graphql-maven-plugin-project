@@ -84,11 +84,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = this.generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(67, i, "Nb java files are generated");
+		assertEquals(71, i, "Nb java files are generated");
 		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(43, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(45, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(10, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
-		assertEquals(20, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
+		assertEquals(22, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, this.generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(this.generateCodeDocumentParser.getQueryType(), "One query");
 		assertNotNull(this.generateCodeDocumentParser.getMutationType(), "One mutation");
@@ -352,30 +352,37 @@ class DocumentParser_allGraphQLCases_Server_Test {
 			// Check of the arguments
 			assertEquals(value,
 					((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("value")).getValue());
-			if (anotherValue != null)
+			if (anotherValue != null) {
 				assertEquals(anotherValue,
 						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"))
 								.getValue());
-			if (anInt != null)
+			}
+			if (anInt != null) {
 				assertEquals(BigInteger.valueOf(anInt),
 						((IntValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anInt")).getValue());
-			if (aFloat != null)
+			}
+			if (aFloat != null) {
 				assertEquals(aFloat, ((FloatValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aFloat"))
 						.getValue().floatValue());
-			if (aBoolean != null)
+			}
+			if (aBoolean != null) {
 				assertEquals(aBoolean,
 						((BooleanValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aBoolean"))
 								.isValue());
-			if (anID != null)
+			}
+			if (anID != null) {
 				assertEquals(anID,
 						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anID")).getValue());
-			if (anEnumName != null)
+			}
+			if (anEnumName != null) {
 				assertEquals(anEnumName, ((graphql.language.EnumValue) type.getAppliedDirectives().get(0)
 						.getArgumentValues().get("anEnum")).getName());
-			if (aCustomScalarDate != null)
+			}
+			if (aCustomScalarDate != null) {
 				assertEquals(aCustomScalarDate,
 						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aCustomScalarDate"))
 								.getValue());
+			}
 		}
 		if (containsAnotherTestDirective) {
 			assertEquals(1, type.getAppliedDirectives().stream()
@@ -419,8 +426,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 			// check arguments
 			assertEquals(value,
 					((StringValue) field.getAppliedDirectives().get(0).getArgumentValues().get("value")).getValue());
-			if (anotherValue != null)
+			if (anotherValue != null) {
 				assertEquals(anotherValue, field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+			}
 		}
 		if (containsAnotherTestDirective) {
 			int index = containsTestDirective ? 1 : 0;
@@ -464,10 +472,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 			// check arguments
 			assertEquals(value, ((StringValue) enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"))
 					.getValue());
-			if (anotherValue != null)
+			if (anotherValue != null) {
 				assertEquals(anotherValue,
 						((StringValue) enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"))
 								.getValue());
+			}
 		}
 		if (containsAnotherTestDirective) {
 			int index = containsTestDirective ? 1 : 0;
@@ -525,9 +534,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 			// check arguments
 			assertEquals(value, ((StringValue) parameter.getAppliedDirectives().get(0).getArgumentValues().get("value"))
 					.getValue());
-			if (anotherValue != null)
+			if (anotherValue != null) {
 				assertEquals(BigInteger.valueOf(anotherValue),
 						parameter.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+			}
 		}
 		if (containsAnotherTestDirective) {
 			int index = containsTestDirective ? 1 : 0;
@@ -888,8 +898,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		DataFetchersDelegateImpl delegate = findDataFetcherDelegate(delegateName);
 		for (DataFetcher fetcher : delegate.getDataFetchers()) {
 			if (fetcher.getName().equals(name)) {
-				if (--occurrenceNumber == 0)
+				if (--occurrenceNumber == 0) {
 					return (DataFetcherImpl) fetcher;
+				}
 			}
 		}
 		fail("DataFetcherImpl '" + delegateName + "." + name + "' not found");
@@ -898,8 +909,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	private DataFetchersDelegateImpl findDataFetcherDelegate(String name) {
 		for (DataFetchersDelegate delegate : this.generateCodeDocumentParser.dataFetchersDelegates) {
-			if (delegate.getName().equals(name))
+			if (delegate.getName().equals(name)) {
 				return (DataFetchersDelegateImpl) delegate;
+			}
 		}
 		fail("DataFetchersDelegateImpl '" + name + "' not found");
 		return null;

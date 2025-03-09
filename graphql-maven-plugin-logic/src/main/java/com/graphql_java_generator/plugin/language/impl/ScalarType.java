@@ -3,6 +3,9 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -50,8 +53,8 @@ public class ScalarType extends AbstractType {
 	 * @return null
 	 */
 	@Override
-	public Field getIdentifier() {
-		return null;
+	public List<Field> getIdentifiers() {
+		return new ArrayList<>();
 	}
 
 	/** {@inheritDoc} */

@@ -975,3 +975,30 @@ input RecursiveTypeWithJsonField {
 	json: JSON
 	recursion: RecursiveTypeWithJsonField
 }
+
+# Issue 228 : object type with more than one ID field
+
+interface InterfaceForIssue228TwoIDFields {
+	id1: ID,
+	id2: ID
+}
+
+type TypeForIssue228TwoIDFields implements InterfaceForIssue228TwoIDFields {
+	id1: ID,
+	id2: ID,
+	name: String
+} 
+
+interface InterfaceForIssue228ThreeIDFields implements InterfaceForIssue228TwoIDFields {
+	id1: ID,
+	id2: ID,
+	id3: ID
+} 
+
+type TypeForIssue228ThreeIDFields implements InterfaceForIssue228TwoIDFields & InterfaceForIssue228ThreeIDFields {
+	id1: ID,
+	id2: ID,
+	id3: ID,
+	name: String
+} 
+

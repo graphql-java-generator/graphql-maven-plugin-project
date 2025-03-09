@@ -28,8 +28,9 @@
 
 All modes (client and server):
 * Issue #218: Default target folder was based on "target" (on both the Maven and Gradle plugins)
+* Issue #228: The plugin would throw an error, if an object contains more than one field of ID type
 
-pojo in server mode
+Pojo in server mode
 * Issue #227: the generated code would not compile with the `generatePojo` goal/task in server mode when `generateJacksonAnnotations` is set to `true`
 
 Custom templates:
