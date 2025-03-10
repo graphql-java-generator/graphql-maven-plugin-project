@@ -23,7 +23,7 @@
         * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
 
 
-## Not released yet
+## 2.9
 
 
 All modes (client and server):
