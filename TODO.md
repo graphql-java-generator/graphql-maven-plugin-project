@@ -4,6 +4,12 @@ Here are the next tasks listed, as a TODO list:
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 
 ## TODO list for the 2.x branch
+* Correct the broken link in the README (the site is not fully generated, hence the link toward the goal pages is broken)
+    * Current status : issue since using maven 3, due to a breaking change. Adding the `attach-descriptor` goal to the executions tag in the site plugin configuration should do the trick
+        * See [https://stackoverflow.com/questions/22641472/issue-with-maven-site-plugin](https://stackoverflow.com/questions/22641472/issue-with-maven-site-plugin
+    * The site can be built by one unique command: `mvn clean install site:attach-descriptor site:site site:stage -DskipTests -pl :graphql-maven-plugin-project,:graphql-maven-plugin-samples-Forum-server,:graphql-maven-plugin-samples-Forum-client`
+    * The two forum sample projects have the `distributionManagement`, which is a mistake
+* Correct the README, so that it points out to the maven project's wiki (even for the gradle project)
 * Align with GraphQL spec 2021
     * Properly manage "@specifiedBy(url:)"
     * Manage the `repeatable` property of directives

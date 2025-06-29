@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -10,6 +12,8 @@
 
 	<artifactId>graphql-maven-plugin-samples-Forum-client</artifactId>
 	<version>local-SNAPSHOT</version>
+	
+	<url>https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin-samples-Forum-client/</url>
 
 	<distributionManagement>
 		<repository>
@@ -18,7 +22,8 @@
 		</repository>
 		<site>
 			<id>www.graphql-java-generator.com</id>
-			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
+			<url>
+				https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin-samples-Forum-client/</url>
 		</site>
 	</distributionManagement>
 
@@ -59,12 +64,14 @@
 				</executions>
 				<configuration>
 					<jsonGraphqlSchemaFilename>forum_GraphQLSchema.json</jsonGraphqlSchemaFilename>
-					<packageName>com.graphql_java_generator.samples.forum.client.graphql.forum.client</packageName>
+					<packageName>
+						com.graphql_java_generator.samples.forum.client.graphql.forum.client</packageName>
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
 							<javaType>java.util.Date</javaType>
-							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
+							<graphQLScalarTypeStaticField>
+								com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 						</customScalar>
 					</customScalars>
 				</configuration>
@@ -81,7 +88,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+								<source>
+									${project.build.directory}/generated-sources/graphql-maven-plugin</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -101,7 +109,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
+				<!-- This plugin allows to start the SpringBoot Forum-server in
+				the background 
 					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
@@ -115,16 +124,19 @@
 						</goals>
 						<configuration>
 							<skip>${skipTests}</skip>
-							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
+							<name>
+								graphql-maven-plugin-samples-OAuth-authorization-server</name>
 							<workingDir>OAuth-authorization-server</workingDir>
-							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
+							<processLogFile>
+								${basedir}/target/OAuth-authorization-server.log</processLogFile>
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
 							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
-								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
+								<argument>
+									${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -144,7 +156,8 @@
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
-								<argument>${basedir}/../graphql-maven-plugin-samples-Forum-server/target/graphql-maven-plugin-samples-Forum-server-${project.version}.jar</argument>
+								<argument>
+									${basedir}/../graphql-maven-plugin-samples-Forum-server/target/graphql-maven-plugin-samples-Forum-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -162,11 +175,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.graphql_java_generator.samples.forum.client.Main</mainClass>
+					<mainClass>
+						com.graphql_java_generator.samples.forum.client.Main</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- We don't want to spam the repository with test/sample artefacts -->
+				<!-- We don't want to spam the repository with test/sample
+				artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
@@ -178,6 +193,7 @@
 				<version>${maven-site-plugin.version}</version>
 				<configuration>
 					<skipDeploy>true</skipDeploy>
+					<stagingDirectory>../../target/staging/graphql-maven-plugin-samples-Forum-client</stagingDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -240,8 +256,11 @@
 
 	<scm>
 		<tag>graphql-maven-plugin-project-2.8</tag>
-		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
-		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
+		<connection>
+			scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+		<developerConnection>
+			scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
+		<url>
+			https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
 	</scm>
 </project>

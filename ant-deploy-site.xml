@@ -29,26 +29,13 @@
 			<arg value="/c" />
 			<arg value="mvn" />
 			<arg value="install" />
+			<arg value="site:attach-descriptor" />
+			<arg value="site:site" />
+			<arg value="site:stage" />
 			<arg value="-DskipTests" />
 		</exec>
-		
-		<!-- Prepares the site (this command is very long to execute -->
-		<exec executable="cmd" failonerror="true">
-			<arg value="/c" />
-			<arg value="mvn" />
-			<arg value="site" />
-			<arg value="-Prelease" />
-			<arg value="&quot;-DlastReleasedVersion=${version}&quot;" />
-			<!-- There is an issue with creating the site on some configurations. It works in offline mode. -->
-			<arg value="-o"/>
-		</exec>
 
-		<!-- Stages the site -->
-		<exec executable="cmd" failonerror="true">
-			<arg value="/c" />
-			<arg value="mvn" />
-			<arg value="site:stage" />
-		</exec>
+		<input message="Check the staged site (type any key if ok, or type CTRL+C to abort)" addproperty="checked" />
 
 		<!-- Checks that the site has been staged -->
 		<available file="${sourceFolder}" type="dir" property="siteHasBeenStaged" value="true" />

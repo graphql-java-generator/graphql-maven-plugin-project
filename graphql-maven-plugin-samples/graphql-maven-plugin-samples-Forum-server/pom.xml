@@ -11,6 +11,8 @@
 
 	<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
 	<version>local-SNAPSHOT</version>
+	
+	<url>https://graphql-maven-plugin-project.graphql-java-generator.com//graphql-maven-plugin-samples-Forum-server/</url>
 
 	<distributionManagement>
 		<repository>
@@ -19,7 +21,7 @@
 		</repository>
 		<site>
 			<id>www.graphql-java-generator.com</id>
-			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
+			<url>https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin-samples-Forum-server/</url>
 		</site>
 	</distributionManagement>
 
@@ -115,6 +117,7 @@
 				<version>${maven-site-plugin.version}</version>
 				<configuration>
 					<skipDeploy>true</skipDeploy>
+					<stagingDirectory>../../target/staging/graphql-maven-plugin-samples-Forum-server</stagingDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
