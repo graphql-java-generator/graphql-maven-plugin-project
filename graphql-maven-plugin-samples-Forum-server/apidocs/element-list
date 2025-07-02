@@ -1,0 +1,6 @@
+org.forum.server.graphql
+org.forum.server.graphql_spring_autoconfiguration
+org.forum.server.graphql.util
+org.forum.server.jpa
+org.forum.server.oauth2
+org.forum.server.specific_code
