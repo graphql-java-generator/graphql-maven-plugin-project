@@ -368,8 +368,9 @@ public abstract class DocumentParser implements InitializingBean {
 					break;
 				}
 			}
-			if (isCustom)
+			if (isCustom) {
 				this.customScalars.add(readCustomScalarType(def));
+			}
 		}
 
 		logger.debug("Reading type definitions");
@@ -540,6 +541,11 @@ public abstract class DocumentParser implements InitializingBean {
 		for (graphql.language.DirectiveLocation dl : node.getDirectiveLocations()) {
 			DirectiveLocation dirLoc = DirectiveLocation.valueOf(DirectiveLocation.class, dl.getName());
 			directive.getDirectiveLocations().add(dirLoc);
+		}
+
+		// If it's repeatable, let's store this information
+		if (node.isRepeatable()) {
+			directive.setRepeatable(true);
 		}
 
 		return directive;
@@ -1079,8 +1085,9 @@ public abstract class DocumentParser implements InitializingBean {
 	 */
 	public Type getType(String typeName, boolean throwExceptionIfNotFound) {
 		Type ret = this.types.get(typeName);
-		if (throwExceptionIfNotFound && ret == null)
+		if (throwExceptionIfNotFound && ret == null) {
 			throw new RuntimeException("The type named '" + typeName + "' could not be found");
+		}
 		return ret;
 	}
 
@@ -1101,14 +1108,16 @@ public abstract class DocumentParser implements InitializingBean {
 		Type ret = this.types.get(typeName);
 
 		if (ret == null) {
-			if (throwExceptionIfNotFound)
+			if (throwExceptionIfNotFound) {
 				throw new RuntimeException("The type named '" + typeName + "' could not be found");
-			else
+			} else {
 				return null;
+			}
 		}
 
-		if (classOfType.isInstance(ret))
+		if (classOfType.isInstance(ret)) {
 			return classOfType.cast(ret);
+		}
 
 		throw new RuntimeException("The type named '" + typeName + "' should be an instance of "
 				+ classOfType.getSimpleName() + " but is an instance of " + ret.getClass().getSimpleName());

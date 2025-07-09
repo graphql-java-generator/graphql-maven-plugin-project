@@ -25,6 +25,7 @@ import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * Integration test to check that the {@link GraphQLDirective}s annotations have been properly generated, and are
@@ -236,6 +237,10 @@ public class GraphQLDirectiveTest {
 								.withParamValue(
 										"on Object\n With a line feed\\\n and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\"), //
 						new ExpectedDirective("@anotherTestDirective"),
+						new ExpectedDirective("@aRepeatableDirective").withParamName("str").withParamType("String!")
+								.withParamValue("repetition 1"), //
+						new ExpectedDirective("@aRepeatableDirective").withParamName("str").withParamType("String!")
+								.withParamValue("repetition 2"), //
 						new ExpectedDirective("@testExtendKeyword").withParamName("msg").withParamType("String")
 								.withParamValue("comes from type extension")), //
 				STP_AllFieldCases_STS.class);
@@ -407,8 +412,9 @@ public class GraphQLDirectiveTest {
 
 	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
 			List<GraphQLDirective> annotations, String src) {
-		if (expectedDirectives == null)
+		if (expectedDirectives == null) {
 			expectedDirectives = new ArrayList<>();
+		}
 
 		assertEquals(expectedDirectives.size(), annotations.size(), "Nb of @GraphQLDirective for " + src);
 
@@ -419,15 +425,25 @@ public class GraphQLDirectiveTest {
 			for (GraphQLDirective annotation : annotations) {
 				if (annotation.name().equals(expectedDirective.name)) {
 					found = true;
-					assertlistOfStringIsEqual(expectedDirective.parameterNames,
-							Arrays.asList(annotation.parameterNames()),
-							"check of parameterNames of " + annotation.name() + " for " + src);
-					assertlistOfStringIsEqual(expectedDirective.parameterTypes,
-							Arrays.asList(annotation.parameterTypes()),
-							"check of parameterTypes of " + annotation.name() + " for " + src);
-					assertlistOfStringIsEqual(expectedDirective.parameterValues,
-							Arrays.asList(annotation.parameterValues()),
-							"check of parameterValues of " + annotation.name() + " for " + src);
+
+					try {
+						assertlistOfStringIsEqual(expectedDirective.parameterNames,
+								Arrays.asList(annotation.parameterNames()),
+								"check of parameterNames of " + annotation.name() + " for " + src);
+						assertlistOfStringIsEqual(expectedDirective.parameterTypes,
+								Arrays.asList(annotation.parameterTypes()),
+								"check of parameterTypes of " + annotation.name() + " for " + src);
+						assertlistOfStringIsEqual(expectedDirective.parameterValues,
+								Arrays.asList(annotation.parameterValues()),
+								"check of parameterValues of " + annotation.name() + " for " + src);
+					} catch (AssertionFailedError e) {
+						if (annotation.name().equals("aRepeatableDirective")) {
+							// This is a repeatable directive, which means that there may be several annotations of this
+							// directive. Perhaps this one was not the expected one.
+							found = false;
+							continue;
+						}
+					}
 				}
 			} // for
 

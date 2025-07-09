@@ -47,6 +47,9 @@ public interface Directive {
 	/** Returns the list of location that this directive may have */
 	public List<DirectiveLocation> getDirectiveLocations();
 
+	/** Returns true if this directive is a repeatable directive */
+	public boolean isRepeatable();
+
 	/**
 	 * Returns true if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema
 	 */

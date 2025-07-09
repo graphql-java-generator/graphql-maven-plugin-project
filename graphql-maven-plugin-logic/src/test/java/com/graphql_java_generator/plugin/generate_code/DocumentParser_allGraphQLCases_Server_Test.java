@@ -24,6 +24,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.EnumValue;
@@ -85,7 +86,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(71, i, "Nb java files are generated");
-		assertEquals(10, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(11, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(45, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(10, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(22, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
@@ -258,6 +259,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("RelayConnection", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("generateDataLoaderForLists", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("testExtendKeyword", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("aRepeatableDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("testDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("anotherTestDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 
@@ -315,7 +317,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// On type
 		checkDirectivesOnType(this.generateCodeDocumentParser.getType("AllFieldCases"), true,
 				"on Object\n With a line feed\\\n\r and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\",
-				null, null, null, null, null, null, null, true, 1);
+				null, null, null, null, null, null, null, true, 3);
 		// On type field
 		checkDirectivesOnField(this.generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null,
 				false, 0);
@@ -326,6 +328,24 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				"uppercase", true, "on Argument", null, false);
 		checkDirectivesOnInputParameter(this.generateCodeDocumentParser.getType("AllFieldCases"), "forname",
 				"textToAppendToTheForname", false, null, null, false);
+
+		// Checks repeatable directives for the AllFieldCases object
+		//
+		objectType = (ObjectType) this.generateCodeDocumentParser.getType("AllFieldCases");
+		List<AppliedDirective> directives = objectType.getAppliedDirectives();
+		j = 0;
+		assertEquals("testDirective", directives.get(j).getDirective().getName(), "The directive n°" + j
+				+ "'s name should be 'testDirective' but is '" + directives.get(j).getDirective().getName());
+		j += 1;
+		assertEquals("anotherTestDirective", directives.get(j).getDirective().getName(), "The directive n°" + j
+				+ "'s name should be 'anotherTestDirective' but is '" + directives.get(j).getDirective().getName());
+		j += 1;
+		assertEquals("aRepeatableDirective", directives.get(j).getDirective().getName(), "The directive n°" + j
+				+ "'s name should be 'aRepeatableDirective' but is '" + directives.get(j).getDirective().getName());
+		j += 1;
+		assertEquals("aRepeatableDirective", directives.get(j).getDirective().getName(), "The directive n°" + j
+				+ "'s name should be 'aRepeatableDirective' but is '" + directives.get(j).getDirective().getName());
+		j += 1;
 	}
 
 	/**

@@ -184,7 +184,7 @@ directive @${directive.name} #if ($directive.arguments.size() > 0)(
 #if ($directive.arguments.size() > 0)
 )
 #end
-on #foreach($loc in $directive.directiveLocations)$loc#if($foreach.hasNext) | #end#end $space
+#if($directive.repeatable)repeatable #end on #foreach($loc in $directive.directiveLocations)$loc#if($foreach.hasNext) | #end#end $space
 
 #end
 #end

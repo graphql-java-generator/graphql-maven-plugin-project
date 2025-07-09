@@ -36,6 +36,9 @@ public class DirectiveImpl implements Directive {
 	/** The description of this directive, in the provided GraphQL schema */
 	private Description description = null;
 
+	/** Indicates whether this directive is repeatable or not */
+	private boolean repeatable = false;
+
 	/**
 	 * True if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema. Default
 	 * value is false (non standard)
@@ -47,5 +50,10 @@ public class DirectiveImpl implements Directive {
 		for (Comment c : comments) {
 			this.comments.add(c.getContent());
 		}
+	}
+
+	@Override
+	public boolean isRepeatable() {
+		return repeatable;
 	}
 }
