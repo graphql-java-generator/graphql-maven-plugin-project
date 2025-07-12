@@ -5,7 +5,6 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 2.x branch
 * Issue #235: manage the Java Modules
-* Correct the README, so that it points out to the maven project's wiki (even for the gradle project)
 * Add a sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021
     * Properly manage "@specifiedBy(url:)"s

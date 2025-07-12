@@ -46,7 +46,7 @@ Other points that are worth to point out:
     * Through unit and integration tests (for the plugin logic)
     * Through full integration tests: three samples contain both the client and the server parts. Integration tests are run on client side, against "its" server side. More than 250 integration tests are run on client side against the server part.
 * A big effort is done to __avoid any impact on your code, when the plugin evolves__. 
-* A maven/gradle goal/task allows to __merge several schemas in one__, adding (for instance) relay capability in the generated schema
+* The `generateGraphQLSchema` maven/gradle goal/task allows to __merge several schemas in one__, adding (for instance) relay capability in the generated schema
 
 # Two main versions: 1.x and 2.x
 
@@ -98,8 +98,8 @@ This plugin contains these goals (Maven) / tasks (Gradle):
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generatePojo-mojo.html)
 * (deprecated) __`graphql`__ was the previous main goal. It can generate both the client and the server code, thanks to its _mode_ parameter. 
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
-* __`merge`__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
-    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
+* __`generateGraphQLSchema`__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
+    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateGraphQLSchema-mojo.html) 
 
 
 # The Documentation
