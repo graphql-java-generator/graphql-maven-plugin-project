@@ -166,13 +166,19 @@
 					<reportSet>
 						<id>non-aggregate</id>
 						<reports>
-							<report>javadoc</report>
+							<report>javadoc-no-fork</report>
+							<report>test-javadoc-no-fork</report>
 						</reports>
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>8</source>
+					<source>${java.version}</source>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>

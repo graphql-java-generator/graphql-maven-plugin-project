@@ -26,10 +26,13 @@
 ## Not released yet
 
 All modes (client and server):
-* Added support for the GraphQL 2021 specification:
+* Added full support for the GraphQL 2021 specification:
     * The plugin now properly manages repeatable directives
     * Support added for the standard `@specifiedBy` annotation
+    * interface hierarchy was already implemented (an interface may implement another one)
 
+Internal:
+* Java version for the forum samples changed to 17
 
 ## 2.9
 

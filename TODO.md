@@ -4,6 +4,8 @@ Here are the next tasks listed, as a TODO list:
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 
 ## TODO list for the 2.x branch
+* Check the scm tag in the pom: it seems to point to the 2.8 version
+* [Gradle] Change the java version for the forum samples to 17
 * Correct the `reporting` part of the pom :
     * No maven site plugin there
     * Add the info reporting to the plugin-logic
@@ -12,8 +14,11 @@ Here are the next tasks listed, as a TODO list:
 * Issue #235: manage the Java Modules
 * Add a sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021
-    * Properly manage "@specifiedBy(url:)"s
+    * Order of the directives must be respected. This changes the plugin's test implementation, which accepts any order for the directives
     * Check the impact of the changes in the interface hierarchies
+        * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
+        * todo: add the PageInfo, Node, Edge, Connection interfaces
+* Improve readibility of the generated schemas
 * Instead of having to parameterize what to do with controllers, the plugin should be able to analyze the existing code by the implementor, find the defined controllers, and just define the others
     * Take a look at [beanshell](https://github.com/beanshell/beanshell)
     * Take a look at this [stackoverflow answer](https://stackoverflow.com/a/36221056/5056068)

@@ -25,11 +25,18 @@
 		</site>
 	</distributionManagement>
 
+	<scm>
+		<tag>graphql-maven-plugin-project-2.8</tag>
+		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
+		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
+	</scm>
+
 	<properties>
 		<h2.version>2.1.214</h2.version>
 
-		<java.version>8</java.version>
-		<java.release>8</java.release>
+		<java.version>17</java.version>
+		<java.release>17</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
@@ -120,14 +127,6 @@
 					<stagingDirectory>../../target/staging/graphql-maven-plugin-samples-Forum-server</stagingDirectory>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven-project-info-reports-plugin.version}</version>
-				<configuration>
-					<skipDeploy>true</skipDeploy>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -179,28 +178,32 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
 				<reportSets>
 					<reportSet>
 						<id>non-aggregate</id>
 						<reports>
-							<report>javadoc</report>
+							<report>javadoc-no-fork</report>
+							<report>test-javadoc-no-fork</report>
 						</reports>
 					</reportSet>
 				</reportSets>
 				<configuration>
+					<source>${java.version}</source>
+					<!-- add this to disable checking -->
 					<doclint>none</doclint>
-					<source>17</source>
+					<failOnError>false</failOnError>
+					<sourceFileExcludes>
+						<sourceFileExclude>**/target/**</sourceFileExclude>
+					</sourceFileExcludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
 
 
-	<scm>
-		<tag>graphql-maven-plugin-project-2.8</tag>
-		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
-		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-	</scm>
 </project>

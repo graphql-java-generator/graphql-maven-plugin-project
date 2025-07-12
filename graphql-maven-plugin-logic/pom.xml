@@ -259,12 +259,13 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>8</source>
+					<source>${java.version}</source>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
