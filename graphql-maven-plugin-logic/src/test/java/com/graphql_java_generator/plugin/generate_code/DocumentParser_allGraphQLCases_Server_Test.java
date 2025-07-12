@@ -86,7 +86,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(71, i, "Nb java files are generated");
-		assertEquals(11, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(12, this.generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(45, this.generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(10, this.generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(22, this.generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
@@ -255,6 +255,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("include", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("defer", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("deprecated", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("specifiedBy", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("IDScalarDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("RelayConnection", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("generateDataLoaderForLists", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
@@ -264,13 +265,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("anotherTestDirective", this.generateCodeDocumentParser.getDirectives().get(i++).getName());
 
 		// On Scalar
-		assertEquals(2, this.generateCodeDocumentParser.getType("MyCustomScalarForADate").getAppliedDirectives().size(),
-				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
-		// checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
-		// Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, String aCustomScalarDate,
-		// boolean containsAnotherTestDirective, int nbOtherDirectives)
+		assertEquals(3,
+				this.generateCodeDocumentParser.getType("MyCustomScalarForADate").getAppliedDirectives().size());
 		checkDirectivesOnType(this.generateCodeDocumentParser.getType("MyCustomScalarForADate"), true, "on Scalar",
-				null, null, null, null, null, null, null, true, 0);
+				null, null, null, null, null, null, null, true, 1);
 
 		checkDirectivesOnType(this.generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null,
 				null, null, null, false, 1);

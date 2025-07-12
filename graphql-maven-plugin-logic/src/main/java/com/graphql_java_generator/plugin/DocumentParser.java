@@ -257,10 +257,11 @@ public abstract class DocumentParser implements InitializingBean {
 		// @include
 		DirectiveImpl include = new DirectiveImpl();
 		include.setName("include");
-		include.getArguments()
-				.add(FieldImpl.builder().name("if")
-						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
-						.build());
+		include.getArguments().add(FieldImpl//
+				.builder()//
+				.name("if")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+				.build());
 		include.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -270,10 +271,11 @@ public abstract class DocumentParser implements InitializingBean {
 		// @defer
 		DirectiveImpl defer = new DirectiveImpl();
 		defer.setName("defer");
-		defer.getArguments()
-				.add(FieldImpl.builder().name("if")
-						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
-						.build());
+		defer.getArguments().add(FieldImpl//
+				.builder()//
+				.name("if")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+				.build());
 		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		defer.setStandard(true);
 		this.directives.add(defer);
@@ -281,14 +283,29 @@ public abstract class DocumentParser implements InitializingBean {
 		// @deprecated
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
-		deprecated.getArguments()
-				.add(FieldImpl.builder().name("reason")
-						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").build())
-						.defaultValue(new StringValue("No longer supported")).build());
+		deprecated.getArguments().add(FieldImpl//
+				.builder()//
+				.name("reason").fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").build())
+				.defaultValue(new StringValue("No longer supported"))//
+				.build());
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		deprecated.setStandard(true);
 		this.directives.add(deprecated);
+
+		//
+		// @specifiedBy
+		DirectiveImpl specifiedBy = new DirectiveImpl();
+		specifiedBy.setName("specifiedBy");
+		specifiedBy.getArguments().add(FieldImpl//
+				.builder()//
+				.name("url")//
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").build())//
+				.build());
+		specifiedBy.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
+		specifiedBy.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
+		specifiedBy.setStandard(true);
+		this.directives.add(specifiedBy);
 
 		logger.debug("Finished DocumentParser's PostConstruct intialization");
 

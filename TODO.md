@@ -4,6 +4,11 @@ Here are the next tasks listed, as a TODO list:
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 
 ## TODO list for the 2.x branch
+* Correct the `reporting` part of the pom :
+    * No maven site plugin there
+    * Add the info reporting to the plugin-logic
+    * Add the reporting tag where it is lacking (graphql-java-server-runtime...)
+    * One the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)
 * Issue #235: manage the Java Modules
 * Add a sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021

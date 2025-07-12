@@ -26,7 +26,9 @@
 ## Not released yet
 
 All modes (client and server):
-* The plugin now properly manages repeatable directives
+* Added support for the GraphQL 2021 specification:
+    * The plugin now properly manages repeatable directives
+    * Support added for the standard `@specifiedBy` annotation
 
 
 ## 2.9
