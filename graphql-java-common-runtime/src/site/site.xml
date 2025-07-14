@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="GraphQL Java Generator - Maven Plugin" combine.self="override">
+<project name="GraphQL Java Generator - Maven Plugin">
 	
 	  <skin>
 	    <groupId>org.apache.maven.skins</groupId>
 	    <artifactId>maven-fluido-skin</artifactId>
 	    <version>2.0.0-M5</version>
 	  </skin>
-
+  
 	<publishDate position="right" />
 
 	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src> 
@@ -21,6 +21,8 @@
 		<links>
 			<item name="Project on Github" href="project.html" />
 		</links>
+
+		<menu ref="modules" />
 
 		<menu ref="reports" />
 

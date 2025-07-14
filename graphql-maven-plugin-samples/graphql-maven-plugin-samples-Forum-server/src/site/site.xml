@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- combine.self="override" avoids an error, when the maven site plugin search the parent descriptor (that is: from spring-boot-starter-parent)-->
 <project name="GraphQL Java Generator - Maven Plugin"  combine.self="override">
+	<!--  Notice: the combine.self="override" option prevents this site descriptor to use inheritance -->
 	
 	  <skin>
 	    <groupId>org.apache.maven.skins</groupId>
@@ -22,8 +23,6 @@
 		<links>
 			<item name="Project on Github" href="project.html" />
 		</links>
-
-		<menu ref="modules" />
 
 		<menu ref="reports" />
 
