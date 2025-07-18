@@ -30,9 +30,11 @@ All modes (client and server):
     * The plugin now properly manages repeatable directives
     * Support added for the standard `@specifiedBy` annotation
     * interface hierarchy was already implemented (an interface may implement another one)
+    * Added tests, to be sure that directives are in the correct order
 
 Internal:
-* Java version for the forum samples changed to 17
+* Java version for the forum samples changed to 17 
+* Various enhancements on the web site
 
 ## 2.9
 

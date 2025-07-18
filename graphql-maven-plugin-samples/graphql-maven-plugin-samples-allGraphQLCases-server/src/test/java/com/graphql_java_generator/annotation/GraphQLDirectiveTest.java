@@ -412,46 +412,22 @@ public class GraphQLDirectiveTest {
 
 	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
 			List<GraphQLDirective> annotations, String src) {
-		if (expectedDirectives == null) {
-			expectedDirectives = new ArrayList<>();
-		}
 
 		assertEquals(expectedDirectives.size(), annotations.size(), "Nb of @GraphQLDirective for " + src);
 
 		// Ok the number of annotations is correct. Let's loop and check the annotation list content
-		boolean found;
-		for (ExpectedDirective expectedDirective : expectedDirectives) {
-			found = false;
-			for (GraphQLDirective annotation : annotations) {
-				if (annotation.name().equals(expectedDirective.name)) {
-					found = true;
-
-					try {
-						assertlistOfStringIsEqual(expectedDirective.parameterNames,
-								Arrays.asList(annotation.parameterNames()),
-								"check of parameterNames of " + annotation.name() + " for " + src);
-						assertlistOfStringIsEqual(expectedDirective.parameterTypes,
-								Arrays.asList(annotation.parameterTypes()),
-								"check of parameterTypes of " + annotation.name() + " for " + src);
-						assertlistOfStringIsEqual(expectedDirective.parameterValues,
-								Arrays.asList(annotation.parameterValues()),
-								"check of parameterValues of " + annotation.name() + " for " + src);
-					} catch (AssertionFailedError e) {
-						if (annotation.name().equals("aRepeatableDirective")) {
-							// This is a repeatable directive, which means that there may be several annotations of this
-							// directive. Perhaps this one was not the expected one.
-							found = false;
-							continue;
-						}
-					}
-				}
-			} // for
-
-			// We should have found the directive in the expected list
-			assertTrue(found, "The expected " + expectedDirective.name
-					+ " directive is missing in the @GraphQLDirective of the " + src);
-
-		}
+		// Since GraphQL 2021, the directives must remain in the GraphQL schema order
+		for (int i = 0; i < expectedDirectives.size(); i += 1) {
+			ExpectedDirective expectedDirective = expectedDirectives.get(i);
+			GraphQLDirective annotation = annotations.get(i);
+			assertEquals(expectedDirective.name, annotation.name());
+			assertlistOfStringIsEqual(expectedDirective.parameterNames, Arrays.asList(annotation.parameterNames()),
+					"check of parameterNames of " + annotation.name() + " for " + src);
+			assertlistOfStringIsEqual(expectedDirective.parameterTypes, Arrays.asList(annotation.parameterTypes()),
+					"check of parameterTypes of " + annotation.name() + " for " + src);
+			assertlistOfStringIsEqual(expectedDirective.parameterValues, Arrays.asList(annotation.parameterValues()),
+					"check of parameterValues of " + annotation.name() + " for " + src);
+		} // for
 	}
 
 	private void assertlistOfStringIsEqual(List<String> expected, List<String> actual, String src) {

@@ -14,7 +14,6 @@ Here are the next tasks listed, as a TODO list:
     * One the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)
 * Issue #235: manage the Java Modules
 * Align with GraphQL spec 2021
-    * Order of the directives must be respected. This changes the plugin's test implementation, which accepts any order for the directives
     * Check the impact of the changes in the interface hierarchies
         * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
         * todo: add the PageInfo, Node, Edge, Connection interfaces
