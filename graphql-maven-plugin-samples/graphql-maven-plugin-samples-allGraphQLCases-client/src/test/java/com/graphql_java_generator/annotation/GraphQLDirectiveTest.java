@@ -25,9 +25,6 @@ import org.allGraphQLCases.client.CUP_AnyCharacter_CUS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
-
-import com.graphql_java_generator.annotation.GraphQLDirectiveTest.ExpectedDirective;
 
 /**
  * Integration test to check that the {@link GraphQLDirective}s annotations have been properly generated, and are
@@ -52,17 +49,17 @@ public class GraphQLDirectiveTest {
 		}
 
 		ExpectedDirective withParamName(String paramName) {
-			this.parameterNames.add(paramName);
+			parameterNames.add(paramName);
 			return this;
 		}
 
 		ExpectedDirective withParamType(String paramType) {
-			this.parameterTypes.add(paramType);
+			parameterTypes.add(paramType);
 			return this;
 		}
 
 		ExpectedDirective withParamValue(String paramValue) {
-			this.parameterValues.add(paramValue);
+			parameterValues.add(paramValue);
 			return this;
 		}
 	};
@@ -419,6 +416,9 @@ public class GraphQLDirectiveTest {
 
 	private static void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
 			List<GraphQLDirective> annotations, String src) {
+		if (expectedDirectives == null) {
+			expectedDirectives = new ArrayList<>();
+		}
 		assertEquals(expectedDirectives.size(), annotations.size(), "Nb of @GraphQLDirective for " + src);
 
 		// Ok the number of annotations is correct. Let's loop and check the annotation list content

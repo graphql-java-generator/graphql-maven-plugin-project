@@ -5,8 +5,6 @@ package org.starwars.server.datafetchersdelegate;
 
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +16,7 @@ import org.starwars.server.jpa.HumanRepository;
 import org.starwars.server.util.DataFetchersDelegateMutationType;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.reactivex.subjects.Subject;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf

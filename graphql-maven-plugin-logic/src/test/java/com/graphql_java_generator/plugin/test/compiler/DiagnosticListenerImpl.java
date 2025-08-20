@@ -40,7 +40,7 @@ public class DiagnosticListenerImpl implements DiagnosticListener<JavaFileObject
 		this.className = className;
 	}
 
-	/** @see javax.tools.DiagnosticListener#report(javax.tools.Diagnostic) */
+	/** @see jakarta.tools.DiagnosticListener#report(jakarta.tools.Diagnostic) */
 	@Override
 	public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
 		// In debug mode, we show all messages, but in standard mode we show only Errors

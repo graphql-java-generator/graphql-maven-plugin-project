@@ -7,18 +7,16 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
-import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
-import org.allGraphQLCases.client.CTP_Human_CTS;
-import org.allGraphQLCases.client.CINP_HumanInput_CINS;
-import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.CEP_extends_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
@@ -28,6 +26,8 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class implements the deprecated way to call GraphQl partialQueries, where all partialQueries are prepared before

@@ -3,7 +3,7 @@ package org.starwars.server.datafetchersdelegate;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 import org.starwars.server.Character;

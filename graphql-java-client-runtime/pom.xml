@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -13,7 +15,8 @@
 	<build>
 		<resources>
 			<resource>
-				<!-- Due to Spring Boot, the filtering placeholder is @..@ (instead of 
+				<!-- Due to Spring Boot, the filtering placeholder is @..@
+				(instead of 
 					${..}) -->
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
@@ -85,7 +88,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<!-- This dependency is here to solve an issue with Mockito that loads a wring version of byte-buddy -->
+			<!-- This dependency is here to solve an issue with Mockito that
+			loads a wring version of byte-buddy -->
 			<groupId>net.bytebuddy</groupId>
 			<artifactId>byte-buddy</artifactId>
 		</dependency>

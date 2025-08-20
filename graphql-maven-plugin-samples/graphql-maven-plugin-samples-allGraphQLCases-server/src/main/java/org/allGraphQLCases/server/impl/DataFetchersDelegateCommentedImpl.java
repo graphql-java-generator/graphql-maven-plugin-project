@@ -5,13 +5,12 @@ package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.allGraphQLCases.server.SIP_Commented_SIS;
 import org.allGraphQLCases.server.DataFetchersDelegateCommented;
+import org.allGraphQLCases.server.SIP_Commented_SIS;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf

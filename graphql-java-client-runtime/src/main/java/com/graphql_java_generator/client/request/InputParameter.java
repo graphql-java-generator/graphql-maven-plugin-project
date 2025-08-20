@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.GraphQLContext;
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -253,7 +255,7 @@ public class InputParameter {
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = graphQLTypeName;
-		this.graphQLScalarType = (graphQLTypeName == null) ? null
+		graphQLScalarType = (graphQLTypeName == null) ? null
 				: graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName, schema);
 		this.mandatory = mandatory;
 		this.listDepth = listDepth;
@@ -302,7 +304,7 @@ public class InputParameter {
 
 		if (directive != null) {
 			// Let's find the definition for this directive
-			Directive dirDef = this.directiveRegistry.getDirective(directive.getName());
+			Directive dirDef = directiveRegistry.getDirective(directive.getName());
 			if (dirDef == null) {
 				throw new GraphQLRequestPreparationException(
 						"Could not find directive definition for the directive '" + directive.getName() + "'");
@@ -357,10 +359,11 @@ public class InputParameter {
 				}
 			}
 
-			if (inputParams == null)
+			if (inputParams == null) {
 				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
 						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
 						+ parameterName + "' input parameter");
+			}
 
 			boolean found = false;
 			for (int i = 0; i < inputParams.names().length; i += 1) {
@@ -383,14 +386,14 @@ public class InputParameter {
 
 		this.schema = schema;
 		this.name = name;
-		this.bindParameterName = parameterName;
+		bindParameterName = parameterName;
 		this.value = value;
 		this.type = type;
-		this.graphQLTypeName = localGraphQLCustomScalarType;
-		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(this.graphQLTypeName, schema);
-		this.mandatory = localMandatory;
-		this.listDepth = localList;
-		this.itemMandatory = localItemMandatory;
+		graphQLTypeName = localGraphQLCustomScalarType;
+		graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName, schema);
+		mandatory = localMandatory;
+		listDepth = localList;
+		itemMandatory = localItemMandatory;
 	}
 
 	/**
@@ -658,11 +661,11 @@ public class InputParameter {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public Object getValue() {
-		return this.value;
+		return value;
 	}
 
 	/**
@@ -676,8 +679,8 @@ public class InputParameter {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	public Object getValueForGraphqlQuery(Map<String, Object> bindVariables) {
-		return getValueForGraphqlQuery(this.bindParameterName, bindVariables.get(this.bindParameterName),
-				this.listDepth, this.graphQLScalarType, bindVariables);
+		return getValueForGraphqlQuery(bindParameterName, bindVariables.get(bindParameterName), listDepth,
+				graphQLScalarType, bindVariables);
 	}
 
 	public static Object getValueForGraphqlQuery(String parameterName, Object val, int listDepth,
@@ -698,7 +701,8 @@ public class InputParameter {
 						+ "' should be either an array or a list, but is a " + val.getClass().getName());
 			}
 		} else if (graphQLScalarTypeParam != null) {
-			return graphQLScalarTypeParam.getCoercing().serialize(val);
+			return graphQLScalarTypeParam.getCoercing().serialize(val, GraphQLContext.getDefault(),
+					Locale.getDefault());
 		} else {
 			return val;
 		}
@@ -731,26 +735,26 @@ public class InputParameter {
 	 */
 	public String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Map<String, Object> bindVariables)
 			throws GraphQLRequestExecutionException {
-		if (this.bindParameterName == null) {
+		if (bindParameterName == null) {
 			// It's a hard coded value
-			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, this.value, this.listDepth,
-					this.graphQLTypeName, this.graphQLScalarType, false);
+			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, value, listDepth, graphQLTypeName,
+					graphQLScalarType, false);
 		}
 		// It's a Bind Variable.
 
 		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
-		if ((this.type.equals(InputParameterType.MANDATORY) || this.type.equals(InputParameterType.GRAPHQL_VARIABLE))
-				&& (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
-			throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
-					+ "' must be provided in the BindVariables map");
+		if ((type.equals(InputParameterType.MANDATORY) || type.equals(InputParameterType.GRAPHQL_VARIABLE))
+				&& (bindVariables == null || !bindVariables.keySet().contains(bindParameterName))) {
+			throw new GraphQLRequestExecutionException(
+					"The Bind Parameter for '" + bindParameterName + "' must be provided in the BindVariables map");
 		}
 
-		if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
+		if (bindVariables == null || !bindVariables.keySet().contains(bindParameterName)) {
 			return null;
-		else
-			return this.getStringContentForGraphqlQuery(writingGraphQLVariables,
-					bindVariables.get(this.bindParameterName), this.listDepth, this.graphQLTypeName,
-					this.graphQLScalarType, this.type.equals(InputParameterType.GRAPHQL_VARIABLE));
+		} else {
+			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, bindVariables.get(bindParameterName),
+					listDepth, graphQLTypeName, graphQLScalarType, type.equals(InputParameterType.GRAPHQL_VARIABLE));
+		}
 	}
 
 	/**
@@ -783,17 +787,18 @@ public class InputParameter {
 		} else if (graphQLVariable && !writingGraphQLVariables) {
 			// When writing a GraphQL variable in the query itself, then we write the variable name. The value is
 			// written only in the GraphQL variable field
-			return "$" + this.bindParameterName;
+			return "$" + bindParameterName;
 		} else if (listDepth > 0) {
 			// We expect val to be a list
 			return getStringContentForAListValue(writingGraphQLVariables, val, listDepth, graphQLTypeNameParam,
 					graphQLScalarTypeParam, graphQLVariable);
 		} else if (graphQLScalarTypeParam != null) {
 			// This parameter is a scalar. We must apply its coercing method.
-			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
-			if (ret instanceof String)
+			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val, GraphQLContext.getDefault(),
+					Locale.getDefault());
+			if (ret instanceof String) {
 				return getStringValue((String) ret);
-			else if (ret instanceof ObjectNode) {
+			} else if (ret instanceof ObjectNode) {
 				StringBuilder sb = new StringBuilder();
 				appendStringContentForGraphqlQueryFromObjectNode(sb, ((ObjectNode) ret).traverse(), (ObjectNode) ret);
 				return sb.toString();
@@ -805,8 +810,9 @@ public class InputParameter {
 				StringBuilder sb = new StringBuilder();
 				appendStringContentForGraphqlQueryFromMapForAListItem(sb, (List<?>) ret);
 				return sb.toString();
-			} else
+			} else {
 				return ret.toString();
+			}
 		} else if (writingGraphQLVariables && val.getClass().isEnum()) {
 			// When writing an enum value in the variables section, values should be between double quotes
 			return "\"" + val.toString() + "\"";
@@ -963,10 +969,11 @@ public class InputParameter {
 		for (Object key : map.keySet()) {
 
 			// Let's append a comma, starting from the secondary item
-			if (appendComma)
+			if (appendComma) {
 				sb.append(',');
-			else
+			} else {
 				appendComma = true;
+			}
 
 			// Let's append the key (without the ", as this is the difference between GraphQL and json, which makes this
 			// method mandatory
@@ -993,10 +1000,11 @@ public class InputParameter {
 		for (Object val : list) {
 
 			// Let's append a comma, starting from the secondary item
-			if (appendComma)
+			if (appendComma) {
 				sb.append(',');
-			else
+			} else {
 				appendComma = true;
+			}
 
 			// Let's append the value
 			appendStringContentForGraphqlQueryFromValueItem(sb, val);
@@ -1015,16 +1023,17 @@ public class InputParameter {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	private void appendStringContentForGraphqlQueryFromValueItem(StringBuilder sb, Object value) {
-		if (value instanceof Map)
+		if (value instanceof Map) {
 			appendStringContentForGraphqlQueryFromMap(sb, (Map<?, ?>) value);
-		else if (value instanceof List)
+		} else if (value instanceof List) {
 			appendStringContentForGraphqlQueryFromMapForAListItem(sb, (List<?>) value);
-		else if (value instanceof String) {
+		} else if (value instanceof String) {
 			sb.append('\"');
 			sb.append(value);
 			sb.append('\"');
-		} else
+		} else {
 			sb.append(value.toString());
+		}
 	}
 
 	/**
@@ -1073,7 +1082,7 @@ public class InputParameter {
 		} else if (list instanceof List) {
 			localList = (List<?>) list;
 		} else {
-			throw new GraphQLRequestExecutionException("Unexpected type for the parameter  '" + this.name
+			throw new GraphQLRequestExecutionException("Unexpected type for the parameter  '" + name
 					+ "': it should be either a java.lang.List or an Array, but is " + list.getClass().getName());
 		}
 
@@ -1129,7 +1138,7 @@ public class InputParameter {
 						fieldListDepth = graphQLScalar.listDepth();
 						fieldGraphQLTypeName = graphQLScalar.graphQLTypeSimpleName();
 						if (fieldGraphQLTypeName != null) {
-							fieldGraphQLType = CustomScalarRegistryImpl.getCustomScalarRegistry(this.schema)
+							fieldGraphQLType = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
 									.getGraphQLCustomScalarType(fieldGraphQLTypeName);
 						}
 					} else if (graphQLNonScalar != null) {
@@ -1158,31 +1167,31 @@ public class InputParameter {
 	}
 
 	public String getBindParameterName() {
-		return this.bindParameterName;
+		return bindParameterName;
 	}
 
 	public InputParameterType getType() {
-		return this.type;
+		return type;
 	}
 
 	public String getGraphQLTypeName() {
-		return this.graphQLTypeName;
+		return graphQLTypeName;
 	}
 
 	public GraphQLScalarType getGraphQLScalarType() {
-		return this.graphQLScalarType;
+		return graphQLScalarType;
 	}
 
 	public boolean isItemMandatory() {
-		return this.itemMandatory;
+		return itemMandatory;
 	}
 
 	public int getListDepth() {
-		return this.listDepth;
+		return listDepth;
 	}
 
 	public boolean isMandatory() {
-		return this.mandatory;
+		return mandatory;
 	}
 
 	/**
@@ -1212,8 +1221,9 @@ public class InputParameter {
 				sb.append("(");
 				boolean writeComma = false;
 				for (String param : params) {
-					if (writeComma)
+					if (writeComma) {
 						sb.append(",");
+					}
 					writeComma = true;
 					sb.append(param);
 				} // for

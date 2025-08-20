@@ -2,11 +2,13 @@ package com.graphql_java_generator.client.request;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+import graphql.GraphQLContext;
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -59,10 +61,12 @@ public abstract class AbstractCustomJacksonSerializer<T> extends StdSerializer<T
 	 */
 	private void execSerialization(Object value, int listLevelParam, JsonGenerator gen) throws IOException {
 		if (listLevelParam == 0) {
-			if (graphQLScalarType != null)
-				gen.writeObject(graphQLScalarType.getCoercing().serialize(value));
-			else
+			if (graphQLScalarType != null) {
+				gen.writeObject(graphQLScalarType.getCoercing().serialize(value, GraphQLContext.getDefault(),
+						Locale.getDefault()));
+			} else {
 				gen.writeObject(value);
+			}
 		} else if (!(value instanceof List)) {
 			throw new IllegalArgumentException("Expecting a list with depth (number of level of list inclusion) of "
 					+ listLevel + ", but the provided value's depth is " + (listLevel - listLevelParam)

@@ -1,7 +1,10 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 3.x branch
+* Reactivate https on the starwars sample
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
+* Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
+* Manage the Mockito warning, about configuring an agent for the JVM
 
 ## TODO list for the 2.x branch
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)

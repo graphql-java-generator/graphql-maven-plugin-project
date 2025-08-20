@@ -7,8 +7,6 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CEP_extends_CES;
 import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
@@ -29,6 +27,8 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class implements the way to call GraphQl partialQueries, where all partialQueries are prepared before

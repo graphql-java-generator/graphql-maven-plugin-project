@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -15,7 +17,8 @@
 	<build>
 		<resources>
 			<resource>
-				<!-- Due to Spring Boot, the filtering placeholder is @..@ (instead of ${..}) -->
+				<!-- Due to Spring Boot, the filtering placeholder is @..@
+				(instead of ${..}) -->
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
@@ -25,7 +28,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- We'll read the sources from graphql-client, to add the sources to the generated code (thus: no external dependency 
+				<!-- We'll read the sources from graphql-client, to add the
+				sources to the generated code (thus: no external dependency 
 					in the generated code) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -44,8 +48,10 @@
 									<type>jar</type>
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
-									<destFileName>graphql-java-common-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
+									<destFileName>
+										graphql-java-common-runtime-sources.jar</destFileName>
+									<outputDirectory>
+										${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
@@ -53,8 +59,10 @@
 									<type>jar</type>
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
-									<destFileName>graphql-java-client-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
+									<destFileName>
+										graphql-java-client-runtime-sources.jar</destFileName>
+									<outputDirectory>
+										${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
@@ -62,8 +70,10 @@
 									<type>jar</type>
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
-									<destFileName>graphql-java-server-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
+									<destFileName>
+										graphql-java-server-runtime-sources.jar</destFileName>
+									<outputDirectory>
+										${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -83,7 +93,8 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/generated-resources/runtime_sources</directory>
+									<directory>
+										${project.build.directory}/generated-resources/runtime_sources</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -96,25 +107,44 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ClientPojo/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_addRelayConnections/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_separateUtilityClasses/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allFalse/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allTrue/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Collection/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Flux/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Map/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_MonoMap/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Client/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Server/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/Forum_Client/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/Forum_Server/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/StarWars_Client/generated-src</source>
-								<source>${project.build.directory}/junittest_graphql/StarWars_Server/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Client/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_ClientPojo/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_addRelayConnections/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_separateUtilityClasses/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allFalse/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_allTrue/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Collection/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Flux/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_Map/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_util_batchMapping_MonoMap/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_Server/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/AllGraphQLCases_ServerPojo/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/CustomTemplates_Client/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/CustomTemplates_Server/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/Forum_Client/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/Forum_Server/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/StarWars_Client/generated-src</source>
+								<source>
+									${project.build.directory}/junittest_graphql/StarWars_Server/generated-src</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -152,11 +182,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>javax.persistence-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
@@ -177,7 +202,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<!-- This dependency is necessary for tests only. But, in order to check in eclipse that the generated code compiles, 
+			<!-- This dependency is necessary for tests only. But, in order to
+			check in eclipse that the generated code compiles, 
 				we need to add it to the compilation classpath -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -235,12 +261,8 @@
 
 		<!-- dependendencies for json -->
 		<dependency>
-			<groupId>org.leadpony.justify</groupId>
-			<artifactId>justify</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.johnzon</groupId>
-			<artifactId>johnzon-core</artifactId>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
 		</dependency>
 	</dependencies>
 

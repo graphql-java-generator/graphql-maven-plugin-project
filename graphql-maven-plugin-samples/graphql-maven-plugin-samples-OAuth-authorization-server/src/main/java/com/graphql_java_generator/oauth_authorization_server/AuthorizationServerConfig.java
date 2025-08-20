@@ -9,14 +9,14 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -29,7 +29,7 @@ import com.nimbusds.jose.proc.SecurityContext;
  * Below are two commands, that can retrieve an OAuth2 token:
  * 
  * <pre>
-curl -u "clientId:secret"  -X POST "http://localhost:8181/oauth2/token" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials" --noproxy "*" -i
+curl -u "clientId:secret" -X POST "http://localhost:8181/oauth2/token" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials" --noproxy "*" -i
 curl -u "clientId:secret" -X POST "http://localhost:8181/oauth2/token?grant_type=client_credentials" --noproxy "*" -i
  * </pre>
  * 
@@ -45,6 +45,7 @@ public class AuthorizationServerConfig {
 	@Value("${oauth2.clientSecret}")
 	String clientSecret;
 
+	@SuppressWarnings("removal")
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -82,8 +83,16 @@ public class AuthorizationServerConfig {
 	}
 
 	@Bean
-	public ProviderSettings providerSettings(@Value("${server.port}") String portNumber) {
-		return ProviderSettings.builder().issuer("http://localhost:" + portNumber).build();
+	public AuthorizationServerSettings authorizationServerSettings(@Value("${server.port}") String portNumber) {
+		return AuthorizationServerSettings.builder()//
+				.issuer("http://localhost:" + portNumber)
+				// .authorizationEndpoint("/oauth2/authorize")
+				// .tokenEndpoint("/oauth2/token")
+				// .jwkSetEndpoint("/oauth2/jwks")
+				// .tokenRevocationEndpoint("/oauth2/revoke")
+				// .tokenIntrospectionEndpoint("/oauth2/introspect")
+				// .oidcClientRegistrationEndpoint("/connect/register")
+				.build();
 	}
 
 }

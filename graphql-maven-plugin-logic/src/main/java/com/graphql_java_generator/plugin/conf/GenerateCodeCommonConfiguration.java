@@ -29,7 +29,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
 	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "/generated-resources/graphql-maven-plugin";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
-	public final String DEFAULT_USE_JAKARTA_EE9 = "false";
+	public final String DEFAULT_USE_JAKARTA_EE9 = "true";
 
 	/**
 	 * <P>
@@ -221,7 +221,6 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		logger.debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
 		logger.debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
 		logger.debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());
-		logger.debug("    useJakartaEE9: " + isUseJakartaEE9());
 		logCommonConfiguration();
 	}
 

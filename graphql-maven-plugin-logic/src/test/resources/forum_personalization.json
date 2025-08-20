@@ -5,7 +5,7 @@
 			"fieldPersonalizations": [
 				{
 					"name": "type",
-					"addAnnotation": "@javax.persistence.Enumerated(javax.persistence.EnumType.STRING)"
+					"addAnnotation": "@jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)"
 				}
 			]		},
 		{

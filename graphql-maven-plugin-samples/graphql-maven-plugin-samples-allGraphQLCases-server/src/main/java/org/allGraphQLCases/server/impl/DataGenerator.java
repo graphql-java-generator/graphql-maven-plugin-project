@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.SIP_Commented_SIS;
 import org.allGraphQLCases.server.SIP_WithID_SIS;
@@ -28,6 +26,8 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.util.GraphqlUtils;
+
+import jakarta.annotation.Resource;
 
 /**
  * This sample is not connected to a database : its aim is just to check all the GraphQL schema possibilities, to insure

@@ -26,3 +26,5 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8181
+
+

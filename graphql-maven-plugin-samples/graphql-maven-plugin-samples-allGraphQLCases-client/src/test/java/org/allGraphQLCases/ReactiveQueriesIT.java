@@ -18,13 +18,11 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-
-import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
+import org.allGraphQLCases.client.util.AnotherMutationTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLReactiveRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeReactiveExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeReactiveExecutorAllGraphQLCases;
@@ -45,6 +43,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+import jakarta.annotation.Resource;
 import reactor.core.Disposable;
 import reactor.core.publisher.Signal;
 
@@ -89,13 +88,13 @@ public class ReactiveQueriesIT {
 		public void doOnEach(Signal<Optional<T>> o) {
 			switch (o.getType()) {
 			case ON_NEXT:
-				this.lastReceivedMessage = o.get().orElse(null);
-				this.hasReceveivedAMessage = true;
-				this.latchForMessageReception.countDown();
+				lastReceivedMessage = o.get().orElse(null);
+				hasReceveivedAMessage = true;
+				latchForMessageReception.countDown();
 				break;
 			case ON_ERROR:
-				this.lastReceivedError = o.getThrowable();
-				this.latchForMessageReception.countDown();
+				lastReceivedError = o.getThrowable();
+				latchForMessageReception.countDown();
 				break;
 			default:
 				// No action}
@@ -117,20 +116,20 @@ public class ReactiveQueriesIT {
 		// The response preparation should be somewhere in the application initialization code.
 		req = "mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 				+ "{id name appearsIn friends {id name}}}";//
-		this.reactiveMutationWithDirectiveRequest = this.reactiveMutationExecutor.getGraphQLRequest(req);
+		reactiveMutationWithDirectiveRequest = reactiveMutationExecutor.getGraphQLRequest(req);
 
 		req = "mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}";
-		this.reactiveMutationWithoutDirectiveRequest = this.reactiveMutationExecutor.getGraphQLRequest(req);
+		reactiveMutationWithoutDirectiveRequest = reactiveMutationExecutor.getGraphQLRequest(req);
 
 		req = "query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}";
-		this.reactiveWithDirectiveTwoParametersRequest = this.reactiveMutationExecutor.getGraphQLRequest(req);
+		reactiveWithDirectiveTwoParametersRequest = reactiveMutationExecutor.getGraphQLRequest(req);
 
 		req = "{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
 				+ "}";
-		this.reactiveMultipleQueriesRequest = this.reactiveQueryExecutor.getGraphQLRequest(req);
+		reactiveMultipleQueriesRequest = reactiveQueryExecutor.getGraphQLRequest(req);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -143,7 +142,7 @@ public class ReactiveQueriesIT {
 		logger.info("Starting test_fullQuery_noDirective_extensionsResponseField");
 
 		// Direct queries should be used only for very simple cases
-		CTP_MyQueryType_CTS resp = this.reactiveQueryExecutor.exec(request).block();
+		CTP_MyQueryType_CTS resp = reactiveQueryExecutor.exec(request).block();
 
 		// Verifications
 		assertNotNull(resp);
@@ -174,7 +173,7 @@ public class ReactiveQueriesIT {
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		CTP_MyQueryType_CTS resp = this.reactiveQueryExecutor//
+		CTP_MyQueryType_CTS resp = reactiveQueryExecutor//
 				.exec(request, "value", "the value", "skip", Boolean.FALSE) //$NON-NLS-3$
 				.block();
 
@@ -196,7 +195,7 @@ public class ReactiveQueriesIT {
 		logger.info("Starting test_preparedQuery_withDirectiveTwoParameters");
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.reactiveWithDirectiveTwoParametersRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = reactiveWithDirectiveTwoParametersRequest.execQuery( //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE).block();
 		// Verifications
 		assertNotNull(resp);
@@ -225,7 +224,7 @@ public class ReactiveQueriesIT {
 		);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.reactiveQueryExecutor
+		CTP_MyQueryType_CTS resp = reactiveQueryExecutor
 				.exec("query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", //
 						"matrixParam", matrix)
 				.block();
@@ -274,7 +273,7 @@ public class ReactiveQueriesIT {
 		map.put("matrixParam", matrix);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.reactiveQueryExecutor.execWithBindValues(
+		CTP_MyQueryType_CTS resp = reactiveQueryExecutor.execWithBindValues(
 				"query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", map)
 				.block();
 
@@ -317,7 +316,7 @@ public class ReactiveQueriesIT {
 		params.put("Value", "a first \"value\"");
 
 		// Preparation
-		GraphQLReactiveRequestAllGraphQLCases reactiveDirectiveOnQuery = this.reactiveMutationExecutor
+		GraphQLReactiveRequestAllGraphQLCases reactiveDirectiveOnQuery = reactiveMutationExecutor
 				.getGraphQLRequest("query namedQuery($uppercase :\n" //
 						+ "Boolean, \n\r"//
 						+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
@@ -348,12 +347,12 @@ public class ReactiveQueriesIT {
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
-		GraphQLReactiveRequestAllGraphQLCases reactivePartialQuery = this.reactiveQueryExecutor
+		GraphQLReactiveRequestAllGraphQLCases reactivePartialQuery = reactiveQueryExecutor
 				.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.reactiveQueryExecutor
-				.allFieldCases(reactivePartialQuery, null, "inputs", inputs).block().get();
+		CTP_AllFieldCases_CTS ret = reactiveQueryExecutor.allFieldCases(reactivePartialQuery, null, "inputs", inputs)
+				.block().get();
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -379,12 +378,12 @@ public class ReactiveQueriesIT {
 		Map<String, Object> map = new HashMap<>();
 		map.put("inputs", inputs);
 		//
-		GraphQLReactiveRequestAllGraphQLCases reactivePartialQuery = this.reactiveQueryExecutor
+		GraphQLReactiveRequestAllGraphQLCases reactivePartialQuery = reactiveQueryExecutor
 				.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.reactiveQueryExecutor
-				.allFieldCasesWithBindValues(reactivePartialQuery, null, map).block().get();
+		CTP_AllFieldCases_CTS ret = reactiveQueryExecutor.allFieldCasesWithBindValues(reactivePartialQuery, null, map)
+				.block().get();
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -409,7 +408,7 @@ public class ReactiveQueriesIT {
 		//
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.reactiveQueryExecutor
+		CTP_AllFieldCases_CTS ret = reactiveQueryExecutor
 				.allFieldCases("{issue65(inputs: &inputs)}", null, "inputs", inputs).block().get();
 
 		// Verification
@@ -437,7 +436,7 @@ public class ReactiveQueriesIT {
 		map.put("inputs", inputs);
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.reactiveQueryExecutor
+		CTP_AllFieldCases_CTS ret = reactiveQueryExecutor
 				.allFieldCasesWithBindValues("{issue65(inputs: &inputs)}", null, map).block().get();
 
 		// Verification
@@ -457,29 +456,28 @@ public class ReactiveQueriesIT {
 		logger.info("Starting test_subscribeToANullableString");
 
 		// Go, go, go
-		Disposable d = this.reactiveSubscriptionExecutor//
+		Disposable d = reactiveSubscriptionExecutor//
 				.subscriptionWithNullResponse("")//
-				.doOnEach(o -> this.receivedFromSubsriptionString.doOnEach(o))//
+				.doOnEach(o -> receivedFromSubsriptionString.doOnEach(o))//
 				.subscribe();
 
 		// Verification
 
 		// Let's wait a max of 20 seconds, until we receive a notification
 		// (20s will never occur... unless using the debugger to debug some stuff)
-		this.receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		// Let's release the used resources
 		d.dispose();
 
-		assertNull(this.receivedFromSubsriptionString.lastReceivedError,
+		assertNull(receivedFromSubsriptionString.lastReceivedError,
 				"We should have received no exception (if any, the received exception is: "
-						+ ((this.receivedFromSubsriptionString.lastReceivedError == null) ? null
-								: this.receivedFromSubsriptionString.lastReceivedError.getClass().getName())
-						+ ": " + ((this.receivedFromSubsriptionString.lastReceivedError == null) ? null
-								: this.receivedFromSubsriptionString.lastReceivedError.getMessage()));
-		assertTrue(this.receivedFromSubsriptionString.hasReceveivedAMessage, "We should have received a message");
-		assertNull(this.receivedFromSubsriptionString.lastReceivedMessage,
-				"The message should be null (it is actually: " + this.receivedFromSubsriptionString.lastReceivedMessage
-						+ ")");
+						+ ((receivedFromSubsriptionString.lastReceivedError == null) ? null
+								: receivedFromSubsriptionString.lastReceivedError.getClass().getName())
+						+ ": " + ((receivedFromSubsriptionString.lastReceivedError == null) ? null
+								: receivedFromSubsriptionString.lastReceivedError.getMessage()));
+		assertTrue(receivedFromSubsriptionString.hasReceveivedAMessage, "We should have received a message");
+		assertNull(receivedFromSubsriptionString.lastReceivedMessage, "The message should be null (it is actually: "
+				+ receivedFromSubsriptionString.lastReceivedMessage + ")");
 	}
 
 	@Test
@@ -489,22 +487,22 @@ public class ReactiveQueriesIT {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
 
 		// Go, go, go
-		Disposable d = this.reactiveExecutorAllGraphQLCases2//
+		Disposable d = reactiveExecutorAllGraphQLCases2//
 				.issue53("", date)//
-				.doOnEach(o -> this.receivedFromSubsriptionDate.doOnEach(o))//
+				.doOnEach(o -> receivedFromSubsriptionDate.doOnEach(o))//
 				.subscribe();
 
 		// Verification
 
 		// Let's wait a max of 20 seconds, until we receive a notification
 		// (20s will never occur... unless using the debugger to debug some stuff)
-		this.receivedFromSubsriptionDate.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		receivedFromSubsriptionDate.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		// Let's release the used resources
 		d.dispose();
 
-		assertInstanceOf(GraphQlTransportException.class, this.receivedFromSubsriptionDate.lastReceivedError);
-		assertTrue(this.receivedFromSubsriptionDate.lastReceivedError.getMessage().contains("Connection refused"),
-				"The received error message is: " + this.receivedFromSubsriptionDate.lastReceivedError.getMessage());
+		assertInstanceOf(GraphQlTransportException.class, receivedFromSubsriptionDate.lastReceivedError);
+		assertTrue(receivedFromSubsriptionDate.lastReceivedError.getMessage().contains("Connection refused"),
+				"The received error message is: " + receivedFromSubsriptionDate.lastReceivedError.getMessage());
 	}
 
 	/**
@@ -526,25 +524,25 @@ public class ReactiveQueriesIT {
 		param.setErrorOnSubscription(true);
 
 		// Go, go, go
-		Disposable d = this.reactiveSubscriptionExecutor//
+		Disposable d = reactiveSubscriptionExecutor//
 				.subscriptionTest("", param)//
-				.doOnEach(o -> this.receivedFromSubsriptionString.doOnEach(o))//
+				.doOnEach(o -> receivedFromSubsriptionString.doOnEach(o))//
 				.subscribe();
 
 		// Verification
 
 		// Let's wait a max of 20 seconds, until we receive a notification
 		// (20s will never occur... unless using the debugger to debug some stuff)
-		this.receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		// Let's release the used resources
 		d.dispose();
 
 		// Let's test this exception
-		assertNotNull(this.receivedFromSubsriptionString.lastReceivedError, "we should have received an exception");
+		assertNotNull(receivedFromSubsriptionString.lastReceivedError, "we should have received an exception");
 		assertTrue(
-				this.receivedFromSubsriptionString.lastReceivedError.getMessage()
+				receivedFromSubsriptionString.lastReceivedError.getMessage()
 						.contains("Oups, the subscriber asked for an error during the subscription"),
-				"The received error message is: " + this.receivedFromSubsriptionString.lastReceivedError.getMessage());
+				"The received error message is: " + receivedFromSubsriptionString.lastReceivedError.getMessage());
 	}
 
 	/**
@@ -566,25 +564,25 @@ public class ReactiveQueriesIT {
 		param.setErrorOnNext(true);
 
 		// Go, go, go
-		Disposable d = this.reactiveSubscriptionExecutor//
+		Disposable d = reactiveSubscriptionExecutor//
 				.subscriptionTest("", param)//
-				.doOnEach(o -> this.receivedFromSubsriptionString.doOnEach(o))//
+				.doOnEach(o -> receivedFromSubsriptionString.doOnEach(o))//
 				.subscribe();
 
 		// Verification
 
 		// Let's wait a max of 20 seconds, until we receive a notification
 		// (20s will never occur... unless using the debugger to debug some stuff)
-		this.receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		// Let's release the used resources
 		d.dispose();
 
 		// Let's test this exception
-		assertNotNull(this.receivedFromSubsriptionString.lastReceivedError, "we must have received an exception");
+		assertNotNull(receivedFromSubsriptionString.lastReceivedError, "we must have received an exception");
 		assertTrue(
-				this.receivedFromSubsriptionString.lastReceivedError.getMessage()
+				receivedFromSubsriptionString.lastReceivedError.getMessage()
 						.contains("Oups, the subscriber asked for an error for each next message"),
-				"The received error message is: " + this.receivedFromSubsriptionString.lastReceivedError.getMessage());
+				"The received error message is: " + receivedFromSubsriptionString.lastReceivedError.getMessage());
 	}
 
 	/**
@@ -606,26 +604,26 @@ public class ReactiveQueriesIT {
 		param.setCloseWebSocketBeforeFirstNotification(true);
 
 		// Go, go, go
-		Disposable d = this.reactiveSubscriptionExecutor//
+		Disposable d = reactiveSubscriptionExecutor//
 				.subscriptionTest("", param)//
-				.doOnEach(o -> this.receivedFromSubsriptionString.doOnEach(o))//
+				.doOnEach(o -> receivedFromSubsriptionString.doOnEach(o))//
 				.subscribe();
 
 		// Verification
 
 		// Let's wait a max of 20 seconds, until we receive a notification
 		// (20s will never occur... unless using the debugger to debug some stuff)
-		this.receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		receivedFromSubsriptionString.latchForMessageReception.await(20, TimeUnit.SECONDS);
 		// Let's release the used resources
 		d.dispose();
 
 		// Let's test this exception
-		assertNotNull(this.receivedFromSubsriptionString.lastReceivedError, "we must have received an exception");
-		assertTrue(this.receivedFromSubsriptionString.lastReceivedError.getMessage().contains(
+		assertNotNull(receivedFromSubsriptionString.lastReceivedError, "we must have received an exception");
+		assertTrue(receivedFromSubsriptionString.lastReceivedError.getMessage().contains(
 				"message=Oups, the subscriber asked that the web socket get disconnected before the first notification"));
 		assertTrue(
-				this.receivedFromSubsriptionString.lastReceivedError.getMessage()
+				receivedFromSubsriptionString.lastReceivedError.getMessage()
 						.contains("classification=ExecutionAborted"),
-				"The error message is: " + this.receivedFromSubsriptionString.lastReceivedError.getMessage());
+				"The error message is: " + receivedFromSubsriptionString.lastReceivedError.getMessage());
 	}
 }

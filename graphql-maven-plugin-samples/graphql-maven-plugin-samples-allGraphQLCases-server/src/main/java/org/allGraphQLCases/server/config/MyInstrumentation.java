@@ -5,19 +5,24 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.jspecify.annotations.NonNull;
+
 import graphql.ExecutionResult;
 import graphql.ExecutionResultImpl;
-import graphql.execution.instrumentation.SimpleInstrumentation;
+import graphql.execution.instrumentation.InstrumentationState;
+import graphql.execution.instrumentation.SimplePerformantInstrumentation;
 import graphql.execution.instrumentation.parameters.InstrumentationExecutionParameters;
 
 /**
- * This class has been copied from
+ * This class was original copied from
  * <A HREF="https://stackoverflow.com/questions/54244791/how-to-respond-with-extensions-using-graphql-java">this
- * thread</A>, based on graphql-java's TracingInstrumentation.
+ * thread</A>, based on graphql-java's TracingInstrumentation.<br/>
+ * Then changed to {@link SimplePerformantInstrumentation}, as
+ * {@link graphql.execution.instrumentation.SimpleInstrumentation} is now deprecated.
  * 
  * @author Joe
  */
-public class MyInstrumentation extends SimpleInstrumentation {
+public class MyInstrumentation extends SimplePerformantInstrumentation {
 
 	public static class ExtensionValue {
 		public String name;
@@ -25,8 +30,8 @@ public class MyInstrumentation extends SimpleInstrumentation {
 	}
 
 	@Override
-	public CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult,
-			InstrumentationExecutionParameters parameters) {
+	public @NonNull CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult,
+			InstrumentationExecutionParameters parameters, InstrumentationState state) {
 		Map<Object, Object> currentExt = executionResult.getExtensions();
 		Map<Object, Object> newExtensionMap = new LinkedHashMap<>();
 		newExtensionMap.putAll(currentExt == null ? Collections.emptyMap() : currentExt);

@@ -8,16 +8,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
-import org.starwars.server.jpa.DroidRepository;
-import org.starwars.server.jpa.HumanRepository;
-
 import org.starwars.server.Character;
 import org.starwars.server.Droid;
 import org.starwars.server.Episode;
 import org.starwars.server.Human;
+import org.starwars.server.jpa.DroidRepository;
+import org.starwars.server.jpa.HumanRepository;
+
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf

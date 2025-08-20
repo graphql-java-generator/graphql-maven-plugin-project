@@ -5,8 +5,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.DataFetchersDelegateHuman;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SIP_Character_SIS;
@@ -16,6 +14,7 @@ import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf
@@ -30,18 +29,18 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Override
 	public CompletableFuture<SIP_Character_SIS> bestFriend(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, SIP_Character_SIS> dataLoader, STP_Human_STS source) {
-		UUID key = this.generator.generateInstance(UUID.class);
+		UUID key = generator.generateInstance(UUID.class);
 		return dataLoader.load(key);
 	}
 
 	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS source) {
-		return this.generator.generateInstanceList(SIP_Character_SIS.class, 6);
+		return generator.generateInstanceList(SIP_Character_SIS.class, 6);
 	}
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, STP_Human_STS source) {
-		return this.generator.generateInstanceList(String.class, 10);
+		return generator.generateInstanceList(String.class, 10);
 
 	}
 
@@ -52,17 +51,18 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 		@SuppressWarnings("unchecked")
 		List<String> appearsIn = (List<String>) dataFetchingEnvironment.getVariables().get("appearsIn");
 
-		if (appearsIn != null)
+		if (appearsIn != null) {
 			return appearsIn.stream()//
 					.map(s -> SEP_Episode_SES.fromGraphQlValue(s))//
 					.collect(Collectors.toList());
-		else
-			return this.generator.generateInstanceList(SEP_Episode_SES.class, 2);
+		} else {
+			return generator.generateInstanceList(SEP_Episode_SES.class, 2);
+		}
 	}
 
 	@Override
 	public List<STP_Human_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return this.generator.generateInstanceList(STP_Human_STS.class, keys.size());
+		return generator.generateInstanceList(STP_Human_STS.class, keys.size());
 	}
 
 	/** Custom field data fetchers are available since release 2.5 */

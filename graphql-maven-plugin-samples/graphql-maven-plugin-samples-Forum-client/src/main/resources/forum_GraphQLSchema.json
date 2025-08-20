@@ -1981,9 +1981,13 @@
         "name" : "reason",
         "description" : "The reason for the deprecation",
         "type" : {
-          "kind" : "SCALAR",
-          "name" : "String",
-          "ofType" : null
+          "kind" : "NON_NULL",
+          "name" : null,
+          "ofType" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          }
         },
         "defaultValue" : "\"No longer supported\"",
         "isDeprecated" : false,
@@ -2015,6 +2019,44 @@
       "name" : "oneOf",
       "description" : "Indicates an Input Object is a OneOf Input Object.",
       "locations" : [ "INPUT_OBJECT" ],
+      "args" : [ ],
+      "isRepeatable" : false
+    }, {
+      "name" : "defer",
+      "description" : "This directive allows results to be deferred during execution",
+      "locations" : [ "FRAGMENT_SPREAD", "INLINE_FRAGMENT" ],
+      "args" : [ {
+        "name" : "if",
+        "description" : "Deferred behaviour is controlled by this argument",
+        "type" : {
+          "kind" : "NON_NULL",
+          "name" : null,
+          "ofType" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          }
+        },
+        "defaultValue" : "true",
+        "isDeprecated" : false,
+        "deprecationReason" : null
+      }, {
+        "name" : "label",
+        "description" : "A unique label that represents the fragment being deferred",
+        "type" : {
+          "kind" : "SCALAR",
+          "name" : "String",
+          "ofType" : null
+        },
+        "defaultValue" : null,
+        "isDeprecated" : false,
+        "deprecationReason" : null
+      } ],
+      "isRepeatable" : false
+    }, {
+      "name" : "experimental_disableErrorPropagation",
+      "description" : "This directive disables error propagation when a non nullable field returns null for the given operation.",
+      "locations" : [ "QUERY", "MUTATION", "SUBSCRIPTION" ],
       "args" : [ ],
       "isRepeatable" : false
     } ]

@@ -4,32 +4,33 @@
 package org.allGraphQLCases.demo;
 
 import java.net.URI;
-import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.graphql_java_generator.client.OAuthTokenExtractor;
 
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
 /**
  * Spring configuration for this app. The main configuration is the oauth one.
@@ -43,27 +44,40 @@ public class SpringConfig {
 	private static Logger logger = LoggerFactory.getLogger(SpringConfig.class);
 
 	@Bean
-	@Primary
-	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
-			ReactiveClientRegistrationRepository clientRegistrations) {
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
-				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-		oauth.setDefaultClientRegistrationId("provider_test");
-		return oauth;
-	}
+	@SuppressWarnings("static-method")
+	public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrations) {
+		ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider = ReactiveOAuth2AuthorizedClientProviderBuilder
+				.builder().clientCredentials().build();
 
-	@Bean
-	@Primary
-	public WebClient webClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
-			CodecCustomizer defaultCodecCustomizer, //
-			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
-			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
-		return WebClient.builder()//
-				.baseUrl(graphqlEndpointAllGraphQLCases)//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointAllGraphQLCases))
-				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
-				.build();
+		ServerOAuth2AuthorizedClientRepository authorizedClientRepository = new ServerOAuth2AuthorizedClientRepository() {
+			@Override
+			public <T extends OAuth2AuthorizedClient> Mono<T> loadAuthorizedClient(String clientRegistrationId,
+					Authentication principal, ServerWebExchange exchange) {
+				return Mono.empty();
+			}
+
+			@Override
+			public Mono<Void> saveAuthorizedClient(OAuth2AuthorizedClient authorizedClient, Authentication principal,
+					ServerWebExchange exchange) {
+				return Mono.empty();
+			}
+
+			@Override
+			public Mono<Void> removeAuthorizedClient(String clientRegistrationId, Authentication principal,
+					ServerWebExchange exchange) {
+				return Mono.empty();
+			}
+		};
+
+		DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager = new DefaultReactiveOAuth2AuthorizedClientManager(
+				clientRegistrations, authorizedClientRepository);
+		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+				authorizedClientManager);
+		oauth2.setDefaultClientRegistrationId("provider_test");
+
+		return WebClient.builder().filter(oauth2).build();
 	}
 
 	/**

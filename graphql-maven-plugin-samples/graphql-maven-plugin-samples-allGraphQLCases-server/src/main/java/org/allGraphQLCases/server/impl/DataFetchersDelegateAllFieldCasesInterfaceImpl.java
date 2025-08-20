@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesInterface;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SINP_FieldParameterInput_SINS;
@@ -23,6 +21,7 @@ import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 @Component
 public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetchersDelegateAllFieldCasesInterface {
@@ -74,13 +73,13 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 		STP_Human_STS human = STP_Human_STS.builder().withId(UUID.randomUUID()).withName("a name")
 				.withAppearsIn(new ArrayList<SEP_Episode_SES>()).build();
 		//
-		STP_HumanEdge_STS edge = STP_HumanEdge_STS.builder().withNode(human).withCursor(this.BAD_CURSOR).build();
+		STP_HumanEdge_STS edge = STP_HumanEdge_STS.builder().withNode(human).withCursor(BAD_CURSOR).build();
 		//
 		List<STP_HumanEdge_STS> edges = new ArrayList<>();
 		edges.add(edge);
 
-		STP_PageInfo_STS pageInfo = STP_PageInfo_STS.builder().withEndCursor(this.BAD_CURSOR).withHasNextPage(false)
-				.withHasPreviousPage(false).withStartCursor(this.BAD_CURSOR).build();
+		STP_PageInfo_STS pageInfo = STP_PageInfo_STS.builder().withEndCursor(BAD_CURSOR).withHasNextPage(false)
+				.withHasPreviousPage(false).withStartCursor(BAD_CURSOR).build();
 
 		return STP_HumanConnection_STS.builder().withEdges(edges).withPageInfo(pageInfo).build();
 	}
@@ -100,8 +99,9 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 		type.setId(UUID.randomUUID());
 		type.setName("A name");
 
-		if (textToAppendToTheForname != null)
+		if (textToAppendToTheForname != null) {
 			type.setName(type.getName() + textToAppendToTheForname);
+		}
 
 		if (uppercaseName != null && uppercaseName) {
 			type.setName(type.getName().toUpperCase());
@@ -135,8 +135,9 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 		STP_AllFieldCasesWithoutIdSubtype_STS type = new STP_AllFieldCasesWithoutIdSubtype_STS();
 		type.setName("A name");
 
-		if (textToAppendToTheForname != null)
+		if (textToAppendToTheForname != null) {
 			type.setName(type.getName() + textToAppendToTheForname);
+		}
 
 		if (input != null && input.getUppercase() != null && input.getUppercase()) {
 			type.setName(type.getName().toUpperCase());

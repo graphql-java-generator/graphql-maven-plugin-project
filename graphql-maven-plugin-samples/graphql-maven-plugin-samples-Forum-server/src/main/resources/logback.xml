@@ -13,7 +13,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.graphql_java_generator" level="debug" />
+	<logger name="com.graphql_java_generator" level="info" />
 	<root level="info">
 		<appender-ref ref="File" />
 	</root>

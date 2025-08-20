@@ -34,7 +34,7 @@
 						<configuration>
 							<!-- addRelayConnections will generate all the Relay Connection stuff 
 								(Node, Edge and Connection interfaces, and creating the XxxEdge and XxxConnection 
-								interfaces or objects), for fields marked with the @RelatConnection directive. 
+								interfaces or objects), for fields marked with the @RelayConnection directive. 
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/allGraphQLCases/</schemaFileFolder>
@@ -272,7 +272,7 @@
 			<plugin>
 				<!-- This plugin allows to start the SpringBoot server in the background 
 					during the integration tests -->
-				<groupId>com.bazaarvoice.maven.plugins</groupId>
+				<groupId>de.eitco.cicd.exec</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
@@ -288,7 +288,7 @@
 							<processLogFile>${project.build.directory}/OAuth-authorization-server.log</processLogFile>
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
+							<healthCheckUrl>http://localhost:8181/helloWorld</healthCheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
@@ -309,7 +309,7 @@
 							<!-- processLogFile>${project.build.directory}/allGraphQLCases_graphql_server.log</processLogFile -->
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8180/helloworld.html</healthcheckUrl>
+							<healthCheckUrl>http://localhost:8180/helloworld.html</healthCheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
@@ -329,7 +329,7 @@
 							<workingDir>forum_graphql_server</workingDir>
 							<waitAfterLaunch>60</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8182/graphiql</healthcheckUrl>
+							<healthCheckUrl>http://localhost:8182/graphiql</healthCheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>

@@ -11,10 +11,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.graphql_java_generator.client.response.AbstractCustomJacksonDeserializer;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 
-import graphql.schema.GraphQLScalarType;
-
 /**
- * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar
+ * This class is a standard Deserializer for Jackson. It uses the {@link graphql.schema.GraphQLScalarType} that is implemented by the project for this scalar
  */
 @SuppressWarnings("unused")
 public class CustomJacksonDeserializers {

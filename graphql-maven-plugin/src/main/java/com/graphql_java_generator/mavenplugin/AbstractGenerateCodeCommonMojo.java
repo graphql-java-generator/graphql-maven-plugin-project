@@ -176,8 +176,13 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	File targetSourceFolder;
 
 	/**
+	 * <P>
 	 * (since 2.0RC1) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8
 	 * imports (that begins by jakarta.).
+	 * </P>
+	 * <P>
+	 * (since 3.0) The parameter is ignored. Its value is always true.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.useJakartaEE9", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_USE_JAKARTA_EE9)
 	boolean useJakartaEE9;

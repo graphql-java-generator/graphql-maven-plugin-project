@@ -274,10 +274,11 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(completableFuture, dataFetcher.isWithDataLoader(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
-		if (sourceName == null)
+		if (sourceName == null) {
 			assertNull(dataFetcher.getGraphQLOriginType(), "sourceName");
-		else
+		} else {
 			assertEquals(sourceName, dataFetcher.getGraphQLOriginType().getClassSimpleName(), "sourceName");
+		}
 
 		// Check of the data fetcher input parameters
 		assertEquals(inputParameters.length, dataFetcher.getField().getInputParameters().size(),
@@ -349,11 +350,12 @@ class DocumentParser_Forum_Server_Test {
 		assertNotNull(board);
 
 		assertTrue(board.getImports().contains("java.util.List"), "expecting java.util.List");
-		assertTrue(board.getImports().contains("javax.persistence.Entity"), "expecting javax.persistence.Entity");
-		assertTrue(board.getImports().contains("javax.persistence.GeneratedValue"),
-				"expecting javax.persistence.GeneratedValue");
-		assertTrue(board.getImports().contains("javax.persistence.Id"), "expecting javax.persistence.Id");
-		assertTrue(board.getImports().contains("javax.persistence.Transient"), "expecting javax.persistence.Transient");
+		assertTrue(board.getImports().contains("jakarta.persistence.Entity"), "expecting jakarta.persistence.Entity");
+		assertTrue(board.getImports().contains("jakarta.persistence.GeneratedValue"),
+				"expecting jakarta.persistence.GeneratedValue");
+		assertTrue(board.getImports().contains("jakarta.persistence.Id"), "expecting jakarta.persistence.Id");
+		assertTrue(board.getImports().contains("jakarta.persistence.Transient"),
+				"expecting jakarta.persistence.Transient");
 		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLNonScalar"),
 				"expecting com.graphql_java_generator.annotation.GraphQLNonScalar");
 		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLObjectType"),

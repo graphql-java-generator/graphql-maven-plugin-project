@@ -6,8 +6,6 @@ package org.allGraphQLCases.server.impl;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.DataFetchersDelegateDroid;
 import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.SIP_Character_SIS;
@@ -19,6 +17,7 @@ import graphql.execution.MergedField;
 import graphql.language.Directive;
 import graphql.language.StringValue;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf
@@ -32,7 +31,7 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 
 	@Override
 	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS source) {
-		List<SIP_Character_SIS> chars = this.generator.generateInstanceList(SIP_Character_SIS.class, 5);
+		List<SIP_Character_SIS> chars = generator.generateInstanceList(SIP_Character_SIS.class, 5);
 
 		// For the OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden() integration test, we check if
 		// the testDirective directive has been set with the relevant value
@@ -55,12 +54,12 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 
 	@Override
 	public List<SEP_Episode_SES> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS source) {
-		return this.generator.generateInstanceList(SEP_Episode_SES.class, 2);
+		return generator.generateInstanceList(SEP_Episode_SES.class, 2);
 	}
 
 	@Override
 	public List<STP_Droid_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return this.generator.generateInstanceList(STP_Droid_STS.class, keys.size());
+		return generator.generateInstanceList(STP_Droid_STS.class, keys.size());
 	}
 
 	/** Custom field data fetchers are available since release 2.5 */

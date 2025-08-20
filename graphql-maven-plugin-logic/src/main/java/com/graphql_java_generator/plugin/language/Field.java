@@ -169,7 +169,7 @@ public interface Field {
 	public Type getType();
 
 	/**
-	 * Indicates whether this field is an id or not. It's used in server mode to add the javax.persistence annotations
+	 * Indicates whether this field is an id or not. It's used in server mode to add the jakarta.persistence annotations
 	 * for the id fields. Default value is false. This field is set to true for GraphQL fields which are of 'ID' type.
 	 */
 	public boolean isId();

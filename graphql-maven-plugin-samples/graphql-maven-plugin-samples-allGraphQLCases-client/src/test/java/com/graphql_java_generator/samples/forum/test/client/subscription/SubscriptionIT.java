@@ -12,16 +12,14 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-
 import org.allGraphQLCases.SpringTestConfig;
+import org.forum.client.GraphQLRequestForum;
 import org.forum.client.Member;
+import org.forum.client.MutationExecutorForum;
 import org.forum.client.Post;
 import org.forum.client.PostInput;
-import org.forum.client.TopicPostInput;
-import org.forum.client.GraphQLRequestForum;
-import org.forum.client.MutationExecutorForum;
 import org.forum.client.SubscriptionExecutorForum;
+import org.forum.client.TopicPostInput;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +29,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class executes integration tests for subscription, and can be used as a sample on how to use Subscription, based

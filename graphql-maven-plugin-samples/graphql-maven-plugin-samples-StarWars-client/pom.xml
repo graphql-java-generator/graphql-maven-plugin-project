@@ -61,7 +61,7 @@
 				<!-- mvn cargo:run -->
 				<groupId>org.codehaus.cargo</groupId>
 				<artifactId>cargo-maven3-plugin</artifactId>
-				<version>1.9.10</version>
+				<version>1.10.21</version>
 				<executions>
 					<execution>
 						<id>start-tomcat</id>
@@ -81,18 +81,38 @@
 				<configuration>
 					<skip>${skipTests}</skip>
 					<container>
-						<containerId>tomcat9x</containerId>
+						<containerId>tomcat11x</containerId>
+						<log>target/cargo.log</log>
+						<logLevel>debug</logLevel>
+						<output>target/server.log</output>
 						<timeout>300000</timeout> <!-- 5 minutes: McAfee is such a sh..., up to 98% of CPU, and I can't configure it as it's an enterprise computer -->
 						<zipUrlInstaller>
-							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.39/tomcat-9.0.39.zip</url>
+							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/11.0.9/tomcat-11.0.9.zip</url>
 							<downloadDir>${project.basedir}/downloads</downloadDir>
 						</zipUrlInstaller>
+		                <dependencies>
+		                    <dependency>
+		                        <groupId>org.slf4j</groupId>
+		                        <artifactId>slf4j-api</artifactId>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.slf4j</groupId>
+		                        <artifactId>jul-to-slf4j</artifactId>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>ch.qos.logback</groupId>
+		                        <artifactId>logback-classic</artifactId>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>ch.qos.logback</groupId>
+		                        <artifactId>logback-core</artifactId>
+		                    </dependency>
+		                </dependencies>
 					</container>
 					<configuration>
 						<properties>
-							<cargo.logging>low</cargo.logging>
-							<log>target/cargo.log</log>
-							<cargo.protocol>https</cargo.protocol>
+							<cargo.logging>medium</cargo.logging>
+							<!--cargo.protocol>https</cargo.protocol -->
 							<cargo.servlet.port>8443</cargo.servlet.port>
 							<cargo.servlet.users>admin:tomcat:manager-gui</cargo.servlet.users>
 							<cargo.tomcat.connector.keyAlias>graphql</cargo.tomcat.connector.keyAlias>

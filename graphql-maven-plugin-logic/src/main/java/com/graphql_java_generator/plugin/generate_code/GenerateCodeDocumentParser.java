@@ -151,7 +151,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 	/** A constructor for tests, to allow overriding the configuration */
 	GenerateCodeDocumentParser(GenerateCodeCommonConfiguration conf) {
-		this.configuration = conf;
+		configuration = conf;
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 	@Override
 	public GenerateCodeCommonConfiguration getConfiguration() {
-		return (GenerateCodeCommonConfiguration) this.configuration;
+		return (GenerateCodeCommonConfiguration) configuration;
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		if (getConfiguration().getMode().equals(PluginMode.server)) {
 			try {
 				super.initScalarTypes(
-						Class.forName(((GenerateServerCodeConfiguration) this.configuration).getJavaTypeForIDType()));
+						Class.forName(((GenerateServerCodeConfiguration) configuration).getJavaTypeForIDType()));
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
@@ -249,7 +249,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// Apply the user's schema personalization
 		logger.debug("Apply schema personalization");
-		this.jsonSchemaPersonalization.applySchemaPersonalization();
+		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		// We're done
 		int nbClasses = getObjectTypes().size() + getEnumTypes().size() + getInterfaceTypes().size();
@@ -275,7 +275,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			throw new NullPointerException("type may not be null");
 		}
 
-		for (DataFetchersDelegate dfd : this.dataFetchersDelegates) {
+		for (DataFetchersDelegate dfd : dataFetchersDelegates) {
 			if (dfd.getType().equals(type)) {
 				return dfd;
 			}
@@ -284,7 +284,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// No DataFetchersDelegate for this type exists yet
 		if (createIfNotExists) {
 			DataFetchersDelegate dfd = new DataFetchersDelegateImpl(type);
-			this.dataFetchersDelegates.add(dfd);
+			dataFetchersDelegates.add(dfd);
 			return dfd;
 		} else {
 			return null;
@@ -310,7 +310,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 							RelationImpl relation = new RelationImpl(type, field, relType);
 							//
 							((FieldImpl) field).setRelation(relation);
-							this.relations.add(relation);
+							relations.add(relation);
 						} // if (instanceof ObjectType)
 					} // if (!type.isInputType())
 				} // for (field)
@@ -331,20 +331,18 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		switch (getConfiguration().getMode()) {
 		case client:
 			// Type annotations
-			this.graphqlUtils.concatStreams(Type.class, true, null, null, null, this.interfaceTypes, getObjectTypes(),
-					this.unionTypes).forEach(o -> addTypeAnnotationForClientMode(o));
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, interfaceTypes, getObjectTypes(), unionTypes)
+					.forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Field annotations
-			this.graphqlUtils.concatStreams(Type.class, true, null, null, null, getObjectTypes(), this.interfaceTypes)
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode((FieldImpl) f));
 
 			break;
 		case server:
-			this.graphqlUtils
-					.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), this.interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.forEach(o -> addTypeAnnotationForServerMode(o));
-			this.graphqlUtils
-					.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), this.interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForServerMode(f));
 			break;
 		}
@@ -427,11 +425,11 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// 1) It's asked in the plugin configuration
 		// 2) The object is a regular object (not an input type)
 		// 3) It's not an object that is a query/mutation/subscription
-		if (this.configuration instanceof GenerateServerCodeConfiguration
-				&& ((GenerateServerCodeConfiguration) this.configuration).isGenerateJPAAnnotation()
+		if (configuration instanceof GenerateServerCodeConfiguration
+				&& ((GenerateServerCodeConfiguration) configuration).isGenerateJPAAnnotation()
 				&& o instanceof ObjectType && !(o instanceof InterfaceType) && !(o instanceof UnionType)
 				&& !((ObjectType) o).isInputType() && ((ObjectType) o).getRequestType() == null) {
-			o.addImport(getConfiguration().getPackageName(), "javax.persistence.Entity");
+			o.addImport(getConfiguration().getPackageName(), "jakarta.persistence.Entity");
 			((AbstractType) o).addAnnotation("@Entity");
 		}
 
@@ -487,7 +485,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				String classSimpleName = "CustomJacksonDeserializers."//
 						+ CustomDeserializer.getCustomDeserializerClassSimpleName(
 								field.getFieldTypeAST().getListDepth(),
-								this.graphqlUtils.getJavaName(field.getType().getName()));
+								graphqlUtils.getJavaName(field.getType().getName()));
 				field.getOwningType().addImport(getConfiguration().getPackageName(),
 						getUtilPackageName() + ".CustomJacksonDeserializers");
 				field.getOwningType().addImport(getConfiguration().getPackageName(), JsonDeserialize.class.getName());
@@ -500,7 +498,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				// Custom Serializer (only for custom scalars)
 				String classSimpleName = "CustomJacksonSerializers."//
 						+ CustomSerializer.getCustomSerializerClassSimpleName(field.getFieldTypeAST().getListDepth(),
-								this.graphqlUtils.getJavaName(field.getType().getName()));
+								graphqlUtils.getJavaName(field.getType().getName()));
 				field.getOwningType().addImport(getConfiguration().getPackageName(),
 						getUtilPackageName() + ".CustomJacksonSerializers");
 				field.getOwningType().addImport(getConfiguration().getPackageName(), JsonSerialize.class.getName());
@@ -544,20 +542,20 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForServerMode(Field field) {
-		if (this.configuration instanceof GenerateServerCodeConfiguration
-				&& ((GenerateServerCodeConfiguration) this.configuration).isGenerateJPAAnnotation()
+		if (configuration instanceof GenerateServerCodeConfiguration
+				&& ((GenerateServerCodeConfiguration) configuration).isGenerateJPAAnnotation()
 				&& !field.getOwningType().isInputType()) {
 			if (field.isId()) {
 				// We have found the identifier
-				field.getOwningType().addImport(getConfiguration().getPackageName(), "javax.persistence.Id");
+				field.getOwningType().addImport(getConfiguration().getPackageName(), "jakarta.persistence.Id");
 				((FieldImpl) field).addAnnotation("@Id");
 				field.getOwningType().addImport(getConfiguration().getPackageName(),
-						"javax.persistence.GeneratedValue");
+						"jakarta.persistence.GeneratedValue");
 				((FieldImpl) field).addAnnotation("@GeneratedValue");
 			} else if (field.getRelation() != null || field.getFieldTypeAST().getListDepth() > 0) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to
 				// do it, instead.
-				field.getOwningType().addImport(getConfiguration().getPackageName(), "javax.persistence.Transient");
+				field.getOwningType().addImport(getConfiguration().getPackageName(), "jakarta.persistence.Transient");
 				((FieldImpl) field).addAnnotation("@Transient");
 			}
 		}
@@ -604,8 +602,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	void initDataFetchers() {
 		if (getConfiguration().getMode().equals(PluginMode.server)) {
 			getObjectTypes().stream().forEach(o -> initDataFetcherForOneObject(o));
-			this.interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
-			this.unionTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
+			interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
+			unionTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
 		}
 	}
 
@@ -639,8 +637,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// is: all the
 						// needed informations is already parsed.
 						// There is no source for requests, as they are the root of the hierarchy
-						this.dataFetchers
-								.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, false, null));
+						dataFetchers.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, false, null));
 					} else if (false
 							// A data fetcher is needed to:
 							// 1) manage lists
@@ -650,7 +647,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 							// 3) Manage fields that has argument(s) ... only if
 							// generateDataFetcherForEveryFieldsWithArguments is
 							// true
-							|| (((GenerateServerCodeConfiguration) this.configuration)
+							|| (((GenerateServerCodeConfiguration) configuration)
 									.isGenerateDataFetcherForEveryFieldsWithArguments()
 									&& field.getInputParameters().size() > 0)//
 					) {
@@ -685,8 +682,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// 1) The field's type is not a scalar
 						// 2) The field'stype is a list
 						boolean batchMapping = //
-								((GenerateServerCodeConfiguration) this.configuration)
-										.isGenerateBatchMappingDataFetchers() //
+								((GenerateServerCodeConfiguration) configuration).isGenerateBatchMappingDataFetchers() //
 										&& field.getInputParameters().size() == 0//
 										&& (!field.getType().isScalar() || field.getFieldTypeAST().getListDepth() > 0);
 						//
@@ -702,7 +698,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 							// In versions before 1.18.3, there was be no DataLoader for fields that are lists
 							// This behavior is controlled by the generateDataLoaderForLists plugin parameter and the
 							// generateDataLoaderForLists directive (that can associated directly to the GraphQL field)
-							withDataLoader = ((GenerateServerCodeConfiguration) this.configuration)
+							withDataLoader = ((GenerateServerCodeConfiguration) configuration)
 									.isGenerateDataLoaderForLists()
 									|| null != field.getAppliedDirectives().stream()//
 											.filter(directive -> directive.getDirective().getName()
@@ -713,7 +709,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 						DataFetcher df = new DataFetcherImpl(newField, dataFetcherDelegate, true, batchMapping,
 								withDataLoader, type);
-						this.dataFetchers.add(df);
+						dataFetchers.add(df);
 						newField.setDataFetcher(df);
 					}
 				}
@@ -722,7 +718,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// If at least one DataFetcher has been created, we register this
 			// DataFetchersDelegate
 			if (dataFetcherDelegate.getDataFetchers().size() > 0) {
-				this.dataFetchersDelegates.add(dataFetcherDelegate);
+				dataFetchersDelegates.add(dataFetcherDelegate);
 			}
 		}
 	}
@@ -744,7 +740,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 			// Let's go through all interfaces.
 			logger.debug("Init batch loader for objects");
-			this.interfaceTypes.stream().forEach(i -> initOneBatchLoader(i));
+			interfaceTypes.stream().forEach(i -> initOneBatchLoader(i));
 		}
 	}
 
@@ -762,7 +758,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 			logger.debug("Init batch loader for " + type.getName());
 			if (type.getIdentifiers().size() == 1) {
-				this.batchLoaders.add(new BatchLoaderImpl(type, getDataFetchersDelegate(type, true)));
+				batchLoaders.add(new BatchLoaderImpl(type, getDataFetchersDelegate(type, true)));
 			}
 
 		} // if
@@ -839,24 +835,24 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// is
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// created.s
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (this.queryType == null) {
+			if (queryType == null) {
 				logger.debug("The source schema contains no query: creating an empty query type");
 
 				// There was no query. We need to create one. It will contain only the
 				// Introspection Query
-				this.queryType = new ObjectType(this.DEFAULT_QUERY_NAME, this.configuration, this);
-				this.queryType.setName(INTROSPECTION_QUERY);
-				this.queryType.setRequestType("query");
+				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration, this);
+				queryType.setName(INTROSPECTION_QUERY);
+				queryType.setRequestType("query");
 
 				// Let's first add the regular object that'll receive the server response (in
 				// the default package)
-				getObjectTypes().add(this.queryType);
-				this.types.put(this.queryType.getName(), this.queryType);
+				getObjectTypes().add(queryType);
+				types.put(queryType.getName(), queryType);
 			}
 
 			// We also need to add the relevant fields into the regular object that matches
 			// the query.
-			Type objectQuery = getType(this.queryType.getName());
+			Type objectQuery = getType(queryType.getName());
 			objectQuery.getFields().add(get__SchemaField(objectQuery));
 			objectQuery.getFields().add(get__TypeField(objectQuery));
 
@@ -875,7 +871,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				}
 			}
 			logger.debug("Adding __typename to each interface");
-			for (InterfaceType type : this.interfaceTypes) {
+			for (InterfaceType type : interfaceTypes) {
 				type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(false).build())
 						.owningType(type).build());
@@ -950,11 +946,11 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return
 	 */
 	Set<String> getTypeSpringMappingIgnored() { // Let's initialize typeSpringMappingIgnored, if it has not been yet
-		if (this.typeSpringMappingIgnored == null) {
-			this.typeSpringMappingIgnored = new HashSet<>();
-			if (((GenerateServerCodeConfiguration) this.configuration).getIgnoredSpringMappings() != null) {
+		if (typeSpringMappingIgnored == null) {
+			typeSpringMappingIgnored = new HashSet<>();
+			if (((GenerateServerCodeConfiguration) configuration).getIgnoredSpringMappings() != null) {
 				StringTokenizer st = new StringTokenizer(
-						((GenerateServerCodeConfiguration) this.configuration).getIgnoredSpringMappings(), ", \t\r\n");
+						((GenerateServerCodeConfiguration) configuration).getIgnoredSpringMappings(), ", \t\r\n");
 				String s;
 
 				while (st.hasMoreElements()) {
@@ -965,20 +961,20 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// ignored
 					if (s.equals("*")) {
 						Stream.concat(getObjectTypes().stream(), getInterfaceTypes().stream())
-								.forEach(t -> this.typeSpringMappingIgnored.add(t.getName()));
+								.forEach(t -> typeSpringMappingIgnored.add(t.getName()));
 					}
 					// Here, we ignore field mapping
 					else if (!s.contains(".")) {
 						// s must be a valid GraphQL type
 						getType(s);// Would through an exception if s is not a valid typename
-						this.typeSpringMappingIgnored.add(s);
+						typeSpringMappingIgnored.add(s);
 					}
 				} // while
 			} // if (((GenerateServerCodeConfiguration)
 				// this.configuration).getIgnoredSpringMappings() != null)
 		} // if (this.typeSpringMappingIgnored == null)
 
-		return this.typeSpringMappingIgnored;
+		return typeSpringMappingIgnored;
 	}
 
 	/**
@@ -990,13 +986,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		Pattern pattern = Pattern.compile("^(.*)\\.(.*)$");
 
 		// Let's initialize fieldSpringMappingIgnored, if it has not been already
-		if (this.fieldSpringMappingIgnored == null) {
-			this.fieldSpringMappingIgnored = new HashMap<>();
+		if (fieldSpringMappingIgnored == null) {
+			fieldSpringMappingIgnored = new HashMap<>();
 			Type type;
 
-			if (((GenerateServerCodeConfiguration) this.configuration).getIgnoredSpringMappings() != null) {
+			if (((GenerateServerCodeConfiguration) configuration).getIgnoredSpringMappings() != null) {
 				StringTokenizer st = new StringTokenizer(
-						((GenerateServerCodeConfiguration) this.configuration).getIgnoredSpringMappings(),
+						((GenerateServerCodeConfiguration) configuration).getIgnoredSpringMappings(),
 						IGNORED_SPRING_MAPPINGS_SEPARATOR);
 				String s;
 
@@ -1028,11 +1024,11 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						// Ok, we've found a valid couple (typename,fieldname). Let's add this fieldname
 						// to the list of
 						// ignored fieldnames for this typename
-						Set<String> ignoredFieldNames = this.fieldSpringMappingIgnored.get(matcher.group(1));
+						Set<String> ignoredFieldNames = fieldSpringMappingIgnored.get(matcher.group(1));
 						if (ignoredFieldNames == null) {
 							// No field has been registered yet for this type. Let's register an empty list
 							ignoredFieldNames = new HashSet<>();
-							this.fieldSpringMappingIgnored.put(matcher.group(1), ignoredFieldNames);
+							fieldSpringMappingIgnored.put(matcher.group(1), ignoredFieldNames);
 						}
 						// Let's add this fieldname to the list of ignored field for this type
 						ignoredFieldNames.add(matcher.group(2));
@@ -1042,7 +1038,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				// this.configuration).getIgnoredSpringMappings() != null)
 		} // if (this.fieldSpringMappingIgnored == null)
 
-		return this.fieldSpringMappingIgnored;
+		return fieldSpringMappingIgnored;
 	}
 
 	/**
@@ -1050,7 +1046,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * The import for the annotation have already been added.
 	 */
 	private void addImports() {
-		this.types.values().parallelStream().forEach(type -> addImportsForOneType(type));
+		types.values().parallelStream().forEach(type -> addImportsForOneType(type));
 	}
 
 	/**
@@ -1088,7 +1084,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	private void initCustomDeserializers() {
 		Map<Type, Integer> maxListLevelPerType = new HashMap<>();
-		Stream.concat(getObjectTypes().stream(), this.interfaceTypes.stream())
+		Stream.concat(getObjectTypes().stream(), interfaceTypes.stream())
 				// We deserialize data from the response. So there is no custom deserializer for
 				// fields that belong to
 				// input types. Let's exclude the input types
@@ -1111,7 +1107,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// We now know the maximum listLevel for each type. We can now define all the
 		// necessary custom deserializers
-		this.customDeserializers = new ArrayList<>();
+		customDeserializers = new ArrayList<>();
 		for (Type t : maxListLevelPerType.keySet()) {
 			// First step: if this type is a custom scalar, we define its custom
 			// deserializer
@@ -1119,7 +1115,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			if (t.isCustomScalar()) {
 				customScalarDeserializer = new CustomDeserializer(t, t.getName(), t.getClassFullName(),
 						((CustomScalar) t).getCustomScalarDefinition(), 0, null);
-				this.customDeserializers.add(customScalarDeserializer);
+				customDeserializers.add(customScalarDeserializer);
 			}
 
 			// Then: we manage all the list levels for the embedded arrays of this type, as
@@ -1132,7 +1128,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			for (int i = 1; i <= maxListLevelPerType.get(t); i += 1) {
 				CustomDeserializer currentListLevelCustomDeserializer = new CustomDeserializer(t, t.getName(),
 						t.getClassFullName(), null, i, lowerListLevelCustomDeserializer);
-				this.customDeserializers.add(currentListLevelCustomDeserializer);
+				customDeserializers.add(currentListLevelCustomDeserializer);
 				lowerListLevelCustomDeserializer = currentListLevelCustomDeserializer;
 			}
 		}
@@ -1166,12 +1162,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// We now know the maximum listLevel for each type. We can now define all the
 		// necessary custom serializers
-		this.customSerializers = new ArrayList<>();
+		customSerializers = new ArrayList<>();
 		for (Type t : maxListLevelPerType.keySet()) {
 			// We manage all the list levels for the embedded arrays of this type, as found
 			// in the GraphQL schema.
 			for (int i = 0; i <= maxListLevelPerType.get(t); i += 1) {
-				this.customSerializers.add(new CustomSerializer(t.getName(), t.getClassFullName(),
+				customSerializers.add(new CustomSerializer(t.getName(), t.getClassFullName(),
 						((CustomScalar) t).getCustomScalarDefinition(), i));
 			}
 		}

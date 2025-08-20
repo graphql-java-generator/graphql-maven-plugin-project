@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
 import org.allGraphQLCases.server.SEP_Episode_SES;
@@ -52,6 +50,7 @@ import graphql.language.Selection;
 import graphql.language.StringValue;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf
@@ -67,14 +66,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public List<SIP_Character_SIS> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
-		return this.generator.generateInstanceList(SIP_Character_SIS.class, 10);
+		return generator.generateInstanceList(SIP_Character_SIS.class, 10);
 	}
 
 	@Override
 	public SIP_Character_SIS withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_CharacterInput_SINS character) {
 		if (character == null) {
-			return this.generator.generateInstance(STP_Human_STS.class);
+			return generator.generateInstance(STP_Human_STS.class);
 		} else {
 			SIP_Character_SIS c = mapper.map(character, getClassFromName(SIP_Character_SIS.class, character.getType()));
 			c.setId(UUID.randomUUID());
@@ -101,7 +100,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public SIP_Character_SIS withEnum(DataFetchingEnvironment dataFetchingEnvironment,
 			SEP_Episode_SES SEP_Episode_SES) {
-		SIP_Character_SIS c = this.generator.generateInstance(STP_Droid_STS.class);
+		SIP_Character_SIS c = generator.generateInstance(STP_Droid_STS.class);
 
 		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the
 		// graphql manages the joins).
@@ -163,7 +162,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		if (input != null) {
 			ret = mapper.map(input, STP_AllFieldCases_STS.class);
 		} else {
-			ret = this.generator.generateInstance(STP_AllFieldCases_STS.class);
+			ret = generator.generateInstance(STP_AllFieldCases_STS.class);
 		}
 
 		// If the 'break' field is requested, we add the content of its 'if' parameter to the returned 'break' field
@@ -265,15 +264,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	 */
 	private Directive getDirectiveForName(String directiveName, List<Directive> directives) {
 		for (Directive d : directives) {
-			if (d.getName().equals(directiveName))
+			if (d.getName().equals(directiveName)) {
 				return d;
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public SIP_Character_SIS directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
-		STP_Human_STS ret = this.generator.generateInstance(STP_Human_STS.class);
+		STP_Human_STS ret = generator.generateInstance(STP_Human_STS.class);
 		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
 				.getSelections().get(1);
 
@@ -404,11 +404,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			List<SEP_EnumWithReservedJavaKeywordAsValues_SES> param2) {
 		List<SEP_EnumWithReservedJavaKeywordAsValues_SES> ret = new ArrayList<>();
 
-		if (param1 != null)
+		if (param1 != null) {
 			ret.add(param1);
-		if (param2 != null)
-			for (SEP_EnumWithReservedJavaKeywordAsValues_SES e : param2)
+		}
+		if (param2 != null) {
+			for (SEP_EnumWithReservedJavaKeywordAsValues_SES e : param2) {
 				ret.add(e);
+			}
+		}
 
 		return ret;
 	}
@@ -556,7 +559,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public STP_ReservedJavaKeywordAllFieldCases_STS reservedJavaKeywordAllFieldCases(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		return this.generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
+		return generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
 	}
 
 	@Override
@@ -624,14 +627,15 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public ObjectNode json(DataFetchingEnvironment dataFetchingEnvironment, ObjectNode json) {
-		if (json == null)
+		if (json == null) {
 			try {
 				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
-		else
+		} else {
 			return json;
+		}
 	}
 
 	@Override
@@ -641,19 +645,20 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public Object object(DataFetchingEnvironment dataFetchingEnvironment, Object object) {
-		if (object == null)
+		if (object == null) {
 			try {
 				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
-		else
+		} else {
 			return object;
+		}
 	}
 
 	@Override
 	public List<Object> objects(DataFetchingEnvironment dataFetchingEnvironment, List<Object> objects) {
-		if (objects == null)
+		if (objects == null) {
 			try {
 				return Arrays.asList(//
 						new ObjectMapper().readValue("{\"field11\":\"value11\", \"field12\":[11,12]}",
@@ -663,8 +668,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
-		else
+		} else {
 			return objects;
+		}
 	}
 
 	@Override
@@ -777,10 +783,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			StringBuilder sb = new StringBuilder();
 			boolean appendComma = false;
 			for (Argument arg : fieldWithArguments.getArguments()) {
-				if (appendComma)
+				if (appendComma) {
 					sb.append(", ");
-				else
+				} else {
 					appendComma = true;
+				}
 
 				sb.append(arg.getName());
 				sb.append('=');

@@ -13,6 +13,7 @@ import java.util.OptionalLong;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -310,7 +311,13 @@ public class OAuthTokenExtractor {
 			return this.getClass().getSimpleName();
 		}
 
+		@Override
 		public <T> Mono<T> createError() {
+			return null;
+		}
+
+		@Override
+		public HttpRequest request() {
 			return null;
 		}
 	}

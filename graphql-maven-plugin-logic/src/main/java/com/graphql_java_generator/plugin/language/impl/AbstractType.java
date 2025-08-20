@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Description;
@@ -95,7 +94,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public GraphQlType getGraphQlType() {
-		return this.graphQlType;
+		return graphQlType;
 	}
 
 	/** {@inheritDoc} */
@@ -129,7 +128,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(this.name);
+		StringBuilder sb = new StringBuilder(name);
 
 		if (getComments() == null) {
 			sb.append(", comments=null");
@@ -146,7 +145,7 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public String getAnnotation() {
-		return (this.annotation == null) ? "" : this.annotation;
+		return (annotation == null) ? "" : annotation;
 	}
 
 	/**
@@ -163,28 +162,14 @@ public abstract class AbstractType implements Type {
 	@Override
 	public void addImport(String targetPackageName, String classname) {
 		if (!classname.endsWith("." + getJavaName())) {
-
-			// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
-			boolean useJakartaEE9 = false;
-			if (this.configuration instanceof GenerateCodeCommonConfiguration) {
-				useJakartaEE9 = ((GenerateCodeCommonConfiguration) this.configuration).isUseJakartaEE9();
-			}
-
 			// We only import if it's another simple classname
-			addImport(this.imports, targetPackageName, classname, useJakartaEE9);
+			addImport(imports, targetPackageName, classname);
 		}
 	}
 
 	@Override
 	public void addImportForUtilityClasses(String targetPackageName, String classname) {
-
-		// useJakartaEE9: if true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
-		boolean useJakartaEE9 = false;
-		if (this.configuration instanceof GenerateCodeCommonConfiguration) {
-			useJakartaEE9 = ((GenerateCodeCommonConfiguration) this.configuration).isUseJakartaEE9();
-		}
-
-		addImport(this.importsForUtilityClasses, targetPackageName, classname, useJakartaEE9);
+		addImport(importsForUtilityClasses, targetPackageName, classname);
 	}
 
 	/**
@@ -196,15 +181,9 @@ public abstract class AbstractType implements Type {
 	 *            The package in which is the class that will contain this import
 	 * @param classname
 	 *            the full classname of the class to import
-	 * @param useJakartaEE9
-	 *            If true, the<code>javax</code> imports must be replaced by <code>jakarta</code> imports
 	 * @return
 	 */
-	void addImport(Set<String> imports, String targetPackageName, String classname, boolean useJakartaEE9) {
-
-		if (useJakartaEE9 && classname.startsWith("javax.")) {
-			classname = "jakarta" + classname.substring(5);
-		}
+	void addImport(Set<String> imports, String targetPackageName, String classname) {
 
 		// For inner class, the classname is "MainClassname$InnerClassname". And the
 		// inner class must be imported, even
@@ -231,12 +210,12 @@ public abstract class AbstractType implements Type {
 	 */
 	@Override
 	public void addAnnotation(String annotationToAdd) {
-		if (this.annotation == null || this.annotation.contentEquals("")) {
-			this.annotation = annotationToAdd;
+		if (annotation == null || annotation.contentEquals("")) {
+			annotation = annotationToAdd;
 		} else {
 			// We add this annotation on a next line.
 			// Add indentation only for fields (not types)
-			this.annotation = this.annotation + ((this instanceof Field) ? "\n\t\t" : "\n") + annotationToAdd;
+			annotation = annotation + ((this instanceof Field) ? "\n\t\t" : "\n") + annotationToAdd;
 		}
 
 	}
@@ -251,8 +230,9 @@ public abstract class AbstractType implements Type {
 	 */
 	@Override
 	public void addAnnotation(String annotationToAdd, boolean replace) {
-		if (replace)
-			this.annotation = "";
+		if (replace) {
+			annotation = "";
+		}
 
 		addAnnotation(annotationToAdd);
 	}

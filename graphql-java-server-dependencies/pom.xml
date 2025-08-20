@@ -29,24 +29,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-
-		<dependency>
-			<!-- Mandatory to avoid ClassNotFound errors on javax.servlet.filter -->
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-
-		<!-- When building from the gradle plugin, this next dependency is mandatory for code execution -->
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
-		<!-- Avoids this warning (when building in Gradle): unknown enum constant When.MAYBE -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-		</dependency>
-
 	</dependencies>
 
 </project>

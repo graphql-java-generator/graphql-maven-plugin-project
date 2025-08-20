@@ -3,8 +3,6 @@
  */
 package org.allGraphQLCases.server.oauth2;
 
-import java.security.Principal;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloWorld {
 
 	@GetMapping("/helloworld.html")
-	public String get(final Principal principal) {
+	public String get() {
 		return "Hello World, I'm started!";
 	}
 

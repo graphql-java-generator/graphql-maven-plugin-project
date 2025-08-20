@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin.generate_schema;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.OptionalLong;
 
@@ -13,7 +14,6 @@ import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.util.GraphqlUtils;
-import com.ibm.icu.text.SimpleDateFormat;
 
 @Component
 public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
@@ -82,8 +82,8 @@ public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
 			logger.debug("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
 					+ " (more recent date of all provided schemas)");
-			logger.debug("The lastModified date for the generated resources is: " + formatter.format(targetSourceDate)
-					+ " (older file in all generated resources)");
+			logger.debug("The lastModified date for the generated sources is: " + formatter.format(targetSourceDate)
+					+ " (older file in all generated sources)");
 		}
 
 		// We have the last modification date for both the schema files, and generated the schemas. We skip the code

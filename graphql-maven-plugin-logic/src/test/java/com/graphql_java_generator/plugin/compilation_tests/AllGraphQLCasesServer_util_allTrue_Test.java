@@ -10,11 +10,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +18,10 @@ import org.springframework.graphql.execution.BatchLoaderRegistry;
 
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_util_allTrue;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
@@ -32,7 +31,7 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
-		this.graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases*.graphqls");
+		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases*.graphqls");
 	}
 
 	@Override
@@ -56,13 +55,13 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 				FileType.UTIL);
 		assertNotNull(dataFetchersDelegateAllFieldCases);
 
-		assertTrue(this.configuration.isSeparateUtilityClasses());
+		assertTrue(configuration.isSeparateUtilityClasses());
 		assertTrue(allFieldCasesControllerClass.getPackage().getName().endsWith(".util"));
 		assertTrue(dataFetchersDelegateAllFieldCases.getPackage().getName().endsWith(".util"));
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateBatchLoaderEnvironment
-		assertTrue(this.configuration.isGenerateBatchLoaderEnvironment());
+		assertTrue(configuration.isGenerateBatchLoaderEnvironment());
 		assertNotNull(allFieldCasesControllerClass.getConstructor(BatchLoaderRegistry.class),
 				"There should be a constructor, with a BatchLoaderRegistry parameter");
 		assertThrows(//
@@ -80,7 +79,7 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateBatchMappingDataFetchers
-		assertFalse(this.configuration.isGenerateBatchMappingDataFetchers(),
+		assertFalse(configuration.isGenerateBatchMappingDataFetchers(),
 				"generateBatchMappingDataFetchers should be false in this test");
 		//
 		// query, mutation and subscription should have no method with @BatchMapping annotation
@@ -105,7 +104,7 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateDataFetcherForEveryFieldsWithArguments
-		assertTrue(this.configuration.isGenerateDataFetcherForEveryFieldsWithArguments());
+		assertTrue(configuration.isGenerateDataFetcherForEveryFieldsWithArguments());
 		assertNotNull(
 				allFieldCasesControllerClass.getMethod("forname", DataFetchingEnvironment.class, allFieldCasesClass,
 						Boolean.class, String.class),
@@ -117,7 +116,7 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateDataLoaderForLists
-		assertTrue(this.configuration.isGenerateDataLoaderForLists());
+		assertTrue(configuration.isGenerateDataLoaderForLists());
 		// comments field
 		assertNotNull(//
 				allFieldCasesControllerClass.getMethod(//
@@ -177,7 +176,7 @@ class AllGraphQLCasesServer_util_allTrue_Test extends AbstractIntegrationTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		// generateJPAAnnotation
-		assertTrue(this.configuration.isGenerateJPAAnnotation());
+		assertTrue(configuration.isGenerateJPAAnnotation());
 		assertNotNull(allFieldCasesClass.getAnnotation(Entity.class));
 		Field id = allFieldCasesClass.getDeclaredField("id");
 		assertNotNull(id.getAnnotation(Id.class));

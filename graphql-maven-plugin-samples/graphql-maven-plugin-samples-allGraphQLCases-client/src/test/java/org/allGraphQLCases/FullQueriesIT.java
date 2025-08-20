@@ -12,8 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
@@ -41,6 +39,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+import jakarta.annotation.Resource;
 import reactor.core.publisher.Mono;
 
 //Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
@@ -89,20 +88,20 @@ class FullQueriesIT {
 		// The response preparation should be somewhere in the application initialization code.
 		req = "mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 				+ "{id name appearsIn friends {id name}}}";//
-		this.mutationWithDirectiveRequest = this.mutationExecutor.getGraphQLRequest(req);
+		mutationWithDirectiveRequest = mutationExecutor.getGraphQLRequest(req);
 
 		req = "mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}";
-		this.mutationWithoutDirectiveRequest = this.mutationExecutor.getGraphQLRequest(req);
+		mutationWithoutDirectiveRequest = mutationExecutor.getGraphQLRequest(req);
 
 		req = "query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}";
-		this.withDirectiveTwoParametersRequest = this.mutationExecutor.getGraphQLRequest(req);
+		withDirectiveTwoParametersRequest = mutationExecutor.getGraphQLRequest(req);
 
 		req = "{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
 				+ "}";
-		this.multipleQueriesRequest = this.queryExecutor.getGraphQLRequest(req);
+		multipleQueriesRequest = queryExecutor.getGraphQLRequest(req);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -113,7 +112,7 @@ class FullQueriesIT {
 
 		// Go, go, go
 		// Direct queries should be used only for very simple cases
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request);
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(request);
 
 		// Verifications
 		assertNotNull(resp);
@@ -140,7 +139,7 @@ class FullQueriesIT {
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(request, "value", "the value", "skip", Boolean.FALSE);
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(request, "value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
 		assertNotNull(resp);
@@ -156,7 +155,7 @@ class FullQueriesIT {
 	void test_withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.withDirectiveTwoParametersRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = withDirectiveTwoParametersRequest.execQuery( //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -182,7 +181,7 @@ class FullQueriesIT {
 		);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(graphQLRequest, "input", bytes);
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(graphQLRequest, "input", bytes);
 
 		// Verifications
 		assertNotNull(resp);
@@ -205,7 +204,7 @@ class FullQueriesIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		CTP_AnotherMutationType_CTS resp = this.mutationWithoutDirectiveRequest.execMutation("humanInput", input);
+		CTP_AnotherMutationType_CTS resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -217,7 +216,7 @@ class FullQueriesIT {
 		// WITH DIRECTIVE
 
 		// Go, go, go
-		resp = this.mutationWithDirectiveRequest.execMutation( //
+		resp = mutationWithDirectiveRequest.execMutation( //
 				"humanInput", input, //
 				"value", "the mutation value", //
 				"anotherValue", "the other mutation value");
@@ -255,7 +254,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.multipleQueriesRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
 				"skipAppearsIn", Boolean.TRUE, //
 				"skipName", Boolean.FALSE);
@@ -280,7 +279,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		resp = this.multipleQueriesRequest.execQuery( //
+		resp = multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
 				"skipAppearsIn", Boolean.FALSE, //
 				"skipName", Boolean.TRUE);
@@ -303,7 +302,7 @@ class FullQueriesIT {
 		Date date = cal.getTime();
 		//
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec("{issue53(date: &date)}", "date", date);
+		CTP_MyQueryType_CTS resp = queryExecutor.exec("{issue53(date: &date)}", "date", date);
 
 		// Verifications
 		assertNotNull(resp);
@@ -322,8 +321,7 @@ class FullQueriesIT {
 		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = new GraphQLRequestAllGraphQLCases(request);
 
 		// Go, go, go
-		CTP_Human_CTS human = this.mutationExecutor.execWithBindValues(GraphQLRequestAllGraphQLCases, null)
-				.getCreateHuman();
+		CTP_Human_CTS human = mutationExecutor.execWithBindValues(GraphQLRequestAllGraphQLCases, null).getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
@@ -333,7 +331,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases request = this.queryExecutor
+		GraphQLRequestAllGraphQLCases request = queryExecutor
 				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
 
 		// test 1 (with an int bind parameter)
@@ -345,12 +343,12 @@ class FullQueriesIT {
 		assertEquals(2, ret);
 
 		// test 3 (with a hardcoded int parameter)
-		request = this.queryExecutor.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: 3)  {}}");
+		request = queryExecutor.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: 3)  {}}");
 		ret = request.execQuery().getWithOneMandatoryParamDefaultValue();
 		assertEquals(3, ret);
 
 		// test 4 (with a hardcoded boolean and string parameter)
-		request = this.queryExecutor
+		request = queryExecutor
 				.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\"a value\") {}}");
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -358,24 +356,24 @@ class FullQueriesIT {
 		assertEquals("A VALUE", strings.get(0));
 
 		// test 5 (with a hardcoded Float parameter, that has an int value)
-		request = this.queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 5) {}}");
+		request = queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 5) {}}");
 		assertEquals(5, request.execQuery().getIssue82Float());
 
 		// test 6 (with a hardcoded Float parameter, that has a float value)
-		request = this.queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 6.6) {}}");
+		request = queryExecutor.getGraphQLRequest("{issue82Float(aFloat: 6.6) {}}");
 		assertEquals(6.6, request.execQuery().getIssue82Float());
 
 		// test 7 (with an ID parameter)
-		request = this.queryExecutor.getGraphQLRequest("{issue82ID(aID: \"123e4567-e89b-12d3-a456-426655440000\") {}}");
+		request = queryExecutor.getGraphQLRequest("{issue82ID(aID: \"123e4567-e89b-12d3-a456-426655440000\") {}}");
 		assertTrue(request.execQuery().getIssue82ID().equalsIgnoreCase("123e4567-e89b-12d3-a456-426655440000"),
 				"Should be '123e4567-e89b-12d3-a456-426655440000' but is '" + request.execQuery().getIssue82ID() + "'");
 
 		// test 8 (with an enumeration)
-		request = this.queryExecutor.getGraphQLRequest("{withEnum(episode: JEDI) {name}}");
+		request = queryExecutor.getGraphQLRequest("{withEnum(episode: JEDI) {name}}");
 		assertEquals("JEDI", request.execQuery().getWithEnum().getName());
 
 		// test 9 (with a custom scalar)
-		request = this.queryExecutor.getGraphQLRequest("{issue53(date: \"2021-05-20\") {}}");
+		request = queryExecutor.getGraphQLRequest("{issue53(date: \"2021-05-20\") {}}");
 		Date verif = new Calendar.Builder().setDate(2021, 5 - 1, 20).build().getTime();
 		assertEquals(verif, request.execQuery().getIssue53());
 	}
@@ -389,7 +387,7 @@ class FullQueriesIT {
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		String value = "\\, \"  trailing antislash \\";
 		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = this.queryExecutor.getGraphQLRequest(
+		request = queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -399,7 +397,7 @@ class FullQueriesIT {
 		// test 2 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "antislash then escaped double-quote \\\"";
 		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = this.queryExecutor.getGraphQLRequest(
+		request = queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -409,7 +407,7 @@ class FullQueriesIT {
 		// test 3 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
 		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
-		request = this.queryExecutor.getGraphQLRequest(
+		request = queryExecutor.getGraphQLRequest(
 				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
@@ -429,7 +427,7 @@ class FullQueriesIT {
 		character.setType("Human");
 
 		// Go, go, go
-		CTP_MyQueryType_CTS response = this.graphQlRepo.fullRequestQuery(character);
+		CTP_MyQueryType_CTS response = graphQlRepo.fullRequestQuery(character);
 
 		// Verification
 
@@ -462,7 +460,7 @@ class FullQueriesIT {
 				.withHomePlanet("a home planet").withAppearsIn(new ArrayList<>()).build();
 
 		// Go, go, go
-		CTP_AnotherMutationType_CTS response = this.graphQlRepo.fullRequestMutation(input);
+		CTP_AnotherMutationType_CTS response = graphQlRepo.fullRequestMutation(input);
 
 		// Verification
 		assertNotNull(response);
@@ -482,7 +480,7 @@ class FullQueriesIT {
 		character.setType("Human");
 
 		// Go, go, go
-		Mono<CTP_MyQueryType_CTS> mono = this.graphQlReactiveRepo.fullRequestQuery(character);
+		Mono<CTP_MyQueryType_CTS> mono = graphQlReactiveRepo.fullRequestQuery(character);
 		CTP_MyQueryType_CTS response = mono.block();
 
 		// Verification
@@ -517,7 +515,7 @@ class FullQueriesIT {
 				.withHomePlanet("a home planet").withAppearsIn(new ArrayList<>()).build();
 
 		// Go, go, go
-		Mono<CTP_AnotherMutationType_CTS> mono = this.graphQlReactiveRepo.fullRequestMutation(input);
+		Mono<CTP_AnotherMutationType_CTS> mono = graphQlReactiveRepo.fullRequestMutation(input);
 		CTP_AnotherMutationType_CTS response = mono.block();
 
 		// Verification
@@ -534,7 +532,7 @@ class FullQueriesIT {
 	 */
 	@Test
 	void testIssue217() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec("query {Issue217(AnArg: \"A test for the issue 217\")}");
+		CTP_MyQueryType_CTS resp = queryExecutor.exec("query {Issue217(AnArg: \"A test for the issue 217\")}");
 		assertEquals("A test for the issue 217", resp.getIssue217());
 	}
 }

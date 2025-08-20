@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.samples.simple.client.graphql;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +17,8 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>

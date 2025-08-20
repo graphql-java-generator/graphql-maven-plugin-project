@@ -6,8 +6,6 @@ package org.allGraphQLCases.server.impl;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.allGraphQLCases.server.DataFetchersDelegateAnotherMutationType;
 import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_HumanInput_SINS;
@@ -27,6 +25,7 @@ import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf
@@ -46,7 +45,7 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 	public STP_Human_STS createHuman(DataFetchingEnvironment dataFetchingEnvironment, SINP_HumanInput_SINS human) {
 		logger.trace("createHuman: received this list of appearsIn: {}", human.getAppearsIn());
 
-		STP_Human_STS ret = this.generator.generateInstance(STP_Human_STS.class);
+		STP_Human_STS ret = generator.generateInstance(STP_Human_STS.class);
 		ret.setName(human.getName());
 		ret.setAppearsIn(human.getAppearsIn());
 
@@ -98,8 +97,9 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 
 	private Directive getTestDirective(List<Directive> directives) {
 		for (Directive d : directives) {
-			if (d.getName().equals("testDirective"))
+			if (d.getName().equals("testDirective")) {
 				return d;
+			}
 		}
 		return null;
 	}

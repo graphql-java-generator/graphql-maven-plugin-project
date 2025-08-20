@@ -23,7 +23,7 @@
 						<configuration>
 							<!-- addRelayConnections will generate all the Relay Connection stuff 
 								(Node, Edge and Connection interfaces, and creating the XxxEdge and XxxConnection 
-								interfaces or objects), for fields marked with the RelayConnection directive. 
+								interfaces or objects), for fields marked with the @RelayConnection directive. 
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<generateDataFetcherForEveryFieldsWithArguments>true</generateDataFetcherForEveryFieldsWithArguments>

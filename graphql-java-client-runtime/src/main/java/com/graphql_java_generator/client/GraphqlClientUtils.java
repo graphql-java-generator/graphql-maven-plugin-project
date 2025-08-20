@@ -11,6 +11,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.GraphQLContext;
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -61,13 +63,13 @@ public class GraphqlClientUtils {
 
 	public GraphqlClientUtils() {
 		// Add of all predefined scalars
-		this.scalars.add(String.class);
-		this.scalars.add(int.class);
-		this.scalars.add(Integer.class);
-		this.scalars.add(float.class);
-		this.scalars.add(Float.class);
-		this.scalars.add(boolean.class);
-		this.scalars.add(Boolean.class);
+		scalars.add(String.class);
+		scalars.add(int.class);
+		scalars.add(Integer.class);
+		scalars.add(float.class);
+		scalars.add(Float.class);
+		scalars.add(boolean.class);
+		scalars.add(Boolean.class);
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class GraphqlClientUtils {
 		if (graphqlIdentifier == null) {
 			throw new NullPointerException("A GraphQL identifier may not be null"); //$NON-NLS-1$
 		}
-		Matcher m = this.graphqlNamePattern.matcher(graphqlIdentifier);
+		Matcher m = graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
 			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -213,17 +215,16 @@ public class GraphqlClientUtils {
 	 * @return
 	 */
 	public Class<?> getClass(String packageName, String graphQLTypeName, String schema) {
-		String graphQLTypeMappingClassname;
-
 		// First case, the simplest: standard GraphQL type
-		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
+		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return Boolean.class;
-		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
+		} else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return Integer.class;
-		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
+		} else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return String.class;
-		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName)) //$NON-NLS-1$ //$NON-NLS-2$
+		} else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return Double.class;
+		}
 
 		// Then custom scalars
 		if (schema != null) {
@@ -316,15 +317,17 @@ public class GraphqlClientUtils {
 				try {
 					return owningClass.getSuperclass().getDeclaredField(fieldName);
 				} catch (NoSuchFieldException | SecurityException e2) {
-					if (mustFindField)
+					if (mustFindField) {
 						throw new GraphQLRequestPreparationException("Could not find fied '" + fieldName + "' in " //$NON-NLS-1$ //$NON-NLS-2$
 								+ owningClass.getName() + ", nor in " + owningClass.getSuperclass().getName(), e1); //$NON-NLS-1$
+					}
 				}
 			}
 
-			if (mustFindField)
+			if (mustFindField) {
 				throw new GraphQLRequestPreparationException(
 						"Could not find fied '" + fieldName + "' in " + owningClass.getName(), e1); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 		return null;
 	}
@@ -350,21 +353,23 @@ public class GraphqlClientUtils {
 				GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
 				GraphQLScalar graphQLScalar = method.getAnnotation(GraphQLScalar.class);
 
-				if (graphQLNonScalar != null)
+				if (graphQLNonScalar != null) {
 					return graphQLNonScalar.javaClass();
-				else if (graphQLScalar != null)
+				} else if (graphQLScalar != null) {
 					return graphQLScalar.javaClass();
-				else
+				} else {
 					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
 							+ fieldName + "' in the interface '" + owningClass.getName() //$NON-NLS-1$
 							+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar "); //$NON-NLS-1$
+				}
 			} catch (NoSuchMethodException e) {
 				// Hum, the field doesn't exist.
-				if (!returnIsMandatory)
+				if (!returnIsMandatory) {
 					return null;
-				else
+				} else {
 					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
 							+ fieldName + "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 			} catch (SecurityException e) {
 				throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '" //$NON-NLS-1$
 						+ fieldName + "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -378,21 +383,23 @@ public class GraphqlClientUtils {
 				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 
-				if (graphQLNonScalar != null)
+				if (graphQLNonScalar != null) {
 					return graphQLNonScalar.javaClass();
-				else if (graphQLScalar != null)
+				} else if (graphQLScalar != null) {
 					return graphQLScalar.javaClass();
-				else
+				} else {
 					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
 							+ "' in the class '" + owningClass.getName() //$NON-NLS-1$
 							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar "); //$NON-NLS-1$
+				}
 			} catch (NoSuchFieldException e) {
 				// Hum, the field doesn't exist.
-				if (!returnIsMandatory)
+				if (!returnIsMandatory) {
 					return null;
-				else
+				} else {
 					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
 							+ "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 			} catch (SecurityException e) {
 				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName //$NON-NLS-1$
 						+ "' in the class '" + owningClass.getName() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -552,16 +559,18 @@ public class GraphqlClientUtils {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
 			// Note: the GraphqQL ID is managed by specific CustomScalars, which is specific to the client or the server
 			// mode (ID are String for the client, and UUID for the server)
-			return graphQLScalarType.getCoercing().parseValue(parameterValue);
+			return graphQLScalarType.getCoercing().parseValue(parameterValue, GraphQLContext.getDefault(),
+					Locale.getDefault());
 		} else if (parameterType.equals("Boolean")) { //$NON-NLS-1$
 			if (parameterValue instanceof Boolean) {
 				// This should not occur
 				return parameterValue;
 			} else if (parameterValue instanceof String) {
-				if (parameterValue.equals("true")) //$NON-NLS-1$
+				if (parameterValue.equals("true")) { //$NON-NLS-1$
 					return Boolean.TRUE;
-				else if (parameterValue.equals("false")) //$NON-NLS-1$
+				} else if (parameterValue.equals("false")) { //$NON-NLS-1$
 					return Boolean.FALSE;
+				}
 			}
 			throw new RuntimeException(
 					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -717,8 +726,9 @@ public class GraphqlClientUtils {
 	 *         If this directive has no parameters, an empty map is returned.
 	 */
 	Map<String, String> getDirectiveParameters(Object o, String parameterName, String directiveName) {
-		if (directiveName == null || directiveName.equals("")) //$NON-NLS-1$
+		if (directiveName == null || directiveName.equals("")) { //$NON-NLS-1$
 			throw new RuntimeException("directiveName may not be null, nor an empty string"); //$NON-NLS-1$
+		}
 
 		GraphQLDirective[] directives = null;
 		GraphQLDirective directive = null;
@@ -752,8 +762,9 @@ public class GraphqlClientUtils {
 		} else if (o instanceof Field) {
 			directives = ((Field) o).getAnnotationsByType(GraphQLDirective.class);
 			oName = ((Field) o).getName();
-		} else
+		} else {
 			throw new RuntimeException("non managed object type: " + o.getClass().getName()); //$NON-NLS-1$
+		}
 
 		// Ok, we've found the directive annotations. Let's find the one that match the given name
 		for (GraphQLDirective d : directives) {

@@ -5,8 +5,6 @@ package org.starwars.server.datafetchersdelegate;
 
 import java.util.Optional;
 
-import javax.annotation.Resource;
-
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,7 @@ import org.starwars.server.Character;
 import org.starwars.server.util.DataFetchersDelegateSubscriptionType;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.reactivex.subjects.Subject;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf

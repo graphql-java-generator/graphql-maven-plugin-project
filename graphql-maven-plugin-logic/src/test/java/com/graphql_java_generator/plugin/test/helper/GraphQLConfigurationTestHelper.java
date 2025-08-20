@@ -69,7 +69,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public File targetResourceFolder = null;
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
-	public boolean useJakartaEE9 = false;
+	public boolean useJakartaEE9 = true;
 
 	public String typePrefix = "";
 	public String typeSuffix = "";
@@ -99,10 +99,11 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
-		if (generateJacksonAnnotations != null)
+		if (generateJacksonAnnotations != null) {
 			return generateJacksonAnnotations;
-		else
+		} else {
 			return mode.equals(PluginMode.client);
+		}
 	}
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {

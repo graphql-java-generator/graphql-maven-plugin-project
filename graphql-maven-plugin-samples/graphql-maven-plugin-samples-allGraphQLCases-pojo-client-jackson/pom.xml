@@ -128,10 +128,14 @@
 				
 		<!-- Complementary graphql dependencies, for the custom scalars -->
 		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-client-dependencies</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-extended-scalars</artifactId>
 		</dependency>
-
 		<!-- In this module, the plugin is configured to generate the jackson dependencies -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

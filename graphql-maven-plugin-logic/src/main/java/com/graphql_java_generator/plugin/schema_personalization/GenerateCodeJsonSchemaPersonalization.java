@@ -3,30 +3,23 @@
  */
 package com.graphql_java_generator.plugin.schema_personalization;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import javax.json.JsonReader;
-
-import org.leadpony.justify.api.JsonSchema;
-import org.leadpony.justify.api.JsonValidationService;
-import org.leadpony.justify.api.ProblemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
@@ -39,6 +32,10 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
 
 /**
  * This tool contains the logic which allows the plugin user to personnalize the code generation. It allows to:
@@ -67,9 +64,6 @@ public class GenerateCodeJsonSchemaPersonalization {
 
 	/** The class where the content of the configuration file will be loaded */
 	SchemaPersonalization schemaPersonalization = null;
-
-	/** The number of parsing errors, in the json user file */
-	int nbErrors = 0;
 
 	/**
 	 * This is the 'main' method for this class: it loads the schema personalization from the json user file, and update
@@ -240,58 +234,41 @@ public class GenerateCodeJsonSchemaPersonalization {
 		try {
 
 			// Let's check that the JSON is valid
-
-			JsonValidationService service = JsonValidationService.newInstance();
-			// Reads the JSON schema
-			//
-			// There is an issue in reading the json schema, when the project is built with Gradle 7
-			// It seems to be linked to https://issues.apache.org/jira/browse/JOHNZON-147 (solved in Johnzon 1.1.6, in
-			// february 2018)
-			// A workaround is to first read the schema in a string, then call the readSchema
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME), Charset.forName("UTF-8")));
-			String text = br.lines().collect(Collectors.joining("\n"));
-			// readSchema should directly read the InputStream
-			JsonSchema schema = service.readSchema(new StringReader(text));
-
-			// Problem handler which will print problems found
-			ProblemHandler handler = service.createProblemPrinter(this::logParsingError);
-			// Reads the JSON instance by javax.json.JsonReader
-			nbErrors = 0;
-			try (JsonReader reader = service.createReader(
-					new FileInputStream(
-							((GenerateCodeCommonConfiguration) configuration).getSchemaPersonalizationFile()),
-					schema, handler)) {
-				// JsonValue value =
-				reader.readValue();
-				// Do something useful here
+			JsonSchema schema;
+			try (InputStream schemaStream = getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME)) {
+				JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
+				schema = factory.getSchema(schemaStream);
 			}
-			if (nbErrors > 0) {
+
+			File jsonFile = ((GenerateCodeCommonConfiguration) configuration).getSchemaPersonalizationFile();
+			logger.info("Loading file " + jsonFile.getAbsolutePath());
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonNode json = objectMapper.readTree(jsonFile);
+
+			// Validation of the json schema
+			Set<ValidationMessage> errors = schema.validate(json);
+			if (errors.size() > 0) {
+				errors.forEach(e -> logger.error("Erreur while validating the {} json file: {}", jsonFile.getName(),
+						e.getMessage()));
 				throw new RuntimeException("The json file '" + ((GenerateCodeCommonConfiguration) configuration)
 						.getSchemaPersonalizationFile().getAbsolutePath() + "' is invalid. See the logs for details");
 			}
 
 			// Let's read the flow definition
-			logger.info("Loading file " + ((GenerateCodeCommonConfiguration) configuration)
-					.getSchemaPersonalizationFile().getAbsolutePath());
-			ObjectMapper objectMapper = new ObjectMapper();
 			SchemaPersonalization ret;
 			try (InputStream isFlowJson = new FileInputStream(
 					((GenerateCodeCommonConfiguration) configuration).getSchemaPersonalizationFile())) {
 				ret = objectMapper.readValue(isFlowJson, SchemaPersonalization.class);
 			}
 			return ret;
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			throw new RuntimeException("Error while reading the schema personalization file ("
 					+ ((GenerateCodeCommonConfiguration) configuration).getSchemaPersonalizationFile().getAbsolutePath()
 					+ "): " + e.getMessage(), e);
 		}
 	}// loadFlow
-
-	public void logParsingError(String error) {
-		logger.error(error);
-		nbErrors += 1;
-	}
 
 	/**
 	 * Find one or more object types from a name, within the objectTypes parsed by DocumentParser. <br/>
