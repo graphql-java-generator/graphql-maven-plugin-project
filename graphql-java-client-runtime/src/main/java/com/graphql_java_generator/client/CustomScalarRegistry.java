@@ -1,7 +1,9 @@
 /**
  * 
  */
-package com.graphql_java_generator.customscalars;
+package com.graphql_java_generator.client;
+
+import com.graphql_java_generator.customscalars.CustomScalar;
 
 import graphql.schema.GraphQLScalarType;
 

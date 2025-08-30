@@ -157,9 +157,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					// else: let's retrieve the package of the executor given in the GraphQLRepository annotation
 					graphQLRepoAnnotation.queryExecutor().getPackage();
 
-			this.queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryExecutor.class, true);
-			this.mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationExecutor.class, false);
-			this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLSubscriptionExecutor.class,
+			queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryExecutor.class, true);
+			mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationExecutor.class, false);
+			subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLSubscriptionExecutor.class,
 					false);
 		} else if (graphQLReactiveRepoAnnotation != null) {
 			executorPackage = (graphQLReactiveRepoAnnotation.queryExecutor() == GraphQLQueryReactiveExecutor.class) ?
@@ -170,11 +170,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					// annotation
 					graphQLReactiveRepoAnnotation.queryExecutor().getPackage();
 
-			this.queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryReactiveExecutor.class,
-					true);
-			this.mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationReactiveExecutor.class,
+			queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryReactiveExecutor.class, true);
+			mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationReactiveExecutor.class,
 					false);
-			this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage,
+			subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage,
 					GraphQLSubscriptionReactiveExecutor.class, false);
 		} else {
 			throw new GraphQLRequestPreparationException("The '" + repositoryInterface.getName() //$NON-NLS-1$
@@ -183,12 +182,12 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		}
 
 		logger.trace("The executors found are: queryExecutor={}, mutationExecutor={}, subscriptionExecutor={}", //$NON-NLS-1$
-				(this.queryExecutor == null) ? null : this.queryExecutor.getClass().getName(),
-				(this.mutationExecutor == null) ? null : this.mutationExecutor.getClass().getName(),
-				(this.subscriptionExecutor == null) ? null : this.subscriptionExecutor.getClass().getName());
+				(queryExecutor == null) ? null : queryExecutor.getClass().getName(),
+				(mutationExecutor == null) ? null : mutationExecutor.getClass().getName(),
+				(subscriptionExecutor == null) ? null : subscriptionExecutor.getClass().getName());
 
 		// queryExecutor may not be null: every GraphQL schema must at least contain a Query type
-		if (this.queryExecutor == null) {
+		if (queryExecutor == null) {
 			if (executorPackage == null) {
 				throw new RuntimeException("Error while preparing the GraphQL Repository '" //$NON-NLS-1$
 						+ repositoryInterface.getName()
@@ -202,7 +201,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			}
 		}
 
-		this.proxyInstance = createProxyInstance();
+		proxyInstance = createProxyInstance();
 	}
 
 	/**
@@ -213,20 +212,20 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *             Thrown if the given parameter for the constructor where not correct.
 	 */
 	private T createProxyInstance() throws GraphQLRequestPreparationException {
-		if (this.repositoryInterface == null) {
+		if (repositoryInterface == null) {
 			throw new NullPointerException("'repositoryInterface' may not be null"); //$NON-NLS-1$
 		}
-		if (!this.repositoryInterface.isInterface()) {
-			throw new RuntimeException("The 'repositoryInterface' (" + this.repositoryInterface.getName() //$NON-NLS-1$
+		if (!repositoryInterface.isInterface()) {
+			throw new RuntimeException("The 'repositoryInterface' (" + repositoryInterface.getName() //$NON-NLS-1$
 					+ ") must be an interface, but it is not"); //$NON-NLS-1$
 		}
-		if (this.repositoryInterface.getAnnotation(GraphQLRepository.class) == null
-				&& this.repositoryInterface.getAnnotation(GraphQLReactiveRepository.class) == null) {
+		if (repositoryInterface.getAnnotation(GraphQLRepository.class) == null
+				&& repositoryInterface.getAnnotation(GraphQLReactiveRepository.class) == null) {
 			throw new GraphQLRequestPreparationException(
 					"This InvocationHandler may only be called for GraphQL repositories. " //$NON-NLS-1$
 							+ "GraphQL repositories must be annotated with one of the '" //$NON-NLS-1$
 							+ GraphQLRepository.class.getName() + "' or '" + GraphQLReactiveRepository.class.getName() //$NON-NLS-1$
-							+ "' annotations. But the '" + this.repositoryInterface.getName() + "' is not."); //$NON-NLS-1$//$NON-NLS-2$
+							+ "' annotations. But the '" + repositoryInterface.getName() + "' is not."); //$NON-NLS-1$//$NON-NLS-2$
 		}
 
 		// All basic tests are Ok. Let's go
@@ -234,12 +233,12 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CREATION OF THE PROXY INSTANCE
 		@SuppressWarnings("unchecked")
-		Class<T>[] classes = (Class<T>[]) new Class<?>[] { this.repositoryInterface };
+		Class<T>[] classes = (Class<T>[]) new Class<?>[] { repositoryInterface };
 		@SuppressWarnings("unchecked")
-		T t = (T) Proxy.newProxyInstance(this.repositoryInterface.getClassLoader(), classes, this);
+		T t = (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), classes, this);
 
-		for (Method method : this.repositoryInterface.getDeclaredMethods()) {
-			this.registeredMethods.put(method, registerMethod(method));
+		for (Method method : repositoryInterface.getDeclaredMethods()) {
+			registeredMethods.put(method, registerMethod(method));
 		}
 
 		return t;
@@ -263,17 +262,18 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			Collection<? extends C> beans = ctx.getBeansOfType(clazz).values();
 			logger.trace("[getBeanOfTypeAndPackage] pack is null, and beans size is ", Integer.valueOf(beans.size())); //$NON-NLS-1$
 			if (beans.size() == 0) {
-				if (mandatory)
+				if (mandatory) {
 					throw new RuntimeException("Error while preparing the GraphQL Repository, on the method '" //$NON-NLS-1$
-							+ this.repositoryInterface.getName() + ": at least one Spring Bean of type '" //$NON-NLS-1$
+							+ repositoryInterface.getName() + ": at least one Spring Bean of type '" //$NON-NLS-1$
 							+ clazz.getName() + "' is expected, but none have been found"); //$NON-NLS-1$
-				else
+				} else {
 					return null;
+				}
 			} else if (beans.size() == 1) {
 				return beans.iterator().next();
 			} else {
 				throw new RuntimeException("Error while preparing the GraphQL Repository, on the method '" //$NON-NLS-1$
-						+ this.repositoryInterface.getName() + ": one Spring Bean of type '" + clazz.getName() //$NON-NLS-1$
+						+ repositoryInterface.getName() + ": one Spring Bean of type '" + clazz.getName() //$NON-NLS-1$
 						+ "' is expected, but " + beans.size() //$NON-NLS-1$
 						+ " have been found. This usely occurs when you have more than one GraphQL schemas, " //$NON-NLS-1$
 						+ "and you are using GraphQL Repositories, " //$NON-NLS-1$
@@ -302,7 +302,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @return
 	 */
 	T getProxyInstance() {
-		return this.proxyInstance;
+		return proxyInstance;
 	}
 
 	/**
@@ -584,11 +584,11 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	private Object getExecutor(Method method, RequestType requestType) throws GraphQLRequestPreparationException {
 		switch (requestType) {
 		case query:
-			return this.queryExecutor;
+			return queryExecutor;
 		case mutation:
-			return this.mutationExecutor;
+			return mutationExecutor;
 		case subscription:
-			return this.subscriptionExecutor;
+			return subscriptionExecutor;
 		default:
 			throw new GraphQLRequestPreparationException("The '" + method.getDeclaringClass().getName() + "." //$NON-NLS-1$ //$NON-NLS-2$
 					+ method.getName() + "()' method refers to a '" + requestType.toString() //$NON-NLS-1$
@@ -603,7 +603,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 */
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		RegisteredMethod registeredMethod = this.registeredMethods.get(method);
+		RegisteredMethod registeredMethod = registeredMethods.get(method);
 
 		if (registeredMethod == null) {
 			// Spring calls some Object methods. If it's the case, let's execute it.

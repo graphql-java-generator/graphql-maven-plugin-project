@@ -46,7 +46,6 @@ class AbstractGraphQLRequest_StarWarsTest {
 		queryType = new MyQueryTypeExecutorMySchema();
 		withOneMandatoryParamDefBuilder = queryType.getWithOneMandatoryParamResponseBuilder();
 
-		@SuppressWarnings("unchecked")
 		List<Episode> episodes = (List<Episode>) (Object) (Arrays.asList(Arrays.array(Episode.EMPIRE, Episode.JEDI)));
 
 		characterInput = CharacterInput.builder().withName("a test name").withAppearsIn(episodes).build();
@@ -473,7 +472,6 @@ class AbstractGraphQLRequest_StarWarsTest {
 		assertEquals(4, human.fields.size(), "all scalar fields (with the added __typename field)");
 		//
 		// field's name check
-		int i = 0;
 		List<String> names = human.fields.stream().map(h -> h.getName()).collect(Collectors.toList());
 		assertTrue(names.contains("id"));
 		assertTrue(names.contains("name"));

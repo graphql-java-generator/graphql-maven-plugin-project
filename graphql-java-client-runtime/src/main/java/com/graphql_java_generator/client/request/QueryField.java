@@ -103,11 +103,11 @@ public class QueryField {
 		if (fieldAlias != null) {
 			graphqlClientUtils.checkName(fieldAlias);
 		}
-		this.owningClazz = owningClass;
-		this.clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, null, owningClass);
-		this.name = fieldName;
-		this.alias = fieldAlias;
-		this.packageName = owningClass.getPackage().getName();
+		owningClazz = owningClass;
+		clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, null, owningClass);
+		name = fieldName;
+		alias = fieldAlias;
+		packageName = owningClass.getPackage().getName();
 	}
 
 	/**
@@ -133,11 +133,11 @@ public class QueryField {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	QueryField(Class<?> clazz) throws GraphQLRequestPreparationException {
-		this.owningClazz = null;
+		owningClazz = null;
 		this.clazz = clazz;
-		this.name = null;
-		this.alias = null;
-		this.packageName = clazz.getPackage().getName();
+		name = null;
+		alias = null;
+		packageName = clazz.getPackage().getName();
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class QueryField {
 				} else if (currentField.fields.size() > 0) {
 					throw new GraphQLRequestPreparationException(
 							"The given query contains a '{' not preceded by a fieldname, after field '"
-									+ currentField.name + "' while reading '" + this.name + "'");
+									+ currentField.name + "' while reading '" + name + "'");
 				} else {
 					// Ok, let's read the field for the subobject, for which we just read the name (and potentiel
 					// alias :
@@ -252,7 +252,7 @@ public class QueryField {
 
 		// Oups, we should not arrive here:
 		throw new GraphQLRequestPreparationException("The field '" + name
-				+ "' has a non finished list of fields (it lacks the finishing '}') while reading '" + this.name + "'");
+				+ "' has a non finished list of fields (it lacks the finishing '}') while reading '" + name + "'");
 	}
 
 	/**
@@ -445,7 +445,7 @@ public class QueryField {
 
 				// We add the __typename for all levels, but not for the query/mutation/subscription one
 				if (!isQueryLevel() && __typename == null) {
-					__typename = new QueryField(this.clazz, "__typename");
+					__typename = new QueryField(clazz, "__typename");
 					fields.add(__typename);
 				}
 			}

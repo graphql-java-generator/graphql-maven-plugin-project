@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>local-SNAPSHOT</version>
+		<version>0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-java-client-runtime</artifactId>
@@ -47,9 +47,15 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
+					<!-- Allow JUnit to access the test classes -->
+					<argLine>
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.domain.client.allGraphQLCases=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.domain.client.forum=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo=spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos=spring.core,spring.beans,spring.context
+					</argLine>
 				</configuration>
 			</plugin>
-
 		</plugins>
 
 	</build>
@@ -100,11 +106,52 @@
 		</dependency>
 
 		<!-- Module dependencies -->
+
+		<!-- Dependencies within this project -->
 		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-common-dependencies</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.graphql</groupId>
+			<artifactId>spring-graphql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<!-- The spring dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+		</dependency>
+
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
-		</dependency>
+		</dependency -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-common-runtime</artifactId>

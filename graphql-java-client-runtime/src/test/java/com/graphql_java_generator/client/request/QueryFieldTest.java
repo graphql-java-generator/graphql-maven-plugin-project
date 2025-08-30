@@ -114,6 +114,7 @@ class QueryFieldTest {
 				"an already defined alias for the same class, but for another field");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void testIsScalar() throws GraphQLRequestPreparationException {
 		assertFalse(new QueryField(MyQueryTypeRootResponse.class, "query").isScalar());
@@ -139,6 +140,7 @@ class QueryFieldTest {
 		assertTrue(new QueryField(Post.class, "title").isScalar());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void testIsQueryLevel() throws GraphQLRequestPreparationException {
 		assertTrue(new QueryField(MyQueryTypeRootResponse.class, "query").isQueryLevel());

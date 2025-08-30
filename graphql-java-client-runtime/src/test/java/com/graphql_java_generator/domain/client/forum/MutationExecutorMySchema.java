@@ -45,7 +45,6 @@ import com.graphql_java_generator.util.GraphqlUtils;
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
-@SuppressWarnings("unused")
 public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 
 	/** Logger for this class */
@@ -98,6 +97,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation {} ", queryResponseDef);
@@ -135,6 +135,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation {} ", queryResponseDef);
@@ -178,6 +179,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -188,8 +190,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());
@@ -240,6 +243,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
@@ -471,8 +475,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -713,8 +718,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -949,8 +955,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1185,8 +1192,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1421,8 +1429,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1648,8 +1657,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}

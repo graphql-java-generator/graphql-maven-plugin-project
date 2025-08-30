@@ -29,7 +29,7 @@ import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
+import com.graphql_java_generator.client.impl.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;

@@ -126,7 +126,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 */
 	@SuppressWarnings("deprecation")
 	public MyQueryTypeResponse execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(MyQueryTypeResponse.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(MyQueryTypeResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class GraphQLRequest extends ObjectResponse {
 	@SuppressWarnings("deprecation")
 	public AnotherMutationTypeResponse execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return exec(AnotherMutationTypeResponse.class,
-				this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+				graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 */
 	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, Class<T> messageType,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
+		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
 				TheSubscriptionType.class, messageType);
 	}
 
@@ -338,8 +338,9 @@ public class GraphQLRequest extends ObjectResponse {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());

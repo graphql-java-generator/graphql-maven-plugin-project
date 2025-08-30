@@ -1,0 +1,3 @@
+module com.graphql_java_generator.graphql_maven_plugin_samples_Forum_client {
+
+}

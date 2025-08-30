@@ -133,7 +133,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public void setFriends(List<Character> friends) {
 		if (friends == null || friends instanceof List) {
@@ -148,7 +147,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Character> getFriends() {
 		return friends;
 	}
@@ -184,7 +182,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public void setComments(List<java.lang.String> comments) {
 		if (comments == null || comments instanceof List) {
@@ -199,7 +196,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<java.lang.String> getComments() {
 		return comments;
 	}
@@ -213,7 +209,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public void setAppearsIn(List<Episode> appearsIn) {
 		if (appearsIn == null || appearsIn instanceof List) {
@@ -228,7 +223,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	/**
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Episode> getAppearsIn() {
 		return appearsIn;
 	}

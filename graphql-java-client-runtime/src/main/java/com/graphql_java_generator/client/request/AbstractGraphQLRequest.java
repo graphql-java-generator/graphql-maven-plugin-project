@@ -117,15 +117,15 @@ public abstract class AbstractGraphQLRequest {
 		String operationName = null;
 
 		public String getQuery() {
-			return this.query;
+			return query;
 		}
 
 		public Map<String, Object> getVariables() {
-			return this.variables;
+			return variables;
 		}
 
 		public String getOperationName() {
-			return this.operationName;
+			return operationName;
 		}
 
 	}
@@ -149,12 +149,12 @@ public abstract class AbstractGraphQLRequest {
 			try {
 				// To properly manage aliases, interfaces and unions, we use our own mapper
 				GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
-				ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), this.subscriptionType);
+				ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), subscriptionType);
 				ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
 			} catch (JsonProcessingException e) {
 				GraphQLRequestExecutionException ex = new GraphQLRequestExecutionException(
 						"Error when receiving notifications for subscription <" //$NON-NLS-1$
-								+ AbstractGraphQLRequest.this.graphQLRequest + ">: " + e.getMessage(), //$NON-NLS-1$
+								+ graphQLRequest + ">: " + e.getMessage(), //$NON-NLS-1$
 						e);
 				throw new GraphQLRequestExecutionUncheckedException(ex);
 			}
@@ -213,26 +213,26 @@ public abstract class AbstractGraphQLRequest {
 			this.graphQlClient = graphQlClient;
 		}
 		this.requestType = requestType;
-		this.requestName = null;
+		requestName = null;
 		this.graphQLRequest = graphQLRequest;
-		this.packageName = getGraphQLClassesPackageName();
+		packageName = getGraphQLClassesPackageName();
 
 		QueryField field;
 		switch (requestType) {
 		case query:
-			this.query = getQueryContext();// Get the query field from the concrete class
-			field = new QueryField(this.query.clazz, fieldName);
-			this.query.fields.add(field);
+			query = getQueryContext();// Get the query field from the concrete class
+			field = new QueryField(query.clazz, fieldName);
+			query.fields.add(field);
 			break;
 		case mutation:
-			this.mutation = getMutationContext();// Get the mutation field from the concrete class
-			field = new QueryField(this.mutation.clazz, fieldName);
-			this.mutation.fields.add(field);
+			mutation = getMutationContext();// Get the mutation field from the concrete class
+			field = new QueryField(mutation.clazz, fieldName);
+			mutation.fields.add(field);
 			break;
 		case subscription:
-			this.subscription = getSubscriptionContext();// Get the subscription field from the concrete class
-			field = new QueryField(this.subscription.clazz, fieldName);
-			this.subscription.fields.add(field);
+			subscription = getSubscriptionContext();// Get the subscription field from the concrete class
+			field = new QueryField(subscription.clazz, fieldName);
+			subscription.fields.add(field);
 			break;
 		default:
 			throw new GraphQLRequestPreparationException("Non managed request type '" + requestType //$NON-NLS-1$
@@ -258,7 +258,7 @@ public abstract class AbstractGraphQLRequest {
 				throw new GraphQLRequestPreparationException(
 						"The Partial GraphQL Request should start by a '{', but it doesn't: " + graphQLRequest); //$NON-NLS-1$
 			}
-			field.readTokenizerForResponseDefinition(qt, this.aliasFields, schema);
+			field.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 		}
 
 		// Let's finish the job
@@ -294,9 +294,9 @@ public abstract class AbstractGraphQLRequest {
 		// The graphQLClient is set later, once the type if request is known
 		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
-		this.packageName = getGraphQLClassesPackageName();
-		this.requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
-												// subscription keyword, then it must be a query.
+		packageName = getGraphQLClassesPackageName();
+		requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
+											// subscription keyword, then it must be a query.
 		boolean requestTypeHasBeenRead = false; // Used for a basic check in unknown tokens, to see if this token can be
 												// the request name
 		List<InputParameter> inputParameters = new ArrayList<>(); // The list of GraphQL variables for this query
@@ -311,12 +311,12 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment": //$NON-NLS-1$
-				this.fragments.add(new Fragment(qt, this.aliasFields, this.packageName, false, null, schema));
+				fragments.add(new Fragment(qt, aliasFields, packageName, false, null, schema));
 				break;
 			case "query": //$NON-NLS-1$
 			case "mutation": //$NON-NLS-1$
 			case "subscription": //$NON-NLS-1$
-				this.requestType = RequestType.valueOf(token);
+				requestType = RequestType.valueOf(token);
 				requestTypeHasBeenRead = true;// We'll know accept an unknown token as the request name
 				break;
 			case "(": //$NON-NLS-1$
@@ -329,24 +329,24 @@ public abstract class AbstractGraphQLRequest {
 				break;
 			case "{": //$NON-NLS-1$
 				// We read the query/mutation/subscription like any field.
-				switch (this.requestType) {
+				switch (requestType) {
 				case query:
-					this.query = getQueryContext();// Get the query field from the concrete class
-					this.query.inputParameters = inputParameters;
-					this.query.readTokenizerForResponseDefinition(qt, this.aliasFields, schema);
+					query = getQueryContext();// Get the query field from the concrete class
+					query.inputParameters = inputParameters;
+					query.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				case mutation:
-					this.mutation = getMutationContext();// Get the mutation field from the concrete class
-					this.mutation.inputParameters = inputParameters;
-					this.mutation.readTokenizerForResponseDefinition(qt, this.aliasFields, schema);
+					mutation = getMutationContext();// Get the mutation field from the concrete class
+					mutation.inputParameters = inputParameters;
+					mutation.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				case subscription:
-					this.subscription = getSubscriptionContext();// Get the subscription field from the concrete class
-					this.subscription.inputParameters = inputParameters;
-					this.subscription.readTokenizerForResponseDefinition(qt, this.aliasFields, schema);
+					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
+					subscription.inputParameters = inputParameters;
+					subscription.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				default:
-					throw new GraphQLRequestPreparationException("Non managed request type '" + this.requestType //$NON-NLS-1$
+					throw new GraphQLRequestPreparationException("Non managed request type '" + requestType //$NON-NLS-1$
 							+ " while reading the GraphQL request: " + graphQLRequest); //$NON-NLS-1$
 				}
 				break;
@@ -355,18 +355,18 @@ public abstract class AbstractGraphQLRequest {
 					localQueryName = token;
 				} else {
 					// there was no query, mutation or subscription keyword. The default one is 'query'
-					this.requestType = RequestType.query;
+					requestType = RequestType.query;
 					requestTypeHasBeenRead = true;
 					localQueryName = token;
 				}
 			}
 		}
 
-		if (this.query == null && this.mutation == null && this.subscription == null) {
+		if (query == null && mutation == null && subscription == null) {
 			throw new GraphQLRequestPreparationException("No response definition found"); //$NON-NLS-1$
 		}
 		if (graphQlClient == null) {
-			this.graphQlClient = SpringContextBean.getGraphQlClient(schema, this.requestType);
+			this.graphQlClient = SpringContextBean.getGraphQlClient(schema, requestType);
 		} else {
 			this.graphQlClient = graphQlClient;
 		}
@@ -375,7 +375,7 @@ public abstract class AbstractGraphQLRequest {
 
 		// As the query name can't be changed, we have to set in a temporary variable, to allow changing its value when
 		// we found one
-		this.requestName = localQueryName;
+		requestName = localQueryName;
 		finishRequestPreparation();
 	}
 
@@ -512,16 +512,19 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public <R extends GraphQLRequestObject> Mono<R> execReactive(Class<R> r, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
-		if (getRequestType().equals(RequestType.subscription))
+		if (getRequestType().equals(RequestType.subscription)) {
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions"); //$NON-NLS-1$
+		}
 
 		// Building of the request
 		Payload payload = getPayload(params);
-		RequestSpec requestSpec = this.graphQlClient.document(payload.query);
-		if (payload.variables.size() > 0)
+		RequestSpec requestSpec = graphQlClient.document(payload.query);
+		if (payload.variables.size() > 0) {
 			requestSpec.variables(payload.variables);
-		if (payload.operationName != null)
+		}
+		if (payload.operationName != null) {
 			requestSpec.operationName(payload.operationName);
+		}
 
 		// Actual execution of the request
 		logger.trace("Executing query or mutation {}", payload.query); //$NON-NLS-1$
@@ -618,23 +621,26 @@ public abstract class AbstractGraphQLRequest {
 			throws GraphQLRequestExecutionException {
 
 		// This method accepts only subscription at a time (no query and no mutation)
-		if (!this.requestType.equals(RequestType.subscription))
+		if (!requestType.equals(RequestType.subscription)) {
 			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions"); //$NON-NLS-1$
+		}
 
 		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
-		if (this.subscription.getFields().size() != 1) {
+		if (subscription.getFields().size() != 1) {
 			throw new GraphQLRequestExecutionException(
 					"This method may be called only for one subscription at a time, but there was " //$NON-NLS-1$
-							+ this.subscription.getFields().size() + " subscriptions in this GraphQLRequest"); //$NON-NLS-1$
+							+ subscription.getFields().size() + " subscriptions in this GraphQLRequest"); //$NON-NLS-1$
 		}
 
 		// Building of the request
 		Payload payload = getPayload(params);
-		RequestSpec requestSpec = this.graphQlClient.document(payload.query);
-		if (payload.variables.size() > 0)
+		RequestSpec requestSpec = graphQlClient.document(payload.query);
+		if (payload.variables.size() > 0) {
 			requestSpec.variables(payload.variables);
-		if (payload.operationName != null)
+		}
+		if (payload.operationName != null) {
 			requestSpec.operationName(payload.operationName);
+		}
 
 		SubscriptionMessageConsumer<R> msgConsumer = new SubscriptionMessageConsumer<R>(subscriptionType);
 
@@ -735,17 +741,17 @@ public abstract class AbstractGraphQLRequest {
 
 		// We need the __typename fields, to properly parse the JSON response for interfaces and unions.
 		// So we add it for every returned object.
-		if (this.query != null) {
-			this.query.addTypenameFields();
+		if (query != null) {
+			query.addTypenameFields();
 		}
-		if (this.mutation != null) {
-			this.mutation.addTypenameFields();
+		if (mutation != null) {
+			mutation.addTypenameFields();
 		}
-		if (this.subscription != null) {
-			this.subscription.addTypenameFields();
+		if (subscription != null) {
+			subscription.addTypenameFields();
 		}
 
-		for (Fragment f : this.fragments) {
+		for (Fragment f : fragments) {
 			f.addTypenameFields();
 		}
 	}
@@ -762,9 +768,9 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	private void finishRequestPreparation() throws GraphQLRequestPreparationException {
 		// For each non scalar field, we add its non scalar fields, if none was defined
-		AddScalarFieldToEmptyNonScalarField(this.query);
-		AddScalarFieldToEmptyNonScalarField(this.mutation);
-		AddScalarFieldToEmptyNonScalarField(this.subscription);
+		AddScalarFieldToEmptyNonScalarField(query);
+		AddScalarFieldToEmptyNonScalarField(mutation);
+		AddScalarFieldToEmptyNonScalarField(subscription);
 
 		// Let's add the <I>__typename</I> fields to all non scalar types
 		addTypenameFields();
@@ -801,8 +807,9 @@ public abstract class AbstractGraphQLRequest {
 			}
 		} else {
 			// This non scalar fields contains requested subfield. We recurse into each of its fields.
-			for (QueryField f : field.fields)
+			for (QueryField f : field.fields) {
 				AddScalarFieldToEmptyNonScalarField(f);
+			}
 		} // for
 	}
 
@@ -822,18 +829,18 @@ public abstract class AbstractGraphQLRequest {
 		StringBuilder sbGraphQLVariables = new StringBuilder();
 
 		// Let's start by the fragments
-		for (Fragment fragment : this.fragments) {
+		for (Fragment fragment : fragments) {
 			fragment.appendToGraphQLRequests(sb, params);
 		}
 
 		// Then the other parts of the request
 		QueryField request;
-		if (this.query != null) {
-			request = this.query;
-		} else if (this.mutation != null) {
-			request = this.mutation;
-		} else if (this.subscription != null) {
-			request = this.subscription;
+		if (query != null) {
+			request = query;
+		} else if (mutation != null) {
+			request = mutation;
+		} else if (subscription != null) {
+			request = subscription;
 		} else {
 			throw new GraphQLRequestExecutionException("[Internal error] no request has been initialized"); //$NON-NLS-1$
 		}
@@ -841,8 +848,8 @@ public abstract class AbstractGraphQLRequest {
 		// The name of the query/mutation/subscription follows special rules (including the request name and GraphQL
 		// variables). So we need to add these things here, and not from the QueryField class.
 		sb.append(request.name);
-		if (this.requestName != null) {
-			sb.append(" ").append(this.requestName); //$NON-NLS-1$
+		if (requestName != null) {
+			sb.append(" ").append(requestName); //$NON-NLS-1$
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////
@@ -906,7 +913,7 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 */
 	public GraphQLObjectMapper getGraphQLObjectMapper() {
-		return new GraphQLObjectMapper(getGraphQLClassesPackageName(), this.aliasFields);
+		return new GraphQLObjectMapper(getGraphQLClassesPackageName(), aliasFields);
 	}
 
 	/**
@@ -915,7 +922,7 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 */
 	public String getGraphQLRequest() {
-		return this.graphQLRequest;
+		return graphQLRequest;
 	}
 
 	/**
@@ -955,27 +962,27 @@ public abstract class AbstractGraphQLRequest {
 	protected abstract QueryField getSubscriptionContext() throws GraphQLRequestPreparationException;
 
 	public QueryField getQuery() {
-		return this.query;
+		return query;
 	}
 
 	public QueryField getMutation() {
-		return this.mutation;
+		return mutation;
 	}
 
 	public QueryField getSubscription() {
-		return this.subscription;
+		return subscription;
 	}
 
 	public List<Fragment> getFragments() {
-		return this.fragments;
+		return fragments;
 	}
 
 	public RequestType getRequestType() {
-		return this.requestType;
+		return requestType;
 	}
 
 	public String getRequestName() {
-		return this.requestName;
+		return requestName;
 	}
 
 	/**
@@ -997,8 +1004,9 @@ public abstract class AbstractGraphQLRequest {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key)); //$NON-NLS-1$
-					if (addComma)
+					if (addComma) {
 						sb.append(", "); //$NON-NLS-1$
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());

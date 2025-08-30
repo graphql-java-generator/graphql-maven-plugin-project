@@ -1,4 +1,4 @@
-package com.graphql_java_generator.util;
+package com.graphql_java_generator.util_tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -21,6 +20,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.EnumWithReserved
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 @Execution(ExecutionMode.CONCURRENT)
 class graphqlClientUtilsTest {
@@ -94,7 +94,6 @@ class graphqlClientUtilsTest {
 
 		graphqlUtils.invokeSetter(topicPostInput, "publiclyAvailable", true);
 		assertEquals(true, topicPostInput.getPubliclyAvailable());
-		ArrayUtils.toArray(null);
 	}
 
 	@Test

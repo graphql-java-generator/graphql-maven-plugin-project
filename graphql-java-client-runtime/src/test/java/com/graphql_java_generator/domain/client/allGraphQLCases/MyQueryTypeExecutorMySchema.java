@@ -191,8 +191,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());
@@ -457,8 +458,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -692,8 +694,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -932,8 +935,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1176,8 +1180,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1436,8 +1441,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1681,8 +1687,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1920,8 +1927,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2171,8 +2179,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2421,8 +2430,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2695,8 +2705,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2953,8 +2964,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3182,8 +3194,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3422,8 +3435,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3658,8 +3672,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3890,8 +3905,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -4137,8 +4153,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -4384,8 +4401,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -4625,8 +4643,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -4864,8 +4883,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -5092,8 +5112,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -5323,8 +5344,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -5587,8 +5609,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -5829,8 +5852,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -6055,8 +6079,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -6281,8 +6306,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -6508,8 +6534,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -6733,8 +6760,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -6958,8 +6986,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -7183,8 +7212,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -7408,8 +7438,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -7633,8 +7664,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -7858,8 +7890,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -8084,8 +8117,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -8310,8 +8344,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -8536,8 +8571,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -8762,8 +8798,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -8987,8 +9024,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -9212,8 +9250,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -9438,8 +9477,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -9663,8 +9703,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -9888,8 +9929,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -10115,8 +10157,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -10341,8 +10384,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -10565,8 +10609,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -10790,8 +10835,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -11016,8 +11062,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -11241,8 +11288,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -11465,8 +11513,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -11690,8 +11739,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -11915,8 +11965,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -12137,8 +12188,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -12364,8 +12416,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -12588,8 +12641,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -12819,8 +12873,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -13045,8 +13100,9 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}

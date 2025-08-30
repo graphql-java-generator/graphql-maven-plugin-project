@@ -192,8 +192,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());
@@ -609,8 +610,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -921,8 +923,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1221,8 +1224,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1527,8 +1531,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1838,8 +1843,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2234,8 +2240,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2589,8 +2596,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -2893,8 +2901,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3200,8 +3209,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3508,8 +3518,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -3808,8 +3819,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -4105,8 +4117,9 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>local-SNAPSHOT</version>
+		<version>0-SNAPSHOT</version>
 	</parent>
 	<artifactId>graphql-java-server-runtime</artifactId>
 
@@ -26,6 +26,20 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<!-- Allow JUnit to access the test classes -->
+					<argLine>
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.server.allGraphQLCases=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.client.forum=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.server.util.test_classes=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.testcases=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+					</argLine>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

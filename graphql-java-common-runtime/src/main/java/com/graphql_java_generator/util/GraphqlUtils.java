@@ -74,57 +74,57 @@ public class GraphqlUtils {
 
 	public GraphqlUtils() {
 		// List all java reserved keywords.
-		this.javaKeywords.add("abstract");
-		this.javaKeywords.add("assert");
-		this.javaKeywords.add("boolean");
-		this.javaKeywords.add("break");
-		this.javaKeywords.add("byte");
-		this.javaKeywords.add("case");
-		this.javaKeywords.add("catch");
-		this.javaKeywords.add("char");
-		this.javaKeywords.add("class");
-		this.javaKeywords.add("const");
-		this.javaKeywords.add("continue");
-		this.javaKeywords.add("default");
-		this.javaKeywords.add("do");
-		this.javaKeywords.add("double");
-		this.javaKeywords.add("else");
-		this.javaKeywords.add("enum");
-		this.javaKeywords.add("extends");
-		this.javaKeywords.add("final");
-		this.javaKeywords.add("finally");
-		this.javaKeywords.add("float");
-		this.javaKeywords.add("for");
-		this.javaKeywords.add("goto");
-		this.javaKeywords.add("if");
-		this.javaKeywords.add("implements");
-		this.javaKeywords.add("import");
-		this.javaKeywords.add("instanceof");
-		this.javaKeywords.add("int");
-		this.javaKeywords.add("interface");
-		this.javaKeywords.add("long");
-		this.javaKeywords.add("native");
-		this.javaKeywords.add("new");
-		this.javaKeywords.add("null");
-		this.javaKeywords.add("package");
-		this.javaKeywords.add("private");
-		this.javaKeywords.add("protected");
-		this.javaKeywords.add("public");
-		this.javaKeywords.add("return");
-		this.javaKeywords.add("short");
-		this.javaKeywords.add("static");
-		this.javaKeywords.add("strictfp");
-		this.javaKeywords.add("super");
-		this.javaKeywords.add("switch");
-		this.javaKeywords.add("synchronized");
-		this.javaKeywords.add("this");
-		this.javaKeywords.add("throw");
-		this.javaKeywords.add("throws");
-		this.javaKeywords.add("transient");
-		this.javaKeywords.add("try");
-		this.javaKeywords.add("void");
-		this.javaKeywords.add("volatile");
-		this.javaKeywords.add("while");
+		javaKeywords.add("abstract");
+		javaKeywords.add("assert");
+		javaKeywords.add("boolean");
+		javaKeywords.add("break");
+		javaKeywords.add("byte");
+		javaKeywords.add("case");
+		javaKeywords.add("catch");
+		javaKeywords.add("char");
+		javaKeywords.add("class");
+		javaKeywords.add("const");
+		javaKeywords.add("continue");
+		javaKeywords.add("default");
+		javaKeywords.add("do");
+		javaKeywords.add("double");
+		javaKeywords.add("else");
+		javaKeywords.add("enum");
+		javaKeywords.add("extends");
+		javaKeywords.add("final");
+		javaKeywords.add("finally");
+		javaKeywords.add("float");
+		javaKeywords.add("for");
+		javaKeywords.add("goto");
+		javaKeywords.add("if");
+		javaKeywords.add("implements");
+		javaKeywords.add("import");
+		javaKeywords.add("instanceof");
+		javaKeywords.add("int");
+		javaKeywords.add("interface");
+		javaKeywords.add("long");
+		javaKeywords.add("native");
+		javaKeywords.add("new");
+		javaKeywords.add("null");
+		javaKeywords.add("package");
+		javaKeywords.add("private");
+		javaKeywords.add("protected");
+		javaKeywords.add("public");
+		javaKeywords.add("return");
+		javaKeywords.add("short");
+		javaKeywords.add("static");
+		javaKeywords.add("strictfp");
+		javaKeywords.add("super");
+		javaKeywords.add("switch");
+		javaKeywords.add("synchronized");
+		javaKeywords.add("this");
+		javaKeywords.add("throw");
+		javaKeywords.add("throws");
+		javaKeywords.add("transient");
+		javaKeywords.add("try");
+		javaKeywords.add("void");
+		javaKeywords.add("volatile");
+		javaKeywords.add("while");
 	}
 
 	/**
@@ -139,17 +139,17 @@ public class GraphqlUtils {
 	 * Loads the runtime properties file, from the graphql-java-runtime.properties file.
 	 */
 	private Properties getProperties() {
-		if (this.properties == null) {
-			this.properties = new Properties();
+		if (properties == null) {
+			properties = new Properties();
 			try (InputStream res = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-				this.properties.load(res);
+				properties.load(res);
 			} catch (IOException e) {
 				String msg = "Error while reading the '" + PROPERTIES_FILE + "' properties file: " + e.getMessage();
 				logger.error(msg);
 				throw new RuntimeException(msg, e);
 			}
 		}
-		return this.properties;
+		return properties;
 	}
 
 	/**
@@ -244,10 +244,11 @@ public class GraphqlUtils {
 		}
 		List<T> ret = new ArrayList<>(keys.size());
 		for (Object id : keys) {
-			if (map.containsKey(id))
+			if (map.containsKey(id)) {
 				ret.add(map.get(id));
-			else
+			} else {
 				ret.add(null);
+			}
 
 		}
 		return ret;
@@ -304,12 +305,13 @@ public class GraphqlUtils {
 		GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 		GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 
-		if (graphQLScalar != null)
+		if (graphQLScalar != null) {
 			fieldName = graphQLScalar.fieldName();
-		else if (graphQLNonScalar != null)
+		} else if (graphQLNonScalar != null) {
 			fieldName = graphQLNonScalar.fieldName();
-		else
+		} else {
 			fieldName = field.getName();
+		}
 
 		String getterMethodName = "get" + getPascalCase(fieldName);
 		try {
@@ -497,9 +499,12 @@ public class GraphqlUtils {
 				separator = ",";
 				msg.append(arg.getClass().getName());
 			}
-			msg.append(")' is missing in ");
-			msg.append(o.getClass().getName());
-			msg.append(" class");
+			msg.append(")'");
+			if (o != null) {
+				msg.append(" is missing in ");
+				msg.append(o.getClass().getName());
+				msg.append(" class");
+			}
 			throw new RuntimeException(msg.toString(), e);
 		}
 	}
@@ -543,7 +548,7 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public boolean isJavaReservedWords(String name) {
-		return this.javaKeywords.contains(name);
+		return javaKeywords.contains(name);
 	}
 
 	/**
@@ -715,10 +720,11 @@ public class GraphqlUtils {
 			sb.append("{");
 			boolean appendSep = false;
 			for (ObjectField v : ((ObjectValue) value).getObjectFields()) {
-				if (appendSep)
+				if (appendSep) {
 					sb.append(",");
-				else
+				} else {
 					appendSep = true;
+				}
 				sb.append(v.getName()).append(":").append(getValueAsText(v.getValue()));
 			} // for
 			sb.append("}");
@@ -728,10 +734,11 @@ public class GraphqlUtils {
 			sb.append("[");
 			boolean appendSep = false;
 			for (Value<?> v : ((ArrayValue) value).getValues()) {
-				if (appendSep)
+				if (appendSep) {
 					sb.append(",");
-				else
+				} else {
 					appendSep = true;
+				}
 				sb.append(getValueAsText(v));
 			} // for
 			sb.append("]");
@@ -757,10 +764,11 @@ public class GraphqlUtils {
 		// But every value returned by this method must encapsulated by double quotes. Let's check that
 		String str = getValueAsStringIterative(value, 0);
 
-		if (str.startsWith("\""))
+		if (str.startsWith("\"")) {
 			return str;
-		else
+		} else {
 			return "\"" + str + "\"";
+		}
 	}
 
 	/**
@@ -803,10 +811,11 @@ public class GraphqlUtils {
 			sb.append("{");
 			boolean appendSep = false;
 			for (ObjectField v : ((ObjectValue) value).getObjectFields()) {
-				if (appendSep)
+				if (appendSep) {
 					sb.append(",");
-				else
+				} else {
 					appendSep = true;
+				}
 				sb.append(v.getName()).append(":").append(getValueAsStringIterative(v.getValue(), depth + 1));
 			} // for
 			sb.append("}");
@@ -822,10 +831,11 @@ public class GraphqlUtils {
 			sb.append("[");
 			boolean appendSep = false;
 			for (Value<?> v : ((ArrayValue) value).getValues()) {
-				if (appendSep)
+				if (appendSep) {
 					sb.append(",");
-				else
+				} else {
 					appendSep = true;
+				}
 				sb.append(getValueAsStringIterative(v, depth + 1));
 			} // for
 			sb.append("]");

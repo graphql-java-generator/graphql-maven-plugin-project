@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>local-SNAPSHOT</version>
+		<version>0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-logic</artifactId>

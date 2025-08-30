@@ -5,9 +5,9 @@ import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveLocation;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
+import com.graphql_java_generator.client.impl.CustomScalarRegistryImpl;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 @SuppressWarnings("unused")
 public class DirectiveRegistryInitializer {

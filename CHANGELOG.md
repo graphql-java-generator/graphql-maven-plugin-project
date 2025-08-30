@@ -4,7 +4,26 @@
 # Breaking changes to come with the 3.x releases
 
 * The default value for `generateDataFetcherForEveryFieldsWithArguments` will be changed to true, which makes more Data Fetchers to implement
+* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
+    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
 
+# 3.x versions
+
+## 3.0
+
+
+All modes (client and server) :
+* Upgrade of all dependencies: java 21, spring boot 3.5.4, graphql-java 24.0, ...
+* Usage of JPMS (Java Platform Module System): the `graphql-java-client-runtime` and `graphql-java-server-runtime` are now java modules
+    * Caution: due to java naming rules, in the module names, the 'minus' have been changed into underscores. The module names are:
+        * com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime
+        * com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime
+Gradle:
+* Upgrade of gradle wrapper to 9.0.0
+* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
+    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
+    
+    
 
 # 2.x versions
 

@@ -45,7 +45,6 @@ import com.graphql_java_generator.util.GraphqlUtils;
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
-@SuppressWarnings("unused")
 public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 
 	/** Logger for this class */
@@ -98,6 +97,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query {} ", queryResponseDef);
@@ -135,6 +135,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query {} ", queryResponseDef);
@@ -178,6 +179,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -188,8 +190,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());
@@ -240,6 +243,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
@@ -450,8 +454,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -670,8 +675,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -902,8 +908,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1146,8 +1153,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1378,8 +1386,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1609,8 +1618,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}
@@ -1835,8 +1845,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			for (Object o : paramsAndValues) {
 				if (o != null) {
 					sb.append(o.toString());
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 			}

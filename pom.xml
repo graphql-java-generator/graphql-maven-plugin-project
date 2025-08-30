@@ -13,7 +13,7 @@
 
 	<groupId>com.graphql-java-generator</groupId>
 	<artifactId>graphql-maven-plugin-project</artifactId>
-	<version>local-SNAPSHOT</version>
+	<version>0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -115,11 +115,6 @@
 		-DlastReleasedVersion=version when building 
 			the site afterward -->
 		<lastReleasedVersion>${project.version}</lastReleasedVersion>
-
-		<!-- Below are some versions that overrides the one coming from
-		spring-boot-starter -->
-		<!-- snakeyaml priori to 1.31 have various vulnarabilities -->
-		<snakeyaml.version>2.2</snakeyaml.version>
 	</properties>
 
 	<build>
@@ -286,18 +281,6 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>5.18.0</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-junit-jupiter</artifactId>
-				<version>5.18.0</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>org.javatuples</groupId>
 				<artifactId>javatuples</artifactId>
 				<version>1.2</version>
@@ -445,11 +428,6 @@
 			<!-- dependencies for graphql -->
 			<dependency>
 				<groupId>com.graphql-java</groupId>
-				<artifactId>java-dataloader</artifactId>
-				<version>5.0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-extended-scalars</artifactId>
 				<version>24.0</version>
 			</dependency>
@@ -520,11 +498,6 @@
 				<artifactId>oauth2-oidc-sdk</artifactId>
 				<version>11.27</version>
 			</dependency>
-			<!--dependency>
-				<groupId>org.yaml</groupId>
-				<artifactId>snakeyaml</artifactId>
-				<version>${snakeyaml.version}</version>
-			</dependency !-->
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity-engine-core</artifactId>

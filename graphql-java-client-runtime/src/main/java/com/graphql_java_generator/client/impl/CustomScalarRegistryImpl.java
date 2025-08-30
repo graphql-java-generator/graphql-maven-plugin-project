@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.customscalars;
+package com.graphql_java_generator.client.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.graphql_java_generator.client.CustomScalarRegistry;
+import com.graphql_java_generator.customscalars.CustomScalar;
 
 import graphql.schema.GraphQLScalarType;
 
@@ -37,20 +40,20 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 
 	@Override
 	public void registerGraphQLScalarType(String typeName, GraphQLScalarType type, Class<?> valueClazz) {
-		this.customScalarTypes.put(//
+		customScalarTypes.put(//
 				typeName, //
 				new CustomScalar(GraphQLScalarType.newScalar(type).name(typeName).build(), valueClazz));
 	}
 
 	@Override
 	public GraphQLScalarType getGraphQLCustomScalarType(String graphQLTypeName) {
-		CustomScalar scalar = this.customScalarTypes.get(graphQLTypeName);
+		CustomScalar scalar = customScalarTypes.get(graphQLTypeName);
 		return (scalar == null) ? null : scalar.getGraphQLScalarType();
 	}
 
 	@Override
 	public CustomScalar getCustomScalar(String graphQLTypeName) {
-		return this.customScalarTypes.get(graphQLTypeName);
+		return customScalarTypes.get(graphQLTypeName);
 	}
 
 	/**

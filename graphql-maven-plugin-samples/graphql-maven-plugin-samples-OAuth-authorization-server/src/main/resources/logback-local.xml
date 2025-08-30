@@ -2,7 +2,7 @@
 <configuration>
 
 	<!-- to use this logging configuration, please execute : -->
-	<!-- java -Dlogging.config=classpath:logback-local.xml -jar target\graphql-maven-plugin-samples-allGraphQLCases-server-local-SNAPSHOT.jar -->
+	<!-- java -Dlogging.config=classpath:logback-local.xml -jar target\graphql-maven-plugin-samples-allGraphQLCases-server-0-SNAPSHOT.jar -->
 
 	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>

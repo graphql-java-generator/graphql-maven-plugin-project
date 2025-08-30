@@ -24,7 +24,6 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-@SuppressWarnings("unused")
 public class GraphQLRequest extends ObjectResponse {
 
 	/** Logger for this class */
@@ -85,6 +84,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
 		return exec(QueryResponse.class, parameters);
@@ -124,8 +124,9 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public QueryResponse execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(QueryResponse.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(QueryResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -163,6 +164,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse execMutation(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
 		return exec(MutationResponse.class, parameters);
@@ -202,8 +204,9 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MutationResponse execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(MutationResponse.class, this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return exec(MutationResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -314,7 +317,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 */
 	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, Class<T> messageType,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(this.graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
+		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), subscriptionCallback,
 				Subscription.class, messageType);
 	}
 
@@ -333,8 +336,9 @@ public class GraphQLRequest extends ObjectResponse {
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
-					if (addComma)
+					if (addComma) {
 						sb.append(", ");
+					}
 					addComma = true;
 				}
 				logger.trace(sb.toString());

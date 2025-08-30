@@ -40,8 +40,8 @@ abstract class AbstractGraphQLRepositoryProxyBeansRegistrar<T extends Annotation
 
 	public AbstractGraphQLRepositoryProxyBeansRegistrar(Class<T> annotationClass) {
 		this.annotationClass = annotationClass;
-		this.classpathScanner = new ClassPathScanner(false);
-		this.classpathScanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
+		classpathScanner = new ClassPathScanner(false);
+		classpathScanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
 	}
 
 	@Override
@@ -73,11 +73,11 @@ abstract class AbstractGraphQLRepositoryProxyBeansRegistrar<T extends Annotation
 	private void registerGraphQLRepositoryProxyBeanFactories(String basePackage, BeanDefinitionRegistry registry) {
 		try {
 
-			for (BeanDefinition beanDefinition : this.classpathScanner.findCandidateComponents(basePackage)) {
+			for (BeanDefinition beanDefinition : classpathScanner.findCandidateComponents(basePackage)) {
 
 				Class<?> clazz = Class.forName(beanDefinition.getBeanClassName());
 
-				T graphQLRepository = clazz.getAnnotation(this.annotationClass);
+				T graphQLRepository = clazz.getAnnotation(annotationClass);
 
 				String value;
 				if (graphQLRepository instanceof GraphQLRepository) {
@@ -87,18 +87,18 @@ abstract class AbstractGraphQLRepositoryProxyBeansRegistrar<T extends Annotation
 				} else {
 					throw new IllegalArgumentException(
 							"The annotationClass class should be either sddqs or GraphQLReactiveRepository, but is " //$NON-NLS-1$
-									+ this.annotationClass.getClass().getName());
+									+ annotationClass.getClass().getName());
 				}
 				// TODO this should be enhanced, to avoid any bean name collision in the Spring container
 				String beanName = (value == null || value.equals("")) //$NON-NLS-1$
-						? this.graphqlUtils.getCamelCase(clazz.getSimpleName())
+						? graphqlUtils.getCamelCase(clazz.getSimpleName())
 						: value;
 
 				GenericBeanDefinition proxyBeanDefinition = new GenericBeanDefinition();
 				proxyBeanDefinition.setBeanClass(clazz);
 
 				ConstructorArgumentValues args = new ConstructorArgumentValues();
-				args.addGenericArgumentValue(this.classLoader);
+				args.addGenericArgumentValue(classLoader);
 				args.addGenericArgumentValue(clazz);
 				proxyBeanDefinition.setConstructorArgumentValues(args);
 				proxyBeanDefinition.setFactoryBeanName("graphQLRepositoryProxyBeanFactory"); //$NON-NLS-1$

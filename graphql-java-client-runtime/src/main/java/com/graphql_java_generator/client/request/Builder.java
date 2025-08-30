@@ -53,10 +53,10 @@ public class Builder {
 	public Builder(GraphQlClient graphQlClient, Class<? extends AbstractGraphQLRequest> graphQLRequestClass) {
 		this.graphQlClient = graphQlClient;
 		this.graphQLRequestClass = graphQLRequestClass;
-		this.fieldName = null;
-		this.requestType = null; // It will be calculated by the QLRequest instance, from the request
-		this.fullRequest = true;
-		this.inputParams = null;
+		fieldName = null;
+		requestType = null; // It will be calculated by the QLRequest instance, from the request
+		fullRequest = true;
+		inputParams = null;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class Builder {
 		this.graphQLRequestClass = graphQLRequestClass;
 		this.fieldName = fieldName;
 		this.requestType = requestType;
-		this.fullRequest = false;
+		fullRequest = false;
 		this.inputParams = (inputParams == null) ? new InputParameter[0] : inputParams;
 
 		if (requestType == null) {

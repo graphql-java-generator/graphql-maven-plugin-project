@@ -1,5 +1,5 @@
 /**
- * 
+ * This class is not a JUnit test
  */
 package com.graphql_java_generator.customscalars;
 

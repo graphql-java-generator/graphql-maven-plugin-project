@@ -75,10 +75,13 @@ public class GraphQLRepositorySpringIntegrationTest {
 	// java reflection
 	// So we use @Spy here, instead of @Mock
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
+	@SuppressWarnings("removal")
 	@SpyBean
 	MyQueryTypeExecutorMySchema spyQueryExecutor;
+	@SuppressWarnings("removal")
 	@SpyBean
 	AnotherMutationTypeExecutorMySchema spyMutationExecutor;
+	@SuppressWarnings("removal")
 	@SpyBean
 	TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;
 

@@ -455,6 +455,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	 * @return The value that can be used in a standard {@link ObjectMapper}, when generated a json from a map of
 	 *         values.
 	 */
+	@SuppressWarnings("deprecation")
 	private static Object convertToWritableValue(Object o) {
 		if (o instanceof List<?>) {
 			List<Object> ret = new ArrayList<>();
