@@ -23,9 +23,21 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<!-- Due to Spring Boot, the filtering placeholder is @..@
+				(instead of ${..}) -->
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<!-- Allow JUnit to access the test classes -->
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- We'll read the sources from graphql-client, to add the

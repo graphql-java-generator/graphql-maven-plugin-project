@@ -11,7 +11,10 @@ package ${configuration.packageName};
 import $import;
 #end
 
+#if ($configuration.generateJacksonAnnotations)
 import com.fasterxml.jackson.annotation.JsonProperty;
+#end
+
 import com.graphql_java_generator.annotation.GraphQLDirective;
 
 /**

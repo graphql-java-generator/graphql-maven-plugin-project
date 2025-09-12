@@ -45,7 +45,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	 */
 
 	protected static final Pattern templatePattern = Pattern
-			.compile("templates\\/([a-zA-Z_]*)\\.vm\\.(java|properties|csv)");
+			.compile("templates\\/([a-zA-Z_]*|module-info)\\.vm\\.(java|properties|csv)");
 	protected static List<CustomScalarDefinition> customScalars;
 
 	static {
@@ -76,7 +76,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	protected CodeTemplateScope codeTemplateScope;
 
 	protected AbstractCustomTemplatesSpringConfiguration(PluginMode mode) {
-		this.codeTemplateScope = mode == PluginMode.client ? CodeTemplateScope.CLIENT : CodeTemplateScope.SERVER;
+		codeTemplateScope = mode == PluginMode.client ? CodeTemplateScope.CLIENT : CodeTemplateScope.SERVER;
 		copyAndCustomizeTemplates();
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		GraphQLConfigurationTestHelper pluginConfiguration = (GraphQLConfigurationTestHelper) super.graphQLConfigurationTestHelper(
 				mavenTestHelper);
-		pluginConfiguration.templates = buildTemplates(this.codeTemplateScope);
+		pluginConfiguration.templates = buildTemplates(codeTemplateScope);
 		return pluginConfiguration;
 	}
 
@@ -175,7 +175,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	protected List<String> getTemplesInScope() {
 		return Arrays.stream(CodeTemplate.values())
 				.filter(template -> template.getScope() == CodeTemplateScope.COMMON
-						|| template.getScope() == this.codeTemplateScope)
+						|| template.getScope() == codeTemplateScope)
 				.map(template -> Paths.get(template.getDefaultPath()))
 				.map(templatePath -> templatePath.getFileName().toString()).collect(Collectors.toList());
 	}

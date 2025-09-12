@@ -1,0 +1,7 @@
+open module com.graphql_java_generator.graphql_maven_plugin_logic_test {
+
+	// Dependencies for tests
+	requires java.sql;
+	requires java.compiler;
+
+}

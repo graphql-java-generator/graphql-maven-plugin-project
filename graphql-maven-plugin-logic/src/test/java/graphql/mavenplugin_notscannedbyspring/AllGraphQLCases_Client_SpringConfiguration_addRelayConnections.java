@@ -57,10 +57,11 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
 		// The allGraphQLCases GraphQL schema is located in the allGraphQLCases client sample
-		configuration.schemaFileFolder = new File(this.mavenTestHelper.getModulePathFile(),
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
 		configuration.mode = PluginMode.client;
+		configuration.generateJacksonAnnotations = true;
 		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
 		configuration.generateDataFetcherForEveryFieldsWithArguments = true;

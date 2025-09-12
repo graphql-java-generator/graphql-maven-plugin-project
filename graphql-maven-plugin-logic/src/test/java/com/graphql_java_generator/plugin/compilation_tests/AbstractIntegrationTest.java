@@ -9,6 +9,8 @@ import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
@@ -22,6 +24,8 @@ import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 abstract class AbstractIntegrationTest {
 
+	private static final Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
+
 	Class<?> springConfClass;
 
 	protected AbstractApplicationContext ctx = null;
@@ -31,6 +35,7 @@ abstract class AbstractIntegrationTest {
 	protected GraphqlTestHelper graphqlTestHelper;
 	protected MavenTestHelper mavenTestHelper;
 	protected GraphQLConfiguration configuration;
+	protected String moduleName;
 
 	Method classLoaderAddUrlMethod = null;
 	/** The {@link ClassLoader} that adds the target class folder to the current classpath */
@@ -46,23 +51,24 @@ abstract class AbstractIntegrationTest {
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
-		this.urlClassLoader = null;
+		urlClassLoader = null;
 
-		this.ctx = new AnnotationConfigApplicationContext(this.springConfClass);
-		this.generateCodeDocumentParser = this.ctx.getBean(DocumentParser.class);
-		this.codeGenerator = this.ctx.getBean(Generator.class);
-		this.compilationTestHelper = this.ctx.getBean(CompilationTestHelper.class);
-		this.graphqlTestHelper = this.ctx.getBean(GraphqlTestHelper.class);
-		this.mavenTestHelper = this.ctx.getBean(MavenTestHelper.class);
-		this.configuration = this.ctx.getBean(GraphQLConfiguration.class);
+		ctx = new AnnotationConfigApplicationContext(springConfClass);
+		generateCodeDocumentParser = ctx.getBean(DocumentParser.class);
+		codeGenerator = ctx.getBean(Generator.class);
+		compilationTestHelper = ctx.getBean(CompilationTestHelper.class);
+		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
+		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
+		configuration = ctx.getBean(GraphQLConfiguration.class);
+		moduleName = configuration.getPackageName();
 
-		this.generateCodeDocumentParser.parseGraphQLSchemas();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 	}
 
 	@AfterEach
 	void cleanUp() {
-		if (this.ctx != null) {
-			this.ctx.close();
+		if (ctx != null) {
+			ctx.close();
 		}
 	}
 
@@ -74,16 +80,27 @@ abstract class AbstractIntegrationTest {
 	 */
 	@Test
 	void testGenerateCode() throws Exception {
+
+		logger.info("Starting {} test", this.getClass().getName());
+
 		// Preparation
-		this.mavenTestHelper.deleteDirectoryAndContentIfExists(this.configuration.getTargetSourceFolder());
-		this.mavenTestHelper.deleteDirectoryAndContentIfExists(this.configuration.getTargetClassFolder());
-		this.configuration.logConfiguration();
+		mavenTestHelper.deleteDirectoryAndContentIfExists(configuration.getTargetSourceFolder());
+		mavenTestHelper.deleteDirectoryAndContentIfExists(configuration.getTargetClassFolder());
+		configuration.logConfiguration();
 
 		// Go, go, go
-		this.codeGenerator.generateCode();
+		codeGenerator.generateCode();
+
+		// Let's rename the template module-info file to a real one, to check the module's behavior
+		// Renaming the module-info.java.template to module-info.java activate the module check in the plugin logic
+		// maven module. This triggers various compilation error, once the unit test are executed.
+		// This renaming is commented, until this is solved
+		// File moduleInfo = new File(configuration.getTargetSourceFolder(),
+		// GenerateCodeGenerator.MODULE_INFO_TEMPLATE_FILENAME);
+		// moduleInfo.renameTo(new File(configuration.getTargetSourceFolder(), "module-info.java"));
 
 		// Verifications
-		this.compilationTestHelper.checkCompleteCompilationStatus(null);
+		compilationTestHelper.checkCompleteCompilationStatus(null);
 
 		// Possible additional checks from the implementing class
 		doAdditionalChecks();
@@ -107,17 +124,17 @@ abstract class AbstractIntegrationTest {
 		String fullClassname;
 		switch (fileType) {
 		case POJO:
-			fullClassname = this.configuration.getPackageName() + "." + simpleClassname;
+			fullClassname = configuration.getPackageName() + "." + simpleClassname;
 			break;
 		case AUTOCONFIGURATION:
-			fullClassname = this.configuration.getPackageName() + "." + simpleClassname;
+			fullClassname = configuration.getPackageName() + "." + simpleClassname;
 			break;
 		case UTIL:
-			if (this.configuration.isSeparateUtilityClasses()) {
-				fullClassname = this.configuration.getPackageName() + "." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME
+			if (configuration.isSeparateUtilityClasses()) {
+				fullClassname = configuration.getPackageName() + "." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME
 						+ "." + simpleClassname;
 			} else {
-				fullClassname = this.configuration.getPackageName() + "." + simpleClassname;
+				fullClassname = configuration.getPackageName() + "." + simpleClassname;
 			}
 			break;
 		default:
@@ -127,10 +144,10 @@ abstract class AbstractIntegrationTest {
 	}
 
 	protected URLClassLoader getURLClassLoader() throws Exception {
-		if (this.urlClassLoader == null) {
-			URL[] urls = { this.configuration.getTargetClassFolder().toURI().toURL() };
-			this.urlClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
+		if (urlClassLoader == null) {
+			URL[] urls = { configuration.getTargetClassFolder().toURI().toURL() };
+			urlClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
 		}
-		return this.urlClassLoader;
+		return urlClassLoader;
 	}
 }

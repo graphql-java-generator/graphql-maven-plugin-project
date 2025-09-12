@@ -1,4 +1,3 @@
-
 package com.graphql_java_generator.samples.forum;
 
 import java.net.URI;

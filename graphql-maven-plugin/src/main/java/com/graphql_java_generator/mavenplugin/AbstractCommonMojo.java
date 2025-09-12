@@ -164,6 +164,30 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	String schemaFilePattern;
 
 	/**
+	 * <p>
+	 * Defines the folder in the classpath that will contain the GraphQL schema, as needed by spring-graphql. The
+	 * default is the default for spring-graphql, that is: graphql.
+	 * </p>
+	 * <p>
+	 * Note: If you change this plugin parameter, you must then also define the spring property
+	 * spring.graphql.schema.location to "classpath*:yourGraphQLSchemaFolder/, in you application.properties or
+	 * application.yml project file.
+	 *
+	 * </p>
+	 * *
+	 * <p>
+	 * Since 3.0.x
+	 * </p>
+	 * *
+	 * <p>
+	 * Mandatory if you're using JPMS (java modules), as the default folder is /graphql, which triggers a conflict with
+	 * the graphql package exposed by graphql-java
+	 * </p>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaSubFolder", defaultValue = CommonConfiguration.DEFAULT_TARGET_SCHEMA_SUBFOLDER)
+	String targetSchemaSubFolder;
+
+	/**
 	 * <P>
 	 * This parameter is now <B><I>deprecated</I></B>: it's value used in the plugin is always true, that is: if the
 	 * generated sources or resources are older than the GraphQL schema file(s), then there is no source or resource
@@ -233,92 +257,102 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 
 	@Override
 	public String getEnumPrefix() {
-		return this.enumPrefix;
+		return enumPrefix;
 	}
 
 	@Override
 	public String getEnumSuffix() {
-		return this.enumSuffix;
+		return enumSuffix;
 	}
 
 	@Override
 	public String getInputPrefix() {
-		return this.inputPrefix;
+		return inputPrefix;
 	}
 
 	@Override
 	public String getInputSuffix() {
-		return this.inputSuffix;
+		return inputSuffix;
 	}
 
 	@Override
 	public String getInterfacePrefix() {
-		return this.interfacePrefix;
+		return interfacePrefix;
 	}
 
 	@Override
 	public String getInterfaceSuffix() {
-		return this.interfaceSuffix;
+		return interfaceSuffix;
 	}
 
 	@Override
 	public String getJsonGraphqlSchemaFilename() {
-		return this.jsonGraphqlSchemaFilename;
+		return jsonGraphqlSchemaFilename;
 	}
 
 	@Override
 	public Integer getMaxTokens() {
-		return this.maxTokens;
+		return maxTokens;
 	}
 
 	@Override
 	public File getProjectBuildDir() {
-		return this.projectBuildDir;
+		return projectBuildDir;
 	}
 
 	@Override
 	public File getProjectDir() {
-		return this.project.getBasedir();
+		return project.getBasedir();
+	}
+
+	@Override
+	public File getProjectMainSourceFolder() {
+		return new File(getProjectDir(), "src/main/java");
 	}
 
 	@Override
 	public File getSchemaFileFolder() {
-		return this.schemaFileFolder;
+		return schemaFileFolder;
 	}
 
 	@Override
 	public String getSchemaFilePattern() {
-		return this.schemaFilePattern;
+		return schemaFilePattern;
+	}
+
+	@Override
+	public String getTargetSchemaSubFolder() {
+		return targetSchemaSubFolder;
 	}
 
 	@Override
 	public Map<String, String> getTemplates() {
-		return this.templates;
+		return templates;
 	}
 
 	@Override
 	public String getTypePrefix() {
-		return this.typePrefix;
+		return typePrefix;
 	}
 
 	@Override
 	public String getTypeSuffix() {
-		return this.typeSuffix;
+		return typeSuffix;
 	}
 
 	@Override
 	public String getUnionPrefix() {
-		return this.unionPrefix;
+		return unionPrefix;
 	}
 
 	@Override
 	public String getUnionSuffix() {
-		return this.unionSuffix;
+		return unionSuffix;
 	}
 
 	@Override
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return this.skipGenerationIfSchemaHasNotChanged;
+		return skipGenerationIfSchemaHasNotChanged;
 	}
 
 	AbstractCommonMojo(Class<?> springConfigurationClass) {
@@ -333,22 +367,22 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 			LoggerFactory.getLogger(getClass()).debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			this.ctx = new AnnotationConfigApplicationContext();
-			this.ctx.getBeanFactory().registerSingleton("mojo", this);
-			this.ctx.register(this.springConfigurationClass);
-			this.ctx.refresh();
+			ctx = new AnnotationConfigApplicationContext();
+			ctx.getBeanFactory().registerSingleton("mojo", this);
+			ctx.register(springConfigurationClass);
+			ctx.refresh();
 
 			// Let's log the current configuration (this will do something only when in
 			// debug mode)
-			this.ctx.getBean(CommonConfiguration.class).logConfiguration();
+			ctx.getBean(CommonConfiguration.class).logConfiguration();
 
 			// Let's execute the job
-			PluginExecutor executor = this.ctx.getBean(PluginExecutor.class);
+			PluginExecutor executor = ctx.getBean(PluginExecutor.class);
 			executor.execute();
 
 			executePostExecutionTask();
 
-			this.ctx.close();
+			ctx.close();
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);

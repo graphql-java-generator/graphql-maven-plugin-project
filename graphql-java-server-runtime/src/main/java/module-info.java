@@ -2,11 +2,16 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_serv
 
 	exports com.graphql_java_generator.server.util;
 
-	requires org.reactivestreams;
-	requires spring.graphql;
-	requires spring.context;
+	requires transitive org.reactivestreams;
+	requires transitive org.slf4j;
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime;
-	requires reactor.core;
+	requires transitive reactor.core;
+	requires transitive spring.beans;
+	requires transitive spring.boot.autoconfigure;
+	requires transitive spring.boot;
+	requires transitive spring.context;
+	requires transitive spring.core;
+	requires transitive spring.graphql;
 
 }

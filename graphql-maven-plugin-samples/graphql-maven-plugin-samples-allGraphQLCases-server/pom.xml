@@ -36,6 +36,7 @@
 							<separateUtilityClasses>false</separateUtilityClasses>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
 							<schemaPersonalizationFile>/src/main/graphql/schema_personalization.json</schemaPersonalizationFile>
+							<targetSchemaSubFolder>graphql_schema</targetSchemaSubFolder>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Base64String</graphQLTypeName>
@@ -44,8 +45,8 @@
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>CustomId</graphQLTypeName>
-									<javaType>com.generated.graphql.samples.customscalar.CustomId</javaType>
-									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType</graphQLScalarTypeStaticField>
+									<javaType>com.generated.graphql.samples.customscalars.CustomId</javaType>
+									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalars.GraphQLScalarTypeCustomId.CustomIdScalarType</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>MyCustomScalarForADate</graphQLTypeName>
@@ -60,7 +61,7 @@
 								<customScalar>
 									<graphQLTypeName>else</graphQLTypeName>
 									<javaType>java.lang.String</javaType>
-									<graphQLScalarTypeGetter>org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+									<graphQLScalarTypeGetter>com.generated.graphql.samples.customscalars.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>JSON</graphQLTypeName>
@@ -70,7 +71,7 @@
 								<customScalar>
 									<graphQLTypeName>MyBoolean</graphQLTypeName>
 									<javaType>java.lang.Boolean</javaType>
-									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType</graphQLScalarTypeStaticField>
+									<graphQLScalarTypeStaticField>com.generated.graphql.samples.customscalars.GraphQLScalarTypeMyBoolean.MyBooleanScalarType</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>Long</graphQLTypeName>

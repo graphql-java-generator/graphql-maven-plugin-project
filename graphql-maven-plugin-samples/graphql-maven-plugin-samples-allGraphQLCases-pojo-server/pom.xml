@@ -29,6 +29,7 @@
 							<generateJacksonAnnotations>true</generateJacksonAnnotations>
 							<packageName>org.allGraphQLCases.server.pojo</packageName>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
+							<targetSchemaSubFolder>graphql_schema</targetSchemaSubFolder>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Base64String</graphQLTypeName>

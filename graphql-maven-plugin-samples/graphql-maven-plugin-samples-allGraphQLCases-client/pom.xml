@@ -76,7 +76,7 @@
 								<customScalar>
 									<graphQLTypeName>else</graphQLTypeName>
 									<javaType>java.lang.String</javaType>
-									<graphQLScalarTypeGetter>org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+									<graphQLScalarTypeGetter>com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>JSON</graphQLTypeName>
@@ -161,7 +161,7 @@
 								<customScalar>
 									<graphQLTypeName>else</graphQLTypeName>
 									<javaType>java.lang.String</javaType>
-									<graphQLScalarTypeGetter>org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+									<graphQLScalarTypeGetter>com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>JSON</graphQLTypeName>
@@ -264,10 +264,25 @@
 						</goals>
 					</execution>
 				</executions>
-				<!--configuration>
+				<configuration>
+					<argLine>
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.annotation_test=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.samples.forum.test.client.subscription=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.schema_personalization=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.graphqlrepositories=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.impl=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.oauth=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.subscription=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.subscription.graphqlrepository=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.two_graphql_servers=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.forum.customtemplates=com.fasterxml.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+					</argLine>
+					<!--
 					<parallel>methods</parallel>
 					<threadCount>10</threadCount>
-				</configuration-->
+					-->
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- This plugin allows to start the SpringBoot server in the background 

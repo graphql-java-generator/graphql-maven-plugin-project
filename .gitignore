@@ -19,3 +19,4 @@ release.properties
 *.iml
 idea
 .idea
+/spring-graphql_issue_with_JPMS.txt

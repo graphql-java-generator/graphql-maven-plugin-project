@@ -2,7 +2,7 @@
 package com.graphql_java_generator.domain.client.forum;
 
 import com.graphql_java_generator.client.CustomScalarRegistry;
-import com.graphql_java_generator.client.impl.CustomScalarRegistryImpl;
+import com.graphql_java_generator.client.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 
 @SuppressWarnings("unused")

@@ -57,7 +57,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 @Component
 public class AddRelayConnections {
 
-	static Logger logger = LoggerFactory.getLogger(AddRelayConnections.class);
+	static public Logger logger = LoggerFactory.getLogger(AddRelayConnections.class);
 
 	/**
 	 * The {@link DocumentParser} contains the GraphQL schema data, as it has been read from the given GraphQL schema

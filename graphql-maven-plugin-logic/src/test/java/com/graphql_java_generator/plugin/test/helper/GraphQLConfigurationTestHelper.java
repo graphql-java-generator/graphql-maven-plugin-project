@@ -40,7 +40,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean generateDataFetcherForEveryFieldsWithArguments = false;// Server side
 	public boolean generateDataLoaderForLists = false;// Server side
 	public boolean generateDeprecatedRequestResponse = false;// Client side
-	private Boolean generateJacksonAnnotations = null; // (for POJO only)See below: isGenerateJacksonAnnotations()
+	public Boolean generateJacksonAnnotations = null; // (for POJO only)See below: isGenerateJacksonAnnotations()
 														// either generateJacksonAnnotations if it is not null, or true
 														// id client mode, or false if server mode. Because of this
 														// rule, Velocity MUST call the isGenerateJacksonAnnotations()
@@ -56,6 +56,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public Packaging packaging = null;
 	public File projectBuildDir;// Initialized in the test constructors
 	public File projectDir;// Initialized in the test constructor
+	public File projectMainSourceFolder;// Initialized in the test constructor
 	public QueryMutationExecutionProtocol queryMutationExecutionProtocol = QueryMutationExecutionProtocol.http;
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
@@ -67,6 +68,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String springBeanSuffix = "MySchema";
 	public File targetClassFolder = null;
 	public File targetResourceFolder = null;
+	public String targetSchemaSubFolder = CommonConfiguration.DEFAULT_TARGET_SCHEMA_SUBFOLDER;
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
 	public boolean useJakartaEE9 = true;
@@ -92,6 +94,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 		try {
 			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
 					new File(".") : new File("./graphql-maven-plugin-logic");
+			projectMainSourceFolder = new File(projectDir, "src/main/java");
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}

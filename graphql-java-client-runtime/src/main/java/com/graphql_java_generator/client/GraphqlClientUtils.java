@@ -25,7 +25,6 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.GraphQLUnionType;
-import com.graphql_java_generator.client.impl.CustomScalarRegistryImpl;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.CustomScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;

@@ -35,6 +35,7 @@ public class CustomTemplates_Client_SpringConfiguration extends AbstractCustomTe
 				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.schemaFilePattern = "allGraphQLCases.graphqls";
 		configuration.mode = PluginMode.client;
+		configuration.generateJacksonAnnotations = true;
 		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
 		configuration.separateUtilityClasses = false;

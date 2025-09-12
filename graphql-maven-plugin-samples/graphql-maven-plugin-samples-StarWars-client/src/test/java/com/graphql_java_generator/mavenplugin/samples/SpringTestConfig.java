@@ -94,4 +94,5 @@ public class SpringTestConfig {
 		WebSocketClient client = new ReactorNettyWebSocketClient(sslHttpClient);
 		return WebSocketGraphQlClient.builder(graphqlEndpoint, client).build();
 	}
+
 }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +69,7 @@ public class SpringTestConfig {
 
 	/** MyInterceptor allows to check the Subscription data that will be sent back to the client */
 	static class MyInterceptor implements GraphQlClientInterceptor {
+		@SuppressWarnings("hiding")
 		private static Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 		final private String beanSuffix;
 
@@ -86,10 +86,10 @@ public class SpringTestConfig {
 		/** Interception of each message received on subscription */
 		public void interceptionSubscriptionResponse(ClientGraphQlResponse response) {
 			if (response.isValid()) {
-				logger.debug("[subscription interception] Received a valid response for '{}': {}", this.beanSuffix,
+				logger.debug("[subscription interception] Received a valid response for '{}': {}", beanSuffix,
 						response.getData());
 			} else {
-				logger.debug("[subscription interception] Received a non valid response for '{}': {}", this.beanSuffix,
+				logger.debug("[subscription interception] Received a non valid response for '{}': {}", beanSuffix,
 						response.getErrors());
 			}
 		}
@@ -110,8 +110,9 @@ public class SpringTestConfig {
 			@Override
 			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 				String classname = bean.getClass().getName();
-				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT"))
-					SpringContextBean.setApplicationContext(SpringTestConfig.this.applicationContext);
+				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT")) {
+					SpringContextBean.setApplicationContext(applicationContext);
+				}
 				return bean;
 			}
 		};
@@ -126,9 +127,10 @@ public class SpringTestConfig {
 					String classname = bean.getClass().getName();
 					if (classname.startsWith("org.allGraphQLCases")
 							|| classname.startsWith("com.graphql_java_generator")
-							|| GraphQlClient.class.isAssignableFrom(bean.getClass()))
+							|| GraphQlClient.class.isAssignableFrom(bean.getClass())) {
 						loggerBeanPostProcessor.debug("Before postProcess init of {} (@{}) - {}", beanName, bean,
 								classname);
+					}
 				}
 				return bean;
 			}

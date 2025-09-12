@@ -33,6 +33,11 @@ public interface CommonConfiguration {
 	public final String DEFAULT_PREFIX = "";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final String DEFAULT_TARGET_SCHEMA_SUBFOLDER = "graphql";
+	/**
+	 * Subfolder from the root of the classpath, where the schema files are copied, so that spring-graphql can find it
+	 * at runtime
+	 */
 	public final String DEFAULT_SCHEMA_SUB_FOLDER = "graphql";
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "true";
 	public final String DEFAULT_SUFFIX = "";
@@ -124,6 +129,14 @@ public interface CommonConfiguration {
 	public File getProjectDir();
 
 	/**
+	 * Get the main source folder for the current project's directory. This allows to check things about the current
+	 * project (for instance: does it have a module-info.java file)
+	 * 
+	 * @return The main source folder (default to ${projectDir}/src/main/java)
+	 */
+	public File getProjectMainSourceFolder();
+
+	/**
 	 * <p>
 	 * The folder which contains the GraphQL schema file(s) , typically <code>/src/main/resources</code> of the current
 	 * project. That's where the GraphQL schema(s) are expected to be: in this folder, or one of these subfolders. If
@@ -153,15 +166,29 @@ public interface CommonConfiguration {
 
 	/**
 	 * <p>
-	 * Returns the folder in the classpath that should contain the GraphQL schema. The default is the default for
-	 * spring-graphql, that is: graphql.
+	 * Defines the folder in the classpath that will contain the GraphQL schema, as needed by spring-graphql. The
+	 * default is the default for spring-graphql, that is: graphql.
+	 * </p>
+	 * <p>
+	 * Note: If you change this plugin parameter, you must then also define the spring property
+	 * spring.graphql.schema.location to "classpath*:yourGraphQLSchemaFolder/, in you application.properties or
+	 * application.yml project file.
+	 *
+	 * </p>
+	 * *
+	 * <p>
+	 * Since 3.0.x
+	 * </p>
+	 * *
+	 * <p>
+	 * Mandatory if you're using JPMS (java modules), as the default folder is /graphql, which triggers a conflict with
+	 * the graphql package exposed by graphql-java
 	 * </p>
 	 * 
 	 * @return
 	 */
-	default public String getTargetSchemaSubFolder() {
-		return DEFAULT_SCHEMA_SUB_FOLDER;
-	}
+
+	public String getTargetSchemaSubFolder();
 
 	/**
 	 * <P>

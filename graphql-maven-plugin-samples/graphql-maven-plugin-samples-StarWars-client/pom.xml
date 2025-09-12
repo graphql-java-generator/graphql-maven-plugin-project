@@ -55,6 +55,12 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<argLine>
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client/com.graphql_java_generator.mavenplugin.samples=com.fasterxml.jackson.databind,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client/com.graphql_java_generator.mavenplugin.samples.simple.client.subscription=com.fasterxml.jackson.databind,spring.beans,spring.context,spring.core
+					</argLine>
+				</configuration>
 			</plugin>
 			<plugin>
 				<!--  cd graphql-maven-plugin-samples\graphql-maven-plugin-samples-StarWars-client -->

@@ -27,6 +27,7 @@ public class StarWars_Client_SpringConfiguration extends AbstractSpringConfigura
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
 		configuration.schemaFilePattern = "starWarsSchema.graphqls";
 		configuration.mode = PluginMode.client;
+		configuration.generateJacksonAnnotations = true;
 		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = null;
 		configuration.separateUtilityClasses = false;

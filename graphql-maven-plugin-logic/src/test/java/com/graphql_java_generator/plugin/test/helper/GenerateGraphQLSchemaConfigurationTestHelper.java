@@ -28,12 +28,15 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public File projectBuildDir = new File("./target/junittest_merge");
 	public File projectDir = new File("./graphql-maven-plugin-logic");
+	public File projectMainSourceFolder = new File(projectDir, "src/main/java");
+
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public boolean skipGenerationIfSchemaHasNotChanged = true;
 	public String resourceEncoding = "UTF-8";
 	public File targetFolder = null;
 	public String targetSchemaFileName = null;
+	public String targetSchemaSubFolder = CommonConfiguration.DEFAULT_TARGET_SCHEMA_SUBFOLDER;
 	public Map<String, String> templates = new HashMap<String, String>();
 
 	public String typePrefix = "";
@@ -52,7 +55,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GenerateGraphQLSchemaConfigurationTestHelper(Object caller) {
-		this.logger = LoggerFactory.getLogger(caller.getClass());
+		logger = LoggerFactory.getLogger(caller.getClass());
 	}
 
 }

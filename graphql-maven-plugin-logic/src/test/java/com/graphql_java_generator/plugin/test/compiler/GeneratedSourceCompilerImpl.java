@@ -44,6 +44,11 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 	/** The charset that will be use to generate the java file */
 	Charset javaFileCharset;
 
+	/** Java version, indirectly read from the pom file */
+	String javaVersion;
+	/** Java release, indirectly read from the pom file */
+	String javaRelease;
+
 	/**
 	 * @param log
 	 * @param className
@@ -54,9 +59,11 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 	 *            If null, the current classpath is used.
 	 * @param javaFileCharset
 	 *            The {@link Charset} (like UTF-8...) to use to store the java source file.
+	 * @param javaRelease
+	 * @param javaVersion
 	 */
 	public GeneratedSourceCompilerImpl(Logger log, String className, File javaSrcFolder, File classTargetFolder,
-			String classpath, Charset javaFileCharset) {
+			String classpath, Charset javaFileCharset, String javaVersion, String javaRelease) {
 		this.log = log;
 		this.className = className;
 		this.javaSrcFolder = javaSrcFolder;
@@ -74,6 +81,8 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		}
 
 		this.javaFileCharset = javaFileCharset;
+		this.javaVersion = javaVersion;
+		this.javaRelease = javaRelease;
 	}
 
 	/** {@inheritDoc} */
@@ -129,9 +138,9 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 
 		// We check compatibility with Java 8
 		optionList.add("-source");
-		optionList.add("1.8");
+		optionList.add(javaRelease);
 		optionList.add("-target");
-		optionList.add("1.8");
+		optionList.add(javaRelease);
 
 		if (classpath != null) {
 			optionList.add("-classpath");

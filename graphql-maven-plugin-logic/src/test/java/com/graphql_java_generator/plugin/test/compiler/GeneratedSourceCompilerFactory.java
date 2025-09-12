@@ -29,15 +29,17 @@ public class GeneratedSourceCompilerFactory {
 	 * @param classpath
 	 *            The classpath to be added to the compiler classpath, to allow compilation of the received generated
 	 *            sources. If null, the current classpath is used (taken from the "java.class.path" system property)
+	 * @param javaRelease
+	 * @param javaVersion
 	 * @param charset
 	 *            The name of the {@link Charset} (like UTF-8...), to use to store the java source file.
 	 * @return
 	 */
 	public static GeneratedSourceCompiler getGeneratedSourceCompiler(Logger log, String className, File javaSrcFolder,
-			File classTargetFolder, String classpath, String encoding) {
+			File classTargetFolder, String classpath, String encoding, String javaVersion, String javaRelease) {
 		classpath = (classpath == null) ? System.getProperty("java.class.path") : classpath;
 		return new GeneratedSourceCompilerImpl(log, className, javaSrcFolder, classTargetFolder, classpath,
-				Charset.forName(encoding));
+				Charset.forName(encoding), javaVersion, javaRelease);
 	}
 
 }

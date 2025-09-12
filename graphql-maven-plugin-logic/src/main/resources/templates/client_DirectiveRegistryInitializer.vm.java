@@ -11,7 +11,7 @@ import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
+import com.graphql_java_generator.client.CustomScalarRegistryImpl;
 
 @SuppressWarnings("unused")
 public class DirectiveRegistryInitializer {

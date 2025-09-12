@@ -11,6 +11,9 @@ spring:
     # Changing the server path
     path: /my/updated/graphql/path
 
+    schema:
+      locations: classpath*:graphql_schema/**/ 
+  
     # Both activating the web socket support and overriding the default path
     websocket:
       path: /my/updated/graphql/path

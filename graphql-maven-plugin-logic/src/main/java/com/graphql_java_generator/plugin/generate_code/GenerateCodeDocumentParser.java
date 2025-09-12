@@ -397,8 +397,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			}
 		}
 
-		// Add the GraphQLQuery annotation fpr query/mutation/subscription and for
-		// objects that are a
+		// Add the GraphQLQuery annotation for query/mutation/subscription and for objects that are a
 		// query/mutation/subscription
 		if (type instanceof ObjectType && ((ObjectType) type).getRequestType() != null) {
 			type.addImport(getConfiguration().getPackageName(), GraphQLQuery.class.getName());

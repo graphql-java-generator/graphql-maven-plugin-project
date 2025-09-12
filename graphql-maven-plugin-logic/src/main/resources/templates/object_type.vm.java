@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+#if(${configuration.mode}=="server")
 import org.dataloader.DataLoader;
 
 import graphql.schema.DataFetchingEnvironment;
+#end
 
 #if ($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.annotation.JsonInclude;

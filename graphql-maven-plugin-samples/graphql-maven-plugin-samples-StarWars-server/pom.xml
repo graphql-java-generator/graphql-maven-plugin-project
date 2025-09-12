@@ -37,6 +37,7 @@
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<mode>server</mode>
 					<packageName>org.starwars.server</packageName>
+					<targetSchemaSubFolder>graphql_schema</targetSchemaSubFolder>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -108,6 +109,19 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- Dependencies non used by the project, but needed once JPMS (java modules) is activated -->
+		<dependency>
+			<groupId>jakarta.enterprise</groupId>
+			<artifactId>jakarta.enterprise.cdi-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Added Reactive stuff, to manage subscriptions -->

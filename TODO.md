@@ -1,12 +1,24 @@
 Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 3.x branch
+* The build should fail because of the graphql path not changed (in allGraphQLCases server), after correcting the POJO issue
 * Usage of JPMS
     * Document it in the README and the wiki
+        * Including the POJO (that needs more "requires")
+        * Test the link toward the FAQ in the client and server doc
+    * Test with both isCopyRuntimeSources true and false. isCopyRuntimeSources true in:
+        * (done) Maven: the star wars samples
+        * Gradle: the allGraphQLCases samples
+    * Document the issue with the graphql schema folder, needed by spring-graphql, in server mode
+        * Add a build error, when the plugin configuration has not changed this path (and when the spring properties file is not also changed ?)
+    * Document howto execute the JUnit test in eclipse (need to copy the JVM args from the pom file in the Run Configuration)
+    * Add info in the FAQ with the needed `opens` instructions
+* Test the `maven-invoker-plugin` for the plugin logic module (and eclipse compatibility). This would allow to check module-info.java generated files
 * Activate the module capability on the Forum client and server projects
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
 * Manage the Mockito warning, about configuring an agent for the JVM
+* Remove the obsolet github and spotify samples
 
 ## TODO list for the 2.x branch
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
