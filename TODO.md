@@ -6,11 +6,6 @@ Here are the next tasks listed, as a TODO list:
     * Document it in the README and the wiki
         * Including the POJO (that needs more "requires")
         * Test the link toward the FAQ in the client and server doc
-    * Test with both isCopyRuntimeSources true and false. isCopyRuntimeSources true in:
-        * (done) Maven: the star wars samples
-        * Gradle: the allGraphQLCases samples
-    * Document the issue with the graphql schema folder, needed by spring-graphql, in server mode
-        * Add a build error, when the plugin configuration has not changed this path (and when the spring properties file is not also changed ?)
     * Document howto execute the JUnit test in eclipse (need to copy the JVM args from the pom file in the Run Configuration)
     * Add info in the FAQ with the needed `opens` instructions
 * Test the `maven-invoker-plugin` for the plugin logic module (and eclipse compatibility). This would allow to check module-info.java generated files

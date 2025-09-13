@@ -65,6 +65,7 @@ public class FieldImpl implements Field {
 
 	/** The data fetcher associated to this field, or null if this field has no data fetcher */
 	@ToString.Exclude
+	@Builder.Default
 	DataFetcher dataFetcher = null;
 
 	/**
@@ -100,20 +101,20 @@ public class FieldImpl implements Field {
 
 	@Override
 	public Type getType() {
-		return this.documentParser.getType(getGraphQLTypeSimpleName());
+		return documentParser.getType(getGraphQLTypeSimpleName());
 	}
 
 	@Override
 	public String getAnnotation() {
-		return (this.annotation == null) ? "" : this.annotation;
+		return (annotation == null) ? "" : annotation;
 	}
 
 	@Override
 	public boolean isId() {
-		if (this.id == null) {
+		if (id == null) {
 			return getGraphQLTypeSimpleName().equals("ID");
 		} else {
-			return this.id;
+			return id;
 		}
 	}
 
@@ -136,11 +137,11 @@ public class FieldImpl implements Field {
 	 *            The annotation, that will be added to the current one
 	 */
 	public void addAnnotation(String annotationToAdd) {
-		if (this.annotation == null || this.annotation.contentEquals("")) {
-			this.annotation = annotationToAdd;
+		if (annotation == null || annotation.contentEquals("")) {
+			annotation = annotationToAdd;
 		} else {
 			// We add this annotation on a next line.
-			this.annotation = this.annotation + "\n\t" + annotationToAdd;
+			annotation = annotation + "\n\t" + annotationToAdd;
 		}
 	}
 
@@ -154,8 +155,9 @@ public class FieldImpl implements Field {
 	 *            if true, any existing annotation is first removed
 	 */
 	public void addAnnotation(String annotationToAdd, boolean replace) {
-		if (replace)
-			this.annotation = "";
+		if (replace) {
+			annotation = "";
+		}
 
 		addAnnotation(annotationToAdd);
 	}
@@ -187,11 +189,12 @@ public class FieldImpl implements Field {
 		// Field's parameters
 		sb.append(", params:[");
 		boolean appendSeparator = false;
-		for (Field param : this.inputParameters) {
-			if (appendSeparator)
+		for (Field param : inputParameters) {
+			if (appendSeparator) {
 				sb.append(",");
-			else
+			} else {
 				appendSeparator = true;
+			}
 			sb.append(param.getName()).append(":");
 			sb.append(param.getFieldTypeAST().getGraphQLType());
 		} // for

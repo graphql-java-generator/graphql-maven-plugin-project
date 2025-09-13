@@ -48,7 +48,7 @@ Other points that are worth to point out:
 * A big effort is done to __avoid any impact on your code, when the plugin evolves__. 
 * The `generateGraphQLSchema` maven/gradle goal/task allows to __merge several schemas in one__, adding (for instance) relay capability in the generated schema
 
-# Two main versions: 1.x and 2.x
+# Three main versions: 1.x, 2.x and 3.x
 
 The 1.x version:
 * Allows non-spring application either by using the `javax.ws.rs.client.Client` client, which is deprecated and has been removed in Spring Boot 3
@@ -62,9 +62,10 @@ The 2.x version:
 * (since 2.3) Allows also reactive queries (that returns reactive Mono or Flux)
 * Please check the [Client migration from 1.x to 2.x](../../wiki/client_migrate_1-x_to_2-x) or [Server migration from 1.x to 2.x](../../wiki/server_migrate_1-x_to_2-x) if you're using the 1.x version.
 
-The 3.x version (not released yet):
-* Is compatible with java 21
-* Doesn't maintain the graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name).
+The 3.x version:
+* Is compatible with java 17 (and upper)
+* Is compatible with JPMS (Java Modules)
+* Doesn't maintain the Gradle graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name if you was not already using it).
 
 
 # Availability: Maven and Gradle
@@ -85,10 +86,10 @@ The last published version can be found in the [Maven Central Repository](https:
 Two __Gradle plugins__ are available from the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project).
 
 They offer the exact same functionalities:
-* __[graphql-gradle-plugin](https://plugins.gradle.org/plugin/com.graphql-java-generator.graphql-gradle-plugin)__ is compiled against Spring Boot 2 and Spring Framework 5
+* __[graphql-gradle-plugin](https://plugins.gradle.org/plugin/com.graphql-java-generator.graphql-gradle-plugin)__ is compiled in java 8, against Spring Boot 2 and Spring Framework 5
     * This version of the plugin exists for the 1.x and 2.x releases
     * As the graphql-gradle-plugin is built for Sprint Boot 2, it will not maintained starting from version 3.0
-* __[graphql-gradle-plugin3](https://plugins.gradle.org/plugin/com.graphql-java-generator.graphql-gradle-plugin3)__ is compiled against Spring Boot 3 and Spring Framework 6
+* __[graphql-gradle-plugin3](https://plugins.gradle.org/plugin/com.graphql-java-generator.graphql-gradle-plugin3)__ is compiled in java 17, against Spring Boot 3 and Spring Framework 6
 
 
 # The plugin goals/tasks
