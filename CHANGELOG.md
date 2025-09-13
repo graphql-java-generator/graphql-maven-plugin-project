@@ -13,7 +13,8 @@
 
 
 All modes (client and server) :
-* Upgrade of all dependencies: java 21, spring boot 3.5.4, graphql-java 24.0, ...
+* The plugin now needs at least Java 17
+* Upgrade of all dependencies: spring boot 3.5.4, graphql-java 24.0, ...
 * Usage of JPMS (Java Platform Module System): the `graphql-java-client-runtime` and `graphql-java-server-runtime` are now java modules
     * Caution: due to java naming rules, in the module names, the 'minus' have been changed into underscores. The module names are:
         * com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime

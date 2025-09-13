@@ -101,8 +101,8 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>21</java.version>
-		<java.release>21</java.release>
+		<java.version>17</java.version>
+		<java.release>17</java.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.dependency.version>3.9.11</maven.dependency.version>
@@ -234,6 +234,11 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.5.3</version>
+					<!--configuration>
+						<argLine>
+							-javaagent:"${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-{mockito.version}.jar"^
+						</argLine>
+					</configuration -->
 				</plugin>
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
