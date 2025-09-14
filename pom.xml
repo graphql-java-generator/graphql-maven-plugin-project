@@ -60,13 +60,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>central</id>
+			<url>https://central.sonatype.com</url>
 		</repository>
 		<site>
 			<id>www.graphql-java-generator.com</id>
-			<url>
-				https://graphql-maven-plugin-project.graphql-java-generator.com/</url>
+			<url>https://graphql-maven-plugin-project.graphql-java-generator.com/</url>
 		</site>
 	</distributionManagement>
 
@@ -239,22 +238,15 @@
 					</configuration -->
 				</plugin>
 				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>1.7.0</version>
+					<groupId>org.sonatype.central</groupId>
+					<artifactId>central-publishing-maven-plugin</artifactId>
+					<version>0.8.0</version>
 					<extensions>true</extensions>
 					<configuration>
-						<serverId>ossrh</serverId>
-						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						<publishingServerId>central</publishingServerId>
+						<autoPublish>true</autoPublish>
+						<waitUntil>published</waitUntil>
 					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>com.thoughtworks.xstream</groupId>
-							<artifactId>xstream</artifactId>
-							<version>1.4.21</version>
-						</dependency>
-					</dependencies>
 				</plugin>
 				<plugin>
 					<!-- This plugin allows to start the GraphQL servers during the integration tests -->
@@ -561,26 +553,8 @@
 						<!-- -->
 						<!-- NOT USED. USE maven-release-plugin, instead -->
 						<!-- -->
-						<!-- The change of the versions for your project, and
-						the parent references in a multi module setup, can be
-						performed 
-							manually or with the help of the Maven versions plugin. -->
-						<!-- mvn versions:set -DnewVersion=1.2.3 -->
-						<!-- If your version is a release version (does not end
-						in -SNAPSHOT) and with this setup in place, you can run
-						a deployment 
-							to OSSRH and an automated release to the Central Repository with the usual: -->
-						<!-- mvn clean deploy -Prelease -->
-						<!-- With the property autoReleaseAfterClose set to
-						false you can manually inspect the staging repository in
-						the Nexus 
-							Repository Manager and trigger a release of the staging repository later with -->
-						<!-- mvn nexus-staging:release -P release -->
-						<!-- If you find something went wrong you can drop the
-						staging repository with -->
-						<!-- mvn nexus-staging:drop -Prelease -->
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
+			          <groupId>org.sonatype.central</groupId>
+			          <artifactId>central-publishing-maven-plugin</artifactId>
 					</plugin>
 					<plugin>
 						<!-- To manually publish the site, with my local conf: -->
