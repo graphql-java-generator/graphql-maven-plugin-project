@@ -6,6 +6,11 @@
 		<version>0-SNAPSHOT</version>
 	</parent>
 	<artifactId>graphql-java-server-runtime</artifactId>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>
+		Code used by the generated code, at runtime, when in server
+		mode (that is: when exposing a GraphQL API)
+	</description>
 
 	<build>
 		<plugins>

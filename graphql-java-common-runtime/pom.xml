@@ -8,6 +8,7 @@
 	</parent>
 
 	<artifactId>graphql-java-common-runtime</artifactId>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Java classes that are common to both the client and the server runtimes</description>
 
 	<build>

@@ -9,6 +9,11 @@
 	</parent>
 
 	<artifactId>graphql-java-client-runtime</artifactId>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>
+		Code used by the generated code, at runtime, when in client
+		mode (that is: when consuming a GraphQL API)
+	</description>
 
 	<build>
 		<resources>
