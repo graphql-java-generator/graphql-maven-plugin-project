@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.domain.client.forum"},{"l":"com.graphql_java_generator.domain.server.allGraphQLCases"},{"l":"com.graphql_java_generator.server.util.test_classes"},{"l":"com.graphql_java_generator.testcases"}];updateSearchResults();

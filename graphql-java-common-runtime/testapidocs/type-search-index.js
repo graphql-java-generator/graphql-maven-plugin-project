@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.graphql_java_generator.customscalars","l":"GraphQLScalarTypeElse"}];updateSearchResults();

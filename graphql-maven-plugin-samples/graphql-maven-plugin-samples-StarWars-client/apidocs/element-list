@@ -1,3 +1,4 @@
+module:com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client
 com.generated.graphql
 com.generated.graphql_spring_autoconfiguration
 com.generated.graphql.util

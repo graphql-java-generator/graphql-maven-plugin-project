@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://graphql-maven-plugin-project.graphql-java-generator.com/</loc>
+      <!-- lastmod>2004-12-23T18:00:15+00:00</lastmod-->
+	  <!-- changefreq>monthly</changefreq-->
+      <!-- priority>0.3</priority -->
+   </url>
+   <url>
+      <loc>https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html</loc>
+   </url>
+   <url>
+      <loc>https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin-samples/index.html</loc>
+   </url>
+</urlset>

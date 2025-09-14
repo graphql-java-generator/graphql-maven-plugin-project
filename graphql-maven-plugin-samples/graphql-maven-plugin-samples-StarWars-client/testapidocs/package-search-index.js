@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.mavenplugin.samples"},{"l":"com.graphql_java_generator.mavenplugin.samples.simple.client.subscription"}];updateSearchResults();

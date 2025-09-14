@@ -1,7 +1,6 @@
 com.graphql_java_generator.client
 com.graphql_java_generator.client.graphqlrepository
 com.graphql_java_generator.client.response
-com.graphql_java_generator.customscalars
 com.graphql_java_generator.domain.client.allGraphQLCases
 com.graphql_java_generator.domain.client.forum
 com.graphql_java_generator.domain.client.starwars.scalar

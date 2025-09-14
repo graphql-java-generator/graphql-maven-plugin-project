@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.graphql_java_generator.samples.forum.test"},{"l":"com.graphql_java_generator.samples.forum.test.client"},{"l":"com.graphql_java_generator.samples.forum.test.jsonSchema"}];updateSearchResults();

@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.graphql_java_generator.customscalars","c":"GraphQLScalarTypeElse","l":"getElseScalar()"},{"p":"com.graphql_java_generator.customscalars","c":"GraphQLScalarTypeElse","l":"GraphQLScalarTypeElse()","u":"%3Cinit%3E()"}];updateSearchResults();

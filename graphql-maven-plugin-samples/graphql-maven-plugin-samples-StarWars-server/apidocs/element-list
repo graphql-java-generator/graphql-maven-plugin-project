@@ -1,3 +1,4 @@
+module:com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_server
 com.graphql_java_generator.annotation
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.server.util

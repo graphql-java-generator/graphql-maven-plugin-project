@@ -1,3 +1,4 @@
+module:com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_pojo_server
 com.generated.graphql.samples.customscalar
 com.graphql_java_generator.annotation
 org.allGraphQLCases.server.pojo

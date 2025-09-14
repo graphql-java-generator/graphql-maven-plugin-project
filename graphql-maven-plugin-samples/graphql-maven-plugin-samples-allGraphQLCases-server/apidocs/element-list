@@ -1,4 +1,5 @@
-com.generated.graphql.samples.customscalar
+module:com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_server
+com.generated.graphql.samples.customscalars
 org.allGraphQLCases.annotation
 org.allGraphQLCases.interfaces
 org.allGraphQLCases.server
