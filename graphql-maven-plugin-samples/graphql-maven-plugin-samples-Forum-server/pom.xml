@@ -65,6 +65,8 @@
 				<configuration>
 					<batchMappingDataFetcherReturnType>FLUX</batchMappingDataFetcherReturnType>
 					<generateBatchMappingDataFetchers>true</generateBatchMappingDataFetchers>
+					<!-- generateDataFetcherForEveryFieldsWithArguments should be true (default value). It's set here to false for integration tests-->
+					<generateDataFetcherForEveryFieldsWithArguments>false</generateDataFetcherForEveryFieldsWithArguments>
 					<generateDataLoaderForLists>true</generateDataLoaderForLists>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>

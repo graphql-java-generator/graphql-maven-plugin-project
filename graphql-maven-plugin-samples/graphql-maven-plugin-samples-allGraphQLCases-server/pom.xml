@@ -26,7 +26,6 @@
 								interfaces or objects), for fields marked with the @RelayConnection directive. 
 								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
-							<generateDataFetcherForEveryFieldsWithArguments>true</generateDataFetcherForEveryFieldsWithArguments>
 							<!-- The ignored mappings below are checked in the 'GenerateCodeDocumentParserTest' test class -->
 							<ignoredSpringMappings>
 								Bar140 ,

@@ -9,6 +9,13 @@
 
 # 3.x versions
 
+
+## 3.0.1
+
+server mode:
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` is now true, as announced for the  3.x versions
+
+
 ## 3.0
 
 

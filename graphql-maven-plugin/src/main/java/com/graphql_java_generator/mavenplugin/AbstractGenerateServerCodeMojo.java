@@ -162,6 +162,10 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * easy access to the field's parameters.
 	 * </P>
 	 * <P>
+	 * This parameter is <b>forced to true</b> when the <code>generateBatchMappingDataFetchers</code> parameter is set
+	 * to <i>true</i>.
+	 * </P>
+	 * <P>
 	 * With this argument to false, the data fetchers are generated only for field which type is a type (not a scalar or
 	 * an enum), and for the query, mutation and subscription types.
 	 * </P>
@@ -170,9 +174,13 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
 	 * </P>
 	 * <P>
-	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
-	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * This parameter is available since version 2.5:
 	 * </P>
+	 * <UL>
+	 * <LI>From 2.5 to 3.0: Default value is false in 2.x versions for backward compatibility with existing
+	 * implementations based on the plugin. But the <b>recommended value is true</b>.</LI>
+	 * <LI>From 3.0.1: Default value is true</LI>
+	 * </UL>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateDataFetcherForEveryFieldsWithArguments", defaultValue = GenerateServerCodeConfiguration.DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT)
 	public boolean generateDataFetcherForEveryFieldsWithArguments;
@@ -318,17 +326,17 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	@Override
 	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
-		return this.batchMappingDataFetcherReturnType;
+		return batchMappingDataFetcherReturnType;
 	}
 
 	@Override
 	public String getIgnoredSpringMappings() {
-		return this.ignoredSpringMappings;
+		return ignoredSpringMappings;
 	}
 
 	@Override
 	public String getJavaTypeForIDType() {
-		return this.javaTypeForIDType;
+		return javaTypeForIDType;
 	}
 
 	/** The mode is forced to {@link PluginMode#server} */
@@ -339,37 +347,37 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	@Override
 	public Packaging getPackaging() {
-		return Packaging.valueOf(this.project.getPackaging());
+		return Packaging.valueOf(project.getPackaging());
 	}
 
 	@Override
 	public boolean isGenerateBatchLoaderEnvironment() {
-		return this.generateBatchLoaderEnvironment;
+		return generateBatchLoaderEnvironment;
 	}
 
 	@Override
 	public boolean isGenerateBatchMappingDataFetchers() {
-		return this.generateBatchMappingDataFetchers;
+		return generateBatchMappingDataFetchers;
 	}
 
 	@Override
 	public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
-		return this.generateDataFetcherForEveryFieldsWithArguments;
+		return generateDataFetcherForEveryFieldsWithArguments;
 	}
 
 	@Override
 	public boolean isGenerateJPAAnnotation() {
-		return this.generateJPAAnnotation;
+		return generateJPAAnnotation;
 	}
 
 	@Override
 	public boolean isGenerateDataLoaderForLists() {
-		return this.generateDataLoaderForLists;
+		return generateDataLoaderForLists;
 	}
 
 	@Override
 	public String getScanBasePackages() {
-		return this.scanBasePackages;
+		return scanBasePackages;
 	}
 
 	protected AbstractGenerateServerCodeMojo(Class<?> springConfigurationClass) {

@@ -34,6 +34,8 @@
 				<configuration>
 					<copyRuntimeSources>true</copyRuntimeSources>
 					<generateBatchLoaderEnvironment>false</generateBatchLoaderEnvironment>
+					<!-- generateDataFetcherForEveryFieldsWithArguments should be true (default value). It's set here to false for integration tests-->
+					<generateDataFetcherForEveryFieldsWithArguments>false</generateDataFetcherForEveryFieldsWithArguments>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<mode>server</mode>
 					<packageName>org.starwars.server</packageName>

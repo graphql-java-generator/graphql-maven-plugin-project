@@ -27,7 +27,7 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	public final String DEFAULT_IGNORED_SPRING_MAPPINGS = "";
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "true";
 	public final String DEFAULT_GENERATE_BATCH_MAPPING_DATA_FETCHERS = "false";
-	public final String DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT = "false";
+	public final String DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT = "true";
 	public final String DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS = "false";
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_JAVA_TYPE_FOR_ID_TYPE = "java.util.UUID";
@@ -289,9 +289,13 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
 	 * </P>
 	 * <P>
-	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
-	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * This parameter is available since version 2.5:
 	 * </P>
+	 * <UL>
+	 * <LI>From 2.5 to 3.0: Default value is false in 2.x versions for backward compatibility with existing
+	 * implementations based on the plugin. But the <b>recommended value is true</b>.</LI>
+	 * <LI>From 3.0.1: Default value is true</LI>
+	 * </UL>
 	 * 
 	 * @return
 	 */
