@@ -1,7 +1,7 @@
 
 <!--ts-->
    * [What is it?](#what-is-it)
-   * [Two main versions: 1.x and 2.x](#two-main-versions-1x-and-2x)
+   * [Three main versions: 1.x, 2.x and 3.x](#two-main-versions-1x-2x-and-3x)
    * [Availability: Maven and Gradle](#availability-maven-and-gradle)
        * [Maven Plugin](#maven-plugin)
        * [Gradle Plugin](#gradle-plugin)
