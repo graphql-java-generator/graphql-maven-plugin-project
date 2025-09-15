@@ -1,6 +1,5 @@
 Here are the next tasks listed, as a TODO list:
 
-## TODO list for the 3.x branch
 * The build should fail because of the graphql path not changed (in allGraphQLCases server), after correcting the POJO issue
 * Usage of JPMS
     * Document it in the README and the wiki
@@ -15,17 +14,12 @@ Here are the next tasks listed, as a TODO list:
 * Manage the Mockito warning, about configuring an agent for the JVM
 * Remove the obsolete github and spotify samples
 * Add the package name in the pom for: graphql-java-client-dependencies, graphql-java-server-runtime, graphql-java-server-dependencies, graphql-java-client-runtime, graphql-java-common-dependencies and graphql-java-common-runtime
-
-## TODO list for the 2.x branch
+* Move the last command of `publish_site.cmd` into the ant commands. 
+    * Add a parameter to select the github account to use (etienne?sf)
+    * Have only the first sentence of the parameter doc in the list of parameters
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
-* Check the scm tag in the pom: it seems to point to the 2.8 version
-* [Gradle] Change the java version for the forum samples to 17
 * Correct the `reporting` part of the pom :
-    * No maven site plugin there
-    * Add the info reporting to the plugin-logic
-    * Add the reporting tag where it is lacking (graphql-java-server-runtime...)
-    * One the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)
-* Issue #235: manage the Java Modules
+    * Once the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)
 * Align with GraphQL spec 2021
     * Check the impact of the changes in the interface hierarchies
         * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
@@ -93,5 +87,3 @@ Here are the next tasks listed, as a TODO list:
 * Add a description for the GraphQL mojo
 * Document generateJPAAnnotation 
 
-
-## TODO list for the 1.x branch

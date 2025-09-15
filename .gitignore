@@ -1,13 +1,21 @@
-.settings/
 target/
 downloads/
 logs/
 *.log
 
+# Ignore IntelliJ files
+*.iml
+idea
+.idea
+
+# Ignore eclipse files
+.settings/
 **/bin/
 .classpath
 .project
 
+# Ignore VSCode files
+**/.vscode
 
 # ignore temporary files (especially office's one)
 ~$*
@@ -16,7 +24,5 @@ logs/
 pom.xml.releaseBackup
 release.properties
 
-*.iml
-idea
-.idea
+
 /spring-graphql_issue_with_JPMS.txt

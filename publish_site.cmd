@@ -33,7 +33,6 @@ REM in Ant call mvn site:stage
 
 
 call mvn antrun:run -Prelease
-pause
 
 cd target\gh-pages_branch\graphql-maven-plugin-project
 echo Pushing to github
