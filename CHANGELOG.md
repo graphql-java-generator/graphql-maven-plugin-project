@@ -3,7 +3,7 @@
 
 # Breaking changes to come with the 3.x releases
 
-* The default value for `generateDataFetcherForEveryFieldsWithArguments` will be changed to true, which makes more Data Fetchers to implement
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
 * The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
     * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
 
@@ -11,6 +11,9 @@
 
 
 ## 3.0.1
+
+Gradle plugin:
+* The plugin would need java 21, and not 17 as indicated
 
 server mode:
 * The default value for `generateDataFetcherForEveryFieldsWithArguments` is now true, as announced for the  3.x versions

@@ -1,5 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 
+* Gradle remove warnings about gradle 10 compatibility
 * The build should fail because of the graphql path not changed (in allGraphQLCases server), after correcting the POJO issue
 * Usage of JPMS
     * Document it in the README and the wiki
