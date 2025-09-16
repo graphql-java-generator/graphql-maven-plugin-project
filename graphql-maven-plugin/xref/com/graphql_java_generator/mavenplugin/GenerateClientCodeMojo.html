@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>GenerateClientCodeMojo xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/com/graphql_java_generator/mavenplugin/GenerateClientCodeMojo.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">package</strong> com.graphql_java_generator.mavenplugin;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.LifecyclePhase;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Mojo;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.ComponentScan;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.ComponentScan.Filter;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Configuration;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.FilterType;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Import;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> com.graphql_java_generator.plugin.DocumentParser;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> com.graphql_java_generator.util.GraphqlUtils;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> graphql.ThreadSafe;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;P&gt;</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * The &lt;I&gt;generateClientCode&lt;/I&gt; Maven goal (and Gradle task) generates the java code from one or more GraphQL schemas.</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * It allows to work in Java with graphQL, in a schema first approach.</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * &lt;/P&gt;</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * It generates a class for each query, mutation and subscription type. These classes contain the methods to call the</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * queries, mutations and subscriptions. That is: to execute a query against the GraphQL server, you just have to call</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * one of these methods. It also generates the POJOs from the GraphQL schema. The &lt;B&gt;GraphQL response is stored in these</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> * POJOs&lt;/B&gt;, for an easy and standard use in Java. &lt;BR/&gt;</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * &lt;BR/&gt;</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * You'll find more info in the tutorials: take a look at the</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * &lt;A HREF="<a href="https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client" target="alexandria_uri">https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client</a>"&gt;Maven client tutorial&lt;/A&gt; or</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * the &lt;A HREF="<a href="https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client" target="alexandria_uri">https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client</a>"&gt;Gradle client</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * tutorial&lt;/A&gt;</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * @author etienne-sf</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @Mojo(name = <span class="jxr_string">"generateClientCode"</span>, defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = <strong class="jxr_keyword">true</strong>, threadSafe = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @ThreadSafe
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_comment">// No need to add the @Component spring annotation: AbstractCommonMojo added this instance into the spring context, to</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_comment">// use the instance which attributs has been set with the pom content</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GenerateClientCodeMojo" href="../../../com/graphql_java_generator/mavenplugin/GenerateClientCodeMojo.html#GenerateClientCodeMojo">GenerateClientCodeMojo</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractGenerateClientCodeMojo" href="../../../com/graphql_java_generator/mavenplugin/AbstractGenerateClientCodeMojo.html#AbstractGenerateClientCodeMojo">AbstractGenerateClientCodeMojo</a> {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  	<em class="jxr_comment">// All the Mojo parameters are defined in the AbstractXxxx classes, that contains the contain the hierarchical</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  	<em class="jxr_comment">// structure of the Maven goals.</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  	<em class="jxr_comment">// See the explanation in the AbstractCommonMojo for more details.</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  	@Configuration
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  	@Import({ JacksonAutoConfiguration.<strong class="jxr_keyword">class</strong> })
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  	@ComponentScan(basePackageClasses = { DocumentParser.<strong class="jxr_keyword">class</strong>, GraphqlUtils.<strong class="jxr_keyword">class</strong> }, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  			excludeFilters = { @Filter(type = FilterType.REGEX, pattern = <span class="jxr_string">".*&#92;&#92;.GenerateGraphQLSchema.*"</span>),
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  					@Filter(type = FilterType.REGEX, pattern = <span class="jxr_string">".*&#92;&#92;.GenerateServerCode.*"</span>),
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  					@Filter(type = FilterType.REGEX, pattern = <span class="jxr_string">".*&#92;&#92;.GraphQL.*"</span>) })
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> SpringConfiguration {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  	}
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  	<strong class="jxr_keyword">protected</strong> <a name="GenerateClientCodeMojo" href="../../../com/graphql_java_generator/mavenplugin/GenerateClientCodeMojo.html#GenerateClientCodeMojo">GenerateClientCodeMojo</a>() {
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  		<strong class="jxr_keyword">super</strong>(SpringConfiguration.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  	}
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2025. All rights reserved.</div>
+</body>
+</html>

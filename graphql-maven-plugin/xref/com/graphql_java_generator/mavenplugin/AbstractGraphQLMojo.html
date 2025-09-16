@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>AbstractGraphQLMojo xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/com/graphql_java_generator/mavenplugin/AbstractGraphQLMojo.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">package</strong> com.graphql_java_generator.mavenplugin;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Parameter;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.graphql_java_generator.plugin.conf.PluginMode;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * This class is the class that contains all parameters that needed for the {@link GraphQLMojo}, that is all parameters</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * that are common to all generate code Mojos. The parameters from the generateServerCode are inherited from</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * {@link AbstractGenerateServerCodeMojo}, and the parameters that are specific to the generateClientCode must be</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * manually added here, as a class may not inherit from two superclasses.&lt;BR/&gt;</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * one update is necessary, instead of updating it in each Mojo.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * @author etienne-sf</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> <a name="AbstractGraphQLMojo" href="../../../com/graphql_java_generator/mavenplugin/AbstractGraphQLMojo.html#AbstractGraphQLMojo">AbstractGraphQLMojo</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractGenerateServerCodeMojo" href="../../../com/graphql_java_generator/mavenplugin/AbstractGenerateServerCodeMojo.html#AbstractGenerateServerCodeMojo">AbstractGenerateServerCodeMojo</a> <strong class="jxr_keyword">implements</strong> GraphQLConfiguration {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  	<em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">	 * &lt;P&gt;</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">	 * &lt;I&gt;(since 1.7.1 version) Default value is _true_ for 1.x version, and _false_ for version 2.0 and after.&lt;/I&gt;</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">	 * &lt;/P&gt;</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">	 * &lt;P&gt;</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">	 * If this parameter is set to true, the plugin generates a XxxxResponse class for each query/mutation/subscription,</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">	 * and (if separateUtilityClasses is true) Xxxx classes in the util subpackage. This allows to keep compatibility</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">	 * with code Developed with the 1.x versions of the plugin.</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">	 * &lt;/P&gt;</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">	 * &lt;P&gt;</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">	 * The recommended way to use the plugin is to directly use the Xxxx query/mutation/subscription executor classes,</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">	 * where Xxxx is the query/mutation/subscription name defined in the GraphQL schema. To do this, set this parameter</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">	 * to _false_, and use the plugin as described in the</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">	 * &lt;a href="<a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_spring" target="alexandria_uri">https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_spring</a>"&gt;wiki client</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">	 * page&lt;/a&gt;.</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">	 * &lt;/P&gt;</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">	 */</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  	@Parameter(property = <span class="jxr_string">"com.graphql_java_generator.mavenplugin.generateDeprecatedRequestResponse"</span>, defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE)
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  	<strong class="jxr_keyword">boolean</strong> generateDeprecatedRequestResponse;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  	<em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">	 * The generation mode: either &lt;I&gt;client&lt;/I&gt; or &lt;I&gt;server&lt;/I&gt;. Choose client to generate the code which can query a</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">	 * graphql server or server to generate a code for the server side.</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">	 */</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  	@Parameter(property = <span class="jxr_string">"com.graphql_java_generator.mavenplugin.mode"</span>, defaultValue = GraphQLConfiguration.DEFAULT_MODE)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  	PluginMode mode;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  	@Override
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  	<strong class="jxr_keyword">public</strong> PluginMode getMode() {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  		<strong class="jxr_keyword">return</strong> mode;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  	}
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  	@Override
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isGenerateDeprecatedRequestResponse() {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  		<strong class="jxr_keyword">return</strong> generateDeprecatedRequestResponse;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  	}
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  	<strong class="jxr_keyword">protected</strong> <a name="AbstractGraphQLMojo" href="../../../com/graphql_java_generator/mavenplugin/AbstractGraphQLMojo.html#AbstractGraphQLMojo">AbstractGraphQLMojo</a>(Class&lt;?&gt; springConfigurationClass) {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  		<strong class="jxr_keyword">super</strong>(springConfigurationClass);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  	}
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2025. All rights reserved.</div>
+</body>
+</html>
