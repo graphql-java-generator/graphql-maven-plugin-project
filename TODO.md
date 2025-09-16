@@ -1,20 +1,10 @@
 Here are the next tasks listed, as a TODO list:
 
-* Gradle remove warnings about gradle 10 compatibility
-* The build should fail because of the graphql path not changed (in allGraphQLCases server), after correcting the POJO issue
-* Usage of JPMS
-    * Document it in the README and the wiki
-        * Including the POJO (that needs more "requires")
-        * Test the link toward the FAQ in the client and server doc
-    * Document howto execute the JUnit test in eclipse (need to copy the JVM args from the pom file in the Run Configuration)
-    * Add info in the FAQ with the needed `opens` instructions
-* Test the `maven-invoker-plugin` for the plugin logic module (and eclipse compatibility). This would allow to check module-info.java generated files
-* Activate the module capability on the Forum client and server projects
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
 * Manage the Mockito warning, about configuring an agent for the JVM
+* Manage the logback warnings
 * Remove the obsolete github and spotify samples
-* Add the package name in the pom for: graphql-java-client-dependencies, graphql-java-server-runtime, graphql-java-server-dependencies, graphql-java-client-runtime, graphql-java-common-dependencies and graphql-java-common-runtime
 * Move the last command of `publish_site.cmd` into the ant commands. 
     * Add a parameter to select the github account to use (etienne?sf)
     * Have only the first sentence of the parameter doc in the list of parameters
@@ -44,7 +34,6 @@ Here are the next tasks listed, as a TODO list:
                 * try to still use a BatchLoader, but with a Context 
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
-* In the migration guide and the wiki (FAQ server) : explains that the overriding bean must have a different name (and may not extend the generated controller)
 * Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`
 ```
 		// String req = "{name(uppercase:true) @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
@@ -58,10 +47,7 @@ Here are the next tasks listed, as a TODO list:
 * Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
 * Do additional tests on the generated code, in the plugin-logic module
 * Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
-* Update the samples to the 2.7 release
-    * Update the dependencies in the README (or better : remove them)
 * Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
-* Indicates in the Gradle tutorials that there are two versions of the plugin
 * Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
     * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
 * Ajouter le paramètre generateDataFetchersForFields dans les tutoriels
@@ -70,7 +56,6 @@ Here are the next tasks listed, as a TODO list:
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
 * Optimize `getStringContentForGraphqlQuery`: use a `StringBuilder` instead of returning and concatenating strings
-* Use [[_TOC_]] for the wiki pages (and the README)
 * Refresh the GitHub and Shopify samples
 * Review the plugin documentation (goal and parameters)
 * Issue Gradle-project #15: redundant cast to Long 
@@ -83,7 +68,6 @@ Here are the next tasks listed, as a TODO list:
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-logic, com.graphql_java_generator.plugin.language)
-* add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)
 * Add a description for the GraphQL mojo
 * Document generateJPAAnnotation 
