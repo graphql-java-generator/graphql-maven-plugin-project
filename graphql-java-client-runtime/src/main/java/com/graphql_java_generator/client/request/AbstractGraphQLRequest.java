@@ -484,8 +484,15 @@ public abstract class AbstractGraphQLRequest {
 				} else {
 					mandatory = false;
 				}
+				
+				Object defaultValue = null;
+				if (qt.checkNextToken("=")) {
+				    token = qt.nextToken();
+				    token = qt.nextToken();
+				    defaultValue = token;
+				}
 
-				inputParameters.add(InputParameter.newGraphQLVariableParameter(schema, name, graphQLTypeName, mandatory,
+				inputParameters.add(InputParameter.newGraphQLVariableParameter(schema, name, defaultValue, graphQLTypeName, mandatory,
 						listDepth, itemMandatory));
 				// The next token should be either the end of parameters (with a ')') or a name
 				step = Step.NAME;
@@ -882,6 +889,11 @@ public abstract class AbstractGraphQLRequest {
 				//////////////////////////////////////////////////////////////////////
 				// And the variable value list (for the json variables field)
 				payload.variables.put(param.getBindParameterName(), param.getValueForGraphqlQuery(params));
+				
+				if (param.getValue() != null) {
+				    sbGraphQLVariables.append("=");
+				    sbGraphQLVariables.append(param.getValue());
+				}
 
 				separator = ","; //$NON-NLS-1$
 			}
