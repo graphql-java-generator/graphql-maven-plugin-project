@@ -165,6 +165,8 @@ public class InputParameter {
 	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
+	 * @param value
+	 *            Optional default value for parameter
 	 * @param graphQLTypeName
 	 *            The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]"
 	 * @param mandatory
@@ -177,9 +179,9 @@ public class InputParameter {
 	 *            otherwise
 	 * @return The newly created {@link InputParameter}, according to these parameters
 	 */
-	public static InputParameter newGraphQLVariableParameter(String schema, String name, String graphQLTypeName,
+	public static InputParameter newGraphQLVariableParameter(String schema, String name, Object value, String graphQLTypeName,
 			boolean mandatory, int listDepth, boolean itemMandatory) {
-		return new InputParameter(schema, name, name, null, InputParameterType.GRAPHQL_VARIABLE, graphQLTypeName,
+		return new InputParameter(schema, name, name, value, InputParameterType.GRAPHQL_VARIABLE, graphQLTypeName,
 				mandatory, listDepth, itemMandatory);
 	}
 
@@ -243,7 +245,7 @@ public class InputParameter {
 	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
 	 *            otherwise
 	 */
-	private InputParameter(String schema, String name, String bindParameterName, Object value, InputParameterType type,
+	protected InputParameter(String schema, String name, String bindParameterName, Object value, InputParameterType type,
 			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
 		if (name == null) {
 			throw new NullPointerException("The input parameter's name is mandatory");
@@ -291,7 +293,7 @@ public class InputParameter {
 	 *            The field name
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private InputParameter(String schema, String name, String parameterName, Object value, InputParameterType type,
+	protected InputParameter(String schema, String name, String parameterName, Object value, InputParameterType type,
 			Directive directive, Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
 		String localGraphQLCustomScalarType = null;
 		boolean localMandatory = false;
@@ -744,7 +746,7 @@ public class InputParameter {
 
 		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
 		if ((type.equals(InputParameterType.MANDATORY) || type.equals(InputParameterType.GRAPHQL_VARIABLE))
-				&& (bindVariables == null || !bindVariables.keySet().contains(bindParameterName))) {
+				&& ((bindVariables == null || !bindVariables.keySet().contains(bindParameterName)) && value == null)) {
 			throw new GraphQLRequestExecutionException(
 					"The Bind Parameter for '" + bindParameterName + "' must be provided in the BindVariables map");
 		}
@@ -779,15 +781,15 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Object val, int listDepth,
+	protected String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Object val, int listDepth,
 			String graphQLTypeNameParam, GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable)
 			throws GraphQLRequestExecutionException {
-		if (val == null) {
-			return null;
-		} else if (graphQLVariable && !writingGraphQLVariables) {
-			// When writing a GraphQL variable in the query itself, then we write the variable name. The value is
-			// written only in the GraphQL variable field
-			return "$" + bindParameterName;
+        if (graphQLVariable && !writingGraphQLVariables) {
+            // When writing a GraphQL variable in the query itself, then we write the variable name. The value is
+            // written only in the GraphQL variable field
+            return "$" + bindParameterName;
+        } else if (val == null) {
+            return null;
 		} else if (listDepth > 0) {
 			// We expect val to be a list
 			return getStringContentForAListValue(writingGraphQLVariables, val, listDepth, graphQLTypeNameParam,
@@ -842,7 +844,7 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	private void appendStringContentForGraphqlQueryFromObjectNode(StringBuilder sb, JsonParser jsonParser,
+	protected void appendStringContentForGraphqlQueryFromObjectNode(StringBuilder sb, JsonParser jsonParser,
 			ObjectNode node) throws GraphQLRequestExecutionException {
 		try {
 
@@ -963,7 +965,7 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	private void appendStringContentForGraphqlQueryFromMap(StringBuilder sb, Map<?, ?> map) {
+	protected void appendStringContentForGraphqlQueryFromMap(StringBuilder sb, Map<?, ?> map) {
 		boolean appendComma = false;// false for the first item, then true for others
 		sb.append('{');
 		for (Object key : map.keySet()) {
@@ -994,7 +996,7 @@ public class InputParameter {
 	 * @param sb
 	 * @param list
 	 */
-	private void appendStringContentForGraphqlQueryFromMapForAListItem(StringBuilder sb, List<?> list) {
+	protected void appendStringContentForGraphqlQueryFromMapForAListItem(StringBuilder sb, List<?> list) {
 		boolean appendComma = false;// false for the first item, then true for others
 		sb.append('[');
 		for (Object val : list) {
@@ -1022,7 +1024,7 @@ public class InputParameter {
 	 * @param value
 	 * @throws GraphQLRequestExecutionException
 	 */
-	private void appendStringContentForGraphqlQueryFromValueItem(StringBuilder sb, Object value) {
+	protected void appendStringContentForGraphqlQueryFromValueItem(StringBuilder sb, Object value) {
 		if (value instanceof Map) {
 			appendStringContentForGraphqlQueryFromMap(sb, (Map<?, ?>) value);
 		} else if (value instanceof List) {
@@ -1046,7 +1048,7 @@ public class InputParameter {
 	 * @see <a href="https://www.json.org/">json.org section on strings</a>
 	 * @return escaped string
 	 */
-	private String getStringValue(String str) {
+	protected String getStringValue(String str) {
 		String r = "\"" + StringEscapeUtils.escapeJson(str) + "\"";
 		return r;
 	}
@@ -1071,7 +1073,7 @@ public class InputParameter {
 	 * @throws NullPointerException
 	 *             If list is null
 	 */
-	private String getStringContentForAListValue(boolean writingGraphQLVariables, Object list, int listDepth,
+	protected String getStringContentForAListValue(boolean writingGraphQLVariables, Object list, int listDepth,
 			String graphQLTypeNameParam, GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable)
 			throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
@@ -1114,7 +1116,7 @@ public class InputParameter {
 	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
 	 *         query to be sent to the server
 	 */
-	private String getStringContentForAnInputTypeValue(boolean writingGraphQLVariables, Object object, int listDepth,
+	protected String getStringContentForAnInputTypeValue(boolean writingGraphQLVariables, Object object, int listDepth,
 			boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("{");
 		String separator = "";
