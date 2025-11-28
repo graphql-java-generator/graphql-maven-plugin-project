@@ -62,7 +62,7 @@ public class Directive {
 			// We must consume the parenthesis, then read the list of argument.
 			qt.nextToken();
 			// This directive has one or more parameters
-			arguments = InputParameter.readTokenizerForInputParameters(qt, this, null, null, schema);
+			arguments = InputParameter.readTokenizerForInputParameters(qt, d, null, null, schema);
 		}
 	}
 

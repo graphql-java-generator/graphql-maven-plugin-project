@@ -1,6 +1,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.allGraphQLCases.server.STP_AllFieldCasesWithIdSubtype_STS;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
+import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
 
 @Component
@@ -24,7 +26,9 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 	 */
 	public static class KeyContext {
 		public Boolean uppercase;
-		public String textToAppendToTheForname;
+		public String textToAppendToTheName;
+		public Date date;
+		public List<Date> dates;
 	}
 
 	@Override
@@ -49,11 +53,17 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 				KeyContext keyContext = (KeyContext) context;
 
 				// Let's manage the KeyContext parameter, that was associated with this key
-				if (keyContext.textToAppendToTheForname != null) {
-					item.setName(item.getName() + keyContext.textToAppendToTheForname);
-				}
 				if (keyContext.uppercase != null && keyContext.uppercase) {
 					item.setName(item.getName().toUpperCase());
+				}
+				if (keyContext.textToAppendToTheName != null) {
+					item.setName(item.getName() + keyContext.textToAppendToTheName);
+				}
+				if (keyContext.date != null) {
+					item.setDate(keyContext.date);
+				}
+				if (keyContext.dates != null) {
+					item.setDates(keyContext.dates);
 				}
 			}
 
@@ -61,6 +71,11 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 		}
 
 		return list;
+	}
+
+	@Override
+	public Object dates(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCasesWithIdSubtype_STS origin) {
+		return origin.getDates();
 	}
 
 }

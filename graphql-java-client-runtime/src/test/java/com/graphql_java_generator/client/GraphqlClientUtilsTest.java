@@ -19,6 +19,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.allGraphQLCases._break;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.domain.client.forum.Post;
@@ -324,6 +325,9 @@ class GraphqlClientUtilsTest {
 
 	@Test
 	public void test_getClass() {
+		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
+		new MyQueryTypeExecutorMySchema();
+
 		String packageName = "com.graphql_java_generator.domain.client.allGraphQLCases";
 
 		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer", "MySchema").getName());

@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,6 +39,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -91,7 +93,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertNull(field.alias);
 		assertEquals(1, field.inputParameters.size());
 		assertEquals("test", field.inputParameters.get(0).getName());
-		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getValue());
+		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getDefaultValue());
 	}
 
 	@Test
@@ -327,6 +329,10 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 
 		// Preparation
+
+		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
+		new MyQueryTypeExecutorMySchema();
+
 		params = new HashMap<>();
 		params.put("value", "the directive value");
 		params.put("anotherValue", "the other directive value");
@@ -425,21 +431,31 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 			throws JsonProcessingException {
 		assertEquals(query, payload.getQuery());
 
-		if (variables != null) {
+		if (variables == null) {
+			assertTrue(payload.getVariables() == null || (payload.getVariables().size() == 0),
+					"variables is null, so payload.variables should be null or empty");
+		} else if (variables != null) {
+			assertNotNull(payload.getVariables(), "variables is not null, so payload.variables should not be null");
 			assertTrue(payload.getVariables() instanceof Map,
 					"variables is an instance of " + variables.getClass().getName());
-			// For the
-			// We want to compare the json generated from this map
-			//
-			// In this, test, we must manually manage the custom scalars (to check that the automated process works Ok)
-			Map<String, Object> rewritedVariables = new HashMap<>();
+			// The (apparently) easy way is to compare the json generated from both maps. But we must take care that the
+			// custom scalars are correctly managed, which is complex.
+			// Let's just iterate over the given map, and check value by value
+
+			// Step 1: both maps must have the same size
+			assertEquals(variables.size(), ((Map<?, ?>) payload.getVariables()).size(), "variables size");
+
+			// Step 2: each key must exist in both maps, and the values must be identical
 			for (String key : variables.keySet()) {
-				rewritedVariables.put(key, convertToWritableValue(variables.get(key)));
+				assertTrue(((Map<?, ?>) payload.getVariables()).containsKey(key),
+						"variables must contain the key '" + key + "'");
+
+				// In these tests, dates are date only (no time part). So, when converted to string, they must be in
+				// yyyy-MM-dd format
+				String expected = getComparableStringValue(variables.get(key)).toString();
+				String actual = getComparableStringValue(((Map<?, ?>) payload.getVariables()).get(key)).toString();
+				assertEquals(expected, actual, "variables values for key '" + key + "'");
 			}
-			String variablesJson = objectMapper.writeValueAsString(rewritedVariables);
-			//
-			String payloadJson = objectMapper.writeValueAsString(payload.getVariables());
-			assertEquals(variablesJson, payloadJson);
 		}
 
 		assertEquals(operationName, payload.getOperationName());
@@ -447,7 +463,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	/**
 	 * Get an object and simulate the work of custom scalars for known types (currently: only java.util.Date), and
-	 * return the value to use in the target json. This method is called by
+	 * return a string value to allow a comparison. This method is called by
 	 * {@link #checkPayload(Payload, String, Map, String)} only. It's a separated method, to be able to work recursively
 	 * for lists, lists of lists...
 	 * 
@@ -456,14 +472,16 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	 *         values.
 	 */
 	@SuppressWarnings("deprecation")
-	private static Object convertToWritableValue(Object o) {
+	private static Object getComparableStringValue(Object o) {
 		if (o instanceof List<?>) {
 			List<Object> ret = new ArrayList<>();
 			for (Object item : (List<?>) o) {
-				ret.add(convertToWritableValue(item));
+				ret.add(getComparableStringValue(item));
 			}
 			return ret;
 		} else if (o instanceof Date) {
+			// We use the deprecated seralize() method, as we can't instantiate a GraphQLContext object here (needed for
+			// the non deprecated version of this method)
 			return GraphQLScalarTypeDate.Date.getCoercing().serialize(o);
 		} else {
 			// The given value can be used as is

@@ -129,9 +129,8 @@ public class AllFieldCases implements WithID, interfaceToTestExtendKeyword {
 
 	@JsonProperty("listWithIdSubTypes")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListAllFieldCasesWithIdSubtype.class)
-	@GraphQLInputParameters(names = { "nbItems", "date", "dates", "uppercaseName",
-			"textToAppendToTheForname" }, types = { "Long", "Date", "Date", "Boolean", "String" }, mandatories = { true,
-					false, true, false,
+	@GraphQLInputParameters(names = { "nbItems", "date", "dates", "uppercaseName", "textToAppendToTheName" }, types = {
+			"Long", "Date", "Date", "Boolean", "String" }, mandatories = { true, false, true, false,
 					false }, listDepths = { 0, 0, 1, 0, 0 }, itemsMandatory = { false, false, false, false, false })
 	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithIdSubtype", javaClass = AllFieldCasesWithIdSubtype.class)
 	List<AllFieldCasesWithIdSubtype> listWithIdSubTypes;
@@ -144,7 +143,7 @@ public class AllFieldCases implements WithID, interfaceToTestExtendKeyword {
 
 	@JsonProperty("listWithoutIdSubTypes")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListAllFieldCasesWithoutIdSubtype.class)
-	@GraphQLInputParameters(names = { "nbItems", "input", "textToAppendToTheForname" }, types = { "Long",
+	@GraphQLInputParameters(names = { "nbItems", "input", "textToAppendToTheName" }, types = { "Long",
 			"FieldParameterInput", "String" }, mandatories = { true, false,
 					false }, listDepths = { 0, 0, 0 }, itemsMandatory = { false, false, false })
 	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)

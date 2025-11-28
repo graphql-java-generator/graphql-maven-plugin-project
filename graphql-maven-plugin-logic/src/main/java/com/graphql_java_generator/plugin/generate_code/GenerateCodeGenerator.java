@@ -315,7 +315,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		context.put("types", generateCodeDocumentParser.getTypes());
 
 		// Generation of the GraphQLTypeMapping file
-		generateOneJavaFile("GraphQLTypeMapping", true, "generating GraphQLTypeMapping", context,
+		generateOneJavaFile("GraphQLTypeMappingImpl", true, "generating GraphQLTypeMapping", context,
 				CodeTemplate.TYPE_MAPPING);
 
 		// Generation of the typeMapping.csv file

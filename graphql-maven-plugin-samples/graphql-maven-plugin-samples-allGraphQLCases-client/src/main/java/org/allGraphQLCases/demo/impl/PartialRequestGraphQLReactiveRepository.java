@@ -76,9 +76,9 @@ public interface PartialRequestGraphQLReactiveRepository {
 			+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 			+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 			+ " oneWithIdSubType {id name} "//
-			+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+			+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheName: ?textToAppendToTheNameWithId) {name id}"
 			+ " oneWithoutIdSubType(input: ?input) {name}"//
-			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheName: ?textToAppendToTheNameWithoutId) {name}" //
 			+ "}")
 	public Mono<Optional<CTP_AllFieldCases_CTS>> allFieldCases(CINP_AllFieldCasesInput_CINS allFieldCasesInput,
 			@BindParameter(name = "uppercase") Boolean uppercase,
@@ -88,11 +88,11 @@ public interface PartialRequestGraphQLReactiveRepository {
 			@BindParameter(name = "dateTime") OffsetDateTime dateTime, //
 			@BindParameter(name = "dates") List<Date> dates,
 			@BindParameter(name = "uppercaseNameList") Boolean uppercaseNameList,
-			@BindParameter(name = "textToAppendToTheFornameWithId") String textToAppendToTheFornameWithId,
+			@BindParameter(name = "textToAppendToTheNameWithId") String textToAppendToTheNameWithId,
 			@BindParameter(name = "input") CINP_FieldParameterInput_CINS input,
 			@BindParameter(name = "nbItemsWithoutId") int nbItemsWithoutId,
 			@BindParameter(name = "inputList") CINP_FieldParameterInput_CINS inputList,
-			@BindParameter(name = "textToAppendToTheFornameWithoutId") String textToAppendToTheFornameWithoutId)
+			@BindParameter(name = "textToAppendToTheNameWithoutId") String textToAppendToTheNameWithoutId)
 			throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////

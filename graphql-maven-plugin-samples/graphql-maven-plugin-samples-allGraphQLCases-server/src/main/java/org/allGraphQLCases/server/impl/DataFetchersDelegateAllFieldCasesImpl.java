@@ -22,6 +22,10 @@ import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
+import graphql.language.Field;
+import graphql.language.OperationDefinition;
+import graphql.language.StringValue;
+import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
 import reactor.core.publisher.Mono;
@@ -113,7 +117,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public CompletableFuture<List<STP_AllFieldCasesWithIdSubtype_STS>> listWithIdSubTypes(
 			DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, STP_AllFieldCasesWithIdSubtype_STS> dataLoader, STP_AllFieldCases_STS origin, Long nbItems,
-			Date date, List<Date> dates, Boolean uppercaseName, String textToAppendToTheForname) {
+			Date date, List<Date> dates, Boolean uppercaseName, String textToAppendToTheName) {
 
 		List<UUID> uuids = generator.generateInstanceList(UUID.class, nbItems.intValue());
 
@@ -123,7 +127,9 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		List<Object> keyContexts = new ArrayList<>();
 		KeyContext kc = new KeyContext();
 		kc.uppercase = uppercaseName;
-		kc.textToAppendToTheForname = textToAppendToTheForname;
+		kc.textToAppendToTheName = textToAppendToTheName;
+		kc.date = date;
+		kc.dates = dates;
 		for (int i = 0; i < uuids.size(); i += 1) {
 			keyContexts.add(kc);
 		}
@@ -222,7 +228,25 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	/** Custom field data fetchers are available since release 2.5 */
 	@Override
 	public String _break(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin, String _if) {
-		return origin.getBreak();
+		OperationDefinition requestDefinition = (OperationDefinition) dataFetchingEnvironment.getDocument()
+				.getDefinitions().get(0);
+		Field fieldSelection = (Field) requestDefinition.getSelectionSet().getSelections().get(0);
+		Field returnSelection = (Field) fieldSelection.getSelectionSet().getSelections().get(0);
+		StringValue ifValue;
+		if (returnSelection.getArguments().get(0).getValue() instanceof VariableReference) {
+			String varName = ((VariableReference) returnSelection.getArguments().get(0).getValue()).getName();
+			ifValue = new StringValue((String) dataFetchingEnvironment.getVariables().get(varName));
+		} else {
+			ifValue = (StringValue) returnSelection.getArguments().get(0).getValue();
+		}
+
+		// This code is valid for test only: the break value may come from the input type (see
+		// DataFetchersDelegateMyQueryTypeImpl for more info)
+		return ""//
+				+ ((origin.getBreak() == null) ? "" : origin.getBreak())//
+				+ " (if=" //
+				+ ifValue.getValue() //
+				+ ")";
 	}
 
 	/** Custom field data fetchers are available since release 2.5 */

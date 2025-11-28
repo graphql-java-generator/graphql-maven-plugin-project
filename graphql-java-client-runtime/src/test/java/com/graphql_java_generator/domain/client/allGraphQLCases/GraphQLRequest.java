@@ -44,6 +44,11 @@ public class GraphQLRequest extends ObjectResponse {
 		super(null, "MySchema", graphQLRequest);
 	}
 
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest)
+			throws GraphQLRequestPreparationException {
+		super(graphQlClient, "MySchema", graphQLRequest);
+	}
+
 	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		super(graphQlClient, "MySchema", graphQLRequest, requestType, queryName, inputParams);

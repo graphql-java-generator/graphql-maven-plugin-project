@@ -78,7 +78,7 @@ public class AliasesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_ListOfList() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryType
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
 				.getWithListOfListGraphQLRequest("{matrix2 : matrix}");
 		//
 		List<List<Double>> matrixSrc = new ArrayList<>();
@@ -104,7 +104,7 @@ public class AliasesIT {
 		};
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS allFieldCases = this.queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc);
+		CTP_AllFieldCases_CTS allFieldCases = queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc);
 
 		// Verification
 
@@ -124,11 +124,11 @@ public class AliasesIT {
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryType
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
 				.getAllFieldCasesGraphQLRequest("{alias65:issue65(inputs: &inputs) issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.queryType.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = queryType.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
 
 		// Verification
 		List<CTP_AllFieldCasesWithoutIdSubtype_CTS> issue65 = ret.getIssue65();
@@ -153,7 +153,7 @@ public class AliasesIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS ret = this.queryType
+		CTP_MyQueryType_CTS ret = queryType
 				.exec("query{issue200(param:false) anAliasForTrue:issue200(param:true) anAliasForNull:issue200}");
 
 		// Verification
@@ -171,7 +171,7 @@ public class AliasesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_FullQuery() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases multipleQueriesRequest = this.queryType.getGraphQLRequest("{"//
+		GraphQLRequestAllGraphQLCases multipleQueriesRequest = queryType.getGraphQLRequest("{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {aliasId:id id aliasName:name name aliasAppearsIn:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name}}}"//
 				+ " queryAlias:withOneOptionalParam  {aliasId:id id aliasName:name name aliasAppearsIn2:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId2:id id aliasName2:name name}}}"//
@@ -303,12 +303,16 @@ public class AliasesIT {
 		Date date1 = new Calendar.Builder().setDate(2021, 5 - 1, 15).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2021, 5 - 1, 16).build().getTime();
 		CINP_AllFieldCasesInput_CINS inputType = CINP_AllFieldCasesInput_CINS.builder()
-				.withId(UUID.randomUUID().toString()).withName("the name").withAge((long) 666).withDate(date1)
-				.withDates(Arrays.asList(date1, date2)).withComments(Arrays.asList("Comment 1", "Comment 2"))
-				.withBooleans(Arrays.asList(false, true, false)).withAliases(new ArrayList<String>())
-				.withPlanets(Arrays.asList("a planet"))
-				.withMatrix(Arrays.asList(Arrays.asList(1.0, 2.0), Arrays.asList(3.0))).build();
-		GraphQLRequestAllGraphQLCases createHuman = this.mutationType.getGraphQLRequest(""//
+				.withId(UUID.randomUUID().toString())//
+				.withName("the name")//
+				.withAge((long) 666)//
+				.withDate(date1).withDates(Arrays.asList(date1, date2))//
+				.withComments(Arrays.asList("Comment 1", "Comment 2"))//
+				.withBooleans(Arrays.asList(false, true, false))//
+				.withAliases(new ArrayList<String>()).withPlanets(Arrays.asList("a planet"))
+				.withMatrix(Arrays.asList(Arrays.asList(1.0, 2.0), Arrays.asList(3.0)))//
+				.build();
+		GraphQLRequestAllGraphQLCases createHuman = mutationType.getGraphQLRequest(""//
 				+ "mutation aMutationAlias($inputType:AllFieldCasesInput!) {"//
 				+ " mutationAlias : createAllFieldCases(input:$inputType) {"//
 				+ "  aliasId:id id aliasName:name name aliasAge:age age "
@@ -386,13 +390,13 @@ public class AliasesIT {
 
 		@Override
 		public void onConnect() {
-			this.connected = true;
+			connected = true;
 			logger.debug("Subscription connected");
 		}
 
 		@Override
 		public void onMessage(CTP_Human_CTS t) {
-			this.lastReceivedMessage = t;
+			lastReceivedMessage = t;
 			logger.debug("Message received: {}", t);
 		}
 
@@ -403,7 +407,7 @@ public class AliasesIT {
 
 		@Override
 		public void onError(Throwable error) {
-			this.lastError = error;
+			lastError = error;
 			logger.error("Subscription on error: {}", error);
 		}
 	}
@@ -416,7 +420,7 @@ public class AliasesIT {
 		HumanSubscriptionCallback callback = new HumanSubscriptionCallback();
 
 		// Go, go, go
-		this.sub = this.subscriptionExecutor.subscribeNewHumanForEpisode(
+		sub = subscriptionExecutor.subscribeNewHumanForEpisode(
 				"{aliasId:id id aliasName:name name aliasHomePlanet:homePlanet homePlanet}", //
 				callback, CEP_Episode_CES.JEDI);
 
@@ -426,7 +430,7 @@ public class AliasesIT {
 		}, "Waiting for the subscription to receive the notification");
 
 		// Let's disconnect from the subscription
-		this.sub.unsubscribe();
+		sub.unsubscribe();
 
 		// Verification
 		if (callback.lastError != null) {

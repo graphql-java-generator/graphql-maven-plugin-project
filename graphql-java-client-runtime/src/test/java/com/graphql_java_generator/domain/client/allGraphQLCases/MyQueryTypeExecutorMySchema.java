@@ -61,6 +61,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	public MyQueryTypeExecutorMySchema() {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

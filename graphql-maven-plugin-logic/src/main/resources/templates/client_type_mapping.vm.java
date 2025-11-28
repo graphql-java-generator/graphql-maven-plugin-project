@@ -26,16 +26,29 @@ import java.util.Map;
 
 import org.springframework.util.ClassUtils;
 
-public class GraphQLTypeMapping {
+import com.graphql_java_generator.client.GraphQLTypeMapping;
+import com.graphql_java_generator.client.GraphQLTypeMappingRegistry;
 
-	private final static Map<String, Class<?>> map = new HashMap<>();
+public class GraphQLTypeMappingImpl implements GraphQLTypeMapping {
 
-	static {
+	private final String schemaName;
+	private final Map<String, Class<?>> map = new HashMap<>();
+
+	public static void initGraphQLTypeMappingRegistry() {
+		// Registers this GraphQLTypeMappingImpl into the registry
+		if (!GraphQLTypeMappingRegistry.isGraphQLTypeMappingRegistered("$springBeanSuffix")) {
+			GraphQLTypeMappingRegistry.registerGraphQLTypeMapping(new GraphQLTypeMappingImpl("$springBeanSuffix"));
+		}
+	}
+
+	public GraphQLTypeMappingImpl(String schemaName) {
+		this.schemaName = schemaName;
+		
+		// Let's initialize the type mapping, from the generated CSV file
 		String line;
 		Class<?> clazz;
-		ClassLoader classLoader = GraphQLTypeMapping.class.getClassLoader();
-
-		final String RESOURCE_PATH = "typeMapping${springBeanSuffix}.csv";
+		ClassLoader classLoader = GraphQLTypeMappingImpl.class.getClassLoader();
+		final String RESOURCE_PATH = "typeMapping" + schemaName + ".csv";
 
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(classLoader.getResourceAsStream(RESOURCE_PATH)))) {
@@ -60,7 +73,13 @@ public class GraphQLTypeMapping {
 		}
 	}
 
-	public static Class<?> getJavaClass(String typeName) {
+	@Override
+	public Class<?> getJavaClass(String typeName) {
 		return map.get(typeName);
+	}
+	
+	@Override
+	public String getSchemaName() {
+		return schemaName;
 	}
 }

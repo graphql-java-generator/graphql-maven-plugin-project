@@ -59,7 +59,7 @@ class InputParameterTest {
 		String value = "a Value";
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals(
 				"\"This is a string with two \\\"\\\", a \\uD83C\\uDF89 and some \\r \\t \\\\ to be escaped (and a literal tab here: '\\t')\"",
 				param.getStringContentForGraphqlQuery(false, null), "escaped value");
@@ -88,7 +88,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals("\"A double quote after an escaped antislash: \\\\\\\" (it's not the end of string)\"",
 				param.getStringContentForGraphqlQuery(false, null), "escaped value");
 		assertEquals('"' + value + '"',
@@ -104,7 +104,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals("\"One trailing antislash: \\\\\"", param.getStringContentForGraphqlQuery(false, null),
 				"escaped value");
 		assertEquals('"' + value + '"',
@@ -120,7 +120,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals("\"One trailing antislash: \\\\\\\\\"", param.getStringContentForGraphqlQuery(false, null),
 				"escaped value");
 		assertEquals('"' + value + '"',
@@ -137,7 +137,7 @@ class InputParameterTest {
 				false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals("EMPIRE", param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -149,7 +149,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "Int", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals(value.toString(), param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -161,7 +161,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "Float", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(value, param.getValue(), "value");
+		assertEquals(value, param.getDefaultValue(), "value");
 		assertEquals(value.toString(), param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -173,7 +173,7 @@ class InputParameterTest {
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, id, "ID", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(id, param.getValue(), "value");
+		assertEquals(id, param.getDefaultValue(), "value");
 		assertEquals("\"00000000-0000-0000-0000-000000000012\"",
 				param.getStringContentForGraphqlQuery(false, new HashMap<>()), "escaped value");
 	}
@@ -196,7 +196,7 @@ class InputParameterTest {
 
 		// Verification
 		assertEquals(name, param.getName(), "name");
-		assertEquals(bytes, param.getValue(), "value");
+		assertEquals(bytes, param.getDefaultValue(), "value");
 		assertEquals("\"" + Base64.getEncoder().encodeToString(bytes) + "\"",
 				param.getStringContentForGraphqlQuery(false, new HashMap<>()), "base 64");
 	}
@@ -223,7 +223,7 @@ class InputParameterTest {
 		// Verification
 		assertEquals(
 				"{topicId:\"00000000-0000-0000-0000-000000000022\",input:{authorId:\"00000000-0000-0000-0000-000000000012\",date:\"2009-11-21\",publiclyAvailable:false,title:\"The good title for a post\",content:\"Some other content\"}}",
-				param.getStringContentForGraphqlQuery(false, postInput, 0, "PostInput", null, false));
+				param.getStringContentForGraphqlQuery(false, postInput, 0, null, false));
 	}
 
 	@Test
@@ -235,7 +235,7 @@ class InputParameterTest {
 				false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(values, param.getValue(), "value");
+		assertEquals(values, param.getDefaultValue(), "value");
 		assertEquals("[]", param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -268,7 +268,7 @@ class InputParameterTest {
 				false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(values, param.getValue(), "value");
+		assertEquals(values, param.getDefaultValue(), "value");
 		assertEquals("[\"" + value1 + "\",\"" + value2 + "\",\"" + value3 + "\"]",
 				param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
@@ -288,7 +288,7 @@ class InputParameterTest {
 				false);
 
 		assertEquals(name, param.getName(), "name");
-		assertEquals(values, param.getValue(), "value");
+		assertEquals(values, param.getDefaultValue(), "value");
 		assertEquals("[EMPIRE,JEDI,NEWHOPE]", param.getStringContentForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -301,7 +301,7 @@ class InputParameterTest {
 				InputParameterType.MANDATORY, "Int", false, 0, false);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
-		assertEquals(null, mandatoryBindParam.getValue(), "value");
+		assertEquals(null, mandatoryBindParam.getDefaultValue(), "value");
 		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
 		assertThrows(GraphQLRequestExecutionException.class,
 				() -> mandatoryBindParam.getStringContentForGraphqlQuery(false, null), "escaped value (null map)");
@@ -325,7 +325,7 @@ class InputParameterTest {
 				InputParameterType.OPTIONAL, "Int", false, 0, false);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
-		assertEquals(null, mandatoryBindParam.getValue(), "value");
+		assertEquals(null, mandatoryBindParam.getDefaultValue(), "value");
 		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
 		assertNull(mandatoryBindParam.getStringContentForGraphqlQuery(false, null), "with no given map");
 		assertNull(mandatoryBindParam.getStringContentForGraphqlQuery(false, new HashMap<>()),

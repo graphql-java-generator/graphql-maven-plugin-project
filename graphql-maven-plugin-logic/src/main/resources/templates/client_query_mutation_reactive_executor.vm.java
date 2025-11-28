@@ -134,6 +134,7 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix} implements#if($ob
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

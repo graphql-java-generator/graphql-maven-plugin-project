@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.Query;
@@ -51,6 +52,9 @@ class AbstractGraphQLRequest_ForumTest {
 	@Test
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
+		new MyQueryTypeExecutorMySchema();
+
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable "
 				+ " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
@@ -74,12 +78,12 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals(2, posts.inputParameters.size());
 		int i = 0;
 		assertEquals("memberName", posts.inputParameters.get(i).name);
-		assertTrue(posts.inputParameters.get(i).value instanceof RawGraphQLString);
-		assertEquals("Me!", posts.inputParameters.get(i).value.toString());
+		assertTrue(posts.inputParameters.get(i).defaultValue instanceof RawGraphQLString);
+		assertEquals("\"Me!\"", posts.inputParameters.get(i).defaultValue.toString());
 		assertEquals(null, posts.inputParameters.get(i).bindParameterName);
 		i += 1;
 		assertEquals("since", posts.inputParameters.get(i).name);
-		assertEquals(null, posts.inputParameters.get(i).value);
+		assertEquals(null, posts.inputParameters.get(i).defaultValue);
 		assertEquals("sinceParam", posts.inputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, posts.inputParameters.get(i).type);
 		//
@@ -144,14 +148,14 @@ class AbstractGraphQLRequest_ForumTest {
 		i = 0;
 		// First parameter is hard coded
 		assertEquals("memberName", postsInputParameters.get(i).getName());
-		assertEquals(null, postsInputParameters.get(i).getValue());
+		assertEquals(null, postsInputParameters.get(i).getDefaultValue());
 		assertEquals("\"a member Name\"", postsInputParameters.get(i).getStringContentForGraphqlQuery(false, params));
 		assertEquals("memberName", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, postsInputParameters.get(i).type);
 		i = 1;
 		// The second parameter is a bind variable
 		assertEquals("since", postsInputParameters.get(i).getName());
-		assertEquals(null, postsInputParameters.get(i).getValue());
+		assertEquals(null, postsInputParameters.get(i).getDefaultValue());
 		assertEquals("\"1900-10-24\"", postsInputParameters.get(i).getStringContentForGraphqlQuery(false, params));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);

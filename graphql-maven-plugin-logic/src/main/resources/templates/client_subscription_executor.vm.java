@@ -110,6 +110,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

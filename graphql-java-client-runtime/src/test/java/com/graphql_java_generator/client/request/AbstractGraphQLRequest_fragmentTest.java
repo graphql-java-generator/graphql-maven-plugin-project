@@ -209,7 +209,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		InputParameter name = fragmentDroid.content.inlineFragments.get(0).content.fields.get(0).inputParameters.get(0);
 		assertEquals("uppercase", name.name);
 		assertEquals("Boolean", name.graphQLTypeName);
-		assertEquals(null, name.value);
+		assertEquals(null, name.defaultValue);
 		assertEquals("uppercaseFalse", name.bindParameterName);
 		//
 		// inline fragment Human
@@ -232,7 +232,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(1, inlineInlineHuman.content.fields.get(0).inputParameters.size());
 		assertEquals("uppercase", inlineInlineHuman.content.fields.get(0).inputParameters.get(0).name);
 		assertEquals("Boolean", inlineInlineHuman.content.fields.get(0).inputParameters.get(0).graphQLTypeName);
-		assertEquals(null, inlineInlineHuman.content.fields.get(0).inputParameters.get(0).value);
+		assertEquals(null, inlineInlineHuman.content.fields.get(0).inputParameters.get(0).defaultValue);
 		assertEquals("notDefinedBindVariable",
 				inlineInlineHuman.content.fields.get(0).inputParameters.get(0).bindParameterName);
 
@@ -459,9 +459,9 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("date", new GregorianCalendar(2022, 5 - 1, 20).getTime());
 		params.put("dates", dates);
 		params.put("uppercaseNameList", true);
-		params.put("textToAppendToTheFornameWithId", "append2");
+		params.put("textToAppendToTheNameWithId", "append2");
 		params.put("nbItemsWithoutId", 69);
-		params.put("textToAppendToTheFornameWithoutId", "append3");
+		params.put("textToAppendToTheNameWithoutId", "append3");
 
 		// Go, go, go
 		@SuppressWarnings("deprecation")
@@ -469,9 +469,9 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 				+ " age nbComments  comments booleans aliases planets friends {id}" //
 				+ " oneWithIdSubType {id name} "//
-				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheName: ?textToAppendToTheNameWithId) {name id}"
 				+ " oneWithoutIdSubType(input: ?input) {name}"//
-				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheName: ?textToAppendToTheNameWithoutId) {name}" //
 				+ "}");
 
 		// Verification
@@ -483,9 +483,9 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " age nbComments comments booleans aliases planets friends{id __typename}" //
 				+ " oneWithIdSubType{id name __typename}"//
 				+ " listWithIdSubTypes(date:\"2022-05-20\",dates:[\"2022-05-01\",\"2022-05-02\",\"2022-05-03\"],"
-				+ "uppercaseName:true,textToAppendToTheForname:\"append2\"){name id __typename}"
+				+ "uppercaseName:true,textToAppendToTheName:\"append2\"){name id __typename}"
 				+ " oneWithoutIdSubType{name __typename}"//
-				+ " listWithoutIdSubTypes(nbItems:69,textToAppendToTheForname:\"append3\"){name __typename}" //
+				+ " listWithoutIdSubTypes(nbItems:69,textToAppendToTheName:\"append3\"){name __typename}" //
 				+ " ... on WithID{id __typename}" //
 				+ "}}", //
 				null, null);

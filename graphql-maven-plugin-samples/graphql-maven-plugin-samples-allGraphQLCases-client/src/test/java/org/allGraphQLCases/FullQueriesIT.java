@@ -2,20 +2,26 @@ package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCasesWithIdSubtype_CTS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
@@ -534,5 +540,135 @@ class FullQueriesIT {
 	void testIssue217() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		CTP_MyQueryType_CTS resp = queryExecutor.exec("query {Issue217(AnArg: \"A test for the issue 217\")}");
 		assertEquals("A test for the issue 217", resp.getIssue217());
+	}
+
+	/**
+	 * Pull Request 237 (part 1): compilation error when a field first letter is in uppercase.
+	 * 
+	 * @See https://github.com/graphql-java-generator/graphql-maven-plugin-project/pull/237
+	 */
+	@Test
+	void testPullRequest237_part1() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		CINP_AllFieldCasesInput_CINS input = CINP_AllFieldCasesInput_CINS.builder()//
+				.withId(UUID.randomUUID().toString())//
+				.withName("A name")//
+				.withBreak("A break value")//
+				.withAge((long) 253)//
+				.withDates(new ArrayList<Date>())// )
+				.withAliases(List.of("alias1", "alias2"))//
+				.withPlanets(List.of("planet1", "planet2"))//
+				.withMatrix(new ArrayList<List<Double>>())//
+				.build();
+		String query = """
+				query myQueryName237_part1 ($input: AllFieldCasesInput, $if: String = "default value")
+				{
+				  allFieldCases(input: $input)
+				  {
+				    break(if: $if)
+				  }
+				}""";
+
+		// Try 1 : with two values for the two parameters. This worked before the PR.
+		CTP_AllFieldCases_CTS resp1 = queryExecutor.exec(query, //
+				"input", input, //
+				"if", "a value"//
+		).getAllFieldCases();
+		assertEquals("A break value (if=a value)", resp1.getBreak());
+
+		// Try 1 : with a null value (that is: the issue that the PR237 solves)
+		CTP_AllFieldCases_CTS resp2 = queryExecutor.exec(query, //
+				"input", input//
+		).getAllFieldCases();
+		assertEquals("A break value (if=default value)", resp2.getBreak());
+	}
+
+	/**
+	 * Pull Request 237 (part 2): default values for query parameter were not supported
+	 * 
+	 * @See https://github.com/graphql-java-generator/graphql-maven-plugin-project/pull/237
+	 */
+	@Test
+	void testPullRequest237_part2() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// Prepare the query with default parameters
+		String query = """
+					query myQueryName(
+					$nbItemsParam: Long = 10,
+					$dateParam: MyCustomScalarForADate = "2025-11-17",
+					$datesParam: [MyCustomScalarForADate]! = ["2025-11-18","2025-11-19"],
+					$uppercaseNameParam: Boolean = true,
+					$textToAppendToTheNameParam: String = "default value"
+					)
+				{
+					allFieldCases {
+						listWithIdSubTypes(
+							nbItems: $nbItemsParam,
+							date: $dateParam,
+							dates: $datesParam,
+							uppercaseName: $uppercaseNameParam,
+							textToAppendToTheName: $textToAppendToTheNameParam)
+						{
+							name
+							date
+							dates
+						}
+					}
+				}
+				""";
+
+		/////////////////////////////////////////////////////////////////////////
+		// With default parameters
+		List<CTP_AllFieldCasesWithIdSubtype_CTS> resp = queryExecutor.exec(query).getAllFieldCases()
+				.getListWithIdSubTypes();
+		assertEquals(10, resp.size(), "list length (default parameters)");
+
+		CTP_AllFieldCasesWithIdSubtype_CTS item1 = resp.get(0);
+		// First part of the name must be in uppercase
+		String firstPartOfTheName = item1.getName().substring(0, "default value".length());
+		assertEquals(firstPartOfTheName.toUpperCase(), firstPartOfTheName, "name uppercase (default parameters)");
+		// Name must end with the default value of the textToAppendToTheNameParam parameter
+		assertTrue(item1.getName().endsWith("default value"),
+				"name ends with the textToAppendToTheNameParam value (default parameters)");
+
+		// date must be the default date
+		assertEquals(new Calendar.Builder().setDate(2025, 11 - 1, 17).build().getTime(), item1.getDate(),
+				"date value (default parameters)");
+
+		// dates must be the default dates
+		assertEquals(2, item1.getDates().size(), "dates length");
+		assertEquals(new Calendar.Builder().setDate(2025, 11 - 1, 18).build().getTime(), item1.getDates().get(0),
+				"dates[0] value (default parameters)");
+		assertEquals(new Calendar.Builder().setDate(2025, 11 - 1, 19).build().getTime(), item1.getDates().get(1),
+				"dates[1] value (default parameters)");
+
+		/////////////////////////////////////////////////////////////////////////
+		// With given parameters
+		resp = queryExecutor.exec(query, //
+				"nbItemsParam", 5, //
+				"dateParam", new Calendar.Builder().setDate(2025, 12 - 1, 1).build().getTime(), //
+				"datesParam", Arrays.asList(//
+						new Calendar.Builder().setDate(2025, 12 - 1, 2).build().getTime(),
+						new Calendar.Builder().setDate(2025, 12 - 1, 3).build().getTime()), //
+				"uppercaseNameParam", false, //
+				"textToAppendToTheNameParam", "a given value").getAllFieldCases().getListWithIdSubTypes();
+		assertEquals(5, resp.size(), "list length (given parameters)");
+
+		item1 = resp.get(0);
+		// First part of the name must be in uppercase
+		firstPartOfTheName = item1.getName().substring(0, "a given value".length());
+		assertNotEquals(firstPartOfTheName.toUpperCase(), firstPartOfTheName, "name uppercase (given parameters)");
+		// Name must end with the default value of the textToAppendToTheNameParam parameter
+		assertTrue(item1.getName().endsWith("a given value"),
+				"name ends with the textToAppendToTheNameParam value (given parameters)");
+
+		// date must be the given date
+		assertEquals(new Calendar.Builder().setDate(2025, 12 - 1, 1).build().getTime(), item1.getDate(),
+				"date value (given parameters)");
+
+		// dates must be the given dates
+		assertEquals(2, item1.getDates().size(), "dates length");
+		assertEquals(new Calendar.Builder().setDate(2025, 12 - 1, 2).build().getTime(), item1.getDates().get(0),
+				"dates[0] value (given parameters)");
+		assertEquals(new Calendar.Builder().setDate(2025, 12 - 1, 3).build().getTime(), item1.getDates().get(1),
+				"dates[1] value (given parameters)");
 	}
 }

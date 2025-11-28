@@ -112,6 +112,7 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

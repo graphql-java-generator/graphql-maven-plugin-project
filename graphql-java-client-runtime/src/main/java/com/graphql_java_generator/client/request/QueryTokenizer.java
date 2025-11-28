@@ -36,7 +36,7 @@ public class QueryTokenizer {
 	final List<String> tokens;
 
 	/** Index of the next token that is to be read */
-	int index = 0;
+	int indexOfNextToken = 0;
 
 	/**
 	 * Create a tokenizer for the given GraphQL query
@@ -74,13 +74,28 @@ public class QueryTokenizer {
 	 * @return true if there are real token or meaningful delimiters left to read
 	 */
 	public boolean hasMoreTokens(boolean returnEmptyDelimiters) {
-		for (int i = index; i < tokens.size(); i += 1) {
+		for (int i = indexOfNextToken; i < tokens.size(); i += 1) {
 			if (!EMPTY_DELIMITERS.contains(tokens.get(i))) {
 				// We've found a real token coming.
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the current token
+	 * 
+	 * @return
+	 */
+	public String currentToken() {
+		if (indexOfNextToken == 0) {
+			throw new IndexOutOfBoundsException("No token has been read");
+		} else if (indexOfNextToken >= tokens.size()) {
+			throw new RuntimeException("The end of the token list has already been reached");
+		} else {
+			return tokens.get(indexOfNextToken - 1);
+		}
 	}
 
 	/**
@@ -104,12 +119,12 @@ public class QueryTokenizer {
 	 */
 	public String nextToken(boolean returnEmptyDelimiters) {
 		while (true) {
-			if (index >= tokens.size()) {
+			if (indexOfNextToken >= tokens.size()) {
 				throw new RuntimeException("No more token where found");
 			}
 
 			// Let's read and check the next token in the list
-			String token = tokens.get(index++);
+			String token = tokens.get(indexOfNextToken++);
 			if (returnEmptyDelimiters) {
 				// We return the token, whatever it contains
 				return token;
@@ -128,7 +143,7 @@ public class QueryTokenizer {
 	 * @return
 	 */
 	public boolean checkNextToken(String expected) {
-		for (int i = index; i < tokens.size(); i += 1) {
+		for (int i = indexOfNextToken; i < tokens.size(); i += 1) {
 			if (!EMPTY_DELIMITERS.contains(tokens.get(i))) {
 				// We've found a real token coming. Is it equals to the expected one?
 				return tokens.get(i).equals(expected);
@@ -148,7 +163,7 @@ public class QueryTokenizer {
 	 * @return
 	 */
 	public boolean checkNextTokenStartsWith(String expectedStart) {
-		for (int i = index; i < tokens.size(); i += 1) {
+		for (int i = indexOfNextToken; i < tokens.size(); i += 1) {
 			if (!EMPTY_DELIMITERS.contains(tokens.get(i))) {
 				// We've found a real token coming. Is it equals to the expected one?
 				return tokens.get(i).startsWith(expectedStart);
@@ -177,9 +192,10 @@ public class QueryTokenizer {
 			String token = nextToken(false);
 
 			// We found a non null token
-			if (expected != null && !expected.equals(token))
+			if (expected != null && !expected.equals(token)) {
 				throw new GraphQLRequestPreparationException("The token read is '" + token
 						+ "', but the expected one is '" + expected + "' while " + action);
+			}
 			// Ok, we're done
 			return token;
 		}

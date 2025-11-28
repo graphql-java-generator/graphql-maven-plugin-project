@@ -74,7 +74,7 @@ class AliasesTest {
 		assertEquals("myAlias", field.alias);
 		assertEquals(1, field.inputParameters.size());
 		assertEquals("test", field.inputParameters.get(0).getName());
-		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getValue());
+		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getDefaultValue());
 	}
 
 	@Test

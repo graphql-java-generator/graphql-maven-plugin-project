@@ -2,28 +2,24 @@
 package com.graphql_java_generator.domain.client.allGraphQLCases;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
-import com.graphql_java_generator.client.request.InputParameter;
-import com.graphql_java_generator.client.request.ObjectResponse;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.annotation.GraphQLInputParameters;
-import com.graphql_java_generator.annotation.RequestType;
-import java.util.List;
-
-import com.graphql_java_generator.client.GraphqlClientUtils;
 
 /**
  * This class contains the response for a full request. See the
@@ -977,12 +973,14 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 */
 	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
 		Object value = aliasValues.get(alias);
-		if (value instanceof GraphQLRequestExecutionException)
+		if (value instanceof GraphQLRequestExecutionException) {
 			throw (GraphQLRequestExecutionException) value;
-		else
+		} else {
 			return value;
+		}
 	}
 
+	@Override
 	public String toString() {
 		return "MyQueryType {" + "withoutParameters: " + withoutParameters + ", " + "withOneOptionalParam: "
 				+ withOneOptionalParam + ", " + "withOneMandatoryParam: " + withOneMandatoryParam + ", "
@@ -1408,7 +1406,8 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null);
+			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
+					"MySchema");
 		}
 		return extensionMapper;
 	}
@@ -1417,6 +1416,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 		return extensions;
 	}
 
+	@Override
 	public void setExtensions(JsonNode extensions) {
 		this.extensions = extensions;
 	}
@@ -1456,6 +1456,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public MyQueryTypeResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1467,6 +1468,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public MyQueryTypeResponse exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1478,6 +1480,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public MyQueryTypeResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -1489,6 +1492,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public MyQueryTypeResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -1500,6 +1504,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1511,6 +1516,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		return super.getGraphQLRequest(fullRequest);
@@ -1521,6 +1527,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withoutParametersWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -1533,6 +1540,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withoutParameters(String queryResponseDef, Object... paramsAndValues)
@@ -1545,6 +1553,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withoutParametersWithBindValues(ObjectResponse objectResponse,
@@ -1557,6 +1566,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -1569,6 +1579,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithoutParametersResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1580,6 +1591,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithoutParametersGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -1591,6 +1603,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParamWithBindValues(String queryResponseDef, CharacterInput character,
@@ -1604,6 +1617,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
@@ -1616,6 +1630,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParamWithBindValues(ObjectResponse objectResponse, CharacterInput character,
@@ -1628,6 +1643,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParam(ObjectResponse objectResponse, CharacterInput character,
@@ -1640,6 +1656,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithOneOptionalParamResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1651,6 +1668,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithOneOptionalParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -1662,6 +1680,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParamWithBindValues(String queryResponseDef, CharacterInput character,
@@ -1675,6 +1694,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
@@ -1687,6 +1707,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParamWithBindValues(ObjectResponse objectResponse, CharacterInput character,
@@ -1699,6 +1720,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParam(ObjectResponse objectResponse, CharacterInput character,
@@ -1711,6 +1733,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithOneMandatoryParamResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1722,6 +1745,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithOneMandatoryParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -1733,6 +1757,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = java.lang.Integer.class)
 	public java.lang.Integer withOneMandatoryParamDefaultValueWithBindValues(String queryResponseDef,
@@ -1746,6 +1771,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = java.lang.Integer.class)
 	public java.lang.Integer withOneMandatoryParamDefaultValue(String queryResponseDef, java.lang.Integer intParam,
@@ -1758,6 +1784,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = java.lang.Integer.class)
 	public java.lang.Integer withOneMandatoryParamDefaultValueWithBindValues(ObjectResponse objectResponse,
@@ -1770,6 +1797,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = java.lang.Integer.class)
 	public java.lang.Integer withOneMandatoryParamDefaultValue(ObjectResponse objectResponse,
@@ -1782,6 +1810,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithOneMandatoryParamDefaultValueResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1793,6 +1822,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithOneMandatoryParamDefaultValueGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -1804,6 +1834,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public Droid withTwoMandatoryParamDefaultValWithBindValues(String queryResponseDef, DroidInput theHero,
@@ -1817,6 +1848,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public Droid withTwoMandatoryParamDefaultVal(String queryResponseDef, DroidInput theHero, java.lang.Integer num,
@@ -1829,6 +1861,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public Droid withTwoMandatoryParamDefaultValWithBindValues(ObjectResponse objectResponse, DroidInput theHero,
@@ -1841,6 +1874,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public Droid withTwoMandatoryParamDefaultVal(ObjectResponse objectResponse, DroidInput theHero,
@@ -1853,6 +1887,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithTwoMandatoryParamDefaultValResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1864,6 +1899,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithTwoMandatoryParamDefaultValGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -1875,6 +1911,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withEnumWithBindValues(String queryResponseDef, Episode episode, Map<String, Object> parameters)
@@ -1887,6 +1924,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withEnum(String queryResponseDef, Episode episode, Object... paramsAndValues)
@@ -1899,6 +1937,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withEnumWithBindValues(ObjectResponse objectResponse, Episode episode,
@@ -1911,6 +1950,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character withEnum(ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
@@ -1923,6 +1963,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithEnumResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -1934,6 +1975,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithEnumGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getWithEnumGraphQLRequest(partialRequest);
@@ -1944,6 +1986,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases withListOfListWithBindValues(String queryResponseDef, List<List<java.lang.Double>> matrix,
@@ -1957,6 +2000,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases withListOfList(String queryResponseDef, List<List<java.lang.Double>> matrix,
@@ -1969,6 +2013,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases withListOfListWithBindValues(ObjectResponse objectResponse,
@@ -1982,6 +2027,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases withListOfList(ObjectResponse objectResponse, List<List<java.lang.Double>> matrix,
@@ -1994,6 +2040,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithListOfListResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2005,6 +2052,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithListOfListGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2016,6 +2064,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withListWithBindValues(String queryResponseDef, java.lang.String firstName,
@@ -2029,6 +2078,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withList(String queryResponseDef, java.lang.String firstName,
@@ -2042,6 +2092,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withListWithBindValues(ObjectResponse objectResponse, java.lang.String firstName,
@@ -2054,6 +2105,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> withList(ObjectResponse objectResponse, java.lang.String firstName,
@@ -2066,6 +2118,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWithListResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2077,6 +2130,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWithListGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getWithListGraphQLRequest(partialRequest);
@@ -2087,6 +2141,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCasesWithBindValues(String queryResponseDef, AllFieldCasesInput input,
@@ -2100,6 +2155,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCases(String queryResponseDef, AllFieldCasesInput input, Object... paramsAndValues)
@@ -2112,6 +2168,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCasesWithBindValues(ObjectResponse objectResponse, AllFieldCasesInput input,
@@ -2124,6 +2181,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCases(ObjectResponse objectResponse, AllFieldCasesInput input,
@@ -2136,6 +2194,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getAllFieldCasesResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2147,6 +2206,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2158,6 +2218,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<AnyCharacter> unionTestWithBindValues(String queryResponseDef, HumanInput human1, HumanInput human2,
@@ -2171,6 +2232,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<AnyCharacter> unionTest(String queryResponseDef, HumanInput human1, HumanInput human2,
@@ -2184,6 +2246,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<AnyCharacter> unionTestWithBindValues(ObjectResponse objectResponse, HumanInput human1,
@@ -2197,6 +2260,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<AnyCharacter> unionTest(ObjectResponse objectResponse, HumanInput human1, HumanInput human2,
@@ -2209,6 +2273,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getUnionTestResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2220,6 +2285,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getUnionTestGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getUnionTestGraphQLRequest(partialRequest);
@@ -2230,6 +2296,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character errorWithBindValues(String queryResponseDef, java.lang.String errorLabel,
@@ -2243,6 +2310,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character error(String queryResponseDef, java.lang.String errorLabel, Object... paramsAndValues)
@@ -2255,6 +2323,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character errorWithBindValues(ObjectResponse objectResponse, java.lang.String errorLabel,
@@ -2267,6 +2336,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character error(ObjectResponse objectResponse, java.lang.String errorLabel, Object... paramsAndValues)
@@ -2279,6 +2349,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getErrorResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2290,6 +2361,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getErrorGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getErrorGraphQLRequest(partialRequest);
@@ -2300,6 +2372,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public _break aBreakWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -2312,6 +2385,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public _break aBreak(String queryResponseDef, Object... paramsAndValues)
@@ -2324,6 +2398,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public _break aBreakWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -2336,6 +2411,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public _break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -2348,6 +2424,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getABreakResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2359,6 +2436,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getABreakGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getABreakGraphQLRequest(partialRequest);
@@ -2369,6 +2447,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public List<java.lang.String> directiveOnQueryWithBindValues(String queryResponseDef, java.lang.Boolean uppercase,
@@ -2382,6 +2461,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public List<java.lang.String> directiveOnQuery(String queryResponseDef, java.lang.Boolean uppercase,
@@ -2394,6 +2474,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public List<java.lang.String> directiveOnQueryWithBindValues(ObjectResponse objectResponse,
@@ -2406,6 +2487,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public List<java.lang.String> directiveOnQuery(ObjectResponse objectResponse, java.lang.Boolean uppercase,
@@ -2418,6 +2500,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getDirectiveOnQueryResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2429,6 +2512,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getDirectiveOnQueryGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2440,6 +2524,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character directiveOnFieldWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -2452,6 +2537,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character directiveOnField(String queryResponseDef, Object... paramsAndValues)
@@ -2464,6 +2550,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character directiveOnFieldWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -2476,6 +2563,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public Character directiveOnField(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -2488,6 +2576,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getDirectiveOnFieldResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2499,6 +2588,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getDirectiveOnFieldGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2510,6 +2600,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> connectionWithoutParametersWithBindValues(String queryResponseDef,
@@ -2523,6 +2614,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> connectionWithoutParameters(String queryResponseDef, Object... paramsAndValues)
@@ -2535,6 +2627,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> connectionWithoutParametersWithBindValues(ObjectResponse objectResponse,
@@ -2547,6 +2640,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> connectionWithoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -2559,6 +2653,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getConnectionWithoutParametersResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2570,6 +2665,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getConnectionWithoutParametersGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2581,6 +2677,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	public List<Human> connectionOnHumanWithBindValues(String queryResponseDef, java.lang.String planet,
@@ -2594,6 +2691,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	public List<Human> connectionOnHuman(String queryResponseDef, java.lang.String planet, Episode episode,
@@ -2606,6 +2704,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	public List<Human> connectionOnHumanWithBindValues(ObjectResponse objectResponse, java.lang.String planet,
@@ -2618,6 +2717,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	public List<Human> connectionOnHuman(ObjectResponse objectResponse, java.lang.String planet, Episode episode,
@@ -2630,6 +2730,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getConnectionOnHumanResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2641,6 +2742,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getConnectionOnHumanGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2652,6 +2754,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue53", graphQLTypeSimpleName = "Date", javaClass = java.util.Date.class)
 	public java.util.Date issue53WithBindValues(String queryResponseDef, java.util.Date date,
@@ -2665,6 +2768,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue53", graphQLTypeSimpleName = "Date", javaClass = java.util.Date.class)
 	public java.util.Date issue53(String queryResponseDef, java.util.Date date, Object... paramsAndValues)
@@ -2677,6 +2781,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue53", graphQLTypeSimpleName = "Date", javaClass = java.util.Date.class)
 	public java.util.Date issue53WithBindValues(ObjectResponse objectResponse, java.util.Date date,
@@ -2689,6 +2794,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue53", graphQLTypeSimpleName = "Date", javaClass = java.util.Date.class)
 	public java.util.Date issue53(ObjectResponse objectResponse, java.util.Date date, Object... paramsAndValues)
@@ -2701,6 +2807,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIssue53ResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2712,6 +2819,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIssue53GraphQLRequest(partialRequest);
@@ -2722,6 +2830,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = java.lang.Double.class)
 	public java.lang.Double issue82FloatWithBindValues(String queryResponseDef, java.lang.Double aFloat,
@@ -2735,6 +2844,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = java.lang.Double.class)
 	public java.lang.Double issue82Float(String queryResponseDef, java.lang.Double aFloat, Object... paramsAndValues)
@@ -2747,6 +2857,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = java.lang.Double.class)
 	public java.lang.Double issue82FloatWithBindValues(ObjectResponse objectResponse, java.lang.Double aFloat,
@@ -2759,6 +2870,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = java.lang.Double.class)
 	public java.lang.Double issue82Float(ObjectResponse objectResponse, java.lang.Double aFloat,
@@ -2771,6 +2883,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIssue82FloatResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2782,6 +2895,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIssue82FloatGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -2793,6 +2907,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = java.lang.String.class)
 	public java.lang.String issue82IDWithBindValues(String queryResponseDef, java.lang.String aID,
@@ -2806,6 +2921,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = java.lang.String.class)
 	public java.lang.String issue82ID(String queryResponseDef, java.lang.String aID, Object... paramsAndValues)
@@ -2818,6 +2934,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = java.lang.String.class)
 	public java.lang.String issue82IDWithBindValues(ObjectResponse objectResponse, java.lang.String aID,
@@ -2830,6 +2947,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = java.lang.String.class)
 	public java.lang.String issue82ID(ObjectResponse objectResponse, java.lang.String aID, Object... paramsAndValues)
@@ -2842,6 +2960,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIssue82IDResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2853,6 +2972,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIssue82IDGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIssue82IDGraphQLRequest(partialRequest);
@@ -2863,6 +2983,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "issue128", graphQLTypeSimpleName = "Client", javaClass = Client.class)
 	public Client issue128WithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -2875,6 +2996,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "issue128", graphQLTypeSimpleName = "Client", javaClass = Client.class)
 	public Client issue128(String queryResponseDef, Object... paramsAndValues)
@@ -2887,6 +3009,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "issue128", graphQLTypeSimpleName = "Client", javaClass = Client.class)
 	public Client issue128WithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -2899,6 +3022,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "issue128", graphQLTypeSimpleName = "Client", javaClass = Client.class)
 	public Client issue128(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -2911,6 +3035,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIssue128ResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2922,6 +3047,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIssue128GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIssue128GraphQLRequest(partialRequest);
@@ -2932,6 +3058,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "enumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValuesWithBindValues(
@@ -2945,6 +3072,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "enumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValues(String queryResponseDef,
@@ -2957,6 +3085,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "enumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValuesWithBindValues(
@@ -2969,6 +3098,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "enumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValues(ObjectResponse objectResponse,
@@ -2981,6 +3111,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getEnumWithReservedJavaKeywordAsValuesResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -2992,6 +3123,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -3003,6 +3135,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "listOfEnumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValuesWithBindValues(
@@ -3018,6 +3151,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "listOfEnumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValues(String queryResponseDef,
@@ -3031,6 +3165,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "listOfEnumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValuesWithBindValues(
@@ -3046,6 +3181,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "listOfEnumWithReservedJavaKeywordAsValues", graphQLTypeSimpleName = "EnumWithReservedJavaKeywordAsValues", javaClass = EnumWithReservedJavaKeywordAsValues.class)
 	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValues(
@@ -3060,6 +3196,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getListOfEnumWithReservedJavaKeywordAsValuesResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3071,6 +3208,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getListOfEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -3082,6 +3220,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "if", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _ifWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3094,6 +3233,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "if", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _if(String queryResponseDef, Object... paramsAndValues)
@@ -3106,6 +3246,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "if", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _ifWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3118,6 +3259,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "if", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _if(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3130,6 +3272,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIfResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3141,6 +3284,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIfGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIfGraphQLRequest(partialRequest);
@@ -3151,6 +3295,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "implements", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _implementsWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3163,6 +3308,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "implements", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _implements(String queryResponseDef, Object... paramsAndValues)
@@ -3175,6 +3321,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "implements", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _implementsWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3187,6 +3334,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "implements", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _implements(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3199,6 +3347,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getImplementsResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3210,6 +3359,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getImplementsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getImplementsGraphQLRequest(partialRequest);
@@ -3220,6 +3370,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "import", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _importWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3232,6 +3383,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "import", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _import(String queryResponseDef, Object... paramsAndValues)
@@ -3244,6 +3396,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "import", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _importWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3256,6 +3409,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "import", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _import(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3268,6 +3422,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getImportResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3279,6 +3434,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getImportGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getImportGraphQLRequest(partialRequest);
@@ -3289,6 +3445,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "instanceof", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _instanceofWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3301,6 +3458,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "instanceof", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _instanceof(String queryResponseDef, Object... paramsAndValues)
@@ -3313,6 +3471,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "instanceof", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _instanceofWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3325,6 +3484,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "instanceof", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _instanceof(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3337,6 +3497,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getInstanceofResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3348,6 +3509,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getInstanceofGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getInstanceofGraphQLRequest(partialRequest);
@@ -3358,6 +3520,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "int", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _intWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3370,6 +3533,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "int", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _int(String queryResponseDef, Object... paramsAndValues)
@@ -3382,6 +3546,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "int", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _intWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3394,6 +3559,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "int", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _int(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3406,6 +3572,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getIntResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3417,6 +3584,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getIntGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIntGraphQLRequest(partialRequest);
@@ -3427,6 +3595,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "interface", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _interfaceWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3439,6 +3608,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "interface", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _interface(String queryResponseDef, Object... paramsAndValues)
@@ -3451,6 +3621,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "interface", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _interfaceWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3463,6 +3634,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "interface", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _interface(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3475,6 +3647,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getInterfaceResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3486,6 +3659,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getInterfaceGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getInterfaceGraphQLRequest(partialRequest);
@@ -3496,6 +3670,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "long", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _longWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3508,6 +3683,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "long", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _long(String queryResponseDef, Object... paramsAndValues)
@@ -3520,6 +3696,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "long", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _longWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3532,6 +3709,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "long", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _long(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3544,6 +3722,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getLongResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3555,6 +3734,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getLongGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getLongGraphQLRequest(partialRequest);
@@ -3565,6 +3745,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "native", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _nativeWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3577,6 +3758,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "native", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _native(String queryResponseDef, Object... paramsAndValues)
@@ -3589,6 +3771,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "native", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _nativeWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3601,6 +3784,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "native", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _native(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3613,6 +3797,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getNativeResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3624,6 +3809,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getNativeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getNativeGraphQLRequest(partialRequest);
@@ -3634,6 +3820,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "new", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _newWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3646,6 +3833,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "new", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _new(String queryResponseDef, Object... paramsAndValues)
@@ -3658,6 +3846,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "new", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _newWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3670,6 +3859,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "new", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _new(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3682,6 +3872,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getNewResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3693,6 +3884,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getNewGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getNewGraphQLRequest(partialRequest);
@@ -3703,6 +3895,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "package", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _packageWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3715,6 +3908,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "package", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _package(String queryResponseDef, Object... paramsAndValues)
@@ -3727,6 +3921,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "package", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _packageWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3739,6 +3934,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "package", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _package(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3751,6 +3947,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getPackageResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3762,6 +3959,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getPackageGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getPackageGraphQLRequest(partialRequest);
@@ -3772,6 +3970,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "private", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _privateWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3784,6 +3983,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "private", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _private(String queryResponseDef, Object... paramsAndValues)
@@ -3796,6 +3996,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "private", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _privateWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3808,6 +4009,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "private", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _private(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3820,6 +4022,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getPrivateResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3831,6 +4034,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getPrivateGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getPrivateGraphQLRequest(partialRequest);
@@ -3841,6 +4045,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "protected", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _protectedWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3853,6 +4058,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "protected", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _protected(String queryResponseDef, Object... paramsAndValues)
@@ -3865,6 +4071,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "protected", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _protectedWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3877,6 +4084,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "protected", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _protected(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3889,6 +4097,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getProtectedResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3900,6 +4109,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getProtectedGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getProtectedGraphQLRequest(partialRequest);
@@ -3910,6 +4120,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "public", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _publicWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3922,6 +4133,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "public", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _public(String queryResponseDef, Object... paramsAndValues)
@@ -3934,6 +4146,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "public", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _publicWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -3946,6 +4159,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "public", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _public(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -3958,6 +4172,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getPublicResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -3969,6 +4184,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getPublicGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getPublicGraphQLRequest(partialRequest);
@@ -3979,6 +4195,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "return", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _returnWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -3991,6 +4208,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "return", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _return(String queryResponseDef, Object... paramsAndValues)
@@ -4003,6 +4221,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "return", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _returnWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4015,6 +4234,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "return", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _return(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4027,6 +4247,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getReturnResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4038,6 +4259,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getReturnGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getReturnGraphQLRequest(partialRequest);
@@ -4048,6 +4270,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "short", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _shortWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4060,6 +4283,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "short", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _short(String queryResponseDef, Object... paramsAndValues)
@@ -4072,6 +4296,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "short", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _shortWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4084,6 +4309,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "short", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _short(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4096,6 +4322,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getShortResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4107,6 +4334,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getShortGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getShortGraphQLRequest(partialRequest);
@@ -4117,6 +4345,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "static", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _staticWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4129,6 +4358,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "static", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _static(String queryResponseDef, Object... paramsAndValues)
@@ -4141,6 +4371,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "static", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _staticWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4153,6 +4384,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "static", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _static(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4165,6 +4397,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getStaticResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4176,6 +4409,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getStaticGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getStaticGraphQLRequest(partialRequest);
@@ -4186,6 +4420,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "strictfp", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _strictfpWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4198,6 +4433,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "strictfp", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _strictfp(String queryResponseDef, Object... paramsAndValues)
@@ -4210,6 +4446,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "strictfp", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _strictfpWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4222,6 +4459,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "strictfp", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _strictfp(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4234,6 +4472,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getStrictfpResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4245,6 +4484,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getStrictfpGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getStrictfpGraphQLRequest(partialRequest);
@@ -4255,6 +4495,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "super", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _superWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4267,6 +4508,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "super", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _super(String queryResponseDef, Object... paramsAndValues)
@@ -4279,6 +4521,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "super", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _superWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4291,6 +4534,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "super", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _super(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4303,6 +4547,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getSuperResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4314,6 +4559,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getSuperGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getSuperGraphQLRequest(partialRequest);
@@ -4324,6 +4570,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "switch", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _switchWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4336,6 +4583,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "switch", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _switch(String queryResponseDef, Object... paramsAndValues)
@@ -4348,6 +4596,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "switch", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _switchWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4360,6 +4609,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "switch", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _switch(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4372,6 +4622,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getSwitchResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4383,6 +4634,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getSwitchGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getSwitchGraphQLRequest(partialRequest);
@@ -4393,6 +4645,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "synchronized", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _synchronizedWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4405,6 +4658,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "synchronized", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _synchronized(String queryResponseDef, Object... paramsAndValues)
@@ -4417,6 +4671,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "synchronized", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _synchronizedWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4429,6 +4684,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "synchronized", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _synchronized(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4441,6 +4697,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getSynchronizedResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4452,6 +4709,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getSynchronizedGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
@@ -4463,6 +4721,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "this", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _thisWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4475,6 +4734,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "this", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _this(String queryResponseDef, Object... paramsAndValues)
@@ -4487,6 +4747,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "this", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _thisWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4499,6 +4760,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "this", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _this(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4511,6 +4773,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getThisResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4522,6 +4785,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getThisGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getThisGraphQLRequest(partialRequest);
@@ -4532,6 +4796,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throw", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throwWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4544,6 +4809,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throw", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throw(String queryResponseDef, Object... paramsAndValues)
@@ -4556,6 +4822,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throw", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throwWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4568,6 +4835,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throw", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throw(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4580,6 +4848,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getThrowResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4591,6 +4860,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getThrowGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getThrowGraphQLRequest(partialRequest);
@@ -4601,6 +4871,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throws", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throwsWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4613,6 +4884,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throws", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throws(String queryResponseDef, Object... paramsAndValues)
@@ -4625,6 +4897,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throws", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throwsWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4637,6 +4910,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "throws", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _throws(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4649,6 +4923,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getThrowsResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4660,6 +4935,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getThrowsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getThrowsGraphQLRequest(partialRequest);
@@ -4670,6 +4946,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "transient", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _transientWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4682,6 +4959,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "transient", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _transient(String queryResponseDef, Object... paramsAndValues)
@@ -4694,6 +4972,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "transient", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _transientWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4706,6 +4985,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "transient", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _transient(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4718,6 +4998,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getTransientResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4729,6 +5010,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getTransientGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getTransientGraphQLRequest(partialRequest);
@@ -4739,6 +5021,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "try", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _tryWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4751,6 +5034,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "try", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _try(String queryResponseDef, Object... paramsAndValues)
@@ -4763,6 +5047,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "try", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _tryWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4775,6 +5060,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "try", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _try(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4787,6 +5073,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getTryResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4798,6 +5085,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getTryGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getTryGraphQLRequest(partialRequest);
@@ -4808,6 +5096,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "void", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _voidWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4820,6 +5109,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "void", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _void(String queryResponseDef, Object... paramsAndValues)
@@ -4832,6 +5122,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "void", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _voidWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4844,6 +5135,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "void", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _void(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4856,6 +5148,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getVoidResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4867,6 +5160,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getVoidGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getVoidGraphQLRequest(partialRequest);
@@ -4877,6 +5171,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "volatile", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _volatileWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4889,6 +5184,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "volatile", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _volatile(String queryResponseDef, Object... paramsAndValues)
@@ -4901,6 +5197,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "volatile", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _volatileWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4913,6 +5210,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "volatile", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _volatile(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4925,6 +5223,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getVolatileResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -4936,6 +5235,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getVolatileGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getVolatileGraphQLRequest(partialRequest);
@@ -4946,6 +5246,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "while", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _whileWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -4958,6 +5259,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "while", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _while(String queryResponseDef, Object... paramsAndValues)
@@ -4970,6 +5272,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "while", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _whileWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -4982,6 +5285,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "while", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String _while(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -4994,6 +5298,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getWhileResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5005,6 +5310,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getWhileGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getWhileGraphQLRequest(partialRequest);
@@ -5015,6 +5321,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "foo140", graphQLTypeSimpleName = "Foo140", javaClass = Foo140.class)
 	public Foo140 foo140WithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -5027,6 +5334,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "foo140", graphQLTypeSimpleName = "Foo140", javaClass = Foo140.class)
 	public Foo140 foo140(String queryResponseDef, Object... paramsAndValues)
@@ -5039,6 +5347,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "foo140", graphQLTypeSimpleName = "Foo140", javaClass = Foo140.class)
 	public Foo140 foo140WithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -5051,6 +5360,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "foo140", graphQLTypeSimpleName = "Foo140", javaClass = Foo140.class)
 	public Foo140 foo140(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -5063,6 +5373,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getFoo140ResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5074,6 +5385,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getFoo140GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getFoo140GraphQLRequest(partialRequest);
@@ -5084,6 +5396,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public MyQueryType relayWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -5096,6 +5409,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public MyQueryType relay(String queryResponseDef, Object... paramsAndValues)
@@ -5108,6 +5422,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public MyQueryType relayWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -5120,6 +5435,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public MyQueryType relay(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -5132,6 +5448,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder getRelayResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5143,6 +5460,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest getRelayGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getRelayGraphQLRequest(partialRequest);
@@ -5153,6 +5471,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schemaWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -5165,6 +5484,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schema(String queryResponseDef, Object... paramsAndValues)
@@ -5177,6 +5497,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schemaWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -5189,6 +5510,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -5201,6 +5523,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder get__schemaResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5212,6 +5535,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest get__schemaGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.get__schemaGraphQLRequest(partialRequest);
@@ -5222,6 +5546,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public __Type __typeWithBindValues(String queryResponseDef, java.lang.String name, Map<String, Object> parameters)
@@ -5234,6 +5559,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public __Type __type(String queryResponseDef, java.lang.String name, Object... paramsAndValues)
@@ -5246,6 +5572,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public __Type __typeWithBindValues(ObjectResponse objectResponse, java.lang.String name,
@@ -5258,6 +5585,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public __Type __type(ObjectResponse objectResponse, java.lang.String name, Object... paramsAndValues)
@@ -5270,6 +5598,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5281,6 +5610,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.get__typeGraphQLRequest(partialRequest);
@@ -5291,6 +5621,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String __typenameWithBindValues(String queryResponseDef, Map<String, Object> parameters)
@@ -5303,6 +5634,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String __typename(String queryResponseDef, Object... paramsAndValues)
@@ -5315,6 +5647,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String __typenameWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
@@ -5327,6 +5660,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
 	public java.lang.String __typename(ObjectResponse objectResponse, Object... paramsAndValues)
@@ -5339,6 +5673,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public com.graphql_java_generator.client.request.Builder get__typenameResponseBuilder()
 			throws GraphQLRequestPreparationException {
@@ -5350,6 +5685,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
 	 * version.
 	 */
+	@Override
 	@Deprecated
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.get__typenameGraphQLRequest(partialRequest);

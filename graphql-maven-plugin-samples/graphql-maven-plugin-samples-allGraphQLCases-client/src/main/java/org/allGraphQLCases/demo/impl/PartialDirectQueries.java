@@ -4,16 +4,16 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
-import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
-import org.allGraphQLCases.client.CTP_Human_CTS;
-import org.allGraphQLCases.client.CINP_HumanInput_CINS;
-import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.CEP_extends_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
@@ -83,8 +83,8 @@ public class PartialDirectQueries implements PartialQueries {
 	@Override
 	public CTP_AllFieldCases_CTS allFieldCases(CINP_AllFieldCasesInput_CINS allFieldCasesInput, Boolean uppercase,
 			String textToAppendToTheForname, long nbItemsWithId, Date date, OffsetDateTime dateTime, List<Date> dates,
-			Boolean uppercaseNameList, String textToAppendToTheFornameWithId, CINP_FieldParameterInput_CINS input,
-			int nbItemsWithoutId, CINP_FieldParameterInput_CINS inputList, String textToAppendToTheFornameWithoutId)
+			Boolean uppercaseNameList, String textToAppendToTheNameWithId, CINP_FieldParameterInput_CINS input,
+			int nbItemsWithoutId, CINP_FieldParameterInput_CINS inputList, String textToAppendToTheNameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.allFieldCases("{id name date dateTime dates " //
 				// Parameter for fields are not managed yet)
@@ -92,22 +92,23 @@ public class PartialDirectQueries implements PartialQueries {
 				+ " forname"//
 				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 				+ " oneWithIdSubType {id name} "//
-				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheName: ?textToAppendToTheNameWithId) {name id}"
 				+ " oneWithoutIdSubType(input: ?input) {name}"//
-				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheName: ?textToAppendToTheNameWithoutId) {name}" //
 				+ "}", //
 				allFieldCasesInput, //
-				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"uppercase", uppercase, //
+				"textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
 				"date", date, //
 				"dateTime", dateTime, //
 				"dates", dates, //
 				"uppercaseNameList", uppercaseNameList, //
-				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"textToAppendToTheNameWithId", textToAppendToTheNameWithId, //
 				"input", input, //
 				"nbItemsWithoutId", nbItemsWithoutId, //
 				"inputList", inputList, //
-				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
+				"textToAppendToTheNameWithoutId", textToAppendToTheNameWithoutId);
 	}
 
 	@Override

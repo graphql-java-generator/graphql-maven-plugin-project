@@ -95,9 +95,9 @@ public class PartialPreparedQueries implements PartialQueries {
 						+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 						+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 						+ " oneWithIdSubType {id name} "//
-						+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+						+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheName: ?textToAppendToTheNameWithId) {name id}"
 						+ " oneWithoutIdSubType(input: ?input) {name}"//
-						+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+						+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheName: ?textToAppendToTheNameWithoutId) {name}" //
 						+ "}");
 	}
 
@@ -140,21 +140,22 @@ public class PartialPreparedQueries implements PartialQueries {
 	@Override
 	public CTP_AllFieldCases_CTS allFieldCases(CINP_AllFieldCasesInput_CINS allFieldCasesInput, Boolean uppercase,
 			String textToAppendToTheForname, long nbItemsWithId, Date date, OffsetDateTime dateTime, List<Date> dates,
-			Boolean uppercaseNameList, String textToAppendToTheFornameWithId, CINP_FieldParameterInput_CINS input,
-			int nbItemsWithoutId, CINP_FieldParameterInput_CINS inputList, String textToAppendToTheFornameWithoutId)
+			Boolean uppercaseNameList, String textToAppendToTheNameWithId, CINP_FieldParameterInput_CINS input,
+			int nbItemsWithoutId, CINP_FieldParameterInput_CINS inputList, String textToAppendToTheNameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.allFieldCases(allFieldCasesRequest, allFieldCasesInput, //
-				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"uppercase", uppercase, //
+				"textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
 				"date", date, //
 				"dateTime", dateTime, //
 				"dates", dates, //
 				"uppercaseNameList", uppercaseNameList, //
-				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"textToAppendToTheNameWithId", textToAppendToTheNameWithId, //
 				"input", input, //
 				"nbItemsWithoutId", nbItemsWithoutId, //
 				"inputList", inputList, //
-				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
+				"textToAppendToTheNameWithoutId", textToAppendToTheNameWithoutId);
 	}
 
 	@Override

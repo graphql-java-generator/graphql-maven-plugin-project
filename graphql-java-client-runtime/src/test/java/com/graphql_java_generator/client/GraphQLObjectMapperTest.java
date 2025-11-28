@@ -20,6 +20,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesWithIdSubtype;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 class GraphQLObjectMapperTest {
@@ -27,7 +28,7 @@ class GraphQLObjectMapperTest {
 	@Test
 	void testBoolean() throws JsonMappingException, JsonProcessingException {
 		// Preparation
-		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(), null);
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(), null, "MySchema");
 
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
@@ -45,7 +46,7 @@ class GraphQLObjectMapperTest {
 			throws JsonMappingException, JsonProcessingException, NoSuchFieldException, SecurityException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
-				getAliasFields(GraphQLObjectMapperTestClass.class, "dateAlias", "date"));
+				getAliasFields(GraphQLObjectMapperTestClass.class, "dateAlias", "date"), "MySchema");
 		//
 		Date date = new Calendar.Builder().setDate(2021, 5 - 1, 9).build().getTime();
 
@@ -65,7 +66,7 @@ class GraphQLObjectMapperTest {
 			GraphQLRequestExecutionException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
-				getAliasFields(GraphQLObjectMapperTestClass.class, "enumAlias", "enumField"));
+				getAliasFields(GraphQLObjectMapperTestClass.class, "enumAlias", "enumField"), "MySchema");
 
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
@@ -81,7 +82,7 @@ class GraphQLObjectMapperTest {
 	void testFloat() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
-				getAliasFields(GraphQLObjectMapperTestClass.class, "doubleAlias", "doubleField"));
+				getAliasFields(GraphQLObjectMapperTestClass.class, "doubleAlias", "doubleField"), "MySchema");
 
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
@@ -97,7 +98,7 @@ class GraphQLObjectMapperTest {
 	void testInt() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
-				getAliasFields(GraphQLObjectMapperTestClass.class, "intAlias", "intField"));
+				getAliasFields(GraphQLObjectMapperTestClass.class, "intAlias", "intField"), "MySchema");
 
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
@@ -113,7 +114,7 @@ class GraphQLObjectMapperTest {
 	void testListEmpty() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue("{\"commentsAlias\":[], \"__typename\":\"AllFieldCases\"}",
@@ -128,7 +129,7 @@ class GraphQLObjectMapperTest {
 	void testListOneString() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper
@@ -145,7 +146,7 @@ class GraphQLObjectMapperTest {
 	void testListOneObject() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "friendsAlias", "friends"));
+				getAliasFields(AllFieldCases.class, "friendsAlias", "friends"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue(""//
@@ -167,7 +168,7 @@ class GraphQLObjectMapperTest {
 			GraphQLRequestExecutionException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(Human.class.getPackage().getName(),
-				getAliasFields(Human.class, "appearsInAlias", "appearsIn"));
+				getAliasFields(Human.class, "appearsInAlias", "appearsIn"), "MySchema");
 
 		// Go, go, go
 		Human test = objectMapper.readValue(""//
@@ -186,7 +187,7 @@ class GraphQLObjectMapperTest {
 	void testListTwoCustomScalars() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "datesAlias", "dates"));
+				getAliasFields(AllFieldCases.class, "datesAlias", "dates"), "MySchema");
 		Date date1 = new Calendar.Builder().setDate(2021, 5 - 1, 9).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2021, 5 - 1, 10).build().getTime();
 
@@ -207,7 +208,7 @@ class GraphQLObjectMapperTest {
 	void testListTwoStrings() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue(
@@ -231,7 +232,7 @@ class GraphQLObjectMapperTest {
 	void testListListList() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "matrixAlias", "matrix"));
+				getAliasFields(AllFieldCases.class, "matrixAlias", "matrix"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue(
@@ -260,8 +261,12 @@ class GraphQLObjectMapperTest {
 	@Test
 	void testObject() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
 		// Preparation
+
+		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
+		new MyQueryTypeExecutorMySchema();
+
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "oneWithIdSubTypeAlias", "oneWithIdSubType"));
+				getAliasFields(AllFieldCases.class, "oneWithIdSubTypeAlias", "oneWithIdSubType"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue(""//
@@ -283,7 +288,7 @@ class GraphQLObjectMapperTest {
 			GraphQLRequestExecutionException {
 		// Preparation
 		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
-				getAliasFields(AllFieldCases.class, "nameAlias", "name"));
+				getAliasFields(AllFieldCases.class, "nameAlias", "name"), "MySchema");
 
 		// Go, go, go
 		AllFieldCases test = objectMapper.readValue("{\"nameAlias\":\"a String\", \"__typename\":\"AllFieldCases\"}",

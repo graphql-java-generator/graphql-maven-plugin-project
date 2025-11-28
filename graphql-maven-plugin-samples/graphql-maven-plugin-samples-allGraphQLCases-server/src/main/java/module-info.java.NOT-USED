@@ -1,4 +1,9 @@
 /**
+ * This module is not used, as it prevents eclipse to start the executable GraphQLServerMain class 
+ * directly from eclipse, either as a Java Application, or in debug mode.<br/>
+ *
+ * This file is kept here, as it works once packaged as a jar, and it may be useful for other users.
+ *
  * @See https://docs.spring.io/spring-security/reference/modules.html
  */
 module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_server {

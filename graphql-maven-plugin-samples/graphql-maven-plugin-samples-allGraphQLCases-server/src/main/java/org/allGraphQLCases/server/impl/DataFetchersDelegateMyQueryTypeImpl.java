@@ -165,35 +165,6 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			ret = generator.generateInstance(STP_AllFieldCases_STS.class);
 		}
 
-		// If the 'break' field is requested, we add the content of its 'if' parameter to the returned 'break' field
-		// As this is a test instance, the dev below is oriented only for this test, not to manage a proper response
-		// We do this only when the request is something like: {"query":"query{allFieldCases(input:&input)
-		// {break(if:\"if's value\") __typename}}"}
-		if (dataFetchingEnvironment.getDocument().getDefinitions() != null
-				&& dataFetchingEnvironment.getDocument().getDefinitions().size() == 1) {
-			OperationDefinition requestDefinition = (OperationDefinition) dataFetchingEnvironment.getDocument()
-					.getDefinitions().get(0);
-			if (requestDefinition.getSelectionSet().getSelections() != null
-					&& requestDefinition.getSelectionSet().getSelections().size() == 1) {
-				Field fieldSelection = (Field) requestDefinition.getSelectionSet().getSelections().get(0);
-				if (fieldSelection.getSelectionSet().getSelections() != null
-						&& fieldSelection.getSelectionSet().getSelections().size() >= 1) {
-					// returnSelection: the list of expected fields in the response
-					Field returnSelection = (Field) fieldSelection.getSelectionSet().getSelections().get(0);
-					if (returnSelection.getName().equals("break")) {
-						// Ok, the 'break' field is expected in the response. Let's add the 'if' parameter to the
-						// current break (that has been initialized from the given input)
-						StringValue ifValue = (StringValue) returnSelection.getArguments().get(0).getValue();
-						ret.setBreak(""//
-								+ ((ret.getBreak() == null) ? "" : ret.getBreak())//
-								+ " (if=" //
-								+ ifValue.getValue() //
-								+ ")");
-					}
-				}
-			}
-		}
-
 		return ret;
 	}
 

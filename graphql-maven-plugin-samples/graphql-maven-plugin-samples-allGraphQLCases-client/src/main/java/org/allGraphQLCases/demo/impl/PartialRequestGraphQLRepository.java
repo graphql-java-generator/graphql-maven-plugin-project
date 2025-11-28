@@ -7,16 +7,16 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
-import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
-import org.allGraphQLCases.client.CTP_Human_CTS;
-import org.allGraphQLCases.client.CINP_HumanInput_CINS;
-import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.CEP_extends_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_break_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 
@@ -62,7 +62,8 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	List<CIP_Character_CIS> withList(String name, List<CINP_CharacterInput_CINS> friends) throws GraphQLRequestExecutionException;
+	List<CIP_Character_CIS> withList(String name, List<CINP_CharacterInput_CINS> friends)
+			throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
@@ -76,9 +77,9 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 			+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 			+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 			+ " oneWithIdSubType {id name} "//
-			+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+			+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheName: ?textToAppendToTheNameWithId) {name id}"
 			+ " oneWithoutIdSubType(input: ?input) {name}"//
-			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheName: ?textToAppendToTheNameWithoutId) {name}" //
 			+ "}")
 	public CTP_AllFieldCases_CTS allFieldCases(CINP_AllFieldCasesInput_CINS allFieldCasesInput,
 			@BindParameter(name = "uppercase") Boolean uppercase,
@@ -88,11 +89,11 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 			@BindParameter(name = "dateTime") OffsetDateTime dateTime, //
 			@BindParameter(name = "dates") List<Date> dates,
 			@BindParameter(name = "uppercaseNameList") Boolean uppercaseNameList,
-			@BindParameter(name = "textToAppendToTheFornameWithId") String textToAppendToTheFornameWithId,
+			@BindParameter(name = "textToAppendToTheNameWithId") String textToAppendToTheNameWithId,
 			@BindParameter(name = "input") CINP_FieldParameterInput_CINS input,
 			@BindParameter(name = "nbItemsWithoutId") int nbItemsWithoutId,
 			@BindParameter(name = "inputList") CINP_FieldParameterInput_CINS inputList,
-			@BindParameter(name = "textToAppendToTheFornameWithoutId") String textToAppendToTheFornameWithoutId)
+			@BindParameter(name = "textToAppendToTheNameWithoutId") String textToAppendToTheNameWithoutId)
 			throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -100,8 +101,8 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	@Override
 	@PartialRequest(request = "{case(test: &test, if: ?if)}")
-	public CTP_break_CTS aBreak(@BindParameter(name = "test") CEP_extends_CES test, @BindParameter(name = "if") String _if)
-			throws GraphQLRequestExecutionException;
+	public CTP_break_CTS aBreak(@BindParameter(name = "test") CEP_extends_CES test,
+			@BindParameter(name = "if") String _if) throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Fourth part: a mutation

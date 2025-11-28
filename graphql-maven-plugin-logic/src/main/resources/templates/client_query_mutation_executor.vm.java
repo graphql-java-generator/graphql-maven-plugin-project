@@ -140,6 +140,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

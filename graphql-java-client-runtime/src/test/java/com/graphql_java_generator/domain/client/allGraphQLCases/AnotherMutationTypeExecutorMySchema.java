@@ -61,6 +61,8 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	public AnotherMutationTypeExecutorMySchema() {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
+		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
 	}
 
 	/**

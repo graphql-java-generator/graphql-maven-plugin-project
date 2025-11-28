@@ -9,6 +9,12 @@
 
 # 3.x versions
 
+## Not released yet
+
+* PR #237: Better generation for parameters (thanks to klafbang)
+    * Setting a bind variable to null would erroneously remove the relevant argument in the query
+    * Default value in GraphQL request parameters was not managed
+
 
 ## 3.0.1
 
