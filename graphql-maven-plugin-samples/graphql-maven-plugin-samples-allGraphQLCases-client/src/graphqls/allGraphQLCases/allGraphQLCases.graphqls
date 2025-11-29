@@ -1,12 +1,13 @@
 
 scalar MyCustomScalarForADate 
 	@testDirective(value:"on Scalar") 
-	@specifiedBy(url: "url for the ISO-8601 data format")
+	@specifiedBy(url: "https://en.wikipedia.org/wiki/ISO_8601")
 	@anotherTestDirective 
 
 """ The MyCustomScalarForADateTime uses the ExtendedScalars#MyCustomScalarForADateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
 scalar MyCustomScalarForADateTime
-@testDirective(value:"directive on a custom scalar")
+	@specifiedBy(url: "https://en.wikipedia.org/wiki/ISO_8601")
+	@testDirective(value:"directive on a custom scalar")
 
 scalar Long
 

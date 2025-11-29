@@ -7,8 +7,6 @@ Here are the next tasks listed, as a TODO list:
 * Manage the logback warnings
 * Remove the obsolete github and spotify samples
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
-* Correct the `reporting` part of the pom :
-    * Once the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)
 * Align with GraphQL spec 2021
     * Check the impact of the changes in the interface hierarchies
         * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
