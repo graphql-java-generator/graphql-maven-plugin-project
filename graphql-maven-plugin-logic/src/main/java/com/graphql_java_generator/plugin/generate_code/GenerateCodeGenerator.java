@@ -924,6 +924,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		String resolvedTemplate = resolveTemplate(templateCode);
 
 		context.put("templateName", templateCode.name());
+		context.put("templateFile", templateCode.getDefaultPath());
 
 		try {
 			template = velocityEngine.getTemplate(resolvedTemplate, "UTF-8");

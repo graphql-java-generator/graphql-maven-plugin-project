@@ -1,4 +1,5 @@
 Here are the next tasks listed, as a TODO list:
+* Improve readibility of the generated schemas
 * Correct the java version number in the javadoc tags (must be dynamic, using the maven property)
 * Issue when starting the allGraphQLCases server from the IDE : module xxx not found (where xxx is the maven name with "-" instead of the module name with "_")
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
@@ -11,7 +12,6 @@ Here are the next tasks listed, as a TODO list:
     * Check the impact of the changes in the interface hierarchies
         * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
         * todo: add the PageInfo, Node, Edge, Connection interfaces
-* Improve readibility of the generated schemas
 * Instead of having to parameterize what to do with controllers, the plugin should be able to analyze the existing code by the implementor, find the defined controllers, and just define the others
     * Take a look at [beanshell](https://github.com/beanshell/beanshell)
     * Take a look at this [stackoverflow answer](https://stackoverflow.com/a/36221056/5056068)
