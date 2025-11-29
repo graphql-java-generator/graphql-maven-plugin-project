@@ -1,15 +1,11 @@
 Here are the next tasks listed, as a TODO list:
-* Check the real use of InputParameterType. Its value doesn't seem to really be used
-* Correct the java version number in the javadoc tags (must be dynamuc, using the maven property)
+* Correct the java version number in the javadoc tags (must be dynamic, using the maven property)
 * Issue when starting the allGraphQLCases server from the IDE : module xxx not found (where xxx is the maven name with "-" instead of the module name with "_")
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
 * Manage the Mockito warning, about configuring an agent for the JVM
 * Manage the logback warnings
 * Remove the obsolete github and spotify samples
-* Move the last command of `publish_site.cmd` into the ant commands. 
-    * Add a parameter to select the github account to use (etienne?sf)
-    * Have only the first sentence of the parameter doc in the list of parameters
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Correct the `reporting` part of the pom :
     * Once the corrected site is published, correct the url in the url of the `@specifiedBy` directive for the scalar MyCustomScalarForADate (in allGraphQLCases schema)

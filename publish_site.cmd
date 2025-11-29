@@ -34,11 +34,6 @@ REM in Ant call mvn site:stage
 
 call mvn antrun:run -Prelease
 
-cd target\gh-pages_branch\graphql-maven-plugin-project
-echo Pushing to github
-git push
-cd ..\..\..
-
 echo Go to https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings
 echo Check that graphql-maven-plugin-project.graphql-java-generator.com
 echo is into the "Custom domain" parameter

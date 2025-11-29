@@ -7,7 +7,7 @@
 	<!-- set global properties for this build -->
 	<property name="sourceFolder" location="target/staging" />
 	<property name="targetFolder" location="target/gh-pages_branch" />
-	<property name="targetProjectFolder" location="target/gh-pages_branch/graphql-maven-plugin-project" />
+	<property name="targetProjectFolder" location="${targetFolder}/graphql-maven-plugin-project" />
 
 	<target name="deploy">
 
@@ -81,10 +81,11 @@
 
 
 		<!-- git push -->
-		<echo message="The site is ready to be pushed. Do these commands:" level="info" />
-		<echo message="cd ${targetProjectFolder}" level="info" />
-		<echo message="git push" level="info" />
-		<!-- exec executable="git" dir="${targetProjectFolder}" failonerror="true"> <arg value="push" /> </exec -->
+		<echo message="Pushing to github" level="info" />
+		<exec executable="git" dir="${targetProjectFolder}" failonerror="true">
+			<arg value="push" />
+		</exec>
+
 	</target>
 
 </project>
