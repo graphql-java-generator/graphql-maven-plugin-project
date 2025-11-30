@@ -5,7 +5,6 @@ Here are the next tasks listed, as a TODO list:
 * Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
 * Manage the Mockito warning, about configuring an agent for the JVM
 * Manage the logback warnings
-* Remove the obsolete github and spotify samples
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021
     * Check the impact of the changes in the interface hierarchies
