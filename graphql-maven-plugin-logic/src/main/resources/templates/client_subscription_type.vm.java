@@ -106,7 +106,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 #if(!${configuration.separateUtilityClasses} && ${object.requestType})
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null, "${springBeanSuffix}");
+			extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null, "${springBeanSuffix}"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		return extensionMapper;
 	}

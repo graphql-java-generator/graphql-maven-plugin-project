@@ -44,10 +44,10 @@ public class ${entity}Controller {
 
 	@Autowired
 	protected GraphqlServerUtils graphqlServerUtils;
-
 ## The constructor is only used to declare the relevant data loader... if any (0 or 1 for each class)
 #foreach ($batchLoader in $batchLoaders)
 #if ($dataFetchersDelegate.type.name == $batchLoader.type.name)
+
 	public ${entity}Controller(BatchLoaderRegistry registry) {
 		// Registering the data loaders is useless if the @BatchMapping is used. But we need it here, for backward
 		// compatibility with code developed against the previous plugin versions
@@ -64,11 +64,10 @@ public class ${entity}Controller {
 				return map;
 			});
 		});
-
 	}
 #end
 #end
-	
+
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ## To manage enum values that are java keyword, enum values like if, else (...) are stored in enum values prefixed by _ (like _if, _else...)
@@ -92,7 +91,7 @@ ${velocityUtils.repeat("List<",$argument.fieldTypeAST.listDepth)}Object${velocit
 #else
 $argument.javaTypeFullClassname##
 #end
-#end  ##macro(argumentType $argument)
+#end##macro(argumentType $argument)
 ##
 ##
 ##
@@ -102,7 +101,7 @@ ${argument.javaName}Param##
 #else
 ${argument.javaName}##
 #end
-#end ##macro(argumentName $argument)
+#end##macro(argumentName $argument)
 ##
 ##
 #if(${dataFetcher.batchMapping})
@@ -139,7 +138,7 @@ ${argument.javaName}##
 		return this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(batchLoaderEnvironment, graphQLContext, keys);
 	}
 
-#else        ## that is: ${dataFetcher.batchMapping} is false
+#else## that is: ${dataFetcher.batchMapping} is false
 	/**
 	 * This method loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}.  It returns an Object: the data 
 	 * fetcher implementation may return any type that is accepted by a spring-graphql controller<BR/>
@@ -195,8 +194,8 @@ ${argument.javaName}##
 #end
 ########################
 	public Object ${dataFetcher.field.javaName}(DataFetchingEnvironment dataFetchingEnvironment##
-#if(${dataFetcher.withDataLoader})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
-#if($dataFetcher.graphQLOriginType)			, ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
+#if(${dataFetcher.withDataLoader}), DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
+#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
 			@Argument("${argument.name}") #argumentType($argument) #argumentName($argument)#end) {
 ##
 #foreach($argument in $dataFetcher.field.inputParameters)
@@ -205,15 +204,15 @@ ${argument.javaName}##
 #if($argument.fieldTypeAST.listDepth>0)
 		@SuppressWarnings("unchecked")
 #end
-		$argument.javaTypeFullClassname ${argument.javaName} = ($argument.javaTypeFullClassname) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(#argumentName($argument), ${argument.type.classFullName}.class, ${argument.fieldTypeAST.listDepth}, "${entity}", "${argument.name}");
+		$argument.javaTypeFullClassname ${argument.javaName} = ($argument.javaTypeFullClassname) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(#argumentName($argument), ${argument.type.classFullName}.class, ${argument.fieldTypeAST.listDepth}, "${entity}", "${argument.name}"); //$NON-NLS-1$ //$NON-NLS-2$
 #end
-#end ##foreach($argument)
-		return #if($isEnum)graphqlServerUtils.enumValueToString(#end this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.withDataLoader}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
+#end##foreach($argument)
+		return #if($isEnum)graphqlServerUtils.enumValueToString(#{end}this.${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.withDataLoader}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#{end}#foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
 ##
 ##
-#end ##if(${dataFetcher.batchMapping})
+#end##if(${dataFetcher.batchMapping})
 ##
-#end ##foreach($dataFetcher)
+#end##foreach($dataFetcher)
 }

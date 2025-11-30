@@ -38,17 +38,18 @@ public class GraphQLWiring implements RuntimeWiringConfigurer {
 ##
 ## Step 1: wiring the custom scalar definitions
 ##
-			.scalar(GraphQLScalarType.newScalar(
+			.scalar(GraphQLScalarType
+				.newScalar(##
 #if (${customScalar.customScalarDefinition.graphQLScalarTypeClass})
-				new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}())
+new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}())
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
-				${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
+${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
-				${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
+${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
 #else
-			.scalar(): ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
+scalar(): ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end
-				.name("${customScalar.name}")
+				.name("${customScalar.name}") //$NON-NLS-1$
 				.build())
 #end ##foreach
 			;

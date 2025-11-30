@@ -11,6 +11,11 @@
 
 ## Not released yet
 
+All modes (client and server):
+* [minor] Better formatting of the generated code
+* [minor] All strings in the generated code are marked with //$NON-NLS-1$ style comments, to prevent compilation warnings in some environments
+
+Client mode:
 * PR #237: Better generation for parameters (thanks to klafbang)
     * Setting a bind variable to null would erroneously remove the relevant argument in the query
     * Default value in GraphQL request parameters was not managed

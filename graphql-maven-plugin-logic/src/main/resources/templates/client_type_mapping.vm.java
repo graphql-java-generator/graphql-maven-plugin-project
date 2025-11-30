@@ -36,8 +36,8 @@ public class GraphQLTypeMappingImpl implements GraphQLTypeMapping {
 
 	public static void initGraphQLTypeMappingRegistry() {
 		// Registers this GraphQLTypeMappingImpl into the registry
-		if (!GraphQLTypeMappingRegistry.isGraphQLTypeMappingRegistered("$springBeanSuffix")) {
-			GraphQLTypeMappingRegistry.registerGraphQLTypeMapping(new GraphQLTypeMappingImpl("$springBeanSuffix"));
+		if (!GraphQLTypeMappingRegistry.isGraphQLTypeMappingRegistered("$springBeanSuffix")) { //$NON-NLS-1$
+			GraphQLTypeMappingRegistry.registerGraphQLTypeMapping(new GraphQLTypeMappingImpl("$springBeanSuffix")); //$NON-NLS-1$
 		}
 	}
 
@@ -48,27 +48,27 @@ public class GraphQLTypeMappingImpl implements GraphQLTypeMapping {
 		String line;
 		Class<?> clazz;
 		ClassLoader classLoader = GraphQLTypeMappingImpl.class.getClassLoader();
-		final String RESOURCE_PATH = "typeMapping" + schemaName + ".csv";
+		final String RESOURCE_PATH = "typeMapping" + schemaName + ".csv"; //$NON-NLS-1$ //$NON-NLS-2$ 
 
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(classLoader.getResourceAsStream(RESOURCE_PATH)))) {
 			while ((line = reader.readLine()) != null) {
-				String[] keyValue = line.split(",");
+				String[] keyValue = line.split(","); //$NON-NLS-1$
 				if (keyValue.length != 2) {
-					throw new RuntimeException("Invalid line in typeMapping.csv: " + line);
+					throw new RuntimeException("Invalid line in typeMapping.csv: " + line); //$NON-NLS-1$ 
 				}
 				try {
 					clazz = ClassUtils.forName(keyValue[1], classLoader);
 				} catch (Exception e) {
-					throw new RuntimeException("Error while looking for the class of the type '" + keyValue[0] + "': "
-							+ e.getClass().getSimpleName() + "-" + e.getMessage(), e);
+					throw new RuntimeException("Error while looking for the class of the type '" + keyValue[0] + "': " //$NON-NLS-1$ //$NON-NLS-2$ 
+							+ e.getClass().getSimpleName() + "-" + e.getMessage(), e); //$NON-NLS-1$
 				}
 				map.put(keyValue[0], clazz);
 			} // while
 		} catch (NullPointerException e) {
-			throw new RuntimeException("NullPointerException while reading type mapping : " + RESOURCE_PATH);
+			throw new RuntimeException("NullPointerException while reading type mapping : " + RESOURCE_PATH); //$NON-NLS-1$ 
 		} catch (IOException e) {
-			throw new RuntimeException("Error while reading type mapping (" + RESOURCE_PATH + "): " + e.getMessage(),
+			throw new RuntimeException("Error while reading type mapping (" + RESOURCE_PATH + "): " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$ 
 					e);
 		}
 	}

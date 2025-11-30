@@ -28,25 +28,25 @@ public class CustomScalarRegistryInitializer {
 	 * defined in the project pom
 	 */
 	public static void initCustomScalarRegistry() {
-		if (!CustomScalarRegistryImpl.isCustomScalarRegistryInitialized("$springBeanSuffix")) {
+		if (!CustomScalarRegistryImpl.isCustomScalarRegistryInitialized("$springBeanSuffix")) { //$NON-NLS-1$
 			CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 			CustomScalarRegistryImpl.setCustomScalarRegistry("$springBeanSuffix", customScalarRegistry); //$NON-NLS-1$
 
 #if ($isPluginModeClient)
 			// Registering the ID parser, for client mode
-			customScalarRegistry.registerGraphQLScalarType("ID", GraphQLScalarTypeIDClient.ID, String.class);		
+			customScalarRegistry.registerGraphQLScalarType("ID", GraphQLScalarTypeIDClient.ID, String.class); //$NON-NLS-1$
 #else
 			// Registering the ID parser, for server mode
-			customScalarRegistry.registerGraphQLScalarType("ID", GraphQLScalarTypeIDServer.ID, ${configuration.javaTypeForIDType}.class);		
+			customScalarRegistry.registerGraphQLScalarType("ID", GraphQLScalarTypeIDServer.ID, ${configuration.javaTypeForIDType}.class); //$NON-NLS-1$
 #end
 
 #foreach ($customScalar in $customScalars)
 #if (${customScalar.customScalarDefinition.graphQLScalarTypeClass})
-			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}(), ${customScalar.customScalarDefinition.javaType}.class);
+			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}(), ${customScalar.customScalarDefinition.javaType}.class); //$NON-NLS-1$
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
-			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", ${customScalar.customScalarDefinition.graphQLScalarTypeStaticField}, ${customScalar.customScalarDefinition.javaType}.class);
+			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", ${customScalar.customScalarDefinition.graphQLScalarTypeStaticField}, ${customScalar.customScalarDefinition.javaType}.class); //$NON-NLS-1$
 #elseif (${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
-			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", ${customScalar.customScalarDefinition.graphQLScalarTypeGetter}, ${customScalar.customScalarDefinition.javaType}.class);
+			customScalarRegistry.registerGraphQLScalarType("${customScalar.name}", ${customScalar.customScalarDefinition.graphQLScalarTypeGetter}, ${customScalar.customScalarDefinition.javaType}.class); //$NON-NLS-1$
 #else
 			customScalarRegistry.registerGraphQLScalarType: ${customScalar.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

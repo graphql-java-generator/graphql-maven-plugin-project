@@ -54,7 +54,7 @@ public class ${targetFileName} {
 	@Autowired
 	ApplicationContext applicationContext;
 	
-	final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); //$NON-NLS-1$
 
 	/**
 	 * This beans defines the GraphQL endpoint for the current GraphQL schema, as a {@link String}. The <I>application.properties</I> 
@@ -77,12 +77,12 @@ public class ${targetFileName} {
 	@Bean
 	@ConditionalOnMissingBean(name = "webClient${springBeanSuffix}")
 	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}) {
-		logger.debug("Creating default webClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) for graphqlEndpoint${springBeanSuffix} [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]",
+		logger.debug("Creating default webClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) for graphqlEndpoint${springBeanSuffix} [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]", //$NON-NLS-1$
 				formater.format(new Date(applicationContext.getStartupDate())));
 		return WebClient.builder()//
 				.baseUrl(graphqlEndpoint${springBeanSuffix})//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint${springBeanSuffix}))
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint${springBeanSuffix})) //$NON-NLS-1$
 				.build();
 	}
 
@@ -90,12 +90,12 @@ public class ${targetFileName} {
 	@Bean
 	@ConditionalOnMissingBean(name = "httpGraphQlClient${springBeanSuffix}")
 	GraphQlClient httpGraphQlClient${springBeanSuffix}() {
-		logger.debug("Creating default httpGraphQlClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]",
+		logger.debug("Creating default httpGraphQlClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]", //$NON-NLS-1$
 				formater.format(new Date(applicationContext.getStartupDate())));
 		// The usual way to autowire other beans is to define them as parameters of the bean definition methods. But this doesn't
 		// seem to work when several beans of the same type exist, and one is defined as "@Primary". 
 		// So we retrieve "manually" the needed bean from its name:
-		WebClient webClient = (WebClient) applicationContext.getBean("webClient${springBeanSuffix}");
+		WebClient webClient = (WebClient) applicationContext.getBean("webClient${springBeanSuffix}"); //$NON-NLS-1$
 		return HttpGraphQlClient.builder(webClient).build();
 	}
 
@@ -105,7 +105,7 @@ public class ${targetFileName} {
 	@Bean
 	@ConditionalOnMissingBean(name = "webSocketGraphQlClient${springBeanSuffix}")
 	GraphQlClient webSocketGraphQlClient${springBeanSuffix}() {
-		logger.debug("Creating default webSocketGraphQlClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]",
+		logger.debug("Creating default webSocketGraphQlClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]", //$NON-NLS-1$
 				formater.format(new Date(applicationContext.getStartupDate())));
 		WebSocketClient client = new ReactorNettyWebSocketClient();
 		return WebSocketGraphQlClient.builder(graphqlEndpoint${springBeanSuffix}Url, client).build();

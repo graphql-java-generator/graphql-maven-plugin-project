@@ -75,7 +75,7 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 			GraphQLContext graphQLContext, //
 			List<${dataFetcher.graphQLOriginType.classFullName}> keys);
 
-#else        ## that is: ${dataFetcher.batchMapping} is false
+#else## that is: ${dataFetcher.batchMapping} is false
 	/**
 #if ($dataFetcher.field.description)
 	 * Description for the ${dataFetcher.field.name} field: <br/>
@@ -146,8 +146,8 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 ##
 ##
 
-#end   ## #if(${dataFetcher.batchMapping})
-#end   ## #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
+#end## #if(${dataFetcher.batchMapping})
+#end## #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ##
 ##

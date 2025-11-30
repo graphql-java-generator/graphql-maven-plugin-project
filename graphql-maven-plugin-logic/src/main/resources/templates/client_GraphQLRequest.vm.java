@@ -156,7 +156,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public #if(${configuration.generateDeprecatedRequestResponse})${query.name}Response#else${query.javaName}#end execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
-		logExecution(RequestType.query, "${query.javaName}", parameters);
+		logExecution(RequestType.query, "${query.javaName}", parameters); //$NON-NLS-1$
 		return exec(#if(${configuration.generateDeprecatedRequestResponse})${query.name}Response#else${query.javaName}#end.class, parameters);
 	}
 
@@ -237,7 +237,7 @@ public class GraphQLRequest${springBeanSuffix} extends ObjectResponse {
 	 */
 	public #if(${configuration.generateDeprecatedRequestResponse})${mutation.name}Response#else${mutation.javaName}#end execMutation(Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
-		logExecution(RequestType.mutation, "${mutation.javaName}", parameters);
+		logExecution(RequestType.mutation, "${mutation.javaName}", parameters); //$NON-NLS-1$
 		return exec(#if(${configuration.generateDeprecatedRequestResponse})${mutation.name}Response#else${mutation.javaName}#end.class, parameters);
 	}
 
