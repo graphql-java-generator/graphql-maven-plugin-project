@@ -223,7 +223,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>17</source>
+					<source>${java.version}</source>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -108,7 +108,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>8</source>
+					<source>${java.version}</source>
 				</configuration>
 			</plugin>
 			<plugin>
