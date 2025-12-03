@@ -1,3 +1,4 @@
+@SuppressWarnings({ "requires-automatic", "requires-transitive-automatic" }) //
 module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime {
 
 	requires transitive com.graphqljava;

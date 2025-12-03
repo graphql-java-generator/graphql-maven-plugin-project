@@ -130,6 +130,9 @@
 						<source>${java.version}</source>
 						<target>${java.version}</target>
 						<release>${java.release}</release>
+						<compilerArgs>
+						    <arg>-Xlint:-requires-transitive-automatic</arg>
+						</compilerArgs>
 					</configuration>
 				</plugin>
 				<plugin>

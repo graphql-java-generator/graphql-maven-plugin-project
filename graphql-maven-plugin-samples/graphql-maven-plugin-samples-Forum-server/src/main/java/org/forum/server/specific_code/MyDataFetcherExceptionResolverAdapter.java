@@ -4,6 +4,7 @@
 package org.forum.server.specific_code;
 
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import graphql.GraphQLError;
@@ -21,7 +22,7 @@ import graphql.schema.DataFetchingEnvironment;
 public class MyDataFetcherExceptionResolverAdapter extends DataFetcherExceptionResolverAdapter {
 
 	@Override
-	protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
+	protected GraphQLError resolveToSingleError(@NonNull Throwable ex, @NonNull DataFetchingEnvironment env) {
 		if (ex.getClass().equals(GraphQlException.class)) {
 			return (GraphQLError) ex;
 		} else {

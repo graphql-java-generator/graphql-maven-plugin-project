@@ -20,6 +20,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ClientHttpResponse;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractor;
@@ -145,7 +146,7 @@ public class OAuthTokenExtractor {
 	 */
 	public static class OAuthTokenFilter implements ExchangeFilterFunction {
 		@Override
-		public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
+		public @NonNull Mono<ClientResponse> filter(@NonNull ClientRequest request, @NonNull ExchangeFunction next) {
 			String url = request.url().toString();
 			if (!url.equals(DUMMY_REQUEST)) {
 				// Standard case. We relay the request to the next ExchangeFilter
@@ -187,20 +188,21 @@ public class OAuthTokenExtractor {
 		}
 
 		@Override
-		public HttpStatus statusCode() {
+		public @NonNull HttpStatus statusCode() {
 			return HttpStatus.OK;
 		}
 
 		@Override
+		@Deprecated
 		public int rawStatusCode() {
 			return 200;
 		}
 
 		@Override
-		public Headers headers() {
+		public @NonNull Headers headers() {
 			return new Headers() {
 				@Override
-				public List<String> header(String headerName) {
+				public @NonNull List<String> header(@NonNull String headerName) {
 					List<String> ret = new ArrayList<>();
 					if (AUTHORIZATION_HEADER_NAME.equals(headerName)) {
 						ret.add(authorizationHeader);
@@ -209,44 +211,47 @@ public class OAuthTokenExtractor {
 				}
 
 				@Override
-				public Optional<MediaType> contentType() {
+				public @NonNull Optional<MediaType> contentType() {
 					return Optional.of((MediaType) null);
 				}
 
 				@Override
-				public OptionalLong contentLength() {
+				public @NonNull OptionalLong contentLength() {
 					return OptionalLong.of(0);
 				}
 
 				@Override
-				public HttpHeaders asHttpHeaders() {
-					return null;
+				public @NonNull HttpHeaders asHttpHeaders() {
+					return new HttpHeaders();
 				}
 			};
 
 		}
 
 		@Override
-		public MultiValueMap<String, ResponseCookie> cookies() {
+		@SuppressWarnings("null")
+		public @NonNull MultiValueMap<String, ResponseCookie> cookies() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public ExchangeStrategies strategies() {
+		@SuppressWarnings("null")
+		public @NonNull ExchangeStrategies strategies() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public <T> T body(BodyExtractor<T, ? super ClientHttpResponse> extractor) {
+		@SuppressWarnings("null")
+		public @NonNull <T> T body(@NonNull BodyExtractor<T, ? super ClientHttpResponse> extractor) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public <T> Mono<T> bodyToMono(Class<? extends T> elementClass) {
+		public @NonNull <T> Mono<T> bodyToMono(@NonNull Class<? extends T> elementClass) {
 			if (elementClass == String.class) {
 				return Mono.just((T) ((authorizationHeader == null) ? "" : authorizationHeader));
 			} else {
@@ -257,67 +262,70 @@ public class OAuthTokenExtractor {
 		}
 
 		@Override
-		public <T> Mono<T> bodyToMono(ParameterizedTypeReference<T> elementTypeRef) {
+		public @NonNull <T> Mono<T> bodyToMono(@NonNull ParameterizedTypeReference<T> elementTypeRef) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Flux<T> bodyToFlux(Class<? extends T> elementClass) {
+		public @NonNull <T> Flux<T> bodyToFlux(@NonNull Class<? extends T> elementClass) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Flux<T> bodyToFlux(ParameterizedTypeReference<T> elementTypeRef) {
+		public @NonNull <T> Flux<T> bodyToFlux(@NonNull ParameterizedTypeReference<T> elementTypeRef) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public Mono<Void> releaseBody() {
+		public @NonNull Mono<Void> releaseBody() {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Mono<ResponseEntity<T>> toEntity(Class<T> bodyClass) {
+		public @NonNull <T> Mono<ResponseEntity<T>> toEntity(@NonNull Class<T> bodyClass) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Mono<ResponseEntity<T>> toEntity(ParameterizedTypeReference<T> bodyTypeReference) {
+		public @NonNull <T> Mono<ResponseEntity<T>> toEntity(@NonNull ParameterizedTypeReference<T> bodyTypeReference) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Mono<ResponseEntity<List<T>>> toEntityList(Class<T> elementClass) {
+		public @NonNull <T> Mono<ResponseEntity<List<T>>> toEntityList(@NonNull Class<T> elementClass) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public <T> Mono<ResponseEntity<List<T>>> toEntityList(ParameterizedTypeReference<T> elementTypeRef) {
+		public @NonNull <T> Mono<ResponseEntity<List<T>>> toEntityList(
+				@NonNull ParameterizedTypeReference<T> elementTypeRef) {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public Mono<ResponseEntity<Void>> toBodilessEntity() {
+		public @NonNull Mono<ResponseEntity<Void>> toBodilessEntity() {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public Mono<WebClientResponseException> createException() {
+		public @NonNull Mono<WebClientResponseException> createException() {
 			throw new RuntimeException("Not Implemented");
 		}
 
 		@Override
-		public String logPrefix() {
+		public @NonNull String logPrefix() {
 			return this.getClass().getSimpleName();
 		}
 
 		@Override
-		public <T> Mono<T> createError() {
+		@SuppressWarnings("null")
+		public @NonNull <T> Mono<T> createError() {
 			return null;
 		}
 
 		@Override
-		public HttpRequest request() {
+		@SuppressWarnings("null")
+		public @NonNull HttpRequest request() {
 			return null;
 		}
 	}

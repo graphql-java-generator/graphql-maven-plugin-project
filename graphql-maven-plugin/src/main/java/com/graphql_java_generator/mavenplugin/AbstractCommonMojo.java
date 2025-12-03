@@ -7,10 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -33,13 +34,13 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 public abstract class AbstractCommonMojo extends AbstractMojo implements CommonConfiguration {
 
 	/** The Maven {@link BuildContext} that allows to link the build with the IDE */
-	@Component
+	@Inject
 	protected BuildContext buildContext;
 
 	@Parameter(defaultValue = "${project.build.directory}")
 	private File projectBuildDir;
 
-	@Component
+	@Inject
 	protected MavenProjectHelper projectHelper;
 
 	/**
@@ -128,7 +129,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	public Integer maxTokens;
 
 	/**
-	 * Not available to the user: the {@link MavenProject} in which the plugin executes
+	 * Not available to the user: the MavenProject in which the plugin executes
 	 */
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;

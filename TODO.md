@@ -1,9 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 * Issue when starting the allGraphQLCases server from the IDE : module xxx not found (where xxx is the maven name with "-" instead of the module name with "_")
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
-* Manage the warning _ Parameter 'healthcheckUrl' is unknown for plugin 'process-exec-maven-plugin:1.0.2:start_
-* Manage the Mockito warning, about configuring an agent for the JVM
-* Manage the logback warnings
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021
     * Check the impact of the changes in the interface hierarchies

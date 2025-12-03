@@ -8,6 +8,7 @@ package ${packageUtilName};
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.GraphQLScalarType;
@@ -21,13 +22,12 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 @Component("graphQLWiring${configuration.springBeanSuffix}")
-@SuppressWarnings("unused")
 public class GraphQLWiring implements RuntimeWiringConfigurer {
 
 	/** The logger for this instance */
 	protected Logger logger = LoggerFactory.getLogger(GraphQLWiring.class);
 
-	public void configure(graphql.schema.idl.RuntimeWiring.Builder builder) {
+	public void configure(@NonNull graphql.schema.idl.RuntimeWiring.Builder builder) {
 #if ($customScalars.size() == 0)
 		// No configured custom scalars
 #else

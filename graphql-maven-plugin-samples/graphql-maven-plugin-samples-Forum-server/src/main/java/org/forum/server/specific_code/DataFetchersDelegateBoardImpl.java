@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.Topic;
@@ -18,10 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
-import reactor.core.publisher.Flux;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -40,20 +37,19 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	TopicRepository topicRepository;
 	@Resource
 	BoardRepository boardRepository;
-	
+
 	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, Date since) {
-		if (since == null)
-			return this.topicRepository.findByBoardId(source.getId());
-		else
-			return this.topicRepository.findByBoardIdAndSince(source.getId(), since);
+		if (since == null) {
+			return topicRepository.findByBoardId(source.getId());
+		} else {
+			return topicRepository.findByBoardIdAndSince(source.getId(), since);
+		}
 	}
 
 	@Override
-	public Object topics(
-			DataFetchingEnvironment dataFetchingEnvironment,
+	public Object topics(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<java.lang.Long, org.forum.server.graphql.Topic> dataLoader,
-			org.forum.server.graphql.Board origin,
-			java.util.Date since) {
+			org.forum.server.graphql.Board origin, java.util.Date since) {
 		// When the data is modeled this way (that is: in a relational database), using Data Loader is not an
 		// optimization.
 		// But this is used here for integration tests

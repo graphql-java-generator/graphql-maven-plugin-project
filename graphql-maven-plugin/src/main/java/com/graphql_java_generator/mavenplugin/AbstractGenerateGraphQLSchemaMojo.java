@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.maven.plugins.annotations.Component;
+import javax.inject.Inject;
+
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 
@@ -36,7 +37,7 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
 	String targetSchemaFileName;
 
-	@Component
+	@Inject
 	protected MavenProjectHelper projectHelper;
 
 	AbstractGenerateGraphQLSchemaMojo(Class<?> springConfigurationClass) {
