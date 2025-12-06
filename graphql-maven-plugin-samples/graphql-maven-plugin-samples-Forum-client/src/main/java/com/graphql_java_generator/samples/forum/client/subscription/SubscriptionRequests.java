@@ -68,7 +68,12 @@ public class SubscriptionRequests {
 		// For this test, we need to be sure that the subscription is active, before creating the post (that we will
 		// receive a notification about). 3s: that's long, but my PC is so slow from time to time... :(
 		try {
-			Thread.sleep(3000);
+			int waitingTime = 3;
+			Thread.sleep(10); // due to multithreading, we need a minimal wait here to be sure that the below message
+								// is displayed after the 'Submitting the xxx subscription' one
+			System.out.println("Waiting " + waitingTime
+					+ " seconds, to be sure that the subscription is active before creating the post (that should trigger a notification)");
+			Thread.sleep(waitingTime * 1000);
 		} catch (InterruptedException e1) {
 		}
 
@@ -97,6 +102,7 @@ public class SubscriptionRequests {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 			if ((notifiedPost = postSubscriptionCallback.lastReceivedMessage) != null) {
+				System.out.println("The notification for the post creation has been received: " + notifiedPost);
 				// Ok, we're connected. We're done
 				break;
 			}

@@ -28,6 +28,11 @@ import com.graphql_java_generator.client.OAuthTokenExtractor;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * This class contains the Spring configuration, to define the beans used by the GraphQL client, with OAuth2.
+ * 
+ * @author etienne-sf
+ */
 @Configuration
 public class SpringConfig {
 

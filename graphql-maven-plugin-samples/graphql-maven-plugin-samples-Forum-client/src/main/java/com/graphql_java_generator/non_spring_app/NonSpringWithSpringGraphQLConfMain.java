@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.minimal_app.MinimalSpringApp;
+import com.graphql_java_generator.samples.forum.SpringConfig;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util.SubscriptionExecutor;
@@ -23,7 +24,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.util
  * 
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphqlClientUtils.class,
+@SpringBootApplication(scanBasePackageClasses = { SpringConfig.class, GraphqlClientUtils.class,
 		QueryExecutor.class })
 public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 
@@ -53,7 +54,8 @@ public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 	SubscriptionExecutor subscriptionExecutor;
 
 	public static void main(String[] args) {
-		SpringApplication.run(MinimalSpringApp.class, args);
+		// Start Spring with the explicit configuration class for the Forum sample
+		SpringApplication.run(SpringConfig.class, args);
 	}
 
 	/**

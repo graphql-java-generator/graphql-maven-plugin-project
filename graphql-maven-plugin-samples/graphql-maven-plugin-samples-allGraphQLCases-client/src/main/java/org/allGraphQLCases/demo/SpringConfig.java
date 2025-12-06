@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.client.GraphQlClient;
-import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -61,8 +60,11 @@ public class SpringConfig {
 	}
 
 	@Bean
+	@Primary // Overrides the default one provided by the plugin
 	@SuppressWarnings("static-method")
-	public WebClient webClient(//
+	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
+	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
+	public WebClient webClientAllGraphQLCases(//
 			String graphqlEndpointAllGraphQLCases, //
 			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
@@ -77,23 +79,8 @@ public class SpringConfig {
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointAllGraphQLCases))
 				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
-				// Logging filter to show outgoing request headers (helps check Authorization header)
-				.filter((request, next) -> {
-					logger.debug("[WebClient] Outgoing request to {} with headers: {}", request.url(), request.headers());
-					return next.exchange(request);
-				})
 				.exchangeStrategies(exchangeStrategies)//
 				.build();
-	}
-
-	@Bean(name = "webClientAllGraphQLCases")
-	@SuppressWarnings("static-method")
-	public WebClient webClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, CodecCustomizer defaultCodecCustomizer,
-			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
-			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
-		// Delegate to the primary webClient bean so Spring will ensure a single instance is used
-		return webClient(graphqlEndpointAllGraphQLCases, defaultCodecCustomizer, httpClientAllGraphQLCases,
-				serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);
 	}
 
 	/**
@@ -109,8 +96,9 @@ public class SpringConfig {
 	 * @return
 	 */
 	@Bean
-	@Qualifier("AllGraphQLCases")
-	@Primary
+	@Primary // Overrides the default one provided by the plugin
+	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
+	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
 	GraphQlClient webSocketGraphQlClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases,
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
 
@@ -141,14 +129,6 @@ public class SpringConfig {
 		};
 
 		return WebSocketGraphQlClient.builder(graphqlEndpointAllGraphQLCases, client).build();
-	}
-
-	@Bean(name = "httpGraphQlClientAllGraphQLCases")
-	@SuppressWarnings("static-method")
-	public org.springframework.graphql.client.GraphQlClient httpGraphQlClientAllGraphQLCases(
-			@Qualifier("webClientAllGraphQLCases") WebClient webClientAllGraphQLCases) {
-		logger.debug("Creating httpGraphQlClientAllGraphQLCases from OAuth-enabled webClientAllGraphQLCases");
-		return HttpGraphQlClient.builder(webClientAllGraphQLCases).build();
 	}
 
 }

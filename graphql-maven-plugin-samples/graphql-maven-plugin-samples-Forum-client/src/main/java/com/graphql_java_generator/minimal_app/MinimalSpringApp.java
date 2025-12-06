@@ -37,6 +37,11 @@ public class MinimalSpringApp implements CommandLineRunner {
 	SubscriptionExecutor subscriptionExecutor;
 
 	public static void main(String[] args) {
+		System.out.println(
+				"WARNING: This minimal Spring app does not implement any OAuth2 authentication. It is provided as a minimal demo");
+		System.out.println(
+				"         Therefore, as the GraphQL server requires OAuth2 authentication, all requests will fail if run against the provided forum server.");
+
 		SpringApplication.run(MinimalSpringApp.class, args);
 	}
 
