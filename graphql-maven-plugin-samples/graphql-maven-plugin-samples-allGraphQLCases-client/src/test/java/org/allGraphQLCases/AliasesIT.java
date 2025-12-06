@@ -60,9 +60,9 @@ public class AliasesIT {
 	static protected Logger logger = LoggerFactory.getLogger(AliasesIT.class);
 
 	@Autowired
-	MyQueryTypeExecutorAllGraphQLCases queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryExecutor;
 	@Autowired
-	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationExecutor;
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
@@ -78,7 +78,7 @@ public class AliasesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_ListOfList() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor
 				.getWithListOfListGraphQLRequest("{matrix2 : matrix}");
 		//
 		List<List<Double>> matrixSrc = new ArrayList<>();
@@ -104,7 +104,7 @@ public class AliasesIT {
 		};
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS allFieldCases = queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc);
+		CTP_AllFieldCases_CTS allFieldCases = queryExecutor.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc);
 
 		// Verification
 
@@ -124,11 +124,11 @@ public class AliasesIT {
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor
 				.getAllFieldCasesGraphQLRequest("{alias65:issue65(inputs: &inputs) issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = queryType.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = queryExecutor.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
 
 		// Verification
 		List<CTP_AllFieldCasesWithoutIdSubtype_CTS> issue65 = ret.getIssue65();
@@ -153,7 +153,7 @@ public class AliasesIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS ret = queryType
+		CTP_MyQueryType_CTS ret = queryExecutor
 				.exec("query{issue200(param:false) anAliasForTrue:issue200(param:true) anAliasForNull:issue200}");
 
 		// Verification
@@ -171,7 +171,7 @@ public class AliasesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_FullQuery() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases multipleQueriesRequest = queryType.getGraphQLRequest("{"//
+		GraphQLRequestAllGraphQLCases multipleQueriesRequest = queryExecutor.getGraphQLRequest("{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {aliasId:id id aliasName:name name aliasAppearsIn:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name}}}"//
 				+ " queryAlias:withOneOptionalParam  {aliasId:id id aliasName:name name aliasAppearsIn2:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId2:id id aliasName2:name name}}}"//
@@ -312,7 +312,7 @@ public class AliasesIT {
 				.withAliases(new ArrayList<String>()).withPlanets(Arrays.asList("a planet"))
 				.withMatrix(Arrays.asList(Arrays.asList(1.0, 2.0), Arrays.asList(3.0)))//
 				.build();
-		GraphQLRequestAllGraphQLCases createHuman = mutationType.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases createHuman = mutationExecutor.getGraphQLRequest(""//
 				+ "mutation aMutationAlias($inputType:AllFieldCasesInput!) {"//
 				+ " mutationAlias : createAllFieldCases(input:$inputType) {"//
 				+ "  aliasId:id id aliasName:name name aliasAge:age age "
@@ -442,6 +442,33 @@ public class AliasesIT {
 		assertEquals(verif.getId(), verif.getAliasValue("aliasId"));
 		assertEquals(verif.getName(), verif.getAliasValue("aliasName"));
 		assertEquals(verif.getHomePlanet(), verif.getAliasValue("aliasHomePlanet"));
+	}
+
+	/**
+	 * Test of an issue solved in release 3.1: a parameter on the field of an interface would raise a
+	 * NullPointerException
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 * @throws GraphQLRequestPreparationException
+	 */
+	@Test
+	void checkParameterOnFieldOfAnInterface()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// Let's execute the query that will trigger the overridden controller
+		String req = "{name(uppercase:true) aliasForName:name(uppercase:false) }";
+
+		List<CIP_Character_CIS> result = queryExecutor.withoutParameters(req);
+		assertNotNull(result, "The returned value should not be null");
+		assertTrue(result.size() > 0, "The returned list should not be empty");
+
+		String name = result.get(0).getName();
+		assertEquals(name.toUpperCase(), name, "'name' should be in upper case, but is: " + name);
+
+		Object aliasValue = result.get(0).getAliasValue("aliasForName");
+		assertTrue(aliasValue instanceof String, "The aliasForName should be a String");
+		String aliasForName = (String) aliasValue;
+		assertEquals(aliasForName.toLowerCase(), aliasForName,
+				"'aliasForName' should be in lower case, but is: " + aliasForName);
 	}
 
 	/**

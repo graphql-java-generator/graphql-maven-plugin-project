@@ -27,25 +27,25 @@ public class OverriddenControllerIT {
 	@Test
 	void checkThatTheQueryControllerIsOverridden()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals("Welcome from the overridden controller", this.queryExecutor.checkOverriddenController(""));
+		assertEquals("Welcome from the overridden controller", queryExecutor.checkOverriddenController(""));
 	}
 
 	@Test
-	void checkThatTheCharacterControllerIsOverridden()
+	void checkThatDataFetchersDelegateDroidImplOverridesFriend()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Let's execute the query that will trigger the overridden controller
-		// String req = "{name(uppercase:true) @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
-		String req = "{friends @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\") {name }}";
-		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
 
-		assertTrue(name.size() > 0,
+		String req = "{friends @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\") {name }}";
+		List<CIP_Character_CIS> result = queryExecutor.withoutParameters(req);
+
+		assertTrue(result.size() > 0,
 				"We must have found at least one character, to check that its name comes from the overridden Character controler");
-		name.stream()//
+		result.stream()//
 				.flatMap(c -> {
 					assertTrue(c.getFriends().size() > 0, "The friends list must be not null and not empty");
 					return c.getFriends().stream();
 				})//
-				.forEach(c -> assertTrue(c.getName().endsWith(" overriden by DataFetchersDelegateDroidImpl.friends()"),
+				.forEach(c -> //
+				assertTrue(c.getName().endsWith(" overriden by DataFetchersDelegateDroidImpl.friends()"),
 						"The human name should finish by ' overriden by DataFetchersDelegateDroidImpl.friends()' but is +"
 								+ c.getName()));
 	}

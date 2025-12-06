@@ -63,7 +63,7 @@ public class PartialQueryIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_ListOfList() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryExecutor
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor
 				.getWithListOfListGraphQLRequest("{matrix}");
 		//
 		List<List<Double>> matrixSrc = new ArrayList<>();
@@ -80,8 +80,7 @@ public class PartialQueryIT {
 		///////////////////////////////////////////////////////////////////
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS allFieldCases = this.queryExecutor.withListOfList(GraphQLRequestAllGraphQLCases,
-				matrixSrc);
+		CTP_AllFieldCases_CTS allFieldCases = queryExecutor.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc);
 
 		// Verification
 		assertNotNull(allFieldCases);
@@ -101,7 +100,7 @@ public class PartialQueryIT {
 		///////////////////////////////////////////////////////////////////
 
 		// Go, go, go
-		Optional<CTP_AllFieldCases_CTS> allFieldCasesReactive = this.reactiveQueryType
+		Optional<CTP_AllFieldCases_CTS> allFieldCasesReactive = reactiveQueryType
 				.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc).block();
 
 		// Verification
@@ -127,10 +126,10 @@ public class PartialQueryIT {
 		ids.add("22222222-2222-2222-2222-222222222222");
 		ids.add("33333333-3333-3333-3333-333333333333");
 		//
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.mutation.getDeleteSnacksGraphQLRequest("");
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = mutation.getDeleteSnacksGraphQLRequest("");
 
 		// Go, go, go
-		Boolean ret = this.mutation.deleteSnacks(GraphQLRequestAllGraphQLCases, ids);
+		Boolean ret = mutation.deleteSnacks(GraphQLRequestAllGraphQLCases, ids);
 
 		// Verification
 		assertTrue(ret);
@@ -144,12 +143,11 @@ public class PartialQueryIT {
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryExecutor
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor
 				.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = this.queryExecutor.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs",
-				inputs);
+		CTP_AllFieldCases_CTS ret = queryExecutor.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -168,10 +166,10 @@ public class PartialQueryIT {
 		cal.set(2018, 02, 01);// Month is 0-based, so this date is 2018, January the first
 		Date date = cal.getTime();
 		//
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryExecutor.getIssue53GraphQLRequest("");
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor.getIssue53GraphQLRequest("");
 
 		// Go, go, go
-		Date ret = this.queryExecutor.issue53(GraphQLRequestAllGraphQLCases, date);
+		Date ret = queryExecutor.issue53(GraphQLRequestAllGraphQLCases, date);
 
 		// Verification
 		assertEquals(date, ret);
@@ -181,11 +179,11 @@ public class PartialQueryIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryExecutor
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryExecutor
 				.getWithOneMandatoryParamDefaultValueGraphQLRequest("");
 
 		// Go, go, go
-		Integer ret = this.queryExecutor.withOneMandatoryParamDefaultValue(GraphQLRequestAllGraphQLCases, 2);
+		Integer ret = queryExecutor.withOneMandatoryParamDefaultValue(GraphQLRequestAllGraphQLCases, 2);
 
 		// Verification
 		assertEquals(2, ret);
@@ -208,7 +206,7 @@ public class PartialQueryIT {
 				.build();
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS response = this.queryExecutor.allFieldCases("{break(if:&if)}", input, "if", "if's value");
+		CTP_AllFieldCases_CTS response = queryExecutor.allFieldCases("{break(if:&if)}", input, "if", "if's value");
 
 		// Verification
 		assertEquals("A string to check the return (if=if's value)", response.getBreak());
@@ -219,7 +217,7 @@ public class PartialQueryIT {
 	void test_Issue139_PR177_QueryAsReservedKeyword()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		String response = this.queryExecutor._implements("", "A string to check the return");
+		String response = queryExecutor._implements("", "A string to check the return");
 
 		// Verification
 		assertEquals("A string to check the return", response);
@@ -229,8 +227,7 @@ public class PartialQueryIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue139_EnumValueIf() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		CEP_EnumWithReservedJavaKeywordAsValues_CES response = this.queryExecutor
-				.enumWithReservedJavaKeywordAsValues("");
+		CEP_EnumWithReservedJavaKeywordAsValues_CES response = queryExecutor.enumWithReservedJavaKeywordAsValues("");
 
 		// Verification
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._if, response);
@@ -241,7 +238,7 @@ public class PartialQueryIT {
 	void test_Issue139_EnumValueListOfJavaReservedKeywords_withNullParams()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = this.queryExecutor
+		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryExecutor
 				.listOfEnumWithReservedJavaKeywordAsValues("", null, null);
 		// the two parameters are null. Their default values are:
 		// param1: CEP_EnumWithReservedJavaKeywordAsValues_CES=abstract,
@@ -261,7 +258,7 @@ public class PartialQueryIT {
 	void test_Issue139_EnumValueListOfJavaReservedKeywords()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = this.queryExecutor
+		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryExecutor
 				.listOfEnumWithReservedJavaKeywordAsValues("", //
 						/* param1 */CEP_EnumWithReservedJavaKeywordAsValues_CES._return, //
 						/* param2 */ Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte,
@@ -280,7 +277,7 @@ public class PartialQueryIT {
 	void test_Issue166_FieldAsJavaReservedKeywords()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		CTP_ReservedJavaKeywordAllFieldCases_CTS response = this.queryExecutor.reservedJavaKeywordAllFieldCases(""//
+		CTP_ReservedJavaKeywordAllFieldCases_CTS response = queryExecutor.reservedJavaKeywordAllFieldCases(""//
 				+ "{" //
 				+ "  if "// the if type is an enum (Unit)
 				+ "  nonJavaKeywordField {id} " // The nonJavaKeywordField field is an interface (WithID)
@@ -310,7 +307,7 @@ public class PartialQueryIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_oneWithoutFieldParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		CTP_AllFieldCasesWithIdSubtype_CTS allFieldCasesWithIdSubtype = this.queryExecutor
+		CTP_AllFieldCasesWithIdSubtype_CTS allFieldCasesWithIdSubtype = queryExecutor
 				.allFieldCases("{oneWithoutFieldParameter}", null).getOneWithoutFieldParameter();
 
 		assertNotNull(allFieldCasesWithIdSubtype);

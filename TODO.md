@@ -1,8 +1,12 @@
 Here are the next tasks listed, as a TODO list:
-* Issue when starting the allGraphQLCases server from the IDE : module xxx not found (where xxx is the maven name with "-" instead of the module name with "_")
+* Remove DataFetcherDelegates on interfaces, as they are not used !   :((
+* plugin doc:
+    * Find and correct the dead links
+	* Check the generated doc for the `ignoredSpringMappings` plugin parameter
+	* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
 * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
-* Align with GraphQL spec 2021
+* Align with GraphQL spec 2021 (almost done)
     * Check the impact of the changes in the interface hierarchies
         * All details in [this blog](https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8))
         * todo: add the PageInfo, Node, Edge, Connection interfaces
@@ -30,10 +34,6 @@ Here are the next tasks listed, as a TODO list:
 		String req = "{name @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
 		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
 ```
-* plugin doc:
-    * Add the since parameter
-    * Just have a summary in the starting table (not the full doc)
-    * Find and correct the dead links
 * Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
 * Do additional tests on the generated code, in the plugin-logic module
 * Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers

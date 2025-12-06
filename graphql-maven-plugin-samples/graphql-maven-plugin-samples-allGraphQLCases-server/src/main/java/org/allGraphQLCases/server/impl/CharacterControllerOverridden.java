@@ -3,7 +3,6 @@
  */
 package org.allGraphQLCases.server.impl;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -11,11 +10,12 @@ import org.springframework.stereotype.Controller;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author gauthiereti
+ * @author etienne-sf
  *
  */
 @Controller
-@Primary
+//@Primary //useless, as there is not Autowired of CharacterController in the code, but for the consistency with
+//OverriddenController
 @SchemaMapping(typeName = "Character")
 public class CharacterControllerOverridden {
 

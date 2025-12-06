@@ -40,8 +40,6 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 		if (directives.size() == 1 && directives.get(0).getName().equals("testDirective")) {
 			// Let's check the @testDirective arguments
 			Directive dir = directives.get(0);
-			StringValue value = (StringValue) dir.getArguments().get(0).getValue();
-			String s = value.getValue();
 			if (dir.getArguments().size() == 1 && dir.getArguments().get(0).getName().equals("value")
 					&& ((StringValue) dir.getArguments().get(0).getValue()).getValue()
 							.equals("checkThatTheCharacterControllerIsOverridden")) {
@@ -65,8 +63,13 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	/** Custom field data fetchers are available since release 2.5 */
 	@Override
 	public String name(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS origin, Boolean uppercase) {
-		return ((uppercase != null && origin.getName() != null && uppercase) ? origin.getName().toUpperCase()
-				: origin.getName());
+		if (uppercase == null) {
+			return origin.getName();
+		} else if (uppercase) {
+			return origin.getName().toUpperCase();
+		} else {
+			return origin.getName().toLowerCase();
+		}
 	}
 
 }

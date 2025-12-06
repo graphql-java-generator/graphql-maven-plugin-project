@@ -615,9 +615,15 @@ public class InputParameter {
 	 */
 	private static String getInputParameterTypeStr(Class<?> owningClass, String fieldName, String parameterName)
 			throws GraphQLRequestPreparationException {
+		GraphQLInputParameters graphQLInputParameters;
+		if (owningClass.isInterface()) {
+			Method method = graphqlUtils.getSetter(owningClass, fieldName);
+			graphQLInputParameters = method.getDeclaredAnnotation(GraphQLInputParameters.class);
+		} else {
 		Field field = graphqlClientUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
+			graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
+		}
 
-		GraphQLInputParameters graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
 		if (graphQLInputParameters == null) {
 			throw new GraphQLRequestPreparationException(
 					"[Internal error] The field '" + fieldName + "' is lacking the GraphQLInputParameters annotation");

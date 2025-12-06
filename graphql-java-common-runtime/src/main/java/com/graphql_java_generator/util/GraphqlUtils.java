@@ -292,6 +292,31 @@ public class GraphqlUtils {
 		}
 	}
 
+	public Method getSetter(Class<?> owningClass, String fieldName) {
+		// The default setter's name is based on the field's name.
+		// But for GraphQL fields that are actual java reserved keyword, the field's
+		// name is not the one that was defined in the GraphQL schema (whereas the
+		// setter uses the original name).
+		String setterMethodName = "set" + getPascalCase(fieldName);
+		Method method = null;
+
+		for (Method m : owningClass.getMethods()) {
+			if (m.getName().equals(setterMethodName)) {
+				// We've found a method with the searched name. There should be no other method of the same name.
+				if (method != null) {
+					throw new RuntimeException("the " + owningClass.getName() + " contains more than one method named "
+							+ setterMethodName);
+				}
+				method = m;
+			}
+		}
+		if (method == null) {
+			throw new RuntimeException(
+					"the " + owningClass.getName() + " contains no method named " + setterMethodName);
+		}
+		return method;
+	}
+
 	/**
 	 * Retrieves the getter for the given field on the given field
 	 * 
