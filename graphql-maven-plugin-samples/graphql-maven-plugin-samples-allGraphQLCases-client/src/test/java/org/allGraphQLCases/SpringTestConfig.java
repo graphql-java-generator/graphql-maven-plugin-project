@@ -167,7 +167,8 @@ public class SpringTestConfig {
 
 	@Bean
 	@Primary
-	public WebClient webClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
+	public WebClient webClientAllGraphQLCases(//
+			String graphqlEndpointAllGraphQLCases, //
 			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
