@@ -14,6 +14,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,6 +25,7 @@ import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
@@ -48,8 +50,13 @@ public class ${targetFileName} {
 	@Autowired
 	SpringContextBean springContextBean;
 
-	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url}")
-	private String graphqlEndpoint${springBeanSuffix}Url;
+	/**
+	 * The URL of the GraphQL endpoint for this schema, as defined in the application's properties file.
+	 * This parameter may not be defined in the application's properties file. In this case, the application
+	 * must provide its own webClient and webSocketGraphQlClient beans.
+	 */
+	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url:null}")
+	private String graphqlEndpointUrl;
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -67,7 +74,7 @@ public class ${targetFileName} {
 	@Bean
 	@ConditionalOnMissingBean(name = "graphqlEndpoint${springBeanSuffix}")
 	String graphqlEndpoint${springBeanSuffix}() {
-		return graphqlEndpoint${springBeanSuffix}Url;
+		return graphqlEndpointUrl;
 	}
 
 	/**
@@ -76,13 +83,14 @@ public class ${targetFileName} {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "webClient${springBeanSuffix}")
-	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}) {
+	public WebClient webClient${springBeanSuffix}(
+			@NonNull @Qualifier("graphqlEndpoint${springBeanSuffix}") String graphqlEndpoint${springBeanSuffix}Url) {
 		logger.debug("Creating default webClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) for graphqlEndpoint${springBeanSuffix} [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]", //$NON-NLS-1$
 				formater.format(new Date(applicationContext.getStartupDate())));
 		return WebClient.builder()//
-				.baseUrl(graphqlEndpoint${springBeanSuffix})//
+				.baseUrl(graphqlEndpoint${springBeanSuffix}Url)//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint${springBeanSuffix})) //$NON-NLS-1$
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint${springBeanSuffix}Url)) //$NON-NLS-1$
 				.build();
 	}
 
@@ -104,7 +112,8 @@ public class ${targetFileName} {
 #if ($configuration.queryMutationExecutionProtocol == "webSocket" || ! $documentParser.subscriptionType) ## $documentParser.subscriptionType != null
 	@Bean
 	@ConditionalOnMissingBean(name = "webSocketGraphQlClient${springBeanSuffix}")
-	GraphQlClient webSocketGraphQlClient${springBeanSuffix}() {
+	GraphQlClient webSocketGraphQlClient${springBeanSuffix}(
+			@NonNull @Qualifier("graphqlEndpoint${springBeanSuffix}") String graphqlEndpoint${springBeanSuffix}Url) {
 		logger.debug("Creating default webSocketGraphQlClient${springBeanSuffix} (from the GraphQLSpringAutoConfiguration${springBeanSuffix} class) [webSocketGraphQlClientAllGraphQLCases: context startup date={}}]", //$NON-NLS-1$
 				formater.format(new Date(applicationContext.getStartupDate())));
 		WebSocketClient client = new ReactorNettyWebSocketClient();

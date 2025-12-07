@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.codec.CodecCustomizer;
@@ -30,6 +31,7 @@ import org.springframework.graphql.client.GraphQlClientInterceptor;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -64,6 +66,9 @@ public class SpringTestConfig {
 	private static Logger logger = LoggerFactory.getLogger(SpringTestConfig.class);
 	private static Logger loggerBeanPostProcessor = LoggerFactory.getLogger("BeanPostProcessor");
 
+	@Value("${another.parameter.for.the.graphql.endpointAllGraphQLCases.url}")
+	String anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl;
+
 	@Autowired
 	ApplicationContext applicationContext;
 
@@ -78,8 +83,8 @@ public class SpringTestConfig {
 		}
 
 		@Override
-		public Flux<ClientGraphQlResponse> interceptSubscription(ClientGraphQlRequest request,
-				SubscriptionChain chain) {
+		public @NonNull Flux<ClientGraphQlResponse> interceptSubscription(@NonNull ClientGraphQlRequest request,
+				@NonNull SubscriptionChain chain) {
 			return chain.next(request).doOnNext(response -> this.interceptionSubscriptionResponse(response));
 		}
 
@@ -108,7 +113,8 @@ public class SpringTestConfig {
 	BeanPostProcessor SpringContextSetterBeanPostProcessor() {
 		return new BeanPostProcessor() {
 			@Override
-			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+			public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+					throws BeansException {
 				String classname = bean.getClass().getName();
 				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT")) {
 					SpringContextBean.setApplicationContext(applicationContext);
@@ -122,7 +128,8 @@ public class SpringTestConfig {
 	BeanPostProcessor logBeanPostProcessor() {
 		return new BeanPostProcessor() {
 			@Override
-			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+			public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+					throws BeansException {
 				if (loggerBeanPostProcessor.isDebugEnabled()) {
 					String classname = bean.getClass().getName();
 					if (classname.startsWith("org.allGraphQLCases")
@@ -168,7 +175,8 @@ public class SpringTestConfig {
 	@Bean
 	@Primary
 	public WebClient webClientAllGraphQLCases(//
-			String graphqlEndpointAllGraphQLCases, //
+			// String graphqlEndpointAllGraphQLCases, Not used: this checks the issue #238, by using another parameter
+			// for the URL
 			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
@@ -178,9 +186,10 @@ public class SpringTestConfig {
 				.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 10)).build();
 
 		return WebClient.builder()//
-				.baseUrl(graphqlEndpointAllGraphQLCases)//
+				.baseUrl(anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl)//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointAllGraphQLCases))
+				.defaultUriVariables(
+						Collections.singletonMap("url", anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl))
 				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
 				.exchangeStrategies(exchangeStrategies)//
 				.build();
@@ -220,7 +229,9 @@ public class SpringTestConfig {
 	@Bean
 	@Qualifier("AllGraphQLCases")
 	@Primary
-	GraphQlClient webSocketGraphQlClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases,
+	GraphQlClient webSocketGraphQlClientAllGraphQLCases(
+			// String graphqlEndpointAllGraphQLCases, Not used: this checks the issue #238, by using another parameter
+			// for the URL
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
 
 		logger.debug("Creating SpringTestConfig webSocketGraphQlClientAllGraphQLCases");
@@ -235,16 +246,13 @@ public class SpringTestConfig {
 		// capability:
 		ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient() {
 			@Override
-			public Mono<Void> execute(URI url, HttpHeaders requestHeaders, WebSocketHandler handler) {
+			public @NonNull Mono<Void> execute(@NonNull URI url, @NonNull HttpHeaders requestHeaders,
+					@NonNull WebSocketHandler handler) {
 				// Let's retrieve the valid OAuth token
 				String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
 
 				// Then we apply it to the given headers
-				if (requestHeaders == null) {
-					requestHeaders = new HttpHeaders();
-				} else {
-					requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
-				}
+				requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
 				logger.trace("Adding the bearer token to the Subscription websocket request");
 				requestHeaders.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
 
@@ -253,7 +261,7 @@ public class SpringTestConfig {
 			}
 		};
 
-		return WebSocketGraphQlClient.builder(graphqlEndpointAllGraphQLCases, client)
+		return WebSocketGraphQlClient.builder(anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl, client)
 				.interceptor(new MyInterceptor("AllGraphQLCases")).build();
 	}
 
@@ -286,16 +294,13 @@ public class SpringTestConfig {
 		// capability:
 		ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient() {
 			@Override
-			public Mono<Void> execute(URI url, HttpHeaders requestHeaders, WebSocketHandler handler) {
+			public @NonNull Mono<Void> execute(@NonNull URI url, @NonNull HttpHeaders requestHeaders,
+					@NonNull WebSocketHandler handler) {
 				// Let's retrieve the valid OAuth token
 				String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
 
 				// Then we apply it to the given headers
-				if (requestHeaders == null) {
-					requestHeaders = new HttpHeaders();
-				} else {
-					requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
-				}
+				requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
 				logger.trace("Adding the bearer token to the Subscription websocket request");
 				requestHeaders.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
 

@@ -3,8 +3,10 @@ package org.allGraphQLCases.oauth;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,8 +28,23 @@ import com.graphql_java_generator.client.SpringContextBean;
 @ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class })
 public class SpringTestConfigWithoutOAuth {
 
+	@Value("${another.parameter.for.the.graphql.endpointAllGraphQLCases.url}")
+	String anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl;
+
 	@Autowired
 	ApplicationContext applicationContext;
+
+	/**
+	 * As this project declares the url of the GraphQL endpoint with another property name, we need to redefine the
+	 * graphqlEndpointAllGraphQLCases bean
+	 * 
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean(name = "graphqlEndpointAllGraphQLCases")
+	String graphqlEndpointAllGraphQLCases() {
+		return anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl;
+	}
 
 	/**
 	 * Insures that the {@link SpringContextBean} bean stores the right Spring {@link ApplicationContext} in its static
@@ -44,8 +61,9 @@ public class SpringTestConfigWithoutOAuth {
 			@Override
 			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 				String classname = bean.getClass().getName();
-				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT"))
+				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT")) {
 					SpringContextBean.setApplicationContext(applicationContext);
+				}
 				return bean;
 			}
 		};
