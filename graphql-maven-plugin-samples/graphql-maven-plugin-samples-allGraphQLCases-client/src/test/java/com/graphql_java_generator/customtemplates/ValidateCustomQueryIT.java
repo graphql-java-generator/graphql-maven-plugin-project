@@ -1,4 +1,4 @@
-package org.forum.customtemplates;
+package com.graphql_java_generator.customtemplates;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

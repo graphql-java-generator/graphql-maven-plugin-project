@@ -1,5 +1,8 @@
 Here are the next tasks listed, as a TODO list:
+* Read the https://maven.apache.org/whatsnewinmaven4.html page, to check compatibility with maven 4
 * Remove DataFetcherDelegates on interfaces, as they are not used !   :((
+    * Propose a PR to add doc and display warnings in spring-graphql
+    * Propose a PR to add doc and display warnings in graphql-java
 * plugin doc:
     * Find and correct the dead links
 	* Check the generated doc for the `ignoredSpringMappings` plugin parameter

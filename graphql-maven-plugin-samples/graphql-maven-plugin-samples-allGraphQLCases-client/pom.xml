@@ -15,9 +15,105 @@
 		- A different target/build folder
 	</description>
 
+	<properties>
+		<!--Parameters to pass to the buildScript-->
+		<project.basedir>${project.basedir}</project.basedir>
+	</properties>
+	
 	<build>
 		<directory>${project.basedir}/target2</directory>
 		<plugins>
+			<!-- Start of generation of the custom templates (from the original one) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<!-- Extraction of the templates from graphql-maven-plugin-logic -->
+						<id>unpack</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.graphql-java-generator</groupId>
+									<artifactId>graphql-maven-plugin-logic</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>
+										${project.build.directory}/graphql-maven-plugin-logic.templates</outputDirectory>
+									<includes>**/*.vm.java</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<!--  Compilation of the GenerateCustomTemplate class, to be used in the generate-resources phase -->
+						<id>compileBuildScript</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<compileSourceRoots>${project.basedir}/src/buildScript/java</compileSourceRoots>
+						</configuration>
+					</execution>
+		          <execution>
+		            <id>default-compile</id>
+		            <phase>compile</phase>
+		            <goals>
+		              <goal>compile</goal>
+		            </goals>
+		            <!--configuration>
+		              <source>17</source>
+		              <target>17</target>
+		              <release>17</release>
+		              <compilerArgs>
+		                <arg>-Xlint:-requires-transitive-automatic</arg>
+		              </compilerArgs>
+		              <parameters>true</parameters>
+		            </configuration-->
+		          </execution>
+		          <execution>
+		            <id>default-testCompile</id>
+		            <phase>test-compile</phase>
+		            <goals>
+		              <goal>testCompile</goal>
+		            </goals>
+		          </execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<!-- Generation of a custom template, based on the original template. This is is used by the
+						com.graphql_java_generator.customtemplates.ValidateCustomQueryIT class of the
+						graphql-maven-plugin-samples-allGraphQLCases-client maven module, to test the custom templates behavior -->
+						<id>generate-custom-templates</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<sourceRoot>${project.basedir}/src/buildScript/java</sourceRoot>
+					<mainClass>
+						com.graphql_java_generator.custom_template.GenerateCustomTemplate</mainClass>
+				</configuration>
+			</plugin>
+			<!-- End of generation of the custom templates (from the original one) -->
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
@@ -246,6 +342,8 @@
 								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
 								<source>${project.build.directory}/generated-sources/graphql-maven-plugin2</source>
 								<source>${project.build.directory}/generated-sources/graphql-maven-plugin_forum</source>
+								<!-- Source code for the buildScript that generates the custom templates -->
+								<source>${project.basedir}/src/buildScript/java</source>
 							</sources>
 						</configuration>
 					</execution>
