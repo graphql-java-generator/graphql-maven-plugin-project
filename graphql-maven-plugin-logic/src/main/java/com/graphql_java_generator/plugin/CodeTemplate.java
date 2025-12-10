@@ -19,6 +19,7 @@ public enum CodeTemplate {
 	ENUM(CodeTemplateScope.COMMON, "templates/enum_type.vm.java"), //
 	INTERFACE(CodeTemplateScope.COMMON, "templates/interface_type.vm.java"), //
 	OBJECT(CodeTemplateScope.COMMON, "templates/object_type.vm.java"), //
+	OBJECT_CONTENT(CodeTemplateScope.COMMON, "templates/object_content.vm.java"), //
 	UNION(CodeTemplateScope.COMMON, "templates/union_type.vm.java"),
 
 	// Client files (alphabetic order)

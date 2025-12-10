@@ -1077,6 +1077,10 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		context.put("packageUtilName", generateCodeDocumentParser.getUtilPackageName());
 		context.put("subscriptionType", generateCodeDocumentParser.getSubscriptionType());
 
+		// The OBJECT template is used in several other templates. So, to allow easy overriding of this template,
+		// its path is written in the velocity context
+		context.put("objectContentTemplate", resolveTemplate(CodeTemplate.OBJECT_CONTENT));
+
 		return context;
 	}
 

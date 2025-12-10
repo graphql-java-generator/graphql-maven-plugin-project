@@ -78,7 +78,7 @@ public class ${targetFileName}
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
 #end
-#parse ("templates/object_content.vm.java")
+#parse ("${objectContentTemplate}")
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##

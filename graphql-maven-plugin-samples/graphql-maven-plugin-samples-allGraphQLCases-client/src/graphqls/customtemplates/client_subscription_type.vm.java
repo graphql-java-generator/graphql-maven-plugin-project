@@ -108,7 +108,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	private Map<String, JsonNode> extensionsAsMap = null;
 #end
 
-#parse ("templates/object_content.vm.java")
+#parse ("${objectContentTemplate}")
 #end
 	
 ##

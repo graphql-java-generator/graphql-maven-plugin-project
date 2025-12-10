@@ -14,6 +14,7 @@
 All modes (client and server):
 * [minor] Better formatting of the generated code
 * [minor] All strings in the generated code are marked with //$NON-NLS-1$ style comments, to prevent compilation warnings in some environments
+* [Templates] Issue #125: Creation of the OBJECT_CONTENT template, that allows to override the content of an object (fields and methods)
 
 Client mode:
 * PR #237: Better generation for parameters (thanks to klafbang)
