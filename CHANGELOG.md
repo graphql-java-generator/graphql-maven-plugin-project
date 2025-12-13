@@ -9,7 +9,7 @@
 
 # 3.x versions
 
-## Not released yet
+## 3.1
 
 All modes (client and server):
 * [minor] Better formatting of the generated code

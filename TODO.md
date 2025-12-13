@@ -1,13 +1,23 @@
 Here are the next tasks listed, as a TODO list:
+* Check compilation with java 25: got a report that it wouldn't work
+* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
+* Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
 * Read the https://maven.apache.org/whatsnewinmaven4.html page, to check compatibility with maven 4
-* Remove DataFetcherDelegates on interfaces, as they are not used !   :((
-    * Propose a PR to add doc and display warnings in spring-graphql
-    * Propose a PR to add doc and display warnings in graphql-java
+* Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
+* Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
+* Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
+    * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
+* Add the generateDataFetchersForFields parameter in the tutorials
+* Dozer is deprecated. Replace it by [mapstruct](https://github.com/mapstruct/mapstruct) or [modelmapper](https://github.com/modelmapper/modelmapper)
+* (for release 4)
+    * Remove DataFetcherDelegates on interfaces, as they are not used !   :((
+        * Propose a PR to add doc and display warnings in spring-graphql
+        * Propose a PR to add doc and display warnings in graphql-java
+    * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * plugin doc:
     * Find and correct the dead links
 	* Check the generated doc for the `ignoredSpringMappings` plugin parameter
 	* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
-* Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * Check the sitemap, to enhance SEO, for instance see [the doc here](https://www.sitew.com/Comment-optimiser-son-referencement/sitemap)
 * Align with GraphQL spec 2021 (almost done)
     * Check the impact of the changes in the interface hierarchies
@@ -30,26 +40,10 @@ Here are the next tasks listed, as a TODO list:
                 * Generate a standard data fetcher
                 * try to still use a BatchLoader, but with a Context 
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
-* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
-* Correction the client execution error when executing these lines in `OverriddenControllerIT.checkThatTheCharacterControllerIsOverridden()`
-```
-		// String req = "{name(uppercase:true) @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
-		String req = "{name @testDirective(value:\"checkThatTheCharacterControllerIsOverridden\")}";
-		List<CIP_Character_CIS> name = this.queryExecutor.withoutParameters(req);
-```
-* Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
-* Do additional tests on the generated code, in the plugin-logic module
-* Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
-* Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
-* Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
-    * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
-* Ajouter le paramètre generateDataFetchersForFields dans les tutoriels
-* Dozer is deprecated. Replace it by [mapstruct](https://github.com/mapstruct/mapstruct) or [modelmapper](https://github.com/modelmapper/modelmapper)
 * Replace DataFetchersDelegateRegistry attributes by proper autowired spring fields
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
 * Optimize `getStringContentForGraphqlQuery`: use a `StringBuilder` instead of returning and concatenating strings
-* Refresh the GitHub and Shopify samples
 * Review the plugin documentation (goal and parameters)
 * Issue Gradle-project #15: redundant cast to Long 
 * Issue #113: accept a schema.json as an input for code generation (instead of graphqls files)
