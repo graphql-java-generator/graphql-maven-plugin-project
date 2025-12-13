@@ -42,10 +42,11 @@ public class GenerateCustomTemplate implements Runnable {
 	boolean debug = false;
 
 	// Paths (relative to the project basedir folder)
-	private static final String SOURCE_PATH = "/target2/graphql-maven-plugin-logic.templates/templates/";
+	private static final String SOURCE_PATH = "../../graphql-maven-plugin-logic/src/main/resources/templates/";
 	private static final String TARGET_PATH = "src/graphqls/customtemplates/";
 	private static final List<List<String>> TEMPLATES = List.of(//
-			// list(source name, target name). Needed, as some custolm templates have different names than the original ones
+			// list(source name, target name). Needed, as some custolm templates have different names than the original
+			// ones
 			List.of("client_subscription_type.vm.java", "client_subscription_type.vm.java"), //
 			List.of("client_subscription_executor.vm.java", "custom_client_subscription_executor.vm.java"));
 

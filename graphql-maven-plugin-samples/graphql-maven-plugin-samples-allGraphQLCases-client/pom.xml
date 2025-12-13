@@ -23,35 +23,6 @@
 	<build>
 		<directory>${project.basedir}/target2</directory>
 		<plugins>
-			<!-- Start of generation of the custom templates (from the original one) -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<!-- Extraction of the templates from graphql-maven-plugin-logic -->
-						<id>unpack</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.graphql-java-generator</groupId>
-									<artifactId>graphql-maven-plugin-logic</artifactId>
-									<version>${project.version}</version>
-									<type>jar</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>
-										${project.build.directory}/graphql-maven-plugin-logic.templates</outputDirectory>
-									<includes>**/*.vm.java</includes>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
