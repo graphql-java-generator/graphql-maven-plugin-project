@@ -64,6 +64,7 @@ abstract class AbstractGraphQLRepositoryProxyBeansRegistrar<T extends Annotation
 				.getAllAnnotationAttributes(EnableGraphQLRepositories.class.getName());
 
 		if (allAnnotationAttributes != null && allAnnotationAttributes.size() > 0) {
+			// Retrieves all values of the basePackages list (in an array)
 			return (String[]) allAnnotationAttributes.getFirst("basePackages"); //$NON-NLS-1$
 		} else {
 			return null;

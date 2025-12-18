@@ -28,7 +28,6 @@ Here are the next tasks listed, as a TODO list:
     * Take a look at this [stackoverflow answer](https://stackoverflow.com/a/36221056/5056068)
     * Test [ezreflections](https://github.com/salimm/ezreflections)
 * Issue #220: use immutable classes or records instead of classes
-* Test all parameter values for BatchMappingDataFetcherReturnType
 * generateBatchMappingDataFetchers:
     * Complete the doc for the plugin parameter
         * Add a link to https://github.com/spring-projects/spring-graphql/issues/232
@@ -40,18 +39,11 @@ Here are the next tasks listed, as a TODO list:
                 * Generate a standard data fetcher
                 * try to still use a BatchLoader, but with a Context 
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
-* Replace DataFetchersDelegateRegistry attributes by proper autowired spring fields
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
-* Optimize `getStringContentForGraphqlQuery`: use a `StringBuilder` instead of returning and concatenating strings
-* Review the plugin documentation (goal and parameters)
-* Issue Gradle-project #15: redundant cast to Long 
 * Issue #113: accept a schema.json as an input for code generation (instead of graphqls files)
-* Issue #125: object_content.vm.java is hardcoded in templated
 * Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)
 * [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
-* `DirectiveRegistryInitializer`:
-    * initialize it only once (not at each creation of a GraphQLRequest)
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-logic, com.graphql_java_generator.plugin.language)

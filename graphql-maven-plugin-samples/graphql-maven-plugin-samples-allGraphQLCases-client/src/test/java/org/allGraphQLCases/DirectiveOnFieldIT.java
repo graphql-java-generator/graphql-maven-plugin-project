@@ -23,14 +23,14 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 class DirectiveOnFieldIT {
 
 	@Autowired
-	MyQueryTypeExecutorAllGraphQLCases queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryExecutor;
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = queryType.exec(
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(
 				"{directiveOnField {id name @testDirective(value: &value) @anotherTestDirective}}", //
 				"value", "this is a value");
 
@@ -46,7 +46,7 @@ class DirectiveOnFieldIT {
 	void testsIssue35() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = queryType.exec(
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(
 				"{directiveOnField {id name @testDirective(value: &value)  @anotherTestDirective}}", //
 				"value", "this is a value");
 

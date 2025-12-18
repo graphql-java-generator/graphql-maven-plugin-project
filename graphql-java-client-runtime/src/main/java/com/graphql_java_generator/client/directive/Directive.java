@@ -25,6 +25,13 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class Directive {
 
+	/**
+	 * The schema that contains this : value of the <i>springBeanSuffix</i> plugin parameter for the searched schema.
+	 * When there is only one schema, this plugin parameter is usually not set. In this case, its default value ("") is
+	 * used.
+	 */
+	private final String schema;
+
 	/** The name of the directive */
 	private String name;
 
@@ -51,10 +58,11 @@ public class Directive {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Directive(QueryTokenizer qt, String schema) throws GraphQLRequestPreparationException {
+		this.schema = schema;
 		name = qt.nextToken();
 
 		// We need to get some data from the registration of this directive.
-		Directive d = DirectiveRegistryImpl.directiveRegistry.getDirective(name);
+		Directive d = DirectiveRegistryImpl.getDirective(schema, name);
 		setPackageName(d.getPackageName());
 		setDirectiveLocations(d.getDirectiveLocations());
 
@@ -85,8 +93,8 @@ public class Directive {
 	 * 
 	 * @param qt
 	 */
-	public Directive() {
-		// No action
+	public Directive(String schema) {
+		this.schema = schema;
 	}
 
 	public String getName() {
@@ -120,7 +128,7 @@ public class Directive {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Directive getDirectiveDefinition() throws GraphQLRequestPreparationException {
-		Directive directiveDefinition = DirectiveRegistryImpl.directiveRegistry.getDirective(getName());
+		Directive directiveDefinition = DirectiveRegistryImpl.getDirective(schema, getName());
 		if (directiveDefinition == null) {
 			throw new GraphQLRequestPreparationException(
 					"Could not find the definition for the directive '" + getName() + "'");

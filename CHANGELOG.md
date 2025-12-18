@@ -9,6 +9,12 @@
 
 # 3.x versions
 
+## Not yet released
+
+Client mode:
+* When connected to two different GraphQL servers, there could be conflicts between directive defined in this two schemas
+
+
 ## 3.1
 
 All modes (client and server):

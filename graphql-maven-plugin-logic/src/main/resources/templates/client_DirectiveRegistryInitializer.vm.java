@@ -17,34 +17,31 @@ import com.graphql_java_generator.client.CustomScalarRegistryImpl;
 public class DirectiveRegistryInitializer {
 	
 	/**
-	 * Initialization of the {@link DirectiveRegistry} with all known custom scalars, that is with all custom scalars
-	 * defined in the project pom
+	 * Initialization of the {@link DirectiveRegistry} with all directives defined in the current schema
 	 */
-	public static DirectiveRegistry initDirectiveRegistry() {
-		DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
-		Directive directive;
+	public static void initDirectiveRegistry() {
+		DirectiveRegistryImpl.registerDirectiveRegistry("$springBeanSuffix", (directiveRegistry) -> {
+			Directive directive;
 
 #foreach ($directive in $directives)
-		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Creating Directive ${directive.name}
-		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		directive = new Directive();
-		directive.setName("${directive.name}"); //$NON-NLS-1$
-		directive.setPackageName("${packageUtilName}"); //$NON-NLS-1$
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Creating Directive ${directive.name}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
+			directive = new Directive("$springBeanSuffix");
+			directive.setName("${directive.name}"); //$NON-NLS-1$
+			directive.setPackageName("${packageUtilName}"); //$NON-NLS-1$
 #foreach ($argument in $directive.arguments)
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
-					"$springBeanSuffix", "${argument.name}", null, "${argument.graphQLTypeSimpleName}", ${argument.fieldTypeAST.mandatory}, ${argument.fieldTypeAST.listDepth}, ${argument.fieldTypeAST.itemMandatory})); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			directive.getArguments().add(
+					InputParameter.newHardCodedParameter(
+							"$springBeanSuffix", "${argument.name}", null, "${argument.graphQLTypeSimpleName}", ${argument.fieldTypeAST.mandatory}, ${argument.fieldTypeAST.listDepth}, ${argument.fieldTypeAST.itemMandatory})); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 #end
 #foreach ($location in $directive.directiveLocations)
-		directive.getDirectiveLocations().add(DirectiveLocation.${location.name()});
+			directive.getDirectiveLocations().add(DirectiveLocation.${location.name()});
 #end
-		directiveRegistry.registerDirective(directive);
+			directiveRegistry.registerDirective(directive);
 
 #end
-
-		DirectiveRegistryImpl.directiveRegistry = directiveRegistry;
-		return directiveRegistry;
+		});
 	}
 
 }

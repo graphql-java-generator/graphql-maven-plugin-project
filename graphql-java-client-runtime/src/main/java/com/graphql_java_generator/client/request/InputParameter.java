@@ -29,7 +29,6 @@ import com.graphql_java_generator.client.GraphQLTypeMappingRegistry;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 import com.graphql_java_generator.client.directive.Directive;
-import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -51,9 +50,6 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public class InputParameter {
-
-	/** The registry for all known GraphQL directives. */
-	DirectiveRegistry directiveRegistry = DirectiveRegistryImpl.directiveRegistry;
 
 	/** A utility class, that's used here */
 	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
@@ -305,7 +301,7 @@ public class InputParameter {
 
 		if (directive != null) {
 			// Let's find the definition for this directive
-			Directive dirDef = directiveRegistry.getDirective(directive.getName());
+			Directive dirDef = DirectiveRegistryImpl.getDirective(schema, directive.getName());
 			if (dirDef == null) {
 				throw new GraphQLRequestPreparationException(
 						"Could not find directive definition for the directive '" + directive.getName() + "'");
@@ -620,7 +616,7 @@ public class InputParameter {
 			Method method = graphqlUtils.getSetter(owningClass, fieldName);
 			graphQLInputParameters = method.getDeclaredAnnotation(GraphQLInputParameters.class);
 		} else {
-		Field field = graphqlClientUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
+			Field field = graphqlClientUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
 			graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
 		}
 
