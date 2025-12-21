@@ -48,7 +48,7 @@ class GenerateCodePluginExecutorTest {
 
 		// A good local file
 		templates.clear();
-		templates.put("OBJECT", "src/main/resources/templates/client_CustomScalarRegistryInitializer.vm.java");
+		templates.put("OBJECT", "src/main/resources/templates/client_RegistriesInitializer.vm.java");
 		configuration.templates = templates;
 		pluginExecutor.checkConfiguration(); // This should not raise any exception
 

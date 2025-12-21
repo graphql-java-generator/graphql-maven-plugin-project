@@ -214,8 +214,7 @@ public class GraphqlClientUtils {
 			return Double.class;
 		}
 
-		CustomScalar customScalar = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
-				.getCustomScalar(graphQLTypeName);
+		CustomScalar customScalar = CustomScalarRegistryImpl.getCustomScalar(schema, graphQLTypeName);
 		if (customScalar != null) {
 			return customScalar.getValueClazz();
 		}
@@ -524,7 +523,7 @@ public class GraphqlClientUtils {
 			graphQLTypeName = null;
 		}
 		if (graphQLTypeName != null) {
-			return CustomScalarRegistryImpl.getCustomScalarRegistry(schema).getGraphQLCustomScalarType(graphQLTypeName);
+			return CustomScalarRegistryImpl.getGraphQLCustomScalarType(schema, graphQLTypeName);
 		} else {
 			return null;
 		}
@@ -556,7 +555,7 @@ public class GraphqlClientUtils {
 			return graphql.Scalars.GraphQLID;
 		}
 
-		return CustomScalarRegistryImpl.getCustomScalarRegistry(schema).getGraphQLCustomScalarType(typeName);
+		return CustomScalarRegistryImpl.getGraphQLCustomScalarType(schema, typeName);
 	}
 
 	/**

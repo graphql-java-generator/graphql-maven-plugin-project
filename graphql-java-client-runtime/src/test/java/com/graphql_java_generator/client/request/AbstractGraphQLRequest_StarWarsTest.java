@@ -28,14 +28,14 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_StarWarsTest {
 
-	MyQueryTypeExecutorMySchema queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 	Builder withOneMandatoryParamDefBuilder;
 	CharacterInput characterInput;
 	Map<String, Object> paramsWithOneMandatoryParam;
@@ -43,7 +43,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new MyQueryTypeExecutorMySchema();
+		queryType = new MyQueryTypeExecutorAllGraphQLCases();
 		withOneMandatoryParamDefBuilder = queryType.getWithOneMandatoryParamResponseBuilder();
 
 		List<Episode> episodes = (List<Episode>) (Object) (Arrays.asList(Arrays.array(Episode.EMPIRE, Episode.JEDI)));

@@ -273,18 +273,14 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			logger.debug("Generating GraphQL Reactive Request class");
 			i += generateGraphQLRequest(true);
 
-			// Files for Custom Scalars
-			logger.debug("Generating CustomScalarRegistryInitializer");
-			i += generateOneJavaFile("CustomScalarRegistryInitializer", true,
-					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
-					CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+			// GraphQLWiring
 			logger.debug("Generating GraphQLWiring");
 			i += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
-			// Files for Directives
-			logger.debug("Generating DirectiveRegistryInitializer");
-			i += generateOneJavaFile("DirectiveRegistryInitializer", true, "Generating DirectiveRegistryInitializer",
-					getVelocityContext(), CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER);
+			// RegistriesInitializer
+			logger.debug("Generating RegistriesInitializer");
+			i += generateOneJavaFile("RegistriesInitializer", true, "Generating RegistriesInitializer", context,
+					CodeTemplate.REGISTRIES_INITIALIZER);
 
 			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
 			logger.debug("Generating Spring autoconfiguration class");

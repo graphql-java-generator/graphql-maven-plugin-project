@@ -8,18 +8,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
-import com.graphql_java_generator.domain.client.allGraphQLCases.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases._break;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.domain.client.forum.Post;
@@ -36,6 +36,12 @@ import graphql.schema.GraphQLScalarType;
 class GraphqlClientUtilsTest {
 
 	GraphqlClientUtils graphqlClientUtils;
+
+	@BeforeAll
+	static void beforeAll() {
+		com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializer.initializeAllRegistries();
+		com.graphql_java_generator.domain.client.forum.RegistriesInitializer.initializeAllRegistries();
+	}
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -279,13 +285,11 @@ class GraphqlClientUtilsTest {
 
 	@Test
 	void test_getGraphQLScalarType() throws Exception {
-		// Given
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 
 		// When
 		Field field = Post.class.getDeclaredField("date");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "MySchema");
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "AllGraphQLCases");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -293,13 +297,11 @@ class GraphqlClientUtilsTest {
 
 	@Test
 	void test_getGraphQLScalarTypeGivenInputPojo() throws Exception {
-		// Given
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 
 		// When
 		Field field = PostInput.class.getDeclaredField("from");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "MySchema");
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "AllGraphQLCases");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -326,14 +328,15 @@ class GraphqlClientUtilsTest {
 	@Test
 	public void test_getClass() {
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
-		new MyQueryTypeExecutorMySchema();
+		new MyQueryTypeExecutorAllGraphQLCases();
 
 		String packageName = "com.graphql_java_generator.domain.client.allGraphQLCases";
 
-		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer", "MySchema").getName());
+		assertEquals("java.lang.Integer",
+				graphqlClientUtils.getClass(packageName, "Integer", "AllGraphQLCases").getName());
 		assertEquals("com.graphql_java_generator.domain.client.allGraphQLCases.Human",
-				graphqlClientUtils.getClass(packageName, "Human", "MySchema").getName());
-		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date", "MySchema").getName());
+				graphqlClientUtils.getClass(packageName, "Human", "AllGraphQLCases").getName());
+		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date", "AllGraphQLCases").getName());
 	}
 
 	@Test

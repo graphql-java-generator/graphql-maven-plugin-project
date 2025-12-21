@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,9 +15,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DirectiveRegistryImpl implements DirectiveRegistry {
-
-	@Autowired
-	ApplicationContext ctx;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Start of static methods
@@ -70,24 +65,11 @@ public class DirectiveRegistryImpl implements DirectiveRegistry {
 	 */
 	private static Map<String, Directive> directiveTypes = new HashMap<>();
 
-	/**
-	 * {@inheritDoc}<BR/>
-	 * This implementation works only if this class has been loaded as a Spring Component.
-	 */
-	@Override
-	public void registerAllDirectives() {
-		for (Directive type : ctx.getBeansOfType(Directive.class).values()) {
-			registerDirective(type);
-		}
-	}
-
-	/** {@inheritDoc} */
 	@Override
 	public void registerDirective(Directive type) {
 		directiveTypes.put(type.getName(), type);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Directive getDirective(String name) {
 		return directiveTypes.get(name);

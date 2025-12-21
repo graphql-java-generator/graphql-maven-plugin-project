@@ -662,8 +662,8 @@ public class InputParameter {
 			throws GraphQLRequestPreparationException {
 
 		// Let's check if this type is a Custom Scalar
-		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
-				.getGraphQLCustomScalarType(parameterTypeName);
+		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.getGraphQLCustomScalarType(schema,
+				parameterTypeName);
 
 		if (graphQLScalarType != null) {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
@@ -1223,8 +1223,8 @@ public class InputParameter {
 						fieldListDepth = graphQLScalar.listDepth();
 						fieldGraphQLTypeName = graphQLScalar.graphQLTypeSimpleName();
 						if (fieldGraphQLTypeName != null) {
-							fieldGraphQLType = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
-									.getGraphQLCustomScalarType(fieldGraphQLTypeName);
+							fieldGraphQLType = CustomScalarRegistryImpl.getGraphQLCustomScalarType(schema,
+									fieldGraphQLTypeName);
 						}
 					} else if (graphQLNonScalar != null) {
 						fieldName = graphQLNonScalar.fieldName();

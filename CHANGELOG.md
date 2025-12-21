@@ -13,7 +13,7 @@
 
 Client mode:
 * When connected to two different GraphQL servers, there could be conflicts between directive defined in this two schemas
-
+* Removal of two templates (CUSTOM_SCALAR_REGISTRY_INITIALIZER and DIRECTIVE_REGISTRY_INITIALIZER), replaced by one: REGISTRIES_INITIALIZER. This allows a better isolation of some plugin's internal technical code.
 
 ## 3.1
 

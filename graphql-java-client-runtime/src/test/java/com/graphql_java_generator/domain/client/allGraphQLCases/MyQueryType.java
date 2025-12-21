@@ -35,7 +35,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @GraphQLQuery(name = "MyQueryType", type = RequestType.query)
 @GraphQLObjectType("MyQueryType")
 @SuppressWarnings("unused")
-public class MyQueryType extends MyQueryTypeExecutorMySchema
+public class MyQueryType extends MyQueryTypeExecutorAllGraphQLCases
 		implements com.graphql_java_generator.client.GraphQLRequestObject {
 
 	private GraphQLObjectMapper extensionMapper = null;
@@ -1407,7 +1407,7 @@ public class MyQueryType extends MyQueryTypeExecutorMySchema
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
 			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
-					"MySchema");
+					"AllGraphQLCases");
 		}
 		return extensionMapper;
 	}

@@ -21,12 +21,12 @@ import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
-import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.MemberType;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.forum.Query;
+import com.graphql_java_generator.domain.client.forum.RegistriesInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -59,7 +59,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"mutation crPst  ($post: PostInput!, $anIntParam: Int){createPost(post: $post){id date author{id}}}");
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a \"title\"").withContent("some content with an antislash: \\").build();
@@ -85,7 +85,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a title").withContent("some content").build();
@@ -146,7 +146,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 	void testBuild_withDefaultValues()
 			throws GraphQLRequestPreparationException, JsonProcessingException, GraphQLRequestExecutionException {
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
-		new MyQueryTypeExecutorMySchema();
+		new MyQueryTypeExecutorAllGraphQLCases();
 
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used.

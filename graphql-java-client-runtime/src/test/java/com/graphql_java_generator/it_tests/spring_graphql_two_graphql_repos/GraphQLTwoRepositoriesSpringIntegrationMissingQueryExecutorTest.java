@@ -21,7 +21,7 @@ import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.QueryExecutorMySchema;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -37,14 +37,20 @@ public class GraphQLTwoRepositoriesSpringIntegrationMissingQueryExecutorTest {
 
 	@Configuration
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
-	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorMySchema.class,
+	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class,
 			QueryExecutorMySchema.class })
 	@EnableGraphQLRepositories({
 			"com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ko_missing_queryExecutor" })
 	public static class SpringConfigTwoServers {
 		@Bean
-		@Qualifier("MySchema")
-		GraphQlClient graphQlClient() {
+		@Qualifier("AllGraphQLCases")
+		GraphQlClient graphQlClientAllGraphQLCases() {
+			return mock(GraphQlClient.class);
+		}
+
+		@Bean
+		@Qualifier("Forum")
+		GraphQlClient graphQlClientForum() {
 			return mock(GraphQlClient.class);
 		}
 	}

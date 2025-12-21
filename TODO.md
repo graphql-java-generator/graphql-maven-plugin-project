@@ -1,5 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 * Check compilation with java 25: got a report that it wouldn't work
+* Investigate the compilation warning in GenerateCodeGenerator: there seems to be an issue with Gradle when loading a template from an external jar
+    * In the catch, 'template' is not initialized, and 'theTemplate' is initialized, but not used
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
 * Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
 * Read the https://maven.apache.org/whatsnewinmaven4.html page, to check compatibility with maven 4

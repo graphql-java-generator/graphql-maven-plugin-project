@@ -51,15 +51,14 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	private static Logger logger = LoggerFactory.getLogger(MutationExecutorMySchema.class);
 
 	@Autowired
-	@Qualifier("MySchema")
+	@Qualifier("Forum")
 	GraphQlClient graphQlClient;
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
 
 	public MutationExecutorMySchema() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
@@ -506,9 +505,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createBoard",
 				RequestType.mutation,
-				InputParameter.newBindParameter("MySchema", "name", "mutationCreateBoardName",
+				InputParameter.newBindParameter("Forum", "name", "mutationCreateBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
+				InputParameter.newBindParameter("Forum", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
 						InputParameterType.OPTIONAL, "Boolean", false, 0, false));
 	}
 
@@ -525,9 +524,9 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public GraphQLRequest getCreateBoardGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createBoard",
-				InputParameter.newBindParameter("MySchema", "name", "mutationCreateBoardName",
+				InputParameter.newBindParameter("Forum", "name", "mutationCreateBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
+				InputParameter.newBindParameter("Forum", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
 						InputParameterType.OPTIONAL, "Boolean", false, 0, false));
 	}
 
@@ -747,7 +746,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public com.graphql_java_generator.client.request.Builder getCreateTopicResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createTopic",
-				RequestType.mutation, InputParameter.newBindParameter("MySchema", "topic", "mutationCreateTopicTopic",
+				RequestType.mutation, InputParameter.newBindParameter("Forum", "topic", "mutationCreateTopicTopic",
 						InputParameterType.OPTIONAL, "TopicInput", false, 0, false));
 	}
 
@@ -764,7 +763,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public GraphQLRequest getCreateTopicGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createTopic",
-				InputParameter.newBindParameter("MySchema", "topic", "mutationCreateTopicTopic",
+				InputParameter.newBindParameter("Forum", "topic", "mutationCreateTopicTopic",
 						InputParameterType.OPTIONAL, "TopicInput", false, 0, false));
 	}
 
@@ -984,7 +983,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public com.graphql_java_generator.client.request.Builder getCreatePostResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createPost",
-				RequestType.mutation, InputParameter.newBindParameter("MySchema", "post", "mutationCreatePostPost",
+				RequestType.mutation, InputParameter.newBindParameter("Forum", "post", "mutationCreatePostPost",
 						InputParameterType.MANDATORY, "PostInput", true, 0, false));
 	}
 
@@ -1000,7 +999,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreatePostGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPost",
-				InputParameter.newBindParameter("MySchema", "post", "mutationCreatePostPost",
+				InputParameter.newBindParameter("Forum", "post", "mutationCreatePostPost",
 						InputParameterType.MANDATORY, "PostInput", true, 0, false));
 	}
 
@@ -1221,7 +1220,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public com.graphql_java_generator.client.request.Builder getCreatePostsResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createPosts",
-				RequestType.mutation, InputParameter.newBindParameter("MySchema", "spam", "mutationCreatePostsSpam",
+				RequestType.mutation, InputParameter.newBindParameter("Forum", "spam", "mutationCreatePostsSpam",
 						InputParameterType.MANDATORY, "PostInput", true, 1, true));
 	}
 
@@ -1238,7 +1237,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public GraphQLRequest getCreatePostsGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPosts",
-				InputParameter.newBindParameter("MySchema", "spam", "mutationCreatePostsSpam",
+				InputParameter.newBindParameter("Forum", "spam", "mutationCreatePostsSpam",
 						InputParameterType.MANDATORY, "PostInput", true, 1, true));
 	}
 
@@ -1458,7 +1457,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public com.graphql_java_generator.client.request.Builder getCreateMemberResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
-				"createMember", RequestType.mutation, InputParameter.newBindParameter("MySchema", "input",
+				"createMember", RequestType.mutation, InputParameter.newBindParameter("Forum", "input",
 						"mutationCreateMemberInput", InputParameterType.MANDATORY, "MemberInput", true, 0, false));
 	}
 
@@ -1475,7 +1474,7 @@ public class MutationExecutorMySchema implements GraphQLMutationExecutor {
 	public GraphQLRequest getCreateMemberGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createMember",
-				InputParameter.newBindParameter("MySchema", "input", "mutationCreateMemberInput",
+				InputParameter.newBindParameter("Forum", "input", "mutationCreateMemberInput",
 						InputParameterType.MANDATORY, "MemberInput", true, 0, false));
 	}
 

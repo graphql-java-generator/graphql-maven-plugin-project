@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.client.directive;
 
-import org.springframework.stereotype.Component;
-
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -14,12 +12,6 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public interface DirectiveRegistry {
-
-	/**
-	 * This method registers all {@link GraphQLScalarType} that are declared as Spring {@link Component}. Another way to
-	 * register {@link GraphQLScalarType} is to call the {@link #registerGraphQLScalarType(GraphQLScalarType)}.
-	 */
-	public void registerAllDirectives();
 
 	/**
 	 * Manually register one GraphQL directive.

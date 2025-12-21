@@ -56,8 +56,7 @@ public class GraphQLReactiveRequest${springBeanSuffix} extends ObjectResponse {
 
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL request
 	static {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**

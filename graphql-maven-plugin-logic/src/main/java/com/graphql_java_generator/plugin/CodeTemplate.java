@@ -23,9 +23,6 @@ public enum CodeTemplate {
 	UNION(CodeTemplateScope.COMMON, "templates/union_type.vm.java"),
 
 	// Client files (alphabetic order)
-	CUSTOM_SCALAR_REGISTRY_INITIALIZER(CodeTemplateScope.CLIENT,
-			"templates/client_CustomScalarRegistryInitializer.vm.java"), //
-	DIRECTIVE_REGISTRY_INITIALIZER(CodeTemplateScope.CLIENT, "templates/client_DirectiveRegistryInitializer.vm.java"), //
 	GRAPHQL_REQUEST(CodeTemplateScope.CLIENT, "templates/client_GraphQLRequest.vm.java"), //
 	GRAPHQL_REACTIVE_REQUEST(CodeTemplateScope.CLIENT, "templates/client_GraphQLReactiveRequest.vm.java"), //
 	JACKSON_DESERIALIZERS(CodeTemplateScope.CLIENT, "templates/client_jackson_deserializers.vm.java"), //
@@ -35,6 +32,7 @@ public enum CodeTemplate {
 	QUERY_MUTATION_REACTIVE_EXECUTOR(CodeTemplateScope.CLIENT,
 			"templates/client_query_mutation_reactive_executor.vm.java"), //
 	QUERY_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_response.vm.java"), //
+	REGISTRIES_INITIALIZER(CodeTemplateScope.CLIENT, "templates/client_RegistriesInitializer.vm.java"), //
 	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"), //
 	SPRING_AUTOCONFIGURATION_DEFINITION_FILE(CodeTemplateScope.CLIENT,
 			"templates/client_spring_autoconfiguration_definition.vm.properties"), //

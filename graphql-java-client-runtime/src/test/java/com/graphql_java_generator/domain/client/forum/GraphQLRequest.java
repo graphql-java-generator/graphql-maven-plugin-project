@@ -35,18 +35,17 @@ public class GraphQLRequest extends ObjectResponse {
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL
 	// request
 	static {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest)
 			throws GraphQLRequestPreparationException {
-		super(graphQlClient, "MySchema", graphQLRequest);
+		super(graphQlClient, "Forum", graphQLRequest);
 	}
 
 	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super(graphQlClient, "MySchema", graphQLRequest, requestType, queryName, inputParams);
+		super(graphQlClient, "Forum", graphQLRequest, requestType, queryName, inputParams);
 	}
 
 	/**

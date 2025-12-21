@@ -34,7 +34,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @GraphQLQuery(name = "AnotherMutationType", type = RequestType.mutation)
 @GraphQLObjectType("AnotherMutationType")
 @SuppressWarnings("unused")
-public class AnotherMutationType extends AnotherMutationTypeExecutorMySchema
+public class AnotherMutationType extends AnotherMutationTypeExecutorAllGraphQLCases
 		implements com.graphql_java_generator.client.GraphQLRequestObject {
 
 	private GraphQLObjectMapper extensionMapper = null;
@@ -235,7 +235,7 @@ public class AnotherMutationType extends AnotherMutationTypeExecutorMySchema
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
 			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
-					"MySchema");
+					"AllGraphQLCases");
 		}
 		return extensionMapper;
 	}

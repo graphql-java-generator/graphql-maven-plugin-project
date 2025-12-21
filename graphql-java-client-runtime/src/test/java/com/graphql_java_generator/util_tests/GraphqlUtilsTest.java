@@ -17,20 +17,20 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.domain.client.allGraphQLCases.EnumWithReservedJavaKeywordAsValues;
-import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 @Execution(ExecutionMode.CONCURRENT)
-class graphqlClientUtilsTest {
+class GraphqlUtilsTest {
 
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@BeforeAll
 	public static void initCustomScalarRegistry() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializer.initializeAllRegistries();
+		com.graphql_java_generator.domain.client.forum.RegistriesInitializer.initializeAllRegistries();
 	}
 
 	@Test

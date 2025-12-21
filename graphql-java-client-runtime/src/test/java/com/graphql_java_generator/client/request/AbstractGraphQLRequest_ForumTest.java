@@ -22,7 +22,7 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.Query;
@@ -53,7 +53,7 @@ class AbstractGraphQLRequest_ForumTest {
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
-		new MyQueryTypeExecutorMySchema();
+		new MyQueryTypeExecutorAllGraphQLCases();
 
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable "

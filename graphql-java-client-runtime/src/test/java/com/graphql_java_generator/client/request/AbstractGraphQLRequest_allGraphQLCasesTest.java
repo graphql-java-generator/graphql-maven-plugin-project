@@ -39,7 +39,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -331,7 +331,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Preparation
 
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
-		new MyQueryTypeExecutorMySchema();
+		new MyQueryTypeExecutorAllGraphQLCases();
 
 		params = new HashMap<>();
 		params.put("value", "the directive value");

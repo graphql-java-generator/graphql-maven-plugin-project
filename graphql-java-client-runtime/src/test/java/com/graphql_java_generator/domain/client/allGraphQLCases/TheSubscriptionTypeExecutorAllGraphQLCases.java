@@ -44,22 +44,21 @@ import com.graphql_java_generator.util.GraphqlUtils;
  */
 @Component
 @SuppressWarnings("unused")
-public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionExecutor {
+public class TheSubscriptionTypeExecutorAllGraphQLCases implements GraphQLSubscriptionExecutor {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(TheSubscriptionTypeExecutorMySchema.class);
+	private static Logger logger = LoggerFactory.getLogger(TheSubscriptionTypeExecutorAllGraphQLCases.class);
 
 	@Autowired
-	@Qualifier("MySchema")
+	@Qualifier("AllGraphQLCases")
 	GraphQlClient graphQlClient;
 
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
 
-	public TheSubscriptionTypeExecutorMySchema() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+	public TheSubscriptionTypeExecutorAllGraphQLCases() {
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
@@ -639,7 +638,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"subscribeNewHumanForEpisode", RequestType.subscription,
-				InputParameter.newBindParameter("MySchema", "episode",
+				InputParameter.newBindParameter("AllGraphQLCases", "episode",
 						"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY,
 						"Episode", true, 0, false));
 	}
@@ -660,7 +659,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription,
 				"subscribeNewHumanForEpisode",
-				InputParameter.newBindParameter("MySchema", "episode",
+				InputParameter.newBindParameter("AllGraphQLCases", "episode",
 						"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY,
 						"Episode", true, 0, false));
 	}
@@ -1559,7 +1558,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	public com.graphql_java_generator.client.request.Builder getIssue53ResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "issue53",
-				RequestType.subscription, InputParameter.newBindParameter("MySchema", "date",
+				RequestType.subscription, InputParameter.newBindParameter("AllGraphQLCases", "date",
 						"theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
 
@@ -1576,7 +1575,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "issue53",
-				InputParameter.newBindParameter("MySchema", "date", "theSubscriptionTypeIssue53Date",
+				InputParameter.newBindParameter("AllGraphQLCases", "date", "theSubscriptionTypeIssue53Date",
 						InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
 
@@ -1872,7 +1871,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"allGraphQLCasesInput", RequestType.subscription,
-				InputParameter.newBindParameter("MySchema", "input", "theSubscriptionTypeAllGraphQLCasesInputInput",
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "theSubscriptionTypeAllGraphQLCasesInputInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
 
@@ -1890,7 +1889,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	public GraphQLRequest getAllGraphQLCasesInputGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "allGraphQLCasesInput",
-				InputParameter.newBindParameter("MySchema", "input", "theSubscriptionTypeAllGraphQLCasesInputInput",
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "theSubscriptionTypeAllGraphQLCasesInputInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
 
@@ -2276,24 +2275,24 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"allGraphQLCasesParam", RequestType.subscription,
-				InputParameter.newBindParameter("MySchema", "id", "theSubscriptionTypeAllGraphQLCasesParamId",
+				InputParameter.newBindParameter("AllGraphQLCases", "id", "theSubscriptionTypeAllGraphQLCasesParamId",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "name", "theSubscriptionTypeAllGraphQLCasesParamName",
+				InputParameter.newBindParameter("AllGraphQLCases", "name", "theSubscriptionTypeAllGraphQLCasesParamName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "age", "theSubscriptionTypeAllGraphQLCasesParamAge",
+				InputParameter.newBindParameter("AllGraphQLCases", "age", "theSubscriptionTypeAllGraphQLCasesParamAge",
 						InputParameterType.MANDATORY, "Long", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "integer", "theSubscriptionTypeAllGraphQLCasesParamInteger",
+				InputParameter.newBindParameter("AllGraphQLCases", "integer", "theSubscriptionTypeAllGraphQLCasesParamInteger",
 						InputParameterType.MANDATORY, "Int", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "date", "theSubscriptionTypeAllGraphQLCasesParamDate",
+				InputParameter.newBindParameter("AllGraphQLCases", "date", "theSubscriptionTypeAllGraphQLCasesParamDate",
 						InputParameterType.MANDATORY, "Date", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "dates", "theSubscriptionTypeAllGraphQLCasesParamDates",
+				InputParameter.newBindParameter("AllGraphQLCases", "dates", "theSubscriptionTypeAllGraphQLCasesParamDates",
 						InputParameterType.MANDATORY, "Date", true, 1, false),
-				InputParameter.newBindParameter("MySchema", "matrix", "theSubscriptionTypeAllGraphQLCasesParamMatrix",
+				InputParameter.newBindParameter("AllGraphQLCases", "matrix", "theSubscriptionTypeAllGraphQLCasesParamMatrix",
 						InputParameterType.MANDATORY, "Float", true, 2, false),
-				InputParameter.newBindParameter("MySchema", "oneWithoutIdSubtype",
+				InputParameter.newBindParameter("AllGraphQLCases", "oneWithoutIdSubtype",
 						"theSubscriptionTypeAllGraphQLCasesParamOneWithoutIdSubtype", InputParameterType.MANDATORY,
 						"AllFieldCasesWithoutIdSubtypeInput", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "listWithoutIdSubtype",
+				InputParameter.newBindParameter("AllGraphQLCases", "listWithoutIdSubtype",
 						"theSubscriptionTypeAllGraphQLCasesParamListWithoutIdSubtype", InputParameterType.MANDATORY,
 						"AllFieldCasesWithoutIdSubtypeInput", true, 1, true));
 	}
@@ -2311,24 +2310,24 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	public GraphQLRequest getAllGraphQLCasesParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "allGraphQLCasesParam",
-				InputParameter.newBindParameter("MySchema", "id", "theSubscriptionTypeAllGraphQLCasesParamId",
+				InputParameter.newBindParameter("AllGraphQLCases", "id", "theSubscriptionTypeAllGraphQLCasesParamId",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "name", "theSubscriptionTypeAllGraphQLCasesParamName",
+				InputParameter.newBindParameter("AllGraphQLCases", "name", "theSubscriptionTypeAllGraphQLCasesParamName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "age", "theSubscriptionTypeAllGraphQLCasesParamAge",
+				InputParameter.newBindParameter("AllGraphQLCases", "age", "theSubscriptionTypeAllGraphQLCasesParamAge",
 						InputParameterType.MANDATORY, "Long", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "integer", "theSubscriptionTypeAllGraphQLCasesParamInteger",
+				InputParameter.newBindParameter("AllGraphQLCases", "integer", "theSubscriptionTypeAllGraphQLCasesParamInteger",
 						InputParameterType.MANDATORY, "Int", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "date", "theSubscriptionTypeAllGraphQLCasesParamDate",
+				InputParameter.newBindParameter("AllGraphQLCases", "date", "theSubscriptionTypeAllGraphQLCasesParamDate",
 						InputParameterType.MANDATORY, "Date", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "dates", "theSubscriptionTypeAllGraphQLCasesParamDates",
+				InputParameter.newBindParameter("AllGraphQLCases", "dates", "theSubscriptionTypeAllGraphQLCasesParamDates",
 						InputParameterType.MANDATORY, "Date", true, 1, false),
-				InputParameter.newBindParameter("MySchema", "matrix", "theSubscriptionTypeAllGraphQLCasesParamMatrix",
+				InputParameter.newBindParameter("AllGraphQLCases", "matrix", "theSubscriptionTypeAllGraphQLCasesParamMatrix",
 						InputParameterType.MANDATORY, "Float", true, 2, false),
-				InputParameter.newBindParameter("MySchema", "oneWithoutIdSubtype",
+				InputParameter.newBindParameter("AllGraphQLCases", "oneWithoutIdSubtype",
 						"theSubscriptionTypeAllGraphQLCasesParamOneWithoutIdSubtype", InputParameterType.MANDATORY,
 						"AllFieldCasesWithoutIdSubtypeInput", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "listWithoutIdSubtype",
+				InputParameter.newBindParameter("AllGraphQLCases", "listWithoutIdSubtype",
 						"theSubscriptionTypeAllGraphQLCasesParamListWithoutIdSubtype", InputParameterType.MANDATORY,
 						"AllFieldCasesWithoutIdSubtypeInput", true, 1, true));
 	}
@@ -2625,7 +2624,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"subscriptionTest", RequestType.subscription,
-				InputParameter.newBindParameter("MySchema", "param", "theSubscriptionTypeSubscriptionTestParam",
+				InputParameter.newBindParameter("AllGraphQLCases", "param", "theSubscriptionTypeSubscriptionTestParam",
 						InputParameterType.MANDATORY, "SubscriptionTestParam", true, 0, false));
 	}
 
@@ -2643,7 +2642,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	public GraphQLRequest getSubscriptionTestGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscriptionTest",
-				InputParameter.newBindParameter("MySchema", "param", "theSubscriptionTypeSubscriptionTestParam",
+				InputParameter.newBindParameter("AllGraphQLCases", "param", "theSubscriptionTypeSubscriptionTestParam",
 						InputParameterType.MANDATORY, "SubscriptionTestParam", true, 0, false));
 	}
 

@@ -108,9 +108,7 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 					+ this.graphqlUtils.getRuntimeVersion() 
 					+ "' whereas the GraphQL plugin version is '@project.version@'"); //$NON-NLS-1$
 		}
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**

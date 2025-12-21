@@ -37,7 +37,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @GraphQLQuery(name = "TheSubscriptionType", type = RequestType.subscription)
 @GraphQLObjectType("TheSubscriptionType")
 @SuppressWarnings("unused")
-public class TheSubscriptionType extends TheSubscriptionTypeExecutorMySchema
+public class TheSubscriptionType extends TheSubscriptionTypeExecutorAllGraphQLCases
 		implements com.graphql_java_generator.client.GraphQLRequestObject {
 
 	private GraphQLObjectMapper extensionMapper = null;
@@ -444,7 +444,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutorMySchema
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
 			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
-					"MySchema");
+					"AllGraphQLCases");
 		}
 		return extensionMapper;
 	}

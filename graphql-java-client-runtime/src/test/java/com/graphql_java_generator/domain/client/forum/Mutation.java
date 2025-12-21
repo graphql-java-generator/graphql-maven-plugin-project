@@ -223,7 +223,7 @@ public class Mutation extends MutationExecutorMySchema
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
 			extensionMapper = new GraphQLObjectMapper(
-					"org.graphql.mavenplugin.junittest.forum_client_springconfiguration", null, "MySchema");
+					"org.graphql.mavenplugin.junittest.forum_client_springconfiguration", null, "Forum");
 		}
 		return extensionMapper;
 	}

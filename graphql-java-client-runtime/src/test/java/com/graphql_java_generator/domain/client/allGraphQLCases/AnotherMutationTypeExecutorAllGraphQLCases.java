@@ -46,23 +46,20 @@ import com.graphql_java_generator.util.GraphqlUtils;
  */
 @Component
 @SuppressWarnings("unused")
-public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecutor {
+public class AnotherMutationTypeExecutorAllGraphQLCases implements GraphQLMutationExecutor {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(AnotherMutationTypeExecutorMySchema.class);
+	private static Logger logger = LoggerFactory.getLogger(AnotherMutationTypeExecutorAllGraphQLCases.class);
 
 	@Autowired
-	@Qualifier("MySchema")
+	@Qualifier("AllGraphQLCases")
 	GraphQlClient graphQlClient;
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
 
-	public AnotherMutationTypeExecutorMySchema() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
-		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
+	public AnotherMutationTypeExecutorAllGraphQLCases() {
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
@@ -497,7 +494,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createHuman",
 				RequestType.mutation,
-				InputParameter.newBindParameter("MySchema", "human", "anotherMutationTypeCreateHumanHuman",
+				InputParameter.newBindParameter("AllGraphQLCases", "human", "anotherMutationTypeCreateHumanHuman",
 						InputParameterType.MANDATORY, "HumanInput", true, 0, false));
 	}
 
@@ -514,7 +511,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	public GraphQLRequest getCreateHumanGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createHuman",
-				InputParameter.newBindParameter("MySchema", "human", "anotherMutationTypeCreateHumanHuman",
+				InputParameter.newBindParameter("AllGraphQLCases", "human", "anotherMutationTypeCreateHumanHuman",
 						InputParameterType.MANDATORY, "HumanInput", true, 0, false));
 	}
 
@@ -738,7 +735,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"createAllFieldCases", RequestType.mutation,
-				InputParameter.newBindParameter("MySchema", "input", "anotherMutationTypeCreateAllFieldCasesInput",
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "anotherMutationTypeCreateAllFieldCasesInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
 
@@ -755,7 +752,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	public GraphQLRequest getCreateAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createAllFieldCases",
-				InputParameter.newBindParameter("MySchema", "input", "anotherMutationTypeCreateAllFieldCasesInput",
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "anotherMutationTypeCreateAllFieldCasesInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
 
@@ -981,7 +978,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	public com.graphql_java_generator.client.request.Builder getDeleteSnacksResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
-				"deleteSnacks", RequestType.mutation, InputParameter.newBindParameter("MySchema", "id",
+				"deleteSnacks", RequestType.mutation, InputParameter.newBindParameter("AllGraphQLCases", "id",
 						"anotherMutationTypeDeleteSnacksId", InputParameterType.OPTIONAL, "ID", false, 1, false));
 	}
 
@@ -999,7 +996,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	public GraphQLRequest getDeleteSnacksGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "deleteSnacks",
-				InputParameter.newBindParameter("MySchema", "id", "anotherMutationTypeDeleteSnacksId",
+				InputParameter.newBindParameter("AllGraphQLCases", "id", "anotherMutationTypeDeleteSnacksId",
 						InputParameterType.OPTIONAL, "ID", false, 1, false));
 	}
 

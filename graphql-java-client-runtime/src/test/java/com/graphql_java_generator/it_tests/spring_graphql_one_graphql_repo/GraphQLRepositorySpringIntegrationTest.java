@@ -33,12 +33,12 @@ import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLReposito
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryTestHelper;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
-import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo.GraphQLRepositorySpringIntegrationTest.SpringConfig;
@@ -56,11 +56,11 @@ public class GraphQLRepositorySpringIntegrationTest {
 
 	@Configuration
 	@PropertySource("classpath:/application_one_graphql_server.properties")
-	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorMySchema.class })
+	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class })
 	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo" })
 	public static class SpringConfig {
 		@Bean
-		@Qualifier("MySchema")
+		@Qualifier("AllGraphQLCases")
 		GraphQlClient graphQlClientMySchema() {
 			return mock(GraphQlClient.class);
 		}
@@ -77,13 +77,13 @@ public class GraphQLRepositorySpringIntegrationTest {
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
 	@SuppressWarnings("removal")
 	@SpyBean
-	MyQueryTypeExecutorMySchema spyQueryExecutor;
+	MyQueryTypeExecutorAllGraphQLCases spyQueryExecutor;
 	@SuppressWarnings("removal")
 	@SpyBean
-	AnotherMutationTypeExecutorMySchema spyMutationExecutor;
+	AnotherMutationTypeExecutorAllGraphQLCases spyMutationExecutor;
 	@SuppressWarnings("removal")
 	@SpyBean
-	TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;
+	TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;
 
 	@BeforeEach
 	void setup() {

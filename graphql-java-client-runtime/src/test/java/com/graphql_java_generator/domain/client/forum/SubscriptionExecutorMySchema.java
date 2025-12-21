@@ -49,7 +49,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 	private static Logger logger = LoggerFactory.getLogger(SubscriptionExecutorMySchema.class);
 
 	@Autowired
-	@Qualifier("MySchema")
+	@Qualifier("Forum")
 	GraphQlClient graphQlClient;
 
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
@@ -57,8 +57,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 	GraphqlClientUtils graphqlClientUtils;
 
 	public SubscriptionExecutorMySchema() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
@@ -594,7 +593,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
 				"subscribeToNewPost", RequestType.subscription,
-				InputParameter.newBindParameter("MySchema", "boardName", "subscriptionSubscribeToNewPostBoardName",
+				InputParameter.newBindParameter("Forum", "boardName", "subscriptionSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -611,7 +610,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 	public GraphQLRequest getSubscribeToNewPostGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscribeToNewPost",
-				InputParameter.newBindParameter("MySchema", "boardName", "subscriptionSubscribeToNewPostBoardName",
+				InputParameter.newBindParameter("Forum", "boardName", "subscriptionSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 

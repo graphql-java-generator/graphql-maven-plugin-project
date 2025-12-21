@@ -51,15 +51,14 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	private static Logger logger = LoggerFactory.getLogger(QueryExecutorMySchema.class);
 
 	@Autowired
-	@Qualifier("MySchema")
+	@Qualifier("Forum")
 	GraphQlClient graphQlClient;
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
 
 	public QueryExecutorMySchema() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
@@ -936,7 +935,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder getTopicsResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "topics",
-				RequestType.query, InputParameter.newBindParameter("MySchema", "boardName", "queryTopicsBoardName",
+				RequestType.query, InputParameter.newBindParameter("Forum", "boardName", "queryTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -952,7 +951,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "topics",
-				InputParameter.newBindParameter("MySchema", "boardName", "queryTopicsBoardName",
+				InputParameter.newBindParameter("Forum", "boardName", "queryTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -1184,9 +1183,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "findTopics",
 				RequestType.query,
-				InputParameter.newBindParameter("MySchema", "boardName", "queryFindTopicsBoardName",
+				InputParameter.newBindParameter("Forum", "boardName", "queryFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "keyword", "queryFindTopicsKeyword",
+				InputParameter.newBindParameter("Forum", "keyword", "queryFindTopicsKeyword",
 						InputParameterType.OPTIONAL, "String", false, 1, true));
 	}
 
@@ -1202,9 +1201,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getFindTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "findTopics",
-				InputParameter.newBindParameter("MySchema", "boardName", "queryFindTopicsBoardName",
+				InputParameter.newBindParameter("Forum", "boardName", "queryFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("MySchema", "keyword", "queryFindTopicsKeyword",
+				InputParameter.newBindParameter("Forum", "keyword", "queryFindTopicsKeyword",
 						InputParameterType.OPTIONAL, "String", false, 1, true));
 	}
 
@@ -1647,7 +1646,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "__type",
-				RequestType.query, InputParameter.newBindParameter("MySchema", "name", "query__typeName",
+				RequestType.query, InputParameter.newBindParameter("Forum", "name", "query__typeName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -1663,7 +1662,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__type",
-				InputParameter.newBindParameter("MySchema", "name", "query__typeName", InputParameterType.MANDATORY,
+				InputParameter.newBindParameter("Forum", "name", "query__typeName", InputParameterType.MANDATORY,
 						"String", true, 0, false));
 	}
 

@@ -45,7 +45,7 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeResponse;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
@@ -54,9 +54,9 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.FieldParameterIn
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeResponse;
-import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -81,25 +81,25 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	@Mock
 	ApplicationContext applicationContext;
 	@Mock
-	GraphQlClient httpGraphQlClientMySchema;
+	GraphQlClient httpGraphQlClientAllGraphQLCases;
 	@Mock
-	GraphQlClient webSocketGraphQlClientMySchema;
+	GraphQlClient webSocketGraphQlClientAllGraphQLCases;
 	@Spy
-	protected MyQueryTypeExecutorMySchema spyQueryExecutor;
+	protected MyQueryTypeExecutorAllGraphQLCases spyQueryExecutor;
 	@Spy
-	protected AnotherMutationTypeExecutorMySchema spyMutationExecutor;
+	protected AnotherMutationTypeExecutorAllGraphQLCases spyMutationExecutor;
 	@Spy
-	protected TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;
+	protected TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;
 
 	@BeforeEach
 	void beforeEach() throws GraphQLRequestPreparationException {
 
 		SpringContextBean.setApplicationContext(applicationContext);
 
-		when(applicationContext.getBean("httpGraphQlClientMySchema", GraphQlClient.class)) //$NON-NLS-1$
-				.thenReturn(httpGraphQlClientMySchema);
-		when(applicationContext.getBean("webSocketGraphQlClientMySchema", GraphQlClient.class)) //$NON-NLS-1$
-				.thenReturn(webSocketGraphQlClientMySchema);
+		when(applicationContext.getBean("httpGraphQlClientAllGraphQLCases", GraphQlClient.class)) //$NON-NLS-1$
+				.thenReturn(httpGraphQlClientAllGraphQLCases);
+		when(applicationContext.getBean("webSocketGraphQlClientAllGraphQLCases", GraphQlClient.class)) //$NON-NLS-1$
+				.thenReturn(webSocketGraphQlClientAllGraphQLCases);
 
 		Map<String, GraphQLQueryExecutor> queries = new HashMap<>();
 		queries.put("a bean name", spyQueryExecutor); //$NON-NLS-1$
@@ -197,7 +197,7 @@ public class GraphQLRepositoryInvocationHandlerTest {
 				e.getMessage());
 		assertTrue(
 				e.getMessage().contains(
-						"com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema"), //$NON-NLS-1$
+						"com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases"), //$NON-NLS-1$
 				e.getMessage());
 	}
 

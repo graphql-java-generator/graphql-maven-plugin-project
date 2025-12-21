@@ -110,9 +110,7 @@ public class ${object.name}ReactiveExecutor${springBeanSuffix}  implements Graph
 					+ this.graphqlUtils.getRuntimeVersion() 
 					+ "' whereas the GraphQL plugin version is '@project.version@'"); //$NON-NLS-1$
 		}
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**
