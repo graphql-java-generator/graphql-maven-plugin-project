@@ -37,7 +37,7 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 
 	/**
 	 * Sets the {@link CustomScalarRegistry} for the given schema. This method should only be called from the generated
-	 * class <code>CustomScalarRegistryInitializer</code>. <br/>
+	 * class <code>RegistriesInitializer</code>. <br/>
 	 * Note: this method is an internal utility method.
 	 * 
 	 * @param schema
