@@ -198,12 +198,6 @@
 			<artifactId>graphql-java-client-runtime</artifactId>
 		</dependency>
 
-		<!-- The Forum server is protected by OAuth2-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<reporting>

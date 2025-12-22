@@ -193,12 +193,6 @@ public class OAuthTokenExtractor {
 		}
 
 		@Override
-		@Deprecated
-		public int rawStatusCode() {
-			return 200;
-		}
-
-		@Override
 		public @NonNull Headers headers() {
 			return new Headers() {
 				@Override

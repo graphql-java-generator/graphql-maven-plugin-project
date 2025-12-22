@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.javatuples.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
@@ -26,8 +28,6 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Base Spring configuration for Custom template test Extends {@link AbstractSpringConfiguration} to configure
  * {@link GraphQLConfigurationTestHelper} with the customized templates Customized templates are generated previous to
@@ -37,8 +37,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author ggomez
  *
  */
-@Slf4j
 public abstract class AbstractCustomTemplatesSpringConfiguration extends AbstractSpringConfiguration {
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractCustomTemplatesSpringConfiguration.class);
 
 	/**
 	 * Pattern for default templates
@@ -150,7 +151,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 						try {
 							Path targetPath = targetPathDirectory.resolve(sourcePath.getFileName());
 
-							log.info("Custom templates test: Copying {} into {} with contenet replacement",
+							logger.info("Custom templates test: Copying {} into {} with contenet replacement",
 									sourcePath.toString(), targetPath.toString());
 
 							String content = new String(Files.readAllBytes(sourcePath), StandardCharsets.UTF_8);

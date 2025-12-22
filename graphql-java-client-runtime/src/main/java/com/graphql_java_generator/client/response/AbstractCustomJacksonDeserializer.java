@@ -3,18 +3,10 @@
  */
 package com.graphql_java_generator.client.response;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import graphql.GraphQLContext;
 import graphql.execution.CoercedVariables;
@@ -24,6 +16,11 @@ import graphql.language.IntValue;
 import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.schema.GraphQLScalarType;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 /**
  * Jackson Deserializer for lists and Custom Scalars.
@@ -31,8 +28,6 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializer<T> {
-
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The class that can deserialize the items in the list. This recursion allows to deserialize list of lists.<BR/>
@@ -107,7 +102,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public T deserialize(JsonParser p, DeserializationContext ctxt) throws StreamReadException {
 
 		if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 			return null;
@@ -115,7 +110,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 
 			if (!p.currentToken().equals(JsonToken.START_ARRAY)) {
 				// Oups
-				throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+				throw new StreamReadException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
 						+ " token, but the current deserializer expects a list"); //$NON-NLS-1$
 			}
 
@@ -126,10 +121,10 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 				if (p.currentToken().equals(JsonToken.START_ARRAY)) {
 					// We're starting a sublist.
 					if (itemDeserializer == null) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+						throw new StreamReadException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
 								+ " JSON token, but the itemDeserializer is not defined. This JSON token can not be handled."); //$NON-NLS-1$
 					} else if (!itemDeserializer.list) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+						throw new StreamReadException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
 								+ " JSON token, but the itemDeserializer doesn't manage list. Hint: The number of embedded lists doesn't match the defined deserializer for the GraphQL field."); //$NON-NLS-1$
 					} else {
 						// Ok. Let's deserialize the sublist.
@@ -140,7 +135,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 					if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 						returnedList.add(null);
 					} else if (itemDeserializer.list) {
-						throw new JsonParseException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
+						throw new StreamReadException(p, "Found a " + p.currentToken().asString() //$NON-NLS-1$
 								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field."); //$NON-NLS-1$
 					} else {
 						returnedList.add(itemDeserializer.deserialize(p, ctxt));
@@ -162,7 +157,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 		} else if (graphQLScalarType == null) {
 
 			// Too bad
-			throw new JsonParseException(p,
+			throw new StreamReadException(p,
 					"Having to parse a " + p.currentToken() + ", but there is no graphQLScalarType defined"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		} else {
@@ -181,7 +176,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 				value = new IntValue(p.getBigIntegerValue());
 				break;
 			case VALUE_STRING:
-				value = new StringValue(p.getText());
+				value = new StringValue(p.getString());
 				break;
 			case VALUE_NULL:
 				value = null;
@@ -189,7 +184,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			case START_OBJECT:
 				return p.readValueAsTree();
 			default:
-				throw new JsonParseException(p, "Non managed JSON token: " + p.currentToken()); //$NON-NLS-1$
+				throw new StreamReadException(p, "Non managed JSON token: " + p.currentToken()); //$NON-NLS-1$
 			}
 			if (value == null) {
 				return null;

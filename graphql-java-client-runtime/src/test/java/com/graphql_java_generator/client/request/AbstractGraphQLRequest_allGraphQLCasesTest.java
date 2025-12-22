@@ -26,8 +26,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest.Payload;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
@@ -43,6 +41,9 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecu
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_allGraphQLCasesTest {
@@ -99,7 +100,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_scalarInputParameters_withFieldAsJavaKeyword()
-			throws GraphQLRequestPreparationException, JsonProcessingException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, JacksonException, GraphQLRequestExecutionException {
 		// Preparation
 		AllFieldCasesInput input = AllFieldCasesInput.builder()//
 				.withId("5035f6d3-9fae-4036-a726-1d0ca3230461")//
@@ -130,7 +131,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
 		params = new HashMap<>();
@@ -172,7 +173,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman_Alias()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		Class<?> droidClass;
 		Class<?> humanClass;
 
@@ -226,7 +227,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_withBuilder()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
 
@@ -249,7 +250,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 
 		// Go, go, go
@@ -270,7 +271,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_base64() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException,
-			JsonProcessingException, UnsupportedEncodingException {
+			JacksonException, UnsupportedEncodingException {
 		// Preparation
 		String str = "This a string with some special characters éàëöô";
 		byte[] bytes = str.getBytes("UTF-8");
@@ -293,7 +294,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_WithHardCodedParameters()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		params = new HashMap<>();
 		params.put("value", "the directive value");
@@ -326,7 +327,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_WithHardCodedParametersToBeEscaped()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 
@@ -428,7 +429,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	public static void checkPayload(Payload payload, String query, Map<String, Object> variables, String operationName)
-			throws JsonProcessingException {
+			throws JacksonException {
 		assertEquals(query, payload.getQuery());
 
 		if (variables == null) {

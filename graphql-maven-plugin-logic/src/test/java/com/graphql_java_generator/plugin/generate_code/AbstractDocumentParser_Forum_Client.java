@@ -34,8 +34,8 @@ abstract class AbstractDocumentParser_Forum_Client {
 
 	@AfterEach
 	void cleanup() {
-		if (this.ctx != null) {
-			this.ctx.close();
+		if (ctx != null) {
+			ctx.close();
 		}
 	}
 
@@ -44,11 +44,11 @@ abstract class AbstractDocumentParser_Forum_Client {
 	void test_initRelations() {
 
 		// Verification
-		assertEquals(19, this.documentParser.relations.size(), "nb relations found");
+		assertEquals(19, documentParser.relations.size(), "nb relations found");
 
 		// The Relations are found in different orders, depending on the source
 		// (graphqls or json file). So we manage sall the relations, in any order:
-		for (Relation relation : this.documentParser.relations) {
+		for (Relation relation : documentParser.relations) {
 			String field = relation.getObjectType().getName() + "." + relation.getField().getName();
 
 			if (field.startsWith("__")) {
@@ -89,14 +89,13 @@ abstract class AbstractDocumentParser_Forum_Client {
 	}
 
 	/**
-	 * Tests the annotation. We're in Client mode, thanks to the Spring
-	 * Configuration used for this test
+	 * Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Topic_client() {
 		// Preparation
-		Type topic = this.documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Topic")).findFirst()
+		Type topic = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Topic")).findFirst()
 				.get();
 
 		// Verification
@@ -130,15 +129,14 @@ abstract class AbstractDocumentParser_Forum_Client {
 	}
 
 	/**
-	 * Tests the annotation. We're in Client mode, thanks to the Spring
-	 * Configuration used for this test
+	 * Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation1_client() {
 		// Preparation
-		Type mutation = this.documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Mutation"))
-				.findFirst().get();
+		Type mutation = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Mutation")).findFirst()
+				.get();
 
 		// Verification
 		assertEquals(""//
@@ -152,14 +150,13 @@ abstract class AbstractDocumentParser_Forum_Client {
 	}
 
 	/**
-	 * Tests the annotation. We're in Client mode, thanks to the Spring
-	 * Configuration used for this test
+	 * Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation2_client() {
 		// Preparation
-		Type mutation = this.documentParser.getMutationType();
+		Type mutation = documentParser.getMutationType();
 
 		// Verification
 		assertEquals("" //
@@ -176,14 +173,14 @@ abstract class AbstractDocumentParser_Forum_Client {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_initDataFetchers() {
-		assertEquals(0, this.documentParser.dataFetchers.size(), "no data fetcher in client mode");
+		assertEquals(0, documentParser.dataFetchers.size(), "no data fetcher in client mode");
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_checkIntrospectionQueries() {
-		assertNotNull(this.documentParser.getQueryType());
-		ObjectType query = this.documentParser.getQueryType();
+		assertNotNull(documentParser.getQueryType());
+		ObjectType query = documentParser.getQueryType();
 
 		// Verification
 		assertEquals("Query", query.getName());
@@ -226,7 +223,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addImport() {
-		ObjectType post = (ObjectType) this.documentParser.getType("Post");
+		ObjectType post = (ObjectType) documentParser.getType("Post");
 		assertNotNull(post);
 
 		// The java class for scalar should not be here. It can lead to name collision,
@@ -238,8 +235,8 @@ abstract class AbstractDocumentParser_Forum_Client {
 
 		assertFalse(post.getImports().contains("com.fasterxml.jackson.annotation.JsonProperty"),
 				"expecting com.fasterxml.jackson.annotation.JsonProperty");
-		assertTrue(post.getImports().contains("com.fasterxml.jackson.databind.annotation.JsonDeserialize"),
-				"expecting com.fasterxml.jackson.databind.annotation.JsonDeserialize");
+		assertTrue(post.getImports().contains("tools.jackson.databind.annotation.JsonDeserialize"),
+				"expecting tools.jackson.databind.annotation.JsonDeserialize");
 		assertTrue(post.getImports().contains("com.graphql_java_generator.annotation.GraphQLNonScalar"),
 				"expecting com.graphql_java_generator.annotation.GraphQLNonScalar");
 		assertTrue(post.getImports().contains("com.graphql_java_generator.annotation.GraphQLObjectType"),

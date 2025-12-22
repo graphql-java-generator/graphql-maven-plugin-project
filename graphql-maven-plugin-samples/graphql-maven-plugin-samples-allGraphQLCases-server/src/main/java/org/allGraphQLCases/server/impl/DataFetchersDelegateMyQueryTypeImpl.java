@@ -35,9 +35,6 @@ import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.config.GraphQlException;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
@@ -51,6 +48,9 @@ import graphql.language.StringValue;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * @author etienne-sf
@@ -601,7 +601,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		if (json == null) {
 			try {
 				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
@@ -619,7 +619,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		if (object == null) {
 			try {
 				return new ObjectMapper().readValue("{\"field1\":\"value1\", \"field2\":\"value2\"}", ObjectNode.class);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
@@ -636,7 +636,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 								ObjectNode.class),
 						new ObjectMapper().readValue("{\"field21\":\"value21\", \"field22\":[21,22]}",
 								ObjectNode.class));
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException(e);
 			}
 		} else {

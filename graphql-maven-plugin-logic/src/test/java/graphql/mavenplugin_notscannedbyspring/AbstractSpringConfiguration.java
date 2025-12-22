@@ -6,18 +6,13 @@ package graphql.mavenplugin_notscannedbyspring;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.util.GraphqlUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * The Spring configuration used for JUnit tests. To use tit, just create a subclass, and provide the schemaFilePattern
@@ -26,13 +21,10 @@ import lombok.Setter;
  * @author etienne-sf
  */
 @Configuration
-@Import({ JacksonAutoConfiguration.class })
 public abstract class AbstractSpringConfiguration {
 
 	private static String BASE_PACKAGE = "org.junittest";
 
-	@Getter
-	@Setter
 	private String schemaFileSubFolder;
 
 	@Autowired

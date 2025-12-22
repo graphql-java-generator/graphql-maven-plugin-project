@@ -2,7 +2,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 
 	// /////////////////////////////////////////////////////////////
 	// Modules needed for the server generated code (start), as the "copyRuntimeSources" plugin parameter is true
-	requires com.fasterxml.jackson.databind;
+	requires tools.jackson.databind;
 	requires com.graphqljava;
 	requires org.reactivestreams;
 	requires org.slf4j;
@@ -25,5 +25,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 	requires jakarta.transaction;
 	requires io.reactivex.rxjava3;
 	requires spring.data.commons;
+	requires spring.boot.graphql;
+	requires spring.boot.persistence;
 
 }

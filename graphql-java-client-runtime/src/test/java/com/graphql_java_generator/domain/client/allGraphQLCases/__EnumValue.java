@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 
 /**
  *
@@ -95,7 +95,7 @@ public class __EnumValue {
 	}
 
 	/**
-	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * This method is called during the json deserialization process, by the {@link GraphQLJsonMapper}, each time an
 	 * alias value is read from the json.
 	 * 
 	 * @param aliasName

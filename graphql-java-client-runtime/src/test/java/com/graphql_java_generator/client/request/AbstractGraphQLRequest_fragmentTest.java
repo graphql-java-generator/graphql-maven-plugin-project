@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
@@ -26,6 +25,8 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
 
 class AbstractGraphQLRequest_fragmentTest {
 
@@ -58,7 +59,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_ThreeGlobalFragments()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType();
 		@SuppressWarnings("deprecation")
@@ -140,7 +141,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_TwoInlineFragments()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		int i = 0;
 
 		// Go, go, go
@@ -261,7 +262,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_TwoInlineFragments_AndAliases()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType();
 		@SuppressWarnings("deprecation")
@@ -294,7 +295,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Full_createHuman_withBuilder()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
 
@@ -318,7 +319,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Full_createHuman()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Go, go, go
 		GraphQLRequest graphQLRequest = new GraphQLRequest( //
@@ -338,7 +339,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Partial_createHuman()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
@@ -364,7 +365,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Full_createHuman_withDirectivesOnFullFragment()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 		params = new HashMap<>();
@@ -389,7 +390,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Partial_createHuman_withDirectivesWithOnClause()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
@@ -416,7 +417,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Partial_createHuman_withDirectivesWithoutOnClause()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType();
@@ -443,7 +444,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 	@Test
 	void testBuild_Partial_allFieldCases()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Preparation
 		MyQueryType queryType = new MyQueryType();

@@ -26,10 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
@@ -43,6 +39,10 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 @Execution(ExecutionMode.CONCURRENT)
 class InputParameterTest {
@@ -442,7 +442,7 @@ class InputParameterTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void getValueForGraphqlQuery_InputTypeWithJsonField()
-			throws JsonMappingException, JsonProcessingException, GraphQLRequestExecutionException {
+			throws StreamReadException, JacksonException, GraphQLRequestExecutionException {
 		// Preparation
 		RegistriesInitializer.initializeAllRegistries();// Schema AllGraphQLCases
 		ObjectNode json = new ObjectMapper().readValue(
@@ -474,7 +474,7 @@ class InputParameterTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void getValueForGraphqlQuery_InputTypeWithObjectField()
-			throws JsonMappingException, JsonProcessingException, GraphQLRequestExecutionException {
+			throws StreamReadException, JacksonException, GraphQLRequestExecutionException {
 		// Preparation
 		Map<?, ?> map = new ObjectMapper().readValue(
 				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",

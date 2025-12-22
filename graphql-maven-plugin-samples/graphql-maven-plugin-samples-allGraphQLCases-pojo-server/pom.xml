@@ -59,7 +59,7 @@
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>JSON</graphQLTypeName>
-									<javaType>com.fasterxml.jackson.databind.node.ObjectNode</javaType>
+									<javaType>tools.jackson.databind.node.ObjectNode</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Json</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
@@ -142,7 +142,7 @@
 		</dependency>
 		<dependency>
 			<!-- Mandatory for the JSON custom scalar -->
-			<groupId>com.fasterxml.jackson.core</groupId>
+			<groupId>tools.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>

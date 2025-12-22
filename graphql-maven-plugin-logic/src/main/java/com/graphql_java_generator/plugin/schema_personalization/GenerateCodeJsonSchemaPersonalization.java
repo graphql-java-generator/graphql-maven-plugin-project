@@ -1,6 +1,6 @@
 /**
- * 
- */
+* 
+*/
 package com.graphql_java_generator.plugin.schema_personalization;
 
 import java.io.File;
@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -32,10 +29,9 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * This tool contains the logic which allows the plugin user to personnalize the code generation. It allows to:
@@ -233,26 +229,26 @@ public class GenerateCodeJsonSchemaPersonalization {
 
 		try {
 
-			// Let's check that the JSON is valid
-			JsonSchema schema;
-			try (InputStream schemaStream = getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME)) {
-				JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
-				schema = factory.getSchema(schemaStream);
-			}
-
+			// // Let's check that the JSON is valid
+			// JsonSchema schema;
+			// try (InputStream schemaStream = getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME)) {
+			// JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
+			// schema = factory.getSchema(schemaStream);
+			// }
+			//
 			File jsonFile = ((GenerateCodeCommonConfiguration) configuration).getSchemaPersonalizationFile();
 			logger.info("Loading file " + jsonFile.getAbsolutePath());
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode json = objectMapper.readTree(jsonFile);
-
-			// Validation of the json schema
-			Set<ValidationMessage> errors = schema.validate(json);
-			if (errors.size() > 0) {
-				errors.forEach(e -> logger.error("Erreur while validating the {} json file: {}", jsonFile.getName(),
-						e.getMessage()));
-				throw new RuntimeException("The json file '" + ((GenerateCodeCommonConfiguration) configuration)
-						.getSchemaPersonalizationFile().getAbsolutePath() + "' is invalid. See the logs for details");
-			}
+			//
+			// // Validation of the json schema
+			// Set<ValidationMessage> errors = schema.validate(json);
+			// if (errors.size() > 0) {
+			// errors.forEach(e -> logger.error("Erreur while validating the {} json file: {}", jsonFile.getName(),
+			// e.getMessage()));
+			// throw new RuntimeException("The json file '" + ((GenerateCodeCommonConfiguration) configuration)
+			// .getSchemaPersonalizationFile().getAbsolutePath() + "' is invalid. See the logs for details");
+			// }
 
 			// Let's read the flow definition
 			SchemaPersonalization ret;

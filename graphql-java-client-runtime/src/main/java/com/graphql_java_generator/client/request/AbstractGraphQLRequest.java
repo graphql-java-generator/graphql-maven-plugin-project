@@ -19,11 +19,9 @@ import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.GraphQlClient.RequestSpec;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -37,6 +35,8 @@ import com.graphql_java_generator.util.GraphqlUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * This class contains the description for a GraphQL request that will be sent to the server. It's an abstract class,
@@ -151,10 +151,10 @@ public abstract class AbstractGraphQLRequest {
 
 			try {
 				// To properly manage aliases, interfaces and unions, we use our own mapper
-				GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
+				GraphQLJsonMapper objectMapper = getGraphQLObjectMapper();
 				ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), subscriptionType);
 				ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				GraphQLRequestExecutionException ex = new GraphQLRequestExecutionException(
 						"Error when receiving notifications for subscription <" //$NON-NLS-1$
 								+ graphQLRequest + ">: " + e.getMessage(), //$NON-NLS-1$
@@ -594,12 +594,12 @@ public abstract class AbstractGraphQLRequest {
 		// No error, let's parse the response data
 		try {
 			// To properly manage aliases, interfaces and unions, we use our own mapper
-			GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
+			GraphQLJsonMapper objectMapper = getGraphQLObjectMapper();
 			ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), r);
 			if (ret != null) {
 				ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
 			}
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + payload.query + ">: " + e.getMessage(), e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -939,8 +939,8 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @return
 	 */
-	public GraphQLObjectMapper getGraphQLObjectMapper() {
-		return new GraphQLObjectMapper(getGraphQLClassesPackageName(), aliasFields, schema);
+	public GraphQLJsonMapper getGraphQLObjectMapper() {
+		return new GraphQLJsonMapper(getGraphQLClassesPackageName(), aliasFields, schema);
 	}
 
 	/**

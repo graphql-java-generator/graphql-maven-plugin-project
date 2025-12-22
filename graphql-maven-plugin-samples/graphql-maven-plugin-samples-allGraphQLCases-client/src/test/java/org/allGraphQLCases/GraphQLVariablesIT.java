@@ -67,7 +67,7 @@ class GraphQLVariablesIT {
 		);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.queryExecutor.exec(
+		CTP_MyQueryType_CTS resp = queryExecutor.exec(
 				"query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", //
 				"matrixParam", matrix);
 
@@ -111,7 +111,7 @@ class GraphQLVariablesIT {
 		map.put("matrixParam", matrix);
 
 		// Go, go, go
-		CTP_MyQueryType_CTS resp = this.queryExecutor.execWithBindValues(
+		CTP_MyQueryType_CTS resp = queryExecutor.execWithBindValues(
 				"query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", //
 				map);
 
@@ -149,7 +149,7 @@ class GraphQLVariablesIT {
 		params.put("Value", "a first \"value\"");
 
 		// Preparation
-		GraphQLRequestAllGraphQLCases directiveOnQuery = this.mutationExecutor
+		GraphQLRequestAllGraphQLCases directiveOnQuery = mutationExecutor
 				.getGraphQLRequest("query namedQuery($uppercase :\n" //
 						+ "Boolean, \n\r"//
 						+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
@@ -172,7 +172,7 @@ class GraphQLVariablesIT {
 	@Test
 	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases mutationWithDirectiveRequest = this.mutationExecutor.getGraphQLRequest("" + //
+		GraphQLRequestAllGraphQLCases mutationWithDirectiveRequest = mutationExecutor.getGraphQLRequest("" + //
 				"mutation creation($name  : String!, $friends : [ CharacterInput\r\n] , $appearsIn: [Episode]!,$uppercaseName:Boolean)\r\n"//
 				+ "{createHuman (human: {name:$name, friends:$friends, appearsIn:$appearsIn}) "//
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
@@ -204,7 +204,7 @@ class GraphQLVariablesIT {
 	void test_mixBindParameterGraphQLVariable()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases mutation = this.mutationExecutor.getGraphQLRequest("" + //
+		GraphQLRequestAllGraphQLCases mutation = mutationExecutor.getGraphQLRequest("" + //
 				"mutation creation($uppercaseName:Boolean)\r\n"//
 				+ "{createHuman (human: &human) "//
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
@@ -240,7 +240,7 @@ class GraphQLVariablesIT {
 		Date date = new GregorianCalendar(2021, 4 - 1, 15).getTime();
 
 		// Go, go, go
-		GraphQLRequestAllGraphQLCases subscription = this.subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscription = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($aCustomScalarParam: MyCustomScalarForADate!) {issue53(date: $aCustomScalarParam){}}");
 		SubscriptionClient sub = subscription.execSubscription(callback, Date.class, "aCustomScalarParam", date);
 

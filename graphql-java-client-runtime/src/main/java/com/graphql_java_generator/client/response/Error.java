@@ -7,15 +7,14 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import graphql.ErrorClassification;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * 
@@ -147,7 +146,7 @@ public class Error implements GraphQLError {
 	 * @throws JsonProcessingException
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
-	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
+	public <T> T getExtensionsField(String key, Class<T> t) throws JacksonException {
 		JsonNode node = getExtensionsAsMapOfJsonNode().get(key);
 		return (node == null) ? null : getMapper().treeToValue(node, t);
 	}

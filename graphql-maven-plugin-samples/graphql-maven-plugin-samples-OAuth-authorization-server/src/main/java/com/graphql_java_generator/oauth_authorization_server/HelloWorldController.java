@@ -1,6 +1,5 @@
 package com.graphql_java_generator.oauth_authorization_server;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author etienne-sf
  *
  */
-@Controller
+// @Controller
 public class HelloWorldController {
 
 	@RequestMapping(value = "/helloWorld")

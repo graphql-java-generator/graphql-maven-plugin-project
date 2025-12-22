@@ -26,10 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
@@ -46,6 +42,10 @@ import com.graphql_java_generator.testcases.Issue49Title;
 
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 class GraphqlServerUtilsTest {
 
@@ -98,10 +98,10 @@ class GraphqlServerUtilsTest {
 
 	@Test
 	void testClassNameExtractor() {
-		assertEquals("TheEnumName", this.graphqlServerUtils.classNameExtractor(AnEnumType.class));
-		assertEquals("TheInterfaceName", this.graphqlServerUtils.classNameExtractor(AnInterface.class));
-		assertEquals("TheObjectName", this.graphqlServerUtils.classNameExtractor(AnObjectType.class));
-		assertEquals("TheUnionName", this.graphqlServerUtils.classNameExtractor(AUnion.class));
+		assertEquals("TheEnumName", graphqlServerUtils.classNameExtractor(AnEnumType.class));
+		assertEquals("TheInterfaceName", graphqlServerUtils.classNameExtractor(AnInterface.class));
+		assertEquals("TheObjectName", graphqlServerUtils.classNameExtractor(AnObjectType.class));
+		assertEquals("TheUnionName", graphqlServerUtils.classNameExtractor(AUnion.class));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ class GraphqlServerUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.domain.client.forum.TopicInput topicInput = (com.graphql_java_generator.domain.client.forum.TopicInput) //
-		this.graphqlServerUtils.getArgument(map, "TopicInput", String.class.getName(),
+		graphqlServerUtils.getArgument(map, "TopicInput", String.class.getName(),
 				com.graphql_java_generator.domain.client.forum.TopicInput.class);
 
 		// Verification
@@ -164,7 +164,7 @@ class GraphqlServerUtilsTest {
 		map.put("withoutIdSubtype", withoutIdSubtypes);
 
 		// Go, go, go
-		com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput) this.graphqlServerUtils
+		com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput) graphqlServerUtils
 				.getArgument(map, "AllFieldCasesInput", UUID.class.getName(),
 						com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput.class);
 
@@ -212,7 +212,7 @@ class GraphqlServerUtilsTest {
 		map.put("boardId", "00000000-0000-0000-0000-000000000003");
 
 		// Go, go, go
-		com.graphql_java_generator.domain.client.forum.TopicInput topicInput = (com.graphql_java_generator.domain.client.forum.TopicInput) this.graphqlServerUtils
+		com.graphql_java_generator.domain.client.forum.TopicInput topicInput = (com.graphql_java_generator.domain.client.forum.TopicInput) graphqlServerUtils
 				.getArgument(map, "AllFieldCasesInput", String.class.getName(),
 						com.graphql_java_generator.domain.client.forum.TopicInput.class);
 
@@ -228,7 +228,7 @@ class GraphqlServerUtilsTest {
 		map.put("date", new GregorianCalendar(2345, 2 - 1, 24).getTime());
 
 		// Go, go, go
-		com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput) this.graphqlServerUtils
+		com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput) graphqlServerUtils
 				.getArgument(map, "FieldParameterInput", UUID.class.getName(),
 						com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput.class);
 
@@ -239,23 +239,23 @@ class GraphqlServerUtilsTest {
 
 	@Test
 	void test_getArgument_scalar() {
-		assertEquals("33", this.graphqlServerUtils.getArgument("33", "String", "not used", String.class));
+		assertEquals("33", graphqlServerUtils.getArgument("33", "String", "not used", String.class));
 
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000002000003"), this.graphqlServerUtils
+		assertEquals(UUID.fromString("00000000-0000-0000-0000-000002000003"), graphqlServerUtils
 				.getArgument("00000000-0000-0000-0000-000002000003", "ID", "java.util.UUID", UUID.class));
-		assertEquals("00000000-0000-0000-0000-000002000003", this.graphqlServerUtils
+		assertEquals("00000000-0000-0000-0000-000002000003", graphqlServerUtils
 				.getArgument("00000000-0000-0000-0000-000002000003", "ID", "java.lang.String", String.class));
 		assertEquals((long) 2000003,
-				this.graphqlServerUtils.getArgument("00000002000003", "ID", "java.lang.Long", Long.class));
+				graphqlServerUtils.getArgument("00000002000003", "ID", "java.lang.Long", Long.class));
 
-		assertEquals((long) 2, this.graphqlServerUtils.getArgument("2", "Int", "not used", Long.class));
-		assertEquals(22, this.graphqlServerUtils.getArgument("22", "Int", "not used", Integer.class));
+		assertEquals((long) 2, graphqlServerUtils.getArgument("2", "Int", "not used", Long.class));
+		assertEquals(22, graphqlServerUtils.getArgument("22", "Int", "not used", Integer.class));
 
-		assertEquals((float) 1.234, this.graphqlServerUtils.getArgument("1.234", "Int", "not used", Float.class));
-		assertEquals(2.456, this.graphqlServerUtils.getArgument("2.456", "Int", "not used", Double.class));
+		assertEquals((float) 1.234, graphqlServerUtils.getArgument("1.234", "Int", "not used", Float.class));
+		assertEquals(2.456, graphqlServerUtils.getArgument("2.456", "Int", "not used", Double.class));
 
-		assertEquals(true, this.graphqlServerUtils.getArgument("true", "Boolean", "not used", Boolean.class));
-		assertEquals(false, this.graphqlServerUtils.getArgument("false", "Boolean", "not used", Boolean.class));
+		assertEquals(true, graphqlServerUtils.getArgument("true", "Boolean", "not used", Boolean.class));
+		assertEquals(false, graphqlServerUtils.getArgument("false", "Boolean", "not used", Boolean.class));
 	}
 
 	@Test
@@ -265,8 +265,8 @@ class GraphqlServerUtilsTest {
 		map.put("title", "MRS");
 
 		// Go, go, go
-		Isssue49AccountInput input = (Isssue49AccountInput) this.graphqlServerUtils.getArgument(map,
-				"Isssue49AccountInput", UUID.class.getName(), Isssue49AccountInput.class);
+		Isssue49AccountInput input = (Isssue49AccountInput) graphqlServerUtils.getArgument(map, "Isssue49AccountInput",
+				UUID.class.getName(), Isssue49AccountInput.class);
 
 		// Verification
 		assertEquals(Issue49Title.MRS, input.getTitle());
@@ -282,7 +282,7 @@ class GraphqlServerUtilsTest {
 		map.put("appearsIn", episodes);
 
 		// Go, go, go
-		Human human = (Human) this.graphqlServerUtils.getArgument(map, "Human", UUID.class.getName(), Human.class);
+		Human human = (Human) graphqlServerUtils.getArgument(map, "Human", UUID.class.getName(), Human.class);
 
 		// Verification
 		assertEquals(2, human.getAppearsIn().size());
@@ -311,8 +311,7 @@ class GraphqlServerUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput) //
-		this.graphqlServerUtils.getArgument(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput",
-				UUID.class.getName(),
+		graphqlServerUtils.getArgument(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput", UUID.class.getName(),
 				com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
@@ -330,8 +329,8 @@ class GraphqlServerUtilsTest {
 		Map<String, Object> map = new LinkedHashMap<>();
 
 		// Go, go, go
-		TopicInput topicInput = (TopicInput) this.graphqlServerUtils.getArgument(map, "TopicInput",
-				UUID.class.getName(), TopicInput.class);
+		TopicInput topicInput = (TopicInput) graphqlServerUtils.getArgument(map, "TopicInput", UUID.class.getName(),
+				TopicInput.class);
 
 		// Verification
 		assertNull(topicInput.getBoardId());
@@ -341,7 +340,7 @@ class GraphqlServerUtilsTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_getArgument_nullMap() {
-		assertNull(this.graphqlServerUtils.getArgument(null, "TopicInput", UUID.class.getName(), TopicInput.class),
+		assertNull(graphqlServerUtils.getArgument(null, "TopicInput", UUID.class.getName(), TopicInput.class),
 				"A null map return a null object");
 	}
 
@@ -375,7 +374,7 @@ class GraphqlServerUtilsTest {
 
 		// Go, go, go
 		@SuppressWarnings("unchecked")
-		List<com.graphql_java_generator.domain.client.forum.TopicInput> result = (List<com.graphql_java_generator.domain.client.forum.TopicInput>) this.graphqlServerUtils
+		List<com.graphql_java_generator.domain.client.forum.TopicInput> result = (List<com.graphql_java_generator.domain.client.forum.TopicInput>) graphqlServerUtils
 				.getArgument(list, "TopicInput", String.class.getName(),
 						com.graphql_java_generator.domain.client.forum.TopicInput.class);
 
@@ -402,20 +401,20 @@ class GraphqlServerUtilsTest {
 	void test_enumValueToString() {
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// Basic case: not a list
-		assertNull(this.graphqlServerUtils.enumValueToString(null));
-		assertEquals("if", this.graphqlServerUtils.enumValueToString(EnumWithReservedJavaKeywordAsValues._if));
+		assertNull(graphqlServerUtils.enumValueToString(null));
+		assertEquals("if", graphqlServerUtils.enumValueToString(EnumWithReservedJavaKeywordAsValues._if));
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// List of enums
 		assertArrayEquals(//
 				ArrayUtils.toArray("assert", null, "break"),
-				((List<String>) this.graphqlServerUtils.enumValueToString(Arrays.asList(//
+				((List<String>) graphqlServerUtils.enumValueToString(Arrays.asList(//
 						EnumWithReservedJavaKeywordAsValues._assert, //
 						null, //
 						EnumWithReservedJavaKeywordAsValues._break))).toArray());
 		assertArrayEquals(//
 				ArrayUtils.toArray(Optional.of("assert"), Optional.empty(), Optional.of("break")), //
-				((List<Optional<String>>) this.graphqlServerUtils.enumValueToString(Arrays.asList(//
+				((List<Optional<String>>) graphqlServerUtils.enumValueToString(Arrays.asList(//
 						Optional.of(EnumWithReservedJavaKeywordAsValues._assert), //
 						Optional.empty(), //
 						Optional.of(EnumWithReservedJavaKeywordAsValues._break)))).toArray());
@@ -426,7 +425,7 @@ class GraphqlServerUtilsTest {
 				Arrays.asList("assert", null, "break"), //
 				null, //
 				Arrays.asList("catch", null, "else"));
-		List<List<String>> actual1 = (List<List<String>>) this.graphqlServerUtils.enumValueToString(Arrays.asList(//
+		List<List<String>> actual1 = (List<List<String>>) graphqlServerUtils.enumValueToString(Arrays.asList(//
 				Arrays.asList(EnumWithReservedJavaKeywordAsValues._assert, null,
 						EnumWithReservedJavaKeywordAsValues._break), //
 				null, //
@@ -441,7 +440,7 @@ class GraphqlServerUtilsTest {
 				Optional.of(Arrays.asList("assert", null, "break")), //
 				Optional.empty(), //
 				Optional.of(Arrays.asList("catch", null, "else")));
-		List<Optional<List<String>>> actual2 = (List<Optional<List<String>>>) this.graphqlServerUtils
+		List<Optional<List<String>>> actual2 = (List<Optional<List<String>>>) graphqlServerUtils
 				.enumValueToString(Arrays.asList(//
 						Optional.of(Arrays.asList(EnumWithReservedJavaKeywordAsValues._assert, null,
 								EnumWithReservedJavaKeywordAsValues._break)), //
@@ -462,7 +461,7 @@ class GraphqlServerUtilsTest {
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		// Flux
-		Object fluxEnum = this.graphqlServerUtils.enumValueToString(Flux.just(//
+		Object fluxEnum = graphqlServerUtils.enumValueToString(Flux.just(//
 				EnumWithReservedJavaKeywordAsValues._double, //
 				EnumWithReservedJavaKeywordAsValues._long));
 		assertInstanceOf(Flux.class, fluxEnum);
@@ -473,7 +472,7 @@ class GraphqlServerUtilsTest {
 				.expectComplete()//
 				.verify();
 
-		Object fluxOptionalEnum = this.graphqlServerUtils.enumValueToString(Flux.just(//
+		Object fluxOptionalEnum = graphqlServerUtils.enumValueToString(Flux.just(//
 				Optional.of(EnumWithReservedJavaKeywordAsValues._double), //
 				Optional.empty(), //
 				Optional.of(EnumWithReservedJavaKeywordAsValues._long)));
@@ -486,7 +485,7 @@ class GraphqlServerUtilsTest {
 				.expectComplete()//
 				.verify();
 
-		Object fluxListEnum = this.graphqlServerUtils.enumValueToString(Flux.just(//
+		Object fluxListEnum = graphqlServerUtils.enumValueToString(Flux.just(//
 				Arrays.asList(EnumWithReservedJavaKeywordAsValues._double, //
 						EnumWithReservedJavaKeywordAsValues._long), //
 				Arrays.asList(), //
@@ -505,7 +504,7 @@ class GraphqlServerUtilsTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void test_mapArgumentToRelevantPojoOrScalar() throws JsonMappingException, JsonProcessingException {
+	void test_mapArgumentToRelevantPojoOrScalar() throws DatabindException, JacksonException {
 		final String ELEMENT = "an element";
 		final String ARGUMENT = "an argument";
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -515,22 +514,21 @@ class GraphqlServerUtilsTest {
 
 		//////////////////////////////////////////////////////////////////
 		// Null value
-		assertNull(this.graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(null, ObjectNode.class, 4, ELEMENT,
-				ARGUMENT));
+		assertNull(graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(null, ObjectNode.class, 4, ELEMENT, ARGUMENT));
 
 		//////////////////////////////////////////////////////////////////
 		// Enum value
 		String scalarString = AnEnumType.VALUE1.name();
 		assertEquals(//
 				AnEnumType.VALUE1, //
-				this.graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(scalarString, AnEnumType.class, 0, ELEMENT,
+				graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(scalarString, AnEnumType.class, 0, ELEMENT,
 						ARGUMENT));
 
 		//////////////////////////////////////////////////////////////////
 		// Enum field
 		map = new HashMap<>();
 		map.put("enumField", AnEnumType.VALUE1.toString());
-		Object response = this.graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(map, AnInputType.class, 0, ELEMENT,
+		Object response = graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(map, AnInputType.class, 0, ELEMENT,
 				ARGUMENT);
 		assertTrue(response instanceof AnInputType, response.getClass().getName());
 		assertEquals(AnEnumType.VALUE1, ((AnInputType) response).enumField);
@@ -539,7 +537,7 @@ class GraphqlServerUtilsTest {
 		// An ObjectNode object
 		json = "{\"field\":\"value\",\"subObject\":{\"field2\":[1,2,3],\"field3\":[1.1,22.2,3.3]},\"booleans\":[true,false]}";
 		map = objectMapper.readValue(json, Map.class);
-		objectNode = (ObjectNode) this.graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(map, ObjectNode.class, 0,
+		objectNode = (ObjectNode) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(map, ObjectNode.class, 0,
 				ELEMENT, ARGUMENT);
 		assertNotNull(objectNode);
 		assertEquals(json, objectNode.toString());
@@ -547,7 +545,7 @@ class GraphqlServerUtilsTest {
 		//////////////////////////////////////////////////////////////////
 		// A list of null values
 		List<Object> arrayOfNulls = Arrays.asList(null, null);
-		List<ObjectNode> objectNodes = (List<ObjectNode>) this.graphqlServerUtils
+		List<ObjectNode> objectNodes = (List<ObjectNode>) graphqlServerUtils
 				.mapArgumentToRelevantPojoOrScalar(arrayOfNulls, ObjectNode.class, 1, ELEMENT, ARGUMENT);
 		assertNotNull(objectNodes);
 		assertEquals(2, objectNodes.size());
@@ -561,8 +559,8 @@ class GraphqlServerUtilsTest {
 		Map<?, ?> map1 = objectMapper.readValue(json1, Map.class);
 		Map<?, ?> map2 = objectMapper.readValue(json2, Map.class);
 		List<Object> list = Arrays.asList(map1, map2);
-		objectNodes = (List<ObjectNode>) this.graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(list,
-				ObjectNode.class, 1, ELEMENT, ARGUMENT);
+		objectNodes = (List<ObjectNode>) graphqlServerUtils.mapArgumentToRelevantPojoOrScalar(list, ObjectNode.class, 1,
+				ELEMENT, ARGUMENT);
 		assertNotNull(objectNodes);
 		assertEquals(2, objectNodes.size());
 		assertEquals(json1, objectNodes.get(0).toString());
@@ -571,7 +569,7 @@ class GraphqlServerUtilsTest {
 		//////////////////////////////////////////////////////////////////
 		// A list of lists of ObjectNode objects
 		list = Arrays.asList(Arrays.asList(map1, map2));
-		List<List<ObjectNode>> objectNodesNodes = (List<List<ObjectNode>>) this.graphqlServerUtils
+		List<List<ObjectNode>> objectNodesNodes = (List<List<ObjectNode>>) graphqlServerUtils
 				.mapArgumentToRelevantPojoOrScalar(list, ObjectNode.class, 2, ELEMENT, ARGUMENT);
 		assertNotNull(objectNodesNodes);
 		assertEquals(1, objectNodesNodes.size());
@@ -595,7 +593,7 @@ class GraphqlServerUtilsTest {
 				Arrays.asList(new ClassToTest_mapArgumentToRelevantPojoOrScalar("item3"),
 						new ClassToTest_mapArgumentToRelevantPojoOrScalar("item4"))));
 		//
-		ClassToTest_mapArgumentToRelevantPojoOrScalar test = (ClassToTest_mapArgumentToRelevantPojoOrScalar) this.graphqlServerUtils
+		ClassToTest_mapArgumentToRelevantPojoOrScalar test = (ClassToTest_mapArgumentToRelevantPojoOrScalar) graphqlServerUtils
 				.mapArgumentToRelevantPojoOrScalar(map, ClassToTest_mapArgumentToRelevantPojoOrScalar.class, 0, ELEMENT,
 						ARGUMENT);
 		//
@@ -615,7 +613,7 @@ class GraphqlServerUtilsTest {
 		//////////////////////////////////////////////////////////////////
 		// Test with a list of fake InputType
 		list = Arrays.asList(map, map);
-		List<ClassToTest_mapArgumentToRelevantPojoOrScalar> testList = (List<ClassToTest_mapArgumentToRelevantPojoOrScalar>) this.graphqlServerUtils
+		List<ClassToTest_mapArgumentToRelevantPojoOrScalar> testList = (List<ClassToTest_mapArgumentToRelevantPojoOrScalar>) graphqlServerUtils
 				.mapArgumentToRelevantPojoOrScalar(list, ClassToTest_mapArgumentToRelevantPojoOrScalar.class, 1,
 						ELEMENT, ARGUMENT);
 		assertEquals(2, testList.size());

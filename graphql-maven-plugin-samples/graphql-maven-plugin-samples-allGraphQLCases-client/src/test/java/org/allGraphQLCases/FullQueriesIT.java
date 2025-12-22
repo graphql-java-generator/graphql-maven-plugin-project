@@ -41,12 +41,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.client.GraphQlClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import jakarta.annotation.Resource;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
 
 //Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
@@ -113,7 +113,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_noDirective_extensionsResponseField()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JacksonException {
 		String request = "{directiveOnQuery}";
 
 		// Go, go, go

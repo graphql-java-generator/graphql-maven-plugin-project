@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
 
 /**
  * This class contains the response for a full request. See the
@@ -37,7 +38,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class AnotherMutationType extends AnotherMutationTypeExecutorAllGraphQLCases
 		implements com.graphql_java_generator.client.GraphQLRequestObject {
 
-	private GraphQLObjectMapper extensionMapper = null;
+	private GraphQLJsonMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
 
@@ -150,7 +151,7 @@ public class AnotherMutationType extends AnotherMutationTypeExecutorAllGraphQLCa
 	}
 
 	/**
-	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * This method is called during the json deserialization process, by the {@link GraphQLJsonMapper}, each time an
 	 * alias value is read from the json.
 	 * 
 	 * @param aliasName
@@ -232,9 +233,9 @@ public class AnotherMutationType extends AnotherMutationTypeExecutorAllGraphQLCa
 		}
 	}
 
-	private GraphQLObjectMapper getExtensionMapper() {
+	private GraphQLJsonMapper getExtensionMapper() {
 		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
+			extensionMapper = new GraphQLJsonMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null,
 					"AllGraphQLCases");
 		}
 		return extensionMapper;
@@ -271,10 +272,10 @@ public class AnotherMutationType extends AnotherMutationTypeExecutorAllGraphQLCa
 	 * @param t
 	 * @return null if the key is not in the <I>extensions</I> map. Otherwise: the value for this _key_, as a _t_
 	 *         instance
-	 * @throws JsonProcessingException
+	 * @throws JacksonException
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
-	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
+	public <T> T getExtensionsField(String key, Class<T> t) throws JacksonException {
 		JsonNode node = getExtensionsAsMap().get(key);
 		return (node == null) ? null : getExtensionMapper().treeToValue(node, t);
 	}

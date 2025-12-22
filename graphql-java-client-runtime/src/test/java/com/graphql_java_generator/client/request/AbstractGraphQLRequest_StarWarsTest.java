@@ -21,7 +21,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest.Payload;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
@@ -31,6 +30,8 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_StarWarsTest {
@@ -88,7 +89,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 
 	@Test
 	void test_AbstractGraphQLRequest_oneQuery()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		String query1 = "  \n\r\t  {withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE,JEDI]}) {id name friends {name appearsIn}}}  \n\r\t ";
 		String query2 = "  \n\r\t query \n\r\t  {withOneMandatoryParam(character:&character) {id name friends {name appearsIn}}}  \n\r\t ";
@@ -107,7 +108,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 
 	@Test
 	void test_AbstractGraphQLRequest_introspectionQuery()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 		String query1 = "  \n\r\t   {__schema {types{kind name}}}  \n\r\t ";
 		String query2 = "  \n\r\t query \n\r\t  {__schema {types{kind name}}} \n\r\t ";
@@ -384,7 +385,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test_withQueryResponseDef_StarWars()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 
 		// Go, go, go
 		AbstractGraphQLRequest graphQLRequest = withOneMandatoryParamDefBuilder

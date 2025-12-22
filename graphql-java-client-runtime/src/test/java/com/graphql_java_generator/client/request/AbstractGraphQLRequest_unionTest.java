@@ -15,11 +15,12 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_unionTest {
@@ -36,7 +37,7 @@ class AbstractGraphQLRequest_unionTest {
 
 	@Test
 	void testBuild_withMissingFragments()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType();
 

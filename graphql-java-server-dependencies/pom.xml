@@ -15,20 +15,10 @@
 	&lt;/dependency&gt;</description>
 
 	<dependencies>
-		<!-- Dependencies within this project -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-common-dependencies</artifactId>
 			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.graphql</groupId>
-			<artifactId>spring-graphql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 	</dependencies>
 

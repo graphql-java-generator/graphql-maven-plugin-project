@@ -37,7 +37,7 @@ public class GraphQLRepositorySubscriptionIT {
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
 
 		// Go, go, go
-		SubscriptionClient sub = this.graphQLRepo.subscribeToAList(callback);
+		SubscriptionClient sub = graphQLRepo.subscribeToAList(callback);
 
 		// Verification
 		// Let's wait a max of 20 second, until we receive some notifications
@@ -59,7 +59,7 @@ public class GraphQLRepositorySubscriptionIT {
 				"test_PartialRequest_SubscribeToANullEnum");
 
 		// Go, go, go
-		SubscriptionClient sub = this.graphQLRepo//
+		SubscriptionClient sub = graphQLRepo//
 				.returnEnum(callback);
 
 		// Verification
@@ -82,7 +82,7 @@ public class GraphQLRepositorySubscriptionIT {
 				"test_PartialRequest_SubscribeToAMandatoryEnum");
 
 		// Go, go, go
-		SubscriptionClient sub = this.graphQLRepo//
+		SubscriptionClient sub = graphQLRepo//
 				.returnMandatoryEnum(callback, CEP_EnumWithReservedJavaKeywordAsValues_CES._volatile);
 
 		// Verification
