@@ -4,11 +4,11 @@ package com.graphql_java_generator.domain.client.forum;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.client.response.Error;
 
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @SuppressWarnings("unused")
 public class QueryRootResponse {
@@ -26,7 +26,7 @@ public class QueryRootResponse {
 
 	// This getter is needed for the Json serialization
 	public Query getData() {
-		return this.query;
+		return query;
 	}
 
 	// This setter is needed for the Json deserialization

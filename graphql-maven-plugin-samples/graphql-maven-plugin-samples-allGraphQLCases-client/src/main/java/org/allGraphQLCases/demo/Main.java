@@ -17,9 +17,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -48,8 +45,7 @@ curl -i -X POST "http://localhost:8180/graphql" --noproxy "*" -H "Authorization:
  */
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphqlClientUtils.class,
 		MyQueryTypeExecutorAllGraphQLCases.class, MyQueryTypeExecutorAllGraphQLCases2.class, QueryExecutorForum.class })
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,
-		DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
+@EnableAutoConfiguration()
 @EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })
 public class Main implements CommandLineRunner {
 

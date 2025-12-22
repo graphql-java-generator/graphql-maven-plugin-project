@@ -82,7 +82,7 @@ public class ${entity}Controller {
 #if($argument.type.isEnum())
 ${velocityUtils.repeat("List<",$argument.fieldTypeAST.listDepth)}String${velocityUtils.repeat(">",$argument.fieldTypeAST.listDepth)}##
 ##
-#elseif($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+#elseif($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "tools.jackson.databind.node.ObjectNode")
 ## ObjectNode has not default constructor. It can't be used as a controller parameter (directly, or if in a field's type), as spring-graphql would 
 ## try to create one, and fail becayuse of this lack of default constructor.
 ## So we receive the parameter as an Object, and create the ObjectNode based on the received in the controller method.
@@ -96,7 +96,7 @@ $argument.javaTypeFullClassname##
 ##
 ##
 #macro(argumentName $argument)
-#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "tools.jackson.databind.node.ObjectNode")
 ${argument.javaName}Param##
 #else
 ${argument.javaName}##
@@ -200,7 +200,7 @@ ${argument.javaName}##
 ##
 #foreach($argument in $dataFetcher.field.inputParameters)
 ##
-#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "com.fasterxml.jackson.databind.node.ObjectNode")
+#if($argument.type.dependsOnJsonOrObjectCustomScalar || $argument.type.classFullName == "tools.jackson.databind.node.ObjectNode")
 #if($argument.fieldTypeAST.listDepth>0)
 		@SuppressWarnings("unchecked")
 #end

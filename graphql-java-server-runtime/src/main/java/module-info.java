@@ -4,7 +4,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_serv
 
 	requires transitive org.reactivestreams;
 	requires transitive org.slf4j;
-	requires transitive com.fasterxml.jackson.databind;
+	requires transitive tools.jackson.databind;
 	requires transitive com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime;
 	requires transitive reactor.core;
 	requires transitive spring.beans;

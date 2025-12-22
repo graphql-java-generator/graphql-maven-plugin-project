@@ -24,15 +24,13 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
@@ -62,13 +60,12 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This class is the superclass for the two GraphQLRepositoryInvocationHandlerTest test classes. It contains each test
- * that doesnt depend on the constructor, so that each of this test is executed against instances of
+ * that doesn't depend on the constructor, so that each of these tests is executed against instances of
  * {@link GraphQLRepositoryInvocationHandler} created by each of its two constructors.
  * 
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
-@ExtendWith(MockitoExtension.class)
 public class GraphQLRepositoryInvocationHandlerTest {
 
 	protected GraphQLRepositoryTestCase graphQLRepository;
@@ -78,17 +75,17 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	// java reflection
 	// So we use @Spy here, instead of @Mock
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
-	@Mock
+	@MockitoBean
 	ApplicationContext applicationContext;
-	@Mock
+	@MockitoBean
 	GraphQlClient httpGraphQlClientAllGraphQLCases;
-	@Mock
+	@MockitoBean
 	GraphQlClient webSocketGraphQlClientAllGraphQLCases;
-	@Spy
+	@MockitoSpyBean
 	protected MyQueryTypeExecutorAllGraphQLCases spyQueryExecutor;
-	@Spy
+	@MockitoSpyBean
 	protected AnotherMutationTypeExecutorAllGraphQLCases spyMutationExecutor;
-	@Spy
+	@MockitoSpyBean
 	protected TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;
 
 	@BeforeEach

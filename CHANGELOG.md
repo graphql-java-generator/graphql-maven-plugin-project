@@ -1,11 +1,40 @@
 [TOC]
 
 
-# Breaking changes to come with the 3.x releases
+# Breaking changes in the 3.x releases
 
 * The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
 * The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
     * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
+    
+# Breaking changes in the 4.x releases
+
+* Upgrade to Spring Boot 4 and Spring Framework 7
+    * This implies an upgrade from Jackson 2 to Jackson 3. 
+        * Doing this implies a change from ObjectNode to JsonNode (and the GraphQLObjectMapper client class has been renamed to GraphQLJsonMapper)
+    * [Server mode] When using an alternate path, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.path`
+
+? Java 25
+? Removal of data fetchers on GraphQL interfaces
+? get rid of gson in plugin-logic
+? Document the changed dependencies
+?? Removal of deprecated root response
+?? Restructuring runtime packages
+?? Check dependencies in common-dependencies (slf4j-api, spring-context, reactive-streams)
+?? Check dependencies in client-dependencies (spring-boot-starter-security, 
+
+# 4.x versions
+
+# 4.0
+
+All mode:
+* Upgrade to Spring Boot 4 and Spring Framework 7
+    * Jackson switch to 3.x versions, with a major refactoring, including json schema
+
+
+Client mode:
+* TODO: impact on json schema
+
 
 # 3.x versions
 

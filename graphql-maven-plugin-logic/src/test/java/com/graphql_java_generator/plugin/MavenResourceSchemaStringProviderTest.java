@@ -38,7 +38,7 @@ class MavenResourceSchemaStringProviderTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testSchemaStrings() throws IOException {
+	public void testSchemaStrings() throws IOException {
 		// Preparation
 
 		// Go, go, go

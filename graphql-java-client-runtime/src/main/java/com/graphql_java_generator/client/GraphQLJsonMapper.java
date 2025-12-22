@@ -16,31 +16,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.DecimalNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.FloatNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ShortNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.graphql_java_generator.annotation.GraphQLDeprecatedResponseForRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.TreeNode;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.deser.DeserializationProblemHandler;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BigIntegerNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.DecimalNode;
+import tools.jackson.databind.node.DoubleNode;
+import tools.jackson.databind.node.FloatNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ShortNode;
+import tools.jackson.databind.node.StringNode;
 
 /**
  * This class is a wrapper around an {@link ObjectMapper}. It allows the GraphQL plugin generated code to use its own
@@ -51,13 +53,13 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author etienne-sf
  */
-public class GraphQLObjectMapper {
+public class GraphQLJsonMapper {
 
 	@Autowired
 	ApplicationContext ctx;
 
-	/** The Jackson {@link ObjectMapper} that is specific to the GraphQL response deserialization */
-	final private ObjectMapper objectMapper;
+	/** The Jackson {@link JsonMapper} that is specific to the GraphQL response deserialization */
+	final private JsonMapper objectMapper;
 
 	/**
 	 * This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a proper
@@ -84,14 +86,15 @@ public class GraphQLObjectMapper {
 	 *            The schema name, for which this object mapper is created. This allows to retrieve the class, possibly
 	 *            generated, that applies to a type
 	 */
-	public GraphQLObjectMapper(String graphQLObjectsPackage, Map<Class<?>, Map<String, Field>> aliasFields,
+	public GraphQLJsonMapper(String graphQLObjectsPackage, Map<Class<?>, Map<String, Field>> aliasFields,
 			String schema) {
 		if (schema == null) {
 			throw new NullPointerException("The schema parameter may bot be null");
 		}
 
-		objectMapper = new ObjectMapper();
-		objectMapper.addHandler(new GraphQLDeserializationProblemHandler());
+		objectMapper = JsonMapper.builder()//
+				.addHandler(new GraphQLDeserializationProblemHandler())//
+				.build();
 
 		this.graphQLObjectsPackage = graphQLObjectsPackage;
 		this.aliasFields = aliasFields;
@@ -109,7 +112,7 @@ public class GraphQLObjectMapper {
 
 		@Override
 		public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser p,
-				JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName) throws IOException {
+				ValueDeserializer<?> deserializer, Object beanOrClass, String propertyName) {
 			Map<String, Field> aliases = null;
 			Field targetField = null;
 			JsonDeserialize jsonDeserialize = null;
@@ -146,7 +149,7 @@ public class GraphQLObjectMapper {
 			// If the plugin defined a CustomDeserializer, let's use it
 			try {
 				if (jsonDeserialize != null) {
-					JsonDeserializer<?> graphQLDeserializer = jsonDeserialize.using().getDeclaredConstructor()
+					ValueDeserializer<?> graphQLDeserializer = jsonDeserialize.using().getDeclaredConstructor()
 							.newInstance();
 					value = graphQLDeserializer.deserialize(p, ctxt);
 				} else {
@@ -154,7 +157,7 @@ public class GraphQLObjectMapper {
 				}
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException
-					| GraphQLRequestExecutionException e) {
+					| GraphQLRequestExecutionException | JacksonException | IOException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 
@@ -202,13 +205,8 @@ public class GraphQLObjectMapper {
 		} else if (value instanceof ObjectNode) {
 			// This node is an object. In the GraphQL request, we asked for the __typename. Let's read it, to find out
 			// which object of the GraphQL schema should be created.
-			String typename = ((TextNode) value.get("__typename")).asText(); //$NON-NLS-1$
-			Class<?> clazz;
-			try {
-				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(graphQLObjectsPackage, typename, schema);
-			} catch (RuntimeException e) {
-				throw new JsonMappingException(parser, e.getMessage(), e);
-			}
+			String typename = ((StringNode) value.get("__typename")).asString(); //$NON-NLS-1$
+			Class<?> clazz = GraphqlClientUtils.graphqlClientUtils.getClass(graphQLObjectsPackage, typename, schema);
 			return objectMapper.treeToValue(value, clazz);
 
 		}
@@ -218,12 +216,12 @@ public class GraphQLObjectMapper {
 		}
 		// Enumerations
 		else if (targetField != null && targetField.getType().isEnum()) {
-			if (!(value instanceof TextNode)) {
+			if (!(value instanceof StringNode)) {
 				return new GraphQLRequestExecutionException(
-						"The '" + targetField + "' is an enum, so the encoded json should be a TextNode. But it's a '" //$NON-NLS-1$ //$NON-NLS-2$
+						"The '" + targetField + "' is an enum, so the encoded json should be a StringNode. But it's a '" //$NON-NLS-1$ //$NON-NLS-2$
 								+ value.getClass().getName() + "'"); //$NON-NLS-1$
 			}
-			return Enum.valueOf((Class<? extends Enum>) targetField.getType(), ((TextNode) value).textValue());
+			return Enum.valueOf((Class<? extends Enum>) targetField.getType(), ((StringNode) value).stringValue());
 		}
 		// Booleans
 		else if (value instanceof BooleanNode) {
@@ -250,8 +248,8 @@ public class GraphQLObjectMapper {
 			return ((ShortNode) value).shortValue();
 		}
 		// Text
-		else if (value instanceof TextNode) {
-			return ((TextNode) value).textValue();
+		else if (value instanceof StringNode) {
+			return ((StringNode) value).stringValue();
 		} else {
 			// For non managed type, we store an exception. This exception will be sent back to the reader, when it
 			// tries to use this value. These non managed types can be:
@@ -277,36 +275,36 @@ public class GraphQLObjectMapper {
 	}
 
 	/** @See {@link ObjectMapper#readValue(String, Class)} */
-	public <T> T readValue(String msg, Class<T> subscriptionType) throws JsonMappingException, JsonProcessingException {
+	public <T> T readValue(String msg, Class<T> subscriptionType) throws DatabindException, JacksonException {
 		return objectMapper.readValue(msg, subscriptionType);
 	}
 
 	/** @See {@link ObjectMapper#readTree(String)} */
-	public JsonNode readTree(String content) throws JsonMappingException, JsonProcessingException {
+	public JsonNode readTree(String content) throws DatabindException, JacksonException {
 		return objectMapper.readTree(content);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
-	public <T> T treeToValue(TreeNode value, Class<T> clazz) throws JsonProcessingException {
+	public <T> T treeToValue(TreeNode value, Class<T> clazz) throws JacksonException {
 		return objectMapper.treeToValue(value, clazz);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
-	public <T> T treeToValue(Map<?, ?> map, Class<T> clazz) throws JsonProcessingException {
+	public <T> T treeToValue(Map<?, ?> map, Class<T> clazz) throws JacksonException {
 		// TODO Find a better way than map to json string, then json string to POJO object
 		JsonNode node = objectMapper.valueToTree(map);
 		return objectMapper.treeToValue(node, clazz);
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
-	public <T> T treeToValue(List<?> list, Class<T> clazz) throws JsonProcessingException {
+	public <T> T treeToValue(List<?> list, Class<T> clazz) throws JacksonException {
 		// TODO Find a better way than list to json string, then json string to POJO object
 		JsonNode node = objectMapper.valueToTree(list);
 		return objectMapper.treeToValue(node, clazz);
 	}
 
 	/** @See {@link ObjectMapper#writeValueAsString(Object)} */
-	public String writeValueAsString(Object o) throws JsonProcessingException {
+	public String writeValueAsString(Object o) throws JacksonException {
 		return objectMapper.writeValueAsString(o);
 	}
 

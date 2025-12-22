@@ -1,5 +1,14 @@
 Here are the next tasks listed, as a TODO list:
+* (to check) The gradle plugin may not compile without having first build locally the maven plugin (due to the custom-resttemplate dependency added in 3.1)
 * Check compilation with java 25: got a report that it wouldn't work
+* Manage mockito warning with jdk 25 :
+```
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\egauthier\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+```
 * Investigate the compilation warning in GenerateCodeGenerator: there seems to be an issue with Gradle when loading a template from an external jar
     * In the catch, 'template' is not initialized, and 'theTemplate' is initialized, but not used
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)

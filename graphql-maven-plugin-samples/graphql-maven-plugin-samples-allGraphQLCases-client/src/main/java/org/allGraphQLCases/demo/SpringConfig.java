@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.demo;
 
 import java.net.URI;
@@ -11,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -69,7 +65,6 @@ public class SpringConfig {
 	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
 	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
 	public WebClient webClientAllGraphQLCases(//
-			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
 

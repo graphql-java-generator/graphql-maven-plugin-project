@@ -4,10 +4,10 @@ package ${packageUtilName};
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import com.graphql_java_generator.client.response.AbstractCustomJacksonDeserializer;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 

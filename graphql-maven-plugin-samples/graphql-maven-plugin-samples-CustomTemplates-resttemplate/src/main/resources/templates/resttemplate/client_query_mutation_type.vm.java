@@ -41,11 +41,6 @@ import java.util.Map;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.graphql_java_generator.annotation.GraphQLDirective;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -53,9 +48,14 @@ import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.JsonNode;
 
 #foreach($import in ${object.importsForUtilityClasses})
 #if ($import != "${configuration.packageName}.${object.classSimpleName}")
@@ -102,7 +102,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(${object.requestType})
-	private GraphQLObjectMapper extensionMapper = null;
+	private GraphQLJsonMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
 
@@ -114,9 +114,9 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(!${configuration.separateUtilityClasses} && ${object.requestType})
-	private GraphQLObjectMapper getExtensionMapper() {
+	private GraphQLJsonMapper getExtensionMapper() {
 		if (this.extensionMapper == null) {
-			this.extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null, "${springBeanSuffix}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+			this.extensionMapper = new GraphQLJsonMapper("${packageUtilName}", null, "${springBeanSuffix}"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		return this.extensionMapper;
 	}
@@ -151,10 +151,10 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * @param t
 	 * @return null if the key is not in the <I>extensions</I> map. Otherwise: the value for this _key_, as a _t_
 	 *         instance
-	 * @throws JsonProcessingException
+	 * @throws JacksonException
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
-	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
+	public <T> T getExtensionsField(String key, Class<T> t) throws JacksonException {
 		JsonNode node = getExtensionsAsMap().get(key);
 		return (node == null) ? null : getExtensionMapper().treeToValue(node, t);
 	}

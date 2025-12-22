@@ -19,7 +19,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
@@ -30,6 +29,8 @@ import com.graphql_java_generator.domain.client.forum.RegistriesInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_GraphQLVariablesTest {
@@ -53,7 +54,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 
 	@Test
 	void testBuild_withGraphQLVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
@@ -79,7 +80,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 
 	@Test
 	void testBuild_withNameAndGraphQLVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
@@ -116,7 +117,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 
 	@Test
 	void testBuild_withNonProvidedGraphQLVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
@@ -144,7 +145,7 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 
 	@Test
 	void testBuild_withDefaultValues()
-			throws GraphQLRequestPreparationException, JsonProcessingException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, JacksonException, GraphQLRequestExecutionException {
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
 		new MyQueryTypeExecutorAllGraphQLCases();
 

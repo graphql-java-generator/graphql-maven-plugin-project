@@ -10,13 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
-import lombok.Getter;
-
 /**
  *
  * @author etienne-sf
  */
-@Getter
 public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGraphQLSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
@@ -56,6 +53,134 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	 */
 	public GenerateGraphQLSchemaConfigurationTestHelper(Object caller) {
 		logger = LoggerFactory.getLogger(caller.getClass());
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	@Override
+	public boolean isAddRelayConnections() {
+		return addRelayConnections;
+	}
+
+	@Override
+	public String getJsonGraphqlSchemaFilename() {
+		return jsonGraphqlSchemaFilename;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	@Override
+	public Integer getMaxTokens() {
+		return maxTokens;
+	}
+
+	@Override
+	public File getProjectBuildDir() {
+		return projectBuildDir;
+	}
+
+	@Override
+	public File getProjectDir() {
+		return projectDir;
+	}
+
+	@Override
+	public File getProjectMainSourceFolder() {
+		return projectMainSourceFolder;
+	}
+
+	@Override
+	public File getSchemaFileFolder() {
+		return schemaFileFolder;
+	}
+
+	@Override
+	public String getSchemaFilePattern() {
+		return schemaFilePattern;
+	}
+
+	@Override
+	public boolean isSkipGenerationIfSchemaHasNotChanged() {
+		return skipGenerationIfSchemaHasNotChanged;
+	}
+
+	@Override
+	public String getResourceEncoding() {
+		return resourceEncoding;
+	}
+
+	@Override
+	public File getTargetFolder() {
+		return targetFolder;
+	}
+
+	@Override
+	public String getTargetSchemaFileName() {
+		return targetSchemaFileName;
+	}
+
+	@Override
+	public String getTargetSchemaSubFolder() {
+		return targetSchemaSubFolder;
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return templates;
+	}
+
+	@Override
+	public String getTypePrefix() {
+		return typePrefix;
+	}
+
+	@Override
+	public String getTypeSuffix() {
+		return typeSuffix;
+	}
+
+	@Override
+	public String getUnionPrefix() {
+		return unionPrefix;
+	}
+
+	@Override
+	public String getUnionSuffix() {
+		return unionSuffix;
+	}
+
+	@Override
+	public String getEnumPrefix() {
+		return enumPrefix;
+	}
+
+	@Override
+	public String getEnumSuffix() {
+		return enumSuffix;
+	}
+
+	@Override
+	public String getInterfacePrefix() {
+		return interfacePrefix;
+	}
+
+	@Override
+	public String getInterfaceSuffix() {
+		return interfaceSuffix;
+	}
+
+	@Override
+	public String getInputPrefix() {
+		return inputPrefix;
+	}
+
+	@Override
+	public String getInputSuffix() {
+		return inputSuffix;
 	}
 
 }

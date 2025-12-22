@@ -222,7 +222,7 @@ public class RegistriesInitializer {
 			customScalarRegistry.registerGraphQLScalarType("Object", graphql.scalars.ExtendedScalars.Object,
 					java.lang.Object.class);
 			customScalarRegistry.registerGraphQLScalarType("JSON", graphql.scalars.ExtendedScalars.Json,
-					com.fasterxml.jackson.databind.node.ObjectNode.class);
+					tools.jackson.databind.node.ObjectNode.class);
 			customScalarRegistry.registerGraphQLScalarType("String",
 					com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String, java.lang.String.class);
 			customScalarRegistry.registerGraphQLScalarType("NonNegativeInt",

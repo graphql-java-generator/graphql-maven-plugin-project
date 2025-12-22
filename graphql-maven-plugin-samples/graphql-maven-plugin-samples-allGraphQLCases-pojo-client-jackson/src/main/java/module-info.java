@@ -2,7 +2,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 
 	// [Start] List of modules required for the generated code
 	requires com.fasterxml.jackson.annotation;
-	requires com.fasterxml.jackson.databind;
+	requires tools.jackson.databind;
 	// [End] List of modules required for the generated code
 
 	// Modules required that are specific to this project

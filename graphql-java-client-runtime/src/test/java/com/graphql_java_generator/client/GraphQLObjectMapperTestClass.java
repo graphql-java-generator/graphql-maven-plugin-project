@@ -7,10 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CustomJacksonDeserializers;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * This class is used for json deserialization test of GraphQL alias values by {@link GraphQLObjectMapperTest}
@@ -59,9 +60,10 @@ public class GraphQLObjectMapperTestClass {
 	 */
 	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
 		Object value = aliasValues.get(alias);
-		if (value instanceof GraphQLRequestExecutionException)
+		if (value instanceof GraphQLRequestExecutionException) {
 			throw (GraphQLRequestExecutionException) value;
-		else
+		} else {
 			return value;
+		}
 	}
 }

@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
 import graphql.GraphQLContext;
 import graphql.schema.GraphQLScalarType;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 /**
  * Jackson Deserializer for lists and Custom Scalars.
@@ -17,8 +16,6 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public abstract class AbstractCustomJacksonSerializer<T> extends StdSerializer<T> {
-
-	private static final long serialVersionUID = 1L;
 
 	/** The depth of the GraphQL list. 0 means it's not a list. 1 is a standard list. 2 is a list of list... */
 	final int listLevel;
@@ -40,13 +37,13 @@ public abstract class AbstractCustomJacksonSerializer<T> extends StdSerializer<T
 	 *            The depth of the GraphQL list. 0 means it's not a list. 1 is a standard list. 2 is a list of list...
 	 */
 	public AbstractCustomJacksonSerializer(Class<?> clazz, int listLevel, GraphQLScalarType graphQLScalarType) {
-		super(clazz, false);
+		super(clazz);
 		this.listLevel = listLevel;
 		this.graphQLScalarType = graphQLScalarType;
 	}
 
 	@Override
-	public void serialize(T value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+	public void serialize(T value, JsonGenerator gen, SerializationContext context) {
 		execSerialization(value, listLevel, gen);
 	}
 
@@ -59,13 +56,13 @@ public abstract class AbstractCustomJacksonSerializer<T> extends StdSerializer<T
 	 * @param gen
 	 * @throws IOException
 	 */
-	private void execSerialization(Object value, int listLevelParam, JsonGenerator gen) throws IOException {
+	private void execSerialization(Object value, int listLevelParam, JsonGenerator gen) {
 		if (listLevelParam == 0) {
 			if (graphQLScalarType != null) {
-				gen.writeObject(graphQLScalarType.getCoercing().serialize(value, GraphQLContext.getDefault(),
+				gen.writePOJO(graphQLScalarType.getCoercing().serialize(value, GraphQLContext.getDefault(),
 						Locale.getDefault()));
 			} else {
-				gen.writeObject(value);
+				gen.writePOJO(value);
 			}
 		} else if (!(value instanceof List)) {
 			throw new IllegalArgumentException("Expecting a list with depth (number of level of list inclusion) of "

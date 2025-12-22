@@ -15,11 +15,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.samples.forum.test.SpringTestConfig;
 
 import graphql.introspection.IntrospectionQuery;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * This class contains tests for the jsonSchemaFilename parameter. This parameter defines a json file that contains the
@@ -52,14 +52,14 @@ public class JsonSchemaFilenameIT {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	void testJsonSchema_checkSchema() throws JsonProcessingException {
+	void testJsonSchema_checkSchema() throws JacksonException {
 		ObjectMapper mapper = new ObjectMapper();
 
 		// Step 1: read the current json file
-		String currentJson = this.mavenTestHelper.readFile(this.FORUM_GRAPHQL_JSON_SCHEMA_FILE);
+		String currentJson = mavenTestHelper.readFile(FORUM_GRAPHQL_JSON_SCHEMA_FILE);
 
 		// Step 2: execute the introspection query
-		ClientGraphQlResponse result = this.graphQlClient//
+		ClientGraphQlResponse result = graphQlClient//
 				.document(IntrospectionQuery.INTROSPECTION_QUERY)//
 				.execute()//
 				.block();
@@ -72,7 +72,7 @@ public class JsonSchemaFilenameIT {
 		if (!currentJson.equals(json)) {
 			// The forum GraphQL schema changed. Let's save the new one, and fail: the test must be re-run, with the
 			// correct json.
-			this.mavenTestHelper.writeFile(this.FORUM_GRAPHQL_JSON_SCHEMA_FILE, json);
+			mavenTestHelper.writeFile(FORUM_GRAPHQL_JSON_SCHEMA_FILE, json);
 			// Let's fail with a comparison of both json
 			String msg = "The json file was not up to date. It has now been updated. Please re-run the test with 'mvn clean install' or 'gradlew clean build' to use the re-generated json file";
 			assertEquals(currentJson, json, msg);

@@ -36,15 +36,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
 import graphql.language.OperationDefinition;
 import graphql.schema.DataFetchingEnvironment;
 import reactor.core.publisher.Flux;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * @author etienne-sf
@@ -70,7 +70,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			@Override
 			public void accept(Subscription t) {
 				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now active"); //$NON-NLS-1$
-				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = true;
+				subscribedOnSubscribeNewHumanForEpisode = true;
 			}
 		};
 
@@ -78,7 +78,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			@Override
 			public void run() {
 				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now canceled"); //$NON-NLS-1$
-				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
+				subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
@@ -86,7 +86,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			@Override
 			public void run() {
 				logger.debug("The subscription 'subscribeNewHumanForEpisode' is now terminated"); //$NON-NLS-1$
-				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
+				subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
@@ -95,7 +95,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			public void accept(Throwable t) {
 				logger.debug("The subscription 'subscribeNewHumanForEpisode' had an error: {}-{}", //$NON-NLS-1$
 						t.getClass().getName(), t.getMessage());
-				DataFetchersDelegateTheSubscriptionTypeImpl.this.subscribedOnSubscribeNewHumanForEpisode = false;
+				subscribedOnSubscribeNewHumanForEpisode = false;
 			}
 		};
 
@@ -108,13 +108,13 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.doOnTerminate(onTerminate)//
 				.doOnError(Throwable.class, onError)//
 				.map((l) -> {
-					STP_Human_STS h = this.dataGenerator.generateInstance(STP_Human_STS.class);
+					STP_Human_STS h = dataGenerator.generateInstance(STP_Human_STS.class);
 					if (!h.getAppearsIn().contains(SEP_Episode_SES)) {
 						h.getAppearsIn().add(SEP_Episode_SES);
 					}
 					h.setId(new UUID(0, l));
 					logger.trace("subscribeNewHumanForEpisode [active={}] Sending this human: {}", //$NON-NLS-1$
-							this.subscribedOnSubscribeNewHumanForEpisode, h);
+							subscribedOnSubscribeNewHumanForEpisode, h);
 					return h;
 				});
 	}
@@ -168,8 +168,9 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> {
 						boolean b = true;
-						if (b)
+						if (b) {
 							throw new GraphQlException("Oups, the subscriber asked for an error for each next message"); //$NON-NLS-1$
+						}
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there"; //$NON-NLS-1$
 					});
@@ -180,9 +181,10 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> {
 						boolean b = true;
-						if (b)
+						if (b) {
 							throw new GraphQlException(
 									"Oups, the subscriber asked that the web socket get disconnected before the first notification"); //$NON-NLS-1$
+						}
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there"; //$NON-NLS-1$
 					});
@@ -260,7 +262,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable(this.dataGenerator.generateInstanceList(Date.class, 2)));
+				.map((l) -> Optional.ofNullable(dataGenerator.generateInstanceList(Date.class, 2)));
 	}
 
 	@Override
@@ -281,7 +283,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.map((l) -> Optional.ofNullable("a value for _implements")); //$NON-NLS-1$
 	}
 
-	@Override	
+	@Override
 	public Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> enumWithReservedJavaKeywordAsValues(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		// Test of the issue #209 - subscription return enums (when the server implementation is not a Flux)
@@ -295,10 +297,11 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> publisher = Flux//
 						.interval(Duration.ofMillis(100))// A message every 0.1 second
 						.map((l) -> {
-							if (l % 2 == 0)
+							if (l % 2 == 0) {
 								return Optional.of(SEP_EnumWithReservedJavaKeywordAsValues_SES._instanceof);
-							else
+							} else {
 								return Optional.empty();
+							}
 						});
 				publisher.subscribe(s);
 			}
@@ -311,14 +314,15 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> {
-					if (l % 2 == 0)
+					if (l % 2 == 0) {
 						return Optional.of(//
 								Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._int,
 										SEP_EnumWithReservedJavaKeywordAsValues_SES._interface,
 										SEP_EnumWithReservedJavaKeywordAsValues_SES._long, //
 										null));
-					else
+					} else {
 						return Optional.empty();
+					}
 				});
 	}
 
@@ -400,7 +404,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Publisher<Optional<ObjectNode>> json(DataFetchingEnvironment dataFetchingEnvironment,
-			com.fasterxml.jackson.databind.node.ObjectNode jsonParam) {
+			tools.jackson.databind.node.ObjectNode jsonParam) {
 		try {
 			ObjectNode json = //
 					(jsonParam == null) ? //
@@ -410,14 +414,14 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> Optional.of(json));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public Publisher<Optional<List<ObjectNode>>> jsons(DataFetchingEnvironment dataFetchingEnvironment,
-			List<com.fasterxml.jackson.databind.node.ObjectNode> jsonsParam) {
+			List<tools.jackson.databind.node.ObjectNode> jsonsParam) {
 		try {
 			Optional<List<ObjectNode>> jsons = (jsonsParam == null) ? //
 					Optional.of(Arrays.asList(//
@@ -429,7 +433,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> jsons);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -485,7 +489,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> jsons);
 
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -522,7 +526,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> jsons);
 
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}

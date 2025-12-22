@@ -1,12 +1,14 @@
 module com.graphql_java_generator.graphql_maven_plugin_logic {
 
 	// Dependencies for the module
-	requires com.fasterxml.jackson.core;
-	requires com.fasterxml.jackson.databind;
+	requires tools.jackson.core;
+	requires tools.jackson.databind;
 	requires com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime;
 	requires lombok;
 	requires org.apache.commons.io;
 	requires org.dataloader;
 	requires velocity.engine.core;
-	requires com.networknt.schema;
+	requires java.compiler;
+	// requires com.networknt.schema;
+	// requires com.fasterxml.jackson.databind;
 }

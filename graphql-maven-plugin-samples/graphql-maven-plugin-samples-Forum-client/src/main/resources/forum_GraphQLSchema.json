@@ -1624,7 +1624,7 @@
         "deprecationReason" : null
       }, {
         "name" : "directives",
-        "description" : "'A list of all directives supported by this server.",
+        "description" : "A list of all directives supported by this server.",
         "args" : [ ],
         "type" : {
           "kind" : "NON_NULL",
@@ -1647,7 +1647,7 @@
         "deprecationReason" : null
       }, {
         "name" : "subscriptionType",
-        "description" : "'If this server support subscription, the type that subscription operations will be rooted at.",
+        "description" : "If this server support subscription, the type that subscription operations will be rooted at.",
         "args" : [ ],
         "type" : {
           "kind" : "OBJECT",
@@ -1890,7 +1890,7 @@
       "interfaces" : null,
       "enumValues" : [ {
         "name" : "SCALAR",
-        "description" : "Indicates this type is a scalar. 'specifiedByURL' is a valid field",
+        "description" : "Indicates this type is a scalar. `specifiedByURL` is a valid field",
         "isDeprecated" : false,
         "deprecationReason" : null
       }, {

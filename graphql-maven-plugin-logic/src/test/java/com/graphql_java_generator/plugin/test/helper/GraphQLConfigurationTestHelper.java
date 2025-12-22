@@ -19,13 +19,10 @@ import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.conf.QueryMutationExecutionProtocol;
 
-import lombok.Getter;
-
 /**
  * 
  * @author etienne-sf
  */
-@Getter
 public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
@@ -111,6 +108,244 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {
 		this.generateJacksonAnnotations = generateJacksonAnnotations;
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	@Override
+	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
+		return batchMappingDataFetcherReturnType;
+	}
+
+	@Override
+	public boolean isAddRelayConnections() {
+		return addRelayConnections;
+	}
+
+	@Override
+	public boolean isCopyRuntimeSources() {
+		return copyRuntimeSources;
+	}
+
+	@Override
+	public List<CustomScalarDefinition> getCustomScalars() {
+		return customScalars;
+	}
+
+	@Override
+	public boolean isGenerateBatchLoaderEnvironment() {
+		return generateBatchLoaderEnvironment;
+	}
+
+	@Override
+	public boolean isGenerateBatchMappingDataFetchers() {
+		return generateBatchMappingDataFetchers;
+	}
+
+	@Override
+	public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
+		return generateDataFetcherForEveryFieldsWithArguments;
+	}
+
+	@Override
+	public boolean isGenerateDataLoaderForLists() {
+		return generateDataLoaderForLists;
+	}
+
+	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return generateDeprecatedRequestResponse;
+	}
+
+	public Boolean getGenerateJacksonAnnotations() {
+		return generateJacksonAnnotations;
+	}
+
+	@Override
+	public boolean isGenerateJPAAnnotation() {
+		return generateJPAAnnotation;
+	}
+
+	@Override
+	public boolean isGenerateUtilityClasses() {
+		return generateUtilityClasses;
+	}
+
+	@Override
+	public String getIgnoredSpringMappings() {
+		return ignoredSpringMappings;
+	}
+
+	@Override
+	public String getJavaTypeForIDType() {
+		return javaTypeForIDType;
+	}
+
+	@Override
+	public String getJsonGraphqlSchemaFilename() {
+		return jsonGraphqlSchemaFilename;
+	}
+
+	@Override
+	public PluginMode getMode() {
+		return mode;
+	}
+
+	@Override
+	public String getPackageName() {
+		return packageName;
+	}
+
+	@Override
+	public Integer getMaxTokens() {
+		return maxTokens;
+	}
+
+	@Override
+	public Packaging getPackaging() {
+		return packaging;
+	}
+
+	@Override
+	public File getProjectBuildDir() {
+		return projectBuildDir;
+	}
+
+	@Override
+	public File getProjectDir() {
+		return projectDir;
+	}
+
+	@Override
+	public File getProjectMainSourceFolder() {
+		return projectMainSourceFolder;
+	}
+
+	@Override
+	public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
+		return queryMutationExecutionProtocol;
+	}
+
+	@Override
+	public String getScanBasePackages() {
+		return scanBasePackages;
+	}
+
+	@Override
+	public File getSchemaFileFolder() {
+		return schemaFileFolder;
+	}
+
+	@Override
+	public String getSchemaFilePattern() {
+		return schemaFilePattern;
+	}
+
+	@Override
+	public File getSchemaPersonalizationFile() {
+		return schemaPersonalizationFile;
+	}
+
+	@Override
+	public boolean isSeparateUtilityClasses() {
+		return separateUtilityClasses;
+	}
+
+	@Override
+	public boolean isSkipGenerationIfSchemaHasNotChanged() {
+		return skipGenerationIfSchemaHasNotChanged;
+	}
+
+	@Override
+	public String getSourceEncoding() {
+		return sourceEncoding;
+	}
+
+	@Override
+	public String getSpringBeanSuffix() {
+		return springBeanSuffix;
+	}
+
+	@Override
+	public File getTargetClassFolder() {
+		return targetClassFolder;
+	}
+
+	@Override
+	public File getTargetResourceFolder() {
+		return targetResourceFolder;
+	}
+
+	@Override
+	public String getTargetSchemaSubFolder() {
+		return targetSchemaSubFolder;
+	}
+
+	@Override
+	public File getTargetSourceFolder() {
+		return targetSourceFolder;
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return templates;
+	}
+
+	@Override
+	public boolean isUseJakartaEE9() {
+		return useJakartaEE9;
+	}
+
+	@Override
+	public String getTypePrefix() {
+		return typePrefix;
+	}
+
+	@Override
+	public String getTypeSuffix() {
+		return typeSuffix;
+	}
+
+	@Override
+	public String getUnionPrefix() {
+		return unionPrefix;
+	}
+
+	@Override
+	public String getUnionSuffix() {
+		return unionSuffix;
+	}
+
+	@Override
+	public String getEnumPrefix() {
+		return enumPrefix;
+	}
+
+	@Override
+	public String getEnumSuffix() {
+		return enumSuffix;
+	}
+
+	@Override
+	public String getInterfacePrefix() {
+		return interfacePrefix;
+	}
+
+	@Override
+	public String getInterfaceSuffix() {
+		return interfaceSuffix;
+	}
+
+	@Override
+	public String getInputPrefix() {
+		return inputPrefix;
+	}
+
+	@Override
+	public String getInputSuffix() {
+		return inputSuffix;
 	}
 
 }

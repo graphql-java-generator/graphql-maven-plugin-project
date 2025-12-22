@@ -7,8 +7,8 @@ import java.util.List;
 #if($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.annotation.JsonProperty;
 #end
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.client.response.Error;
 

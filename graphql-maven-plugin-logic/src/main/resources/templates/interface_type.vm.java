@@ -88,7 +88,7 @@ public interface ${object.javaName}
 #if(${configuration.mode}=="client")
 
 	/**
-	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * This method is called during the json deserialization process, by the {@link GraphQLJsonMapper}, each time an
 	 * alias value is read from the json.
 	 * 
 	 * @param aliasName

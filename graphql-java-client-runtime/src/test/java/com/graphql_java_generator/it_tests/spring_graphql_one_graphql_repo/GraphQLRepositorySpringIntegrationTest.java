@@ -1,6 +1,6 @@
 /**
- * 
- */
+* 
+*/
 package com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,12 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -71,18 +71,11 @@ public class GraphQLRepositorySpringIntegrationTest {
 
 	GraphQLRepositoryInvocationHandler<?> invocationHandler;
 
-	// There seems to be issues with mock, probably because of the way the InvocationHandler calls the Executor, through
-	// java reflection
-	// So we use @Spy here, instead of @Mock
-	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
-	@SuppressWarnings("removal")
-	@SpyBean
+	@MockitoSpyBean
 	MyQueryTypeExecutorAllGraphQLCases spyQueryExecutor;
-	@SuppressWarnings("removal")
-	@SpyBean
+	@MockitoSpyBean
 	AnotherMutationTypeExecutorAllGraphQLCases spyMutationExecutor;
-	@SuppressWarnings("removal")
-	@SpyBean
+	@MockitoSpyBean
 	TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;
 
 	@BeforeEach

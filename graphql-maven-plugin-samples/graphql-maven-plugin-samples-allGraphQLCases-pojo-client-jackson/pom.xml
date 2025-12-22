@@ -56,7 +56,7 @@
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>JSON</graphQLTypeName>
-									<javaType>com.fasterxml.jackson.databind.node.ObjectNode</javaType>
+									<javaType>tools.jackson.databind.node.ObjectNode</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Json</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
@@ -138,7 +138,7 @@
 		</dependency>
 		<!-- In this module, the plugin is configured to generate the jackson dependencies -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
+			<groupId>tools.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		

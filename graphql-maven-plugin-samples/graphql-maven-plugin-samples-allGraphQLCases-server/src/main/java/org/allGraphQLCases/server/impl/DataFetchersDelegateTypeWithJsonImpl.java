@@ -11,9 +11,8 @@ import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.STP_TypeWithJson_STS;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import graphql.schema.DataFetchingEnvironment;
+import tools.jackson.databind.node.ObjectNode;
 
 @Component
 public class DataFetchersDelegateTypeWithJsonImpl implements DataFetchersDelegateTypeWithJson {

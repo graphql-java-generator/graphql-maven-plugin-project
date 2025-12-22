@@ -3,7 +3,6 @@
  */
 package com.graphql_java_generator.client.request;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -16,9 +15,6 @@ import java.util.UUID;
 
 import org.apache.commons.text.StringEscapeUtils;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql_java_generator.annotation.GraphQLIgnore;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
@@ -36,6 +32,10 @@ import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.GraphQLContext;
 import graphql.schema.GraphQLScalarType;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.ObjectReadContext;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Contains an input parameter, to be sent to a query (mutation...). It can be either:
@@ -887,7 +887,8 @@ public class InputParameter {
 				return getQuotedString((String) ret);
 			} else if (ret instanceof ObjectNode) {
 				StringBuilder sb = new StringBuilder();
-				appendStringContentForGraphqlQueryFromObjectNode(sb, ((ObjectNode) ret).traverse(), (ObjectNode) ret);
+				appendStringContentForGraphqlQueryFromObjectNode(sb,
+						((ObjectNode) ret).traverse(new ObjectReadContext.Base()), (ObjectNode) ret);
 				return sb.toString();
 			} else if (ret instanceof Map) {
 				StringBuilder sb = new StringBuilder();
@@ -931,114 +932,109 @@ public class InputParameter {
 	 */
 	private void appendStringContentForGraphqlQueryFromObjectNode(StringBuilder sb, JsonParser jsonParser,
 			ObjectNode node) throws GraphQLRequestExecutionException {
-		try {
 
-			JsonToken token = jsonParser.nextToken();
-			boolean objectJustStarted = false;
-			boolean inArray = false;
-			boolean arrayJustStarted = false;
+		JsonToken token = jsonParser.nextToken();
+		boolean objectJustStarted = false;
+		boolean inArray = false;
+		boolean arrayJustStarted = false;
 
-			while (jsonParser.hasCurrentToken()) {
-				switch (token) {
-				case START_OBJECT:
-					sb.append("{");
-					objectJustStarted = true;
-					break;
-				case END_OBJECT:
-					sb.append("}");
-					break;
-				case START_ARRAY:
-					sb.append("[");
-					inArray = true;
-					arrayJustStarted = true;
-					break;
-				case END_ARRAY:
-					sb.append("]");
-					break;
-				case FIELD_NAME:
-					if (objectJustStarted) {
-						objectJustStarted = false;
-					} else {
-						sb.append(",");
-					}
-					sb.append(jsonParser.getText());
-					sb.append(":");
-					// Let's recurse once, to read the content of this field (which may be a value, an object or an
-					// array)
-					appendStringContentForGraphqlQueryFromObjectNode(sb, jsonParser, node);
-					break;
-				case VALUE_EMBEDDED_OBJECT:
-					// Placeholder token returned when the input source has a concept of embedded Object that are not
-					// accessible as usual structure (of starting with {@link #START_OBJECT}, having values, ending with
-					// {@link #END_OBJECT}), but as "raw" objects.
-					// Note: this token is never returned by regular JSON readers, but only by readers that expose other
-					// kinds of source (like <code>JsonNode</code>-based JSON trees, Maps, Lists and such).
-					// below is an attempt to render this 'strange' object
-					sb.append(jsonParser.getText());
-					break;
-				case VALUE_STRING:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					sb.append('\"');
-					sb.append(jsonParser.getText());
-					sb.append('\"');
-					break;
-				case VALUE_NUMBER_INT:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					sb.append(jsonParser.getIntValue());
-					break;
-				case VALUE_NUMBER_FLOAT:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					sb.append(jsonParser.getFloatValue());
-					break;
-				case VALUE_TRUE:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					sb.append("true");
-					break;
-				case VALUE_FALSE:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					sb.append("false");
-					break;
-				case VALUE_NULL:
-					if (arrayJustStarted) {
-						arrayJustStarted = false;
-					} else if (inArray) {
-						sb.append(",");
-					}
-					// VALUE_NULL is returned when encountering literal "null" in value context
-					sb.append("null");
-					break;
-				default:
-					throw new GraphQLRequestExecutionException(
-							"Unexpected token type while writing an ObjectNode into the GraphQL request: "
-									+ token.name() + ". The json being read is: " + node.toString());
+		while (jsonParser.hasCurrentToken()) {
+			switch (token) {
+			case START_OBJECT:
+				sb.append("{");
+				objectJustStarted = true;
+				break;
+			case END_OBJECT:
+				sb.append("}");
+				break;
+			case START_ARRAY:
+				sb.append("[");
+				inArray = true;
+				arrayJustStarted = true;
+				break;
+			case END_ARRAY:
+				sb.append("]");
+				break;
+			case PROPERTY_NAME:
+				if (objectJustStarted) {
+					objectJustStarted = false;
+				} else {
+					sb.append(",");
 				}
+				sb.append(jsonParser.getText());
+				sb.append(":");
+				// Let's recurse once, to read the content of this field (which may be a value, an object or an
+				// array)
+				appendStringContentForGraphqlQueryFromObjectNode(sb, jsonParser, node);
+				break;
+			case VALUE_EMBEDDED_OBJECT:
+				// Placeholder token returned when the input source has a concept of embedded Object that are not
+				// accessible as usual structure (of starting with {@link #START_OBJECT}, having values, ending with
+				// {@link #END_OBJECT}), but as "raw" objects.
+				// Note: this token is never returned by regular JSON readers, but only by readers that expose other
+				// kinds of source (like <code>JsonNode</code>-based JSON trees, Maps, Lists and such).
+				// below is an attempt to render this 'strange' object
+				sb.append(jsonParser.getText());
+				break;
+			case VALUE_STRING:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				sb.append('\"');
+				sb.append(jsonParser.getText());
+				sb.append('\"');
+				break;
+			case VALUE_NUMBER_INT:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				sb.append(jsonParser.getIntValue());
+				break;
+			case VALUE_NUMBER_FLOAT:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				sb.append(jsonParser.getFloatValue());
+				break;
+			case VALUE_TRUE:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				sb.append("true");
+				break;
+			case VALUE_FALSE:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				sb.append("false");
+				break;
+			case VALUE_NULL:
+				if (arrayJustStarted) {
+					arrayJustStarted = false;
+				} else if (inArray) {
+					sb.append(",");
+				}
+				// VALUE_NULL is returned when encountering literal "null" in value context
+				sb.append("null");
+				break;
+			default:
+				throw new GraphQLRequestExecutionException(
+						"Unexpected token type while writing an ObjectNode into the GraphQL request: " + token.name()
+								+ ". The json being read is: " + node.toString());
+			}
 
-				token = jsonParser.nextToken();
-			} // while
-		} catch (IOException e) {
-			throw new GraphQLRequestExecutionException(
-					e.getMessage() + " (while writing an ObjectNode into the GraphQL request)", e);
-		}
+			token = jsonParser.nextToken();
+		} // while
 	}
 
 	/**

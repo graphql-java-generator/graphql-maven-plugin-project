@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Graphql clients can send GET or POST HTTP requests. The spec does not make an explicit distinction. So you may need
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class QueryParameters {
 
-	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static JsonMapper objectMapper = JsonMapper.builder().build();
 
 	private String query;
 	private String operationName;
@@ -46,7 +46,7 @@ public class QueryParameters {
 		Map<String, Object> json;
 		try {
 			json = objectMapper.readValue(queryMessage, Map.class);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		parameters.query = (String) json.get("query");

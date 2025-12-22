@@ -3,7 +3,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 	// ////////////////////////////////////////////////////////////////////////////////
 	// [Start] Dependencies for the generated code (as the "copyRuntimeSources" plugin parameter is true)
 	requires com.fasterxml.jackson.annotation;
-	requires com.fasterxml.jackson.databind;
+	requires tools.jackson.databind;
 	requires com.graphqljava;
 	requires org.apache.commons.text;
 	requires org.apache.commons.lang3;

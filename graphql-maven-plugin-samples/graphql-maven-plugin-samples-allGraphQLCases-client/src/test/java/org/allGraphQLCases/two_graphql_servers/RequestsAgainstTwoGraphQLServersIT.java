@@ -67,8 +67,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 
 	@BeforeEach
 	void setup() {
-		assertNotNull(this.queryTypeAllGraphQLCases);
-		assertNotNull(this.queryTypeForum);
+		assertNotNull(queryTypeAllGraphQLCases);
+		assertNotNull(queryTypeForum);
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Starting test_allGraphQLCasesServer");
 
-		List<CIP_Character_CIS> list = this.queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
+		List<CIP_Character_CIS> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
@@ -91,7 +91,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		logger.debug("Starting test_forumServer");
 
 		// return query.boards("{id name publiclyAvailable}");
-		List<Board> boards = this.queryTypeForum.boards("");
+		List<Board> boards = queryTypeForum.boards("");
 
 		// Verification
 		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
@@ -119,7 +119,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 				"RequestsAgainstTwoGraphQLServersIT.test_GraphQLRepository_allGraphQLCases");
 
 		// Go, go, go
-		SubscriptionClient sub = this.graphQLRepoAllGraphQLCases.subscribeToAList(callback);
+		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
 
 		// Verification
 		// Let's wait a max of 80 second, until we receive some notifications (this allows some debugging check in the
@@ -141,7 +141,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		Calendar cal = new Calendar.Builder().set(0, 0).build();
 		cal.clear();
 		cal.set(2009, 12 - 1, 20);// Month is 0-based, so this date is 2009, December the 20th
-		List<Topic> topics = this.graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
+		List<Topic> topics = graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
 
 		// The returned list must contain these topics:
 
@@ -235,10 +235,11 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
 			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
-		if (idShouldBeNull)
+		if (idShouldBeNull) {
 			assertNull(c.getId(), testDecription + " (id)");
-		else
+		} else {
 			assertNotNull(c.getId(), testDecription + " (id)");
+		}
 
 		assertTrue(c.getName().startsWith(nameStartsWith),
 				testDecription + " (name starts with " + nameStartsWith + ")");

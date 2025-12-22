@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 
 /**
  *
@@ -41,13 +41,13 @@ public class InputWithJson {
 
 	@JsonProperty("json")
 	// @JsonSerialize(using = CustomJacksonSerializers.JSON.class)
-	@GraphQLScalar(fieldName = "json", graphQLTypeSimpleName = "JSON", javaClass = com.fasterxml.jackson.databind.node.ObjectNode.class, listDepth = 0)
-	com.fasterxml.jackson.databind.node.ObjectNode json;
+	@GraphQLScalar(fieldName = "json", graphQLTypeSimpleName = "JSON", javaClass = tools.jackson.databind.node.ObjectNode.class, listDepth = 0)
+	tools.jackson.databind.node.ObjectNode json;
 
 	@JsonProperty("jsons")
 	// @JsonSerialize(using = CustomJacksonSerializers.ListJSON.class)
-	@GraphQLScalar(fieldName = "jsons", graphQLTypeSimpleName = "JSON", javaClass = com.fasterxml.jackson.databind.node.ObjectNode.class, listDepth = 1)
-	List<com.fasterxml.jackson.databind.node.ObjectNode> jsons;
+	@GraphQLScalar(fieldName = "jsons", graphQLTypeSimpleName = "JSON", javaClass = tools.jackson.databind.node.ObjectNode.class, listDepth = 1)
+	List<tools.jackson.databind.node.ObjectNode> jsons;
 
 	@JsonProperty("test")
 	public void setTest(java.lang.String test) {
@@ -56,38 +56,38 @@ public class InputWithJson {
 
 	@JsonProperty("test")
 	public java.lang.String getTest() {
-		return this.test;
+		return test;
 	}
 
 	@JsonProperty("json")
-	public void setJson(com.fasterxml.jackson.databind.node.ObjectNode json) {
+	public void setJson(tools.jackson.databind.node.ObjectNode json) {
 		this.json = json;
 	}
 
 	@JsonProperty("json")
-	public com.fasterxml.jackson.databind.node.ObjectNode getJson() {
-		return this.json;
+	public tools.jackson.databind.node.ObjectNode getJson() {
+		return json;
 	}
 
 	@JsonProperty("jsons")
-	public void setJsons(List<com.fasterxml.jackson.databind.node.ObjectNode> jsons) {
+	public void setJsons(List<tools.jackson.databind.node.ObjectNode> jsons) {
 		this.jsons = jsons;
 	}
 
 	@JsonProperty("jsons")
-	public List<com.fasterxml.jackson.databind.node.ObjectNode> getJsons() {
-		return this.jsons;
+	public List<tools.jackson.databind.node.ObjectNode> getJsons() {
+		return jsons;
 	}
 
 	/**
-	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * This method is called during the json deserialization process, by the {@link GraphQLJsonMapper}, each time an
 	 * alias value is read from the json.
 	 * 
 	 * @param aliasName
 	 * @param aliasDeserializedValue
 	 */
 	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
-		this.aliasValues.put(aliasName, aliasDeserializedValue);
+		aliasValues.put(aliasName, aliasDeserializedValue);
 	}
 
 	/**
@@ -100,17 +100,17 @@ public class InputWithJson {
 	 * @return
 	 */
 	public Object getAliasValue(String alias) {
-		return this.aliasValues.get(alias);
+		return aliasValues.get(alias);
 	}
 
 	@Override
 	public String toString() {
 		return "InputWithJson {" //$NON-NLS-1$
-				+ "test: " + this.test //$NON-NLS-1$
+				+ "test: " + test //$NON-NLS-1$
 				+ ", " //$NON-NLS-1$
-				+ "json: " + this.json //$NON-NLS-1$
+				+ "json: " + json //$NON-NLS-1$
 				+ ", " //$NON-NLS-1$
-				+ "jsons: " + this.jsons //$NON-NLS-1$
+				+ "jsons: " + jsons //$NON-NLS-1$
 				+ "}"; //$NON-NLS-1$
 	}
 
@@ -124,29 +124,29 @@ public class InputWithJson {
 	 */
 	public static class Builder {
 		private java.lang.String test;
-		private com.fasterxml.jackson.databind.node.ObjectNode json;
-		private List<com.fasterxml.jackson.databind.node.ObjectNode> jsons;
+		private tools.jackson.databind.node.ObjectNode json;
+		private List<tools.jackson.databind.node.ObjectNode> jsons;
 
 		public Builder withTest(java.lang.String testParam) {
-			this.test = testParam;
+			test = testParam;
 			return this;
 		}
 
-		public Builder withJson(com.fasterxml.jackson.databind.node.ObjectNode jsonParam) {
-			this.json = jsonParam;
+		public Builder withJson(tools.jackson.databind.node.ObjectNode jsonParam) {
+			json = jsonParam;
 			return this;
 		}
 
-		public Builder withJsons(List<com.fasterxml.jackson.databind.node.ObjectNode> jsonsParam) {
-			this.jsons = jsonsParam;
+		public Builder withJsons(List<tools.jackson.databind.node.ObjectNode> jsonsParam) {
+			jsons = jsonsParam;
 			return this;
 		}
 
 		public InputWithJson build() {
 			InputWithJson _object = new InputWithJson();
-			_object.setTest(this.test);
-			_object.setJson(this.json);
-			_object.setJsons(this.jsons);
+			_object.setTest(test);
+			_object.setJson(json);
+			_object.setJsons(jsons);
 			return _object;
 		}
 	}

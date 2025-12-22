@@ -22,11 +22,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 #end
 
 #foreach($import in ${object.imports})
@@ -47,7 +47,7 @@ import com.graphql_java_generator.annotation.GraphQLDirective;
  */
 ${object.annotation}
 #if ($configuration.isGenerateJacksonAnnotations())
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 #end
 #appliedDirectives(${object.appliedDirectives}, "")
 @SuppressWarnings("unused")
@@ -121,10 +121,10 @@ public class ${targetFileName}
 	 * @param t
 	 * @return null if the key is not in the <I>extensions</I> map. Otherwise: the value for this _key_, as a _t_
 	 *         instance
-	 * @throws JsonProcessingException
+	 * @throws JacksonException
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
-	public <T> T getExtensionsField(String key, Class<T> t)#if($configuration.isGenerateJacksonAnnotations()) throws JsonProcessingException#end {
+	public <T> T getExtensionsField(String key, Class<T> t)#if($configuration.isGenerateJacksonAnnotations()) throws JacksonException#end {
 		JsonNode node = getExtensionsAsMap().get(key);
 		return (node == null) ? null : getMapper().treeToValue(node, t);
 	}

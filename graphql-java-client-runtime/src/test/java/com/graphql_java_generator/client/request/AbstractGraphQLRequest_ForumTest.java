@@ -19,7 +19,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
@@ -28,6 +27,8 @@ import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.Query;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import tools.jackson.core.JacksonException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_ForumTest {
@@ -51,7 +52,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
 		new MyQueryTypeExecutorAllGraphQLCases();
 
@@ -98,7 +99,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	public void test_withQueryResponseDef_withBindVariableParameters_Forum()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Preparation
 
 		// Go, go, go
@@ -200,7 +201,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	void testBuild_fullQueryWithQueryName()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
 		// Go, go, go
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null, "query aQueryName {boards{topics{id}}}");
 		Map<String, Object> params = new HashMap<>();

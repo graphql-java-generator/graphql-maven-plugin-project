@@ -39,21 +39,21 @@ class AbstractTypeTest {
 		assertEquals(0, type.getImports().size());
 
 		// Add of a class from another package
-		type.addImport(pluginConfiguration.getPackageName(), java.sql.Date.class.getName());
+		type.addImport(pluginConfiguration.getPackageName(), java.util.Date.class.getName());
 		assertEquals(1, type.getImports().size());
-		assertTrue(type.getImports().contains("java.sql.Date"));
+		assertTrue(type.getImports().contains("java.util.Date"));
 
 		// Add of an inner class
 		type.addImport(pluginConfiguration.getPackageName(), JsonSubTypes.Type.class.getName());
 		assertEquals(2, type.getImports().size());
-		assertTrue(type.getImports().contains("java.sql.Date"));
+		assertTrue(type.getImports().contains("java.util.Date"));
 		assertTrue(type.getImports().contains("com.fasterxml.jackson.annotation.JsonSubTypes.Type"));
 
 		// Add of an inner class: when the MainClassname is given in the package name
 		type.addImport(pluginConfiguration.getPackageName(),
 				com.fasterxml.jackson.annotation.JsonTypeInfo.Id.class.getName());
 		assertEquals(3, type.getImports().size());
-		assertTrue(type.getImports().contains("java.sql.Date"));
+		assertTrue(type.getImports().contains("java.util.Date"));
 		assertTrue(type.getImports().contains("com.fasterxml.jackson.annotation.JsonSubTypes.Type"));
 		assertTrue(type.getImports().contains("com.fasterxml.jackson.annotation.JsonTypeInfo.Id"));
 	}

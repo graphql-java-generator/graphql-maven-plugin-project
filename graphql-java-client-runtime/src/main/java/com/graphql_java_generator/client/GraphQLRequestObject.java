@@ -3,7 +3,7 @@
  */
 package com.graphql_java_generator.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /**
  * This interface marks a class as being the implementation for the GraphQL type defined in the GraphQL schema, that is

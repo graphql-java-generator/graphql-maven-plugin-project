@@ -67,16 +67,16 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 	void setup() {
 
 		// matrix
-		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list0));
-		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list1));
-		this.matrix.add((List<Double>) (Object) Arrays.asList(this.list2));
+		matrix.add((List<Double>) (Object) Arrays.asList(list0));
+		matrix.add((List<Double>) (Object) Arrays.asList(list1));
+		matrix.add((List<Double>) (Object) Arrays.asList(list2));
 
 		// oneWithoutIdSubtype
-		this.oneWithoutIdSubtype.setName("the name");
+		oneWithoutIdSubtype.setName("the name");
 
 		// listWithoutIdSubtype
-		this.listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name0").build());
-		this.listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name1").build());
+		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name0").build());
+		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name1").build());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,24 +90,24 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
 		CINP_AllFieldCasesInput_CINS input = new CINP_AllFieldCasesInput_CINS();
-		input.setId(this.id);
-		input.setAge(this.age);
-		input.setDate(this.date);
-		input.setDates((List<Date>) (Object) Arrays.asList(this.dates));
-		input.setMatrix(this.matrix);
-		input.setName(this.name);
-		input.setPlanets((List<String>) (Object) Arrays.asList(this.planets));
-		input.setAliases((List<String>) (Object) Arrays.asList(this.aliases));
-		input.setWithoutIdSubtype(this.listWithoutIdSubtype);
+		input.setId(id);
+		input.setAge(age);
+		input.setDate(date);
+		input.setDates((List<Date>) (Object) Arrays.asList(dates));
+		input.setMatrix(matrix);
+		input.setName(name);
+		input.setPlanets((List<String>) (Object) Arrays.asList(planets));
+		input.setAliases((List<String>) (Object) Arrays.asList(aliases));
+		input.setWithoutIdSubtype(listWithoutIdSubtype);
 
-		GraphQLRequestAllGraphQLCases subscriptionRequest = this.subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $input: AllFieldCasesInput!){allGraphQLCasesInput(input: $input){id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
 
 		// Go, go, go
 		@SuppressWarnings("unused")
 		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
 				"input", input, //
-				"nbItems", this.nbItems);
+				"nbItems", nbItems);
 
 		// Verification
 
@@ -129,15 +129,15 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(this.name, callback.lastReceivedMessage.getName());
-		assertEquals(this.age, callback.lastReceivedMessage.getAge());
-		assertEquals(this.date, callback.lastReceivedMessage.getDate());
+		assertEquals(name, callback.lastReceivedMessage.getName());
+		assertEquals(age, callback.lastReceivedMessage.getAge());
+		assertEquals(date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());
@@ -163,10 +163,10 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype:
 		// [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
 		@SuppressWarnings({ "unused", "unchecked" })
-		SubscriptionClient sub = this.subscriptionExecutor.allGraphQLCasesParam(
-				"{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: 15)}", callback,
-				this.id, this.name, this.age, this.i, this.date, (List<Date>) (Object) Arrays.asList(this.dates),
-				this.matrix, this.oneWithoutIdSubtype, this.listWithoutIdSubtype);
+		SubscriptionClient sub = subscriptionExecutor.allGraphQLCasesParam(
+				"{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: 15)}", callback, id,
+				name, age, i, date, (List<Date>) (Object) Arrays.asList(dates), matrix, oneWithoutIdSubtype,
+				listWithoutIdSubtype);
 
 		// Verification
 
@@ -188,15 +188,15 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(this.name, callback.lastReceivedMessage.getName());
-		assertEquals(this.age, callback.lastReceivedMessage.getAge());
-		assertEquals(this.date, callback.lastReceivedMessage.getDate());
+		assertEquals(name, callback.lastReceivedMessage.getName());
+		assertEquals(age, callback.lastReceivedMessage.getAge());
+		assertEquals(date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());
@@ -221,7 +221,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		SubscriptionCallbackGeneric<CTP_AllFieldCases_CTS> callback = new SubscriptionCallbackGeneric<>(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
-		GraphQLRequestAllGraphQLCases subscriptionRequest = this.subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: MyCustomScalarForADate!, $dates: [MyCustomScalarForADate!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
 						+ "{allGraphQLCasesParam(id: $id, name: $name, age: $age, integer: $i, date: $date, dates: $dates, matrix: $matrix, oneWithoutIdSubtype: $oneWithoutIdSubtype, listWithoutIdSubtype: $listWithoutIdSubtype)"
 						+ "{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
@@ -229,16 +229,16 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Go, go, go
 		@SuppressWarnings("unused")
 		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
-				"nbItems", this.nbItems, //
-				"id", this.id, //
-				"name", this.name, //
-				"age", this.age, //
-				"i", this.i, //
-				"date", this.date, //
-				"dates", this.dates, //
-				"matrix", this.matrix, //
-				"oneWithoutIdSubtype", this.oneWithoutIdSubtype, //
-				"listWithoutIdSubtype", this.listWithoutIdSubtype);
+				"nbItems", nbItems, //
+				"id", id, //
+				"name", name, //
+				"age", age, //
+				"i", i, //
+				"date", date, //
+				"dates", dates, //
+				"matrix", matrix, //
+				"oneWithoutIdSubtype", oneWithoutIdSubtype, //
+				"listWithoutIdSubtype", listWithoutIdSubtype);
 
 		// Verification
 
@@ -260,15 +260,15 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
-		assertEquals(this.name, callback.lastReceivedMessage.getName());
-		assertEquals(this.age, callback.lastReceivedMessage.getAge());
-		assertEquals(this.date, callback.lastReceivedMessage.getDate());
+		assertEquals(name, callback.lastReceivedMessage.getName());
+		assertEquals(age, callback.lastReceivedMessage.getAge());
+		assertEquals(date, callback.lastReceivedMessage.getDate());
 
 		// matrix
 		assertEquals(3, callback.lastReceivedMessage.getMatrix().size());
-		assertArrayEquals(this.list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
-		assertArrayEquals(this.list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
-		assertArrayEquals(this.list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
+		assertArrayEquals(list0, callback.lastReceivedMessage.getMatrix().get(0).toArray());
+		assertArrayEquals(list1, callback.lastReceivedMessage.getMatrix().get(1).toArray());
+		assertArrayEquals(list2, callback.lastReceivedMessage.getMatrix().get(2).toArray());
 
 		// WithIdSubTypes have not been given: they should be null
 		assertNull(callback.lastReceivedMessage.getOneWithIdSubType());
