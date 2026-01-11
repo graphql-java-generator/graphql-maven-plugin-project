@@ -68,7 +68,7 @@
 				</executions>
 				<configuration>
 					<argLine>
--javaagent:${org.mockito:mockito-core:jar}
+-javaagent:${org.mockito:mockito-core:jar} 
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client/com.generated.graphql=tools.jackson.databind,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client/com.generated.graphql.util=tools.jackson.databind,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_client/com.graphql_java_generator.mavenplugin.samples=tools.jackson.databind,spring.beans,spring.context,spring.core

@@ -61,7 +61,7 @@ public class SpringConfig {
 
 	@Bean
 	@Primary // Overrides the default one provided by the plugin
-	@SuppressWarnings("static-method")
+	@SuppressWarnings("static-method") 
 	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
 	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
 	public WebClient webClientAllGraphQLCases(//

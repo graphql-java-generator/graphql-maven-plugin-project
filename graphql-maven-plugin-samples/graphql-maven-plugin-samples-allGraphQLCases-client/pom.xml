@@ -382,7 +382,7 @@
 						<goals>
 							<goal>start</goal>
 						</goals>
-						<configuration>
+						<configuration> 
 							<skip>${skipTests}</skip>
 							<name>graphql-maven-plugin-samples-OAuth-server</name>
 							<workingDir>OAuth-server</workingDir>
