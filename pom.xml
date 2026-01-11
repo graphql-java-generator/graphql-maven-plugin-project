@@ -99,9 +99,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>25</java.version>
-		<java.release>25</java.release>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<!-- java.majorVersion is used to avoid collision with the maven-dependency-plugin properties goal -->
+		<java.majorVersion>${java.version}</java.majorVersion>
+		<maven.compiler.source>${java.majorVersion}</maven.compiler.source>
+		<maven.compiler.target>${java.majorVersion}</maven.compiler.target>
 		<maven.dependency.version>3.9.11</maven.dependency.version>
 		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
 		<maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
@@ -118,6 +119,11 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+				    <groupId>org.codehaus.mojo</groupId>
+				    <artifactId>exec-maven-plugin</artifactId>
+				    <version>3.6.3</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>3.1.0</version>
@@ -127,9 +133,9 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.14.0</version>
 					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-						<release>${java.release}</release>
+						<source>${java.majorVersion}</source>
+						<target>${java.majorVersion}</target>
+						<release>${java.majorVersion}</release>
 						<compilerArgs>
 						    <arg>-Xlint:-requires-transitive-automatic</arg>
 						</compilerArgs>
@@ -173,7 +179,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-plugin-plugin</artifactId>
-					<version>3.15.1</version>
+					<version>3.15.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

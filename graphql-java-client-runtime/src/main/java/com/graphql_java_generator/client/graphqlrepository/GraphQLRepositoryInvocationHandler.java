@@ -143,6 +143,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		logger.trace("Creating a new GraphQLRepositoryInvocationHandler for the GraphQL Repository {}", //$NON-NLS-1$
 				repositoryInterface.getName());
 		this.repositoryInterface = repositoryInterface;
+		String graphQLQueryExecutorClass; 
 
 		// Does the GraphQLRepository annotation define a queryExecutor ?
 		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
@@ -157,6 +158,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					// else: let's retrieve the package of the executor given in the GraphQLRepository annotation
 					graphQLRepoAnnotation.queryExecutor().getPackage();
 
+			graphQLQueryExecutorClass = "GraphQLQueryExecutor"; // Used below if no QueryExecutor is found
 			queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryExecutor.class, true);
 			mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationExecutor.class, false);
 			subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLSubscriptionExecutor.class,
@@ -170,6 +172,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					// annotation
 					graphQLReactiveRepoAnnotation.queryExecutor().getPackage();
 
+			graphQLQueryExecutorClass = "GraphQLQueryReactiveExecutor"; // Used below if no QueryExecutor is found
 			queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryReactiveExecutor.class, true);
 			mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationReactiveExecutor.class,
 					false);
@@ -191,11 +194,11 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			if (executorPackage == null) {
 				throw new RuntimeException("Error while preparing the GraphQL Repository '" //$NON-NLS-1$
 						+ repositoryInterface.getName()
-						+ "': found no Spring Bean of type QueryExecutor'. Please check the Spring component scan path."); //$NON-NLS-1$
+						+ "': found no Spring Bean of type "+graphQLQueryExecutorClass+". Please check the Spring component scan path."); //$NON-NLS-1$
 			} else {
 				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '" //$NON-NLS-1$
 						+ repositoryInterface.getName()
-						+ "': found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor (" //$NON-NLS-1$
+						+ "': found no Spring Bean of type "+graphQLQueryExecutorClass+" in the same package as the provided QueryExecutor (" //$NON-NLS-1$
 						+ graphQLRepoAnnotation.queryExecutor().getName()
 						+ "). Please check the Spring component scan path."); //$NON-NLS-1$
 			}

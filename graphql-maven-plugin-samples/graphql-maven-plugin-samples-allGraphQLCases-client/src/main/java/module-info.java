@@ -30,10 +30,9 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 	opens org.allGraphQLCases.demo to spring.beans, spring.context, spring.core;
 	opens org.allGraphQLCases.demo.impl to spring.beans, spring.context, spring.core;
 	opens org.allGraphQLCases.demo.subscription to spring.beans, spring.context, spring.core;
-	opens org.allGraphQLCases.minimal.oauth_app to spring.beans, spring.context, spring.core;
-	opens org.allGraphQLCases.minimal.spring_app to spring.beans, spring.context, spring.core;
 
 	// Dependency for the test code
+	requires org.apache.commons.logging;
 	requires org.apache.commons.lang3;
 	requires reactor.core;
 	requires reactor.netty.http;

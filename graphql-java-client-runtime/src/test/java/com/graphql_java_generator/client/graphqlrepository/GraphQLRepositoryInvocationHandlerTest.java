@@ -21,16 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.graphql.client.GraphQlClient;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
@@ -75,22 +77,24 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	// java reflection
 	// So we use @Spy here, instead of @Mock
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
-	@MockitoBean
+	@Mock
 	ApplicationContext applicationContext;
-	@MockitoBean
+	@Mock
 	GraphQlClient httpGraphQlClientAllGraphQLCases;
-	@MockitoBean
+	@Mock
 	GraphQlClient webSocketGraphQlClientAllGraphQLCases;
-	@MockitoSpyBean
+	@Spy
 	protected MyQueryTypeExecutorAllGraphQLCases spyQueryExecutor;
-	@MockitoSpyBean
+	@Spy
 	protected AnotherMutationTypeExecutorAllGraphQLCases spyMutationExecutor;
-	@MockitoSpyBean
+	@Spy
 	protected TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;
+
+	private AutoCloseable closeableMockito;
 
 	@BeforeEach
 	void beforeEach() throws GraphQLRequestPreparationException {
-
+		closeableMockito = MockitoAnnotations.openMocks(this);
 		SpringContextBean.setApplicationContext(applicationContext);
 
 		when(applicationContext.getBean("httpGraphQlClientAllGraphQLCases", GraphQlClient.class)) //$NON-NLS-1$
@@ -117,6 +121,11 @@ public class GraphQLRepositoryInvocationHandlerTest {
 		invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCase>(
 				GraphQLRepositoryTestCase.class, applicationContext);
 		graphQLRepository = invocationHandler.getProxyInstance();
+	}
+
+	@AfterEach
+	void afterEach() throws Exception {
+		closeableMockito.close();
 	}
 
 	@Test
@@ -186,7 +195,7 @@ public class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertTrue(e.getMessage().contains(
-				"found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor"), //$NON-NLS-1$
+				"found no Spring Bean of type GraphQLQueryExecutor in the same package as the provided QueryExecutor"), //$NON-NLS-1$
 				e.getMessage());
 		assertTrue(
 				e.getMessage().contains(

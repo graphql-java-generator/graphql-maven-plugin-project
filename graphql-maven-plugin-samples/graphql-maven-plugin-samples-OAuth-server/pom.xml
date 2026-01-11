@@ -10,7 +10,7 @@
 		<version>0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
+	<artifactId>graphql-maven-plugin-samples-OAuth-server</artifactId>
 	<description>
 		Spring Boot Authorization Server. This project is based on the spring security sample, available here:
 		https://github.com/spring-projects/spring-security-samples/tree/main/servlet/spring-boot/java/oauth2/authorization-server
@@ -47,7 +47,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 				</configuration>
 			</plugin>
 			<plugin>

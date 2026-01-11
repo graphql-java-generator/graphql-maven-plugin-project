@@ -18,7 +18,7 @@
 	<modules>
 		<!-- allGraphQLCases and Forum server build -->
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
-		<module>graphql-maven-plugin-samples-OAuth-authorization-server</module>
+		<module>graphql-maven-plugin-samples-OAuth-server</module>
 		<module>graphql-maven-plugin-samples-Forum-server</module>
 		<!-- allGraphQLCases and Forum client build -->
 		<module>graphql-maven-plugin-samples-allGraphQLCases-client</module>

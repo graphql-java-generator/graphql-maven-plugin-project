@@ -10,7 +10,6 @@
 	<artifactId>graphql-maven-plugin-logic</artifactId>
 	<name>graphql-maven-plugin-logic</name>
 
-
 	<build>
 		<resources>
 			<resource>
@@ -30,19 +29,17 @@
 		</testResources>
 		<plugins>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<trimStackTrace>false</trimStackTrace>
-					<!-- Allow JUnit to access the test classes -->
-				</configuration>
-			</plugin>
-			<plugin>
 				<!-- We'll read the sources from graphql-client, to add the
 				sources to the generated code (thus: no external dependency 
 					in the generated code) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
 					<execution>
 						<id>graphql-java-client-sources</id>
 						<phase>generate-resources</phase>
@@ -88,6 +85,16 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<!-- Allow JUnit to access the test classes -->
+					<argLine>
+						-javaagent:${org.mockito:mockito-core:jar}
+					</argLine>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -277,7 +284,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -16,8 +16,8 @@
 	</description>
 
 	<properties>
-		<!--Parameters to pass to the buildScript-->
-		<project.basedir>${project.basedir}</project.basedir>
+		<!-- Parameters to pass to the buildScript -->
+		<my.project.basedir>${project.basedir}</my.project.basedir>
 	</properties>
 	
 	<build>
@@ -321,6 +321,17 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<!-- Execution of the integration tests -->
 				<!-- Direct execution with maven is possible with this command: mvn failsafe:integration-test -pl :graphql-maven-plugin-samples-allGraphQLCases-client -->
 				<groupId>org.apache.maven.plugins</groupId>
@@ -335,10 +346,15 @@
 				</executions>
 				<configuration>
 					<argLine>
+-javaagent:${org.mockito:mockito-core:jar}
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.annotation_test=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.customtemplates=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.samples.forum.test.client.subscription=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.schema_personalization=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.client=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.client.util=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.client2=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.graphqlrepositories=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.impl=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.oauth=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
@@ -346,6 +362,7 @@
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.subscription.graphqlrepository=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.allGraphQLCases.two_graphql_servers=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.forum.customtemplates=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
+--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/org.forum.client=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 					</argLine>
 					<!--
 					<parallel>methods</parallel>
@@ -360,23 +377,23 @@
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>start_OAuth_Authorization_server</id>
+						<id>start_OAuth_server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
 						</goals>
 						<configuration>
 							<skip>${skipTests}</skip>
-							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
-							<workingDir>OAuth-authorization-server</workingDir>
-							<processLogFile>${project.build.directory}/OAuth-authorization-server.log</processLogFile>
+							<name>graphql-maven-plugin-samples-OAuth-server</name>
+							<workingDir>OAuth-server</workingDir>
+							<processLogFile>${project.build.directory}/OAuth-server/OAuth-server.log</processLogFile>
 							<!-- waitAfterLaunch set to 0: this server will be starting while the other servers start -->
 							<waitAfterLaunch>0</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<arguments>
+							<arguments> 
 								<argument>java</argument>
 								<argument>-jar</argument>
-								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-server/target/graphql-maven-plugin-samples-OAuth-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -481,6 +498,12 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		
 		<!-- Dependencies for tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -513,7 +536,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 				</configuration>
 			</plugin>
 		</plugins>

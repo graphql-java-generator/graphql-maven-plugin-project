@@ -47,11 +47,23 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
 					<!-- Allow JUnit to access the test classes -->
 					<argLine>
+						-javaagent:${org.mockito:mockito-core:jar}
 						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.domain.client.allGraphQLCases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
 						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.domain.client.forum=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
 						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime/com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo=spring.core,spring.beans,spring.context
@@ -105,7 +117,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 				</configuration>
 			</plugin>
 			<plugin>

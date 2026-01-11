@@ -38,12 +38,14 @@
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
 					<!-- Allow JUnit to access the test classes -->
+					<!--
 					<argLine>
-						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.server.allGraphQLCases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
-						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.client.forum=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
-						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.server.util.test_classes=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
-						--add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.testcases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						- -add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.server.allGraphQLCases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						- -add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.domain.client.forum=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						- -add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.server.util.test_classes=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
+						- -add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime/com.graphql_java_generator.testcases=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.core,spring.beans,spring.context
 					</argLine>
+					-->
 				</configuration>
 			</plugin>
 		</plugins>

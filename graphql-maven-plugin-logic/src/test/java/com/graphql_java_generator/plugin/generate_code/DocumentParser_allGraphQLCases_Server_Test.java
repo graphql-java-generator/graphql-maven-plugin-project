@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -562,7 +564,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	private void test_addObjectType_noImplement() throws IOException {
+	void test_addObjectType_noImplement() throws IOException {
 		// Preparation
 		String objectName = "AllFieldCases";
 		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
@@ -577,20 +579,32 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName(), "Checks the name");
-		assertEquals(0, type.getImplementz().size(), "No implementation");
-		assertEquals(14, type.getFields().size(), "Number of fields");
+		assertEquals(1, type.getImplementz().size(), objectName + " has one implementation");
+		assertEquals("WithID", type.getImplementz().get(0), objectName + "'s name implementation");
+		assertEquals(23, type.getFields().size(), "Number of " + objectName + "'s fields");
 
 		int j = 0; // The first field is 0, see ++j below
 
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
-		checkField(type, j++, "id", 0, true, null, "UUID", UUID.class.getSimpleName());
+		checkField(type, j++, "id", 0, true, null, "ID", UUID.class.getSimpleName());
 		// name: String!
 		checkField(type, j++, "name", 0, true, null, "String", String.class.getSimpleName());
 		// forname: String
 		checkField(type, j++, "forname", 0, false, null, "String", String.class.getSimpleName());
-		// age: int!
-		checkField(type, j++, "age", 0, true, null, "Int", Integer.class.getSimpleName());
+		// break(if: String!): String
+		checkField(type, j++, "break", 0, false, null, "String", String.class.getSimpleName());
+		// age(unit: Unit = YEAR) : Long! @deprecated(reason: "This is a test")
+		checkField(type, j++, "age", 0, true, null, "Long", Long.class.getSimpleName());
+		// aFloat: Float
+		checkField(type, j++, "aFloat", 0, false, null, "Float", Double.class.getSimpleName());
+		// date: MyCustomScalarForADate
+		checkField(type, j++, "date", 0, false, null, "MyCustomScalarForADate", Date.class.getSimpleName());
+		// dateTime: MyCustomScalarForADateTime
+		checkField(type, j++, "dateTime", 0, false, null, "MyCustomScalarForADateTime",
+				OffsetDateTime.class.getSimpleName());
+		// dates: [MyCustomScalarForADate]!
+		checkField(type, j++, "dates", 1, true, false, "MyCustomScalarForADate", Date.class.getSimpleName());
 		// nbComments: int
 		checkField(type, j++, "nbComments", 0, false, null, "Int", Integer.class.getSimpleName());
 		// comments: [String]
@@ -602,22 +616,26 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// planets: [String!]!
 		checkField(type, j++, "planets", 1, true, true, "String", String.class.getSimpleName());
 		// friends: [Human!]
-		checkField(type, j++, "friends", 1, false, true, "Human", "Human");
+		checkField(type, j++, "friends", 1, false, true, "Human", "STP_Human_STS");
+		// matrix: [[Float]]!
+		checkField(type, j++, "matrix", 2, true, false, "Float", Double.class.getSimpleName());
+		// oneWithoutFieldParameter: AllFieldCasesWithIdSubtype
+		checkField(type, j++, "oneWithoutFieldParameter", 0, false, null, "AllFieldCasesWithIdSubtype",
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
 		checkField(type, j++, "oneWithIdSubType", 0, false, null, "AllFieldCasesWithIdSubtype",
-				"AllFieldCasesWithIdSubtype");
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		// listWithIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
 		// [AllFieldCasesWithIdSubtype]
 		checkField(type, j++, "listWithIdSubTypes", 1, false, false, "AllFieldCasesWithIdSubtype",
-				"AllFieldCasesWithIdSubtype");
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		// oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
 		checkField(type, j++, "oneWithoutIdSubType", 0, false, null, "AllFieldCasesWithoutIdSubtype",
-				"AllFieldCasesWithoutIdSubtype");
+				"STP_AllFieldCasesWithoutIdSubtype_STS");
 		// listWithoutIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
 		// [AllFieldCasesWithoutIdSubtype]
 		checkField(type, j++, "listWithoutIdSubTypes", 1, false, false, "AllFieldCasesWithoutIdSubtype",
-				"AllFieldCasesWithoutIdSubtype");
-
+				"STP_AllFieldCasesWithoutIdSubtype_STS");
 	}
 
 	@Test

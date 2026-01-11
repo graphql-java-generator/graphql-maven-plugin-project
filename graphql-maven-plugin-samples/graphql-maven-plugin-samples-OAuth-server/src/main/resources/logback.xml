@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 
-	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+	<!-- appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
-	</appender>
+	</appender -->
 	<appender name="File" class="ch.qos.logback.core.FileAppender">
 		<file>target/server.log</file>
 		<encoder>
@@ -17,7 +17,7 @@
 		<appender-ref ref="File" />
 	</logger>
 
-	<root level="warn">
+	<root level="info">
 		<appender-ref ref="File" />
 	</root>
 

@@ -81,7 +81,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 				</configuration>
 			</plugin>
 			<plugin>

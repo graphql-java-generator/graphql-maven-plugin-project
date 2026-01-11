@@ -34,9 +34,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<release>${java.release}</release>
+					<source>${java.majorVersion}</source>
+					<target>${java.majorVersion}</target>
+					<release>${java.majorVersion}</release>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -83,6 +83,17 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<!-- Execution of the integration tests -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -94,6 +105,14 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<!-- Allow JUnit to access the test classes -->
+					<argLine>
+						-javaagent:${org.mockito:mockito-core:jar}
+					</argLine>
+					<!-- -javaagent:${net.bytebuddy:byte-buddy:jar} -->
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- This plugin allows to start the SpringBoot Forum-server in
@@ -110,19 +129,16 @@
 						</goals>
 						<configuration>
 							<skip>${skipTests}</skip>
-							<name>
-								graphql-maven-plugin-samples-OAuth-authorization-server</name>
-							<workingDir>OAuth-authorization-server</workingDir>
-							<processLogFile>
-								${basedir}/target/OAuth-authorization-server.log</processLogFile>
-							<waitAfterLaunch>180</waitAfterLaunch>
+							<name>graphql-maven-plugin-samples-OAuth-server</name>
+							<workingDir>OAuth-server</workingDir>
+							<processLogFile>${project.build.directory}/OAuth-server/OAuth-server.log</processLogFile>
+							<!-- waitAfterLaunch set to 0: this server will be starting while the other servers start -->
+							<waitAfterLaunch>0</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthCheckUrl>http://localhost:8181/helloWorld</healthCheckUrl>
-							<arguments>
+							<arguments> 
 								<argument>java</argument>
 								<argument>-jar</argument>
-								<argument>
-									${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-server/target/graphql-maven-plugin-samples-OAuth-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -215,7 +231,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<source>${java.version}</source>
+					<source>${java.majorVersion}</source>
 					<!-- add this to disable checking -->
 					<doclint>none</doclint>
 					<failOnError>false</failOnError>
