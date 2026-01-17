@@ -1,5 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 * Get back to java 17 before any release
+* Upgrade to maven 4
+* Upgrade to gradle 10
 * (to check) The gradle plugin may not compile without having first build locally the maven plugin (due to the custom-resttemplate dependency added in 3.1)
 * Check compilation with java 25: got a report that it wouldn't work
 * Manage mockito warning with jdk 25 :

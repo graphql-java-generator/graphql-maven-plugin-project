@@ -30,6 +30,7 @@
 All mode:
 * Upgrade to Spring Boot 4 and Spring Framework 7
     * Jackson switch to 3.x versions, with a major refactoring, including json schema
+        * Note: if you're using custom scalars that map to jackson types, you'll have to change the custom scalar definition in your pom or gradle files.
 
 
 Client mode:
