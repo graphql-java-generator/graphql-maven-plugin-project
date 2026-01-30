@@ -14,14 +14,7 @@
         * Doing this implies a change from ObjectNode to JsonNode (and the GraphQLObjectMapper client class has been renamed to GraphQLJsonMapper)
     * [Server mode] When using an alternate path, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.path`
 
-? Java 25
-? Removal of data fetchers on GraphQL interfaces
-? get rid of gson in plugin-logic
-? Document the changed dependencies
 ?? Removal of deprecated root response
-?? Restructuring runtime packages
-?? Check dependencies in common-dependencies (slf4j-api, spring-context, reactive-streams)
-?? Check dependencies in client-dependencies (spring-boot-starter-security, 
 
 # 4.x versions
 
