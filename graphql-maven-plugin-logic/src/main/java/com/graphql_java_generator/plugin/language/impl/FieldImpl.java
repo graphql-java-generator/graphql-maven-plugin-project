@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -16,9 +17,9 @@ import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
+
 import graphql.language.Comment;
 import graphql.language.Value;
-
 
 /**
  * @author etienne-sf
@@ -101,10 +102,9 @@ public class FieldImpl implements Field {
 	@Override
 	public boolean isId() {
 		if (id == null) {
-			return getGraphQLTypeSimpleName().equals("ID");
-		} else {
-			return id;
+			id = getGraphQLTypeSimpleName().equals("ID");
 		}
+		return id;
 	}
 
 	/**
@@ -187,50 +187,34 @@ public class FieldImpl implements Field {
 		return sb.toString();
 	}
 
-	
-	
 	private static Boolean $default$id() {
 		return null;
 	}
 
-	
-	
 	private static List<Field> $default$inputParameters() {
 		return new ArrayList<>();
 	}
 
-	
-	
 	private static DataFetcher $default$dataFetcher() {
 		return null;
 	}
 
-	
-	
 	private static Value<?> $default$defaultValue() {
 		return null;
 	}
 
-	
-	
 	private static Relation $default$relation() {
 		return null;
 	}
 
-	
-	
 	private static String $default$annotation() {
 		return "";
 	}
 
-	
-	
 	private static List<AppliedDirective> $default$appliedDirectives() {
 		return new ArrayList<>();
 	}
 
-	
-	
 	private static List<String> $default$comments() {
 		return new ArrayList<>();
 	}
@@ -238,32 +222,50 @@ public class FieldImpl implements Field {
 	/**
 	 * Creates a new {@code FieldImpl} instance.
 	 *
-	 * @param documentParser The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the field, from its
-	 * typeName, after the whole parsing is finished
-	 * @param name The name of the field
-	 * @param fieldTypeAST Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for more
-	 * information, here.
-	 * @param id Is this field an identifier? <BR/>
-	 * By default, a field is an identifier if its GraphQL type is "ID". But this may be overridden with the
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
-	 * Personalization</A>
-	 * @param owningType The {@link Type} which contains this field
-	 * @param inputParameters All fields in an object may have parameters. A parameter is actually a field.
-	 * @param dataFetcher The data fetcher associated to this field, or null if this field has no data fetcher
-	 * @param defaultValue Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
-	 * the value of the enum.<BR/>
-	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
-	 * field, and obviously, we can't instanciate any object or enum yet, as we dont't even generated any code.
-	 * @param relation Contains the description of the relation that this field holds
-	 * @param annotation The Java annotation to add to this type, ready to be added by the Velocity template. That is: one annotation per
-	 * line, each line starting at the beginning of the line
-	 * @param appliedDirectives All directives that have been defined in the GraphQL schema for this field
-	 * @param comments The comments that have been found before this field, in the provided GraphQL schema
-	 * @param description The description of this field, in the provided GraphQL schema
+	 * @param documentParser
+	 *            The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the
+	 *            field, from its typeName, after the whole parsing is finished
+	 * @param name
+	 *            The name of the field
+	 * @param fieldTypeAST
+	 *            Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for
+	 *            more information, here.
+	 * @param id
+	 *            Is this field an identifier? <BR/>
+	 *            By default, a field is an identifier if its GraphQL type is "ID". But this may be overridden with the
+	 *            <A HREF=
+	 *            "https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 *            Personalization</A>
+	 * @param owningType
+	 *            The {@link Type} which contains this field
+	 * @param inputParameters
+	 *            All fields in an object may have parameters. A parameter is actually a field.
+	 * @param dataFetcher
+	 *            The data fetcher associated to this field, or null if this field has no data fetcher
+	 * @param defaultValue
+	 *            Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the
+	 *            enum, not the value of the enum.<BR/>
+	 *            We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to
+	 *            check its field, and obviously, we can't instanciate any object or enum yet, as we dont't even
+	 *            generated any code.
+	 * @param relation
+	 *            Contains the description of the relation that this field holds
+	 * @param annotation
+	 *            The Java annotation to add to this type, ready to be added by the Velocity template. That is: one
+	 *            annotation per line, each line starting at the beginning of the line
+	 * @param appliedDirectives
+	 *            All directives that have been defined in the GraphQL schema for this field
+	 * @param comments
+	 *            The comments that have been found before this field, in the provided GraphQL schema
+	 * @param description
+	 *            The description of this field, in the provided GraphQL schema
 	 */
-	
-	
-	FieldImpl(final DocumentParser documentParser, final String name, final FieldTypeAST fieldTypeAST, final Boolean id, final Type owningType, final List<Field> inputParameters, final DataFetcher dataFetcher, final Value<?> defaultValue, final Relation relation, final String annotation, final List<AppliedDirective> appliedDirectives, final List<String> comments, final Description description) {
+
+	FieldImpl(final DocumentParser documentParser, final String name, final FieldTypeAST fieldTypeAST, final Boolean id,
+			final Type owningType, final List<Field> inputParameters, final DataFetcher dataFetcher,
+			final Value<?> defaultValue, final Relation relation, final String annotation,
+			final List<AppliedDirective> appliedDirectives, final List<String> comments,
+			final Description description) {
 		this.documentParser = documentParser;
 		this.name = name;
 		this.fieldTypeAST = fieldTypeAST;
@@ -279,86 +281,60 @@ public class FieldImpl implements Field {
 		this.description = description;
 	}
 
-
-	
-	
 	public static class FieldImplBuilder {
-		
-		
+
 		private DocumentParser documentParser;
-		
-		
+
 		private String name;
-		
-		
+
 		private FieldTypeAST fieldTypeAST;
-		
-		
+
 		private boolean id$set;
-		
-		
+
 		private Boolean id$value;
-		
-		
+
 		private Type owningType;
-		
-		
+
 		private boolean inputParameters$set;
-		
-		
+
 		private List<Field> inputParameters$value;
-		
-		
+
 		private boolean dataFetcher$set;
-		
-		
+
 		private DataFetcher dataFetcher$value;
-		
-		
+
 		private boolean defaultValue$set;
-		
-		
+
 		private Value<?> defaultValue$value;
-		
-		
+
 		private boolean relation$set;
-		
-		
+
 		private Relation relation$value;
-		
-		
+
 		private boolean annotation$set;
-		
-		
+
 		private String annotation$value;
-		
-		
+
 		private boolean appliedDirectives$set;
-		
-		
+
 		private List<AppliedDirective> appliedDirectives$value;
-		
-		
+
 		private boolean comments$set;
-		
-		
+
 		private List<String> comments$value;
-		
-		
+
 		private Description description;
 
-		
-		
 		FieldImplBuilder() {
 		}
 
 		/**
-		 * The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the field, from its
-		 * typeName, after the whole parsing is finished
+		 * The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the field, from
+		 * its typeName, after the whole parsing is finished
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder documentParser(final DocumentParser documentParser) {
 			this.documentParser = documentParser;
 			return this;
@@ -366,10 +342,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * The name of the field
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder name(final String name) {
 			this.name = name;
 			return this;
@@ -378,10 +354,10 @@ public class FieldImpl implements Field {
 		/**
 		 * Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for more
 		 * information, here.
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder fieldTypeAST(final FieldTypeAST fieldTypeAST) {
 			this.fieldTypeAST = fieldTypeAST;
 			return this;
@@ -392,10 +368,10 @@ public class FieldImpl implements Field {
 		 * By default, a field is an identifier if its GraphQL type is "ID". But this may be overridden with the
 		 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
 		 * Personalization</A>
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder id(final Boolean id) {
 			this.id$value = id;
 			id$set = true;
@@ -404,10 +380,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * The {@link Type} which contains this field
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder owningType(final Type owningType) {
 			this.owningType = owningType;
 			return this;
@@ -415,10 +391,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * All fields in an object may have parameters. A parameter is actually a field.
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder inputParameters(final List<Field> inputParameters) {
 			this.inputParameters$value = inputParameters;
 			inputParameters$set = true;
@@ -427,10 +403,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * The data fetcher associated to this field, or null if this field has no data fetcher
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder dataFetcher(final DataFetcher dataFetcher) {
 			this.dataFetcher$value = dataFetcher;
 			dataFetcher$set = true;
@@ -438,14 +414,14 @@ public class FieldImpl implements Field {
 		}
 
 		/**
-		 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
-		 * the value of the enum.<BR/>
+		 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum,
+		 * not the value of the enum.<BR/>
 		 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
 		 * field, and obviously, we can't instanciate any object or enum yet, as we dont't even generated any code.
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder defaultValue(final Value<?> defaultValue) {
 			this.defaultValue$value = defaultValue;
 			defaultValue$set = true;
@@ -454,10 +430,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * Contains the description of the relation that this field holds
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder relation(final Relation relation) {
 			this.relation$value = relation;
 			relation$set = true;
@@ -465,12 +441,12 @@ public class FieldImpl implements Field {
 		}
 
 		/**
-		 * The Java annotation to add to this type, ready to be added by the Velocity template. That is: one annotation per
-		 * line, each line starting at the beginning of the line
+		 * The Java annotation to add to this type, ready to be added by the Velocity template. That is: one annotation
+		 * per line, each line starting at the beginning of the line
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder annotation(final String annotation) {
 			this.annotation$value = annotation;
 			annotation$set = true;
@@ -479,10 +455,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * All directives that have been defined in the GraphQL schema for this field
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder appliedDirectives(final List<AppliedDirective> appliedDirectives) {
 			this.appliedDirectives$value = appliedDirectives;
 			appliedDirectives$set = true;
@@ -491,10 +467,10 @@ public class FieldImpl implements Field {
 
 		/**
 		 * The comments that have been found before this field, in the provided GraphQL schema
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder comments(final List<String> comments) {
 			this.comments$value = comments;
 			comments$set = true;
@@ -503,63 +479,83 @@ public class FieldImpl implements Field {
 
 		/**
 		 * The description of this field, in the provided GraphQL schema
+		 * 
 		 * @return {@code this}.
 		 */
-		
-		
+
 		public FieldImpl.FieldImplBuilder description(final Description description) {
 			this.description = description;
 			return this;
 		}
 
-		
-		
 		public FieldImpl build() {
 			Boolean id$value = this.id$value;
-			if (!this.id$set) id$value = FieldImpl.$default$id();
+			if (!this.id$set) {
+				id$value = FieldImpl.$default$id();
+			}
 			List<Field> inputParameters$value = this.inputParameters$value;
-			if (!this.inputParameters$set) inputParameters$value = FieldImpl.$default$inputParameters();
+			if (!this.inputParameters$set) {
+				inputParameters$value = FieldImpl.$default$inputParameters();
+			}
 			DataFetcher dataFetcher$value = this.dataFetcher$value;
-			if (!this.dataFetcher$set) dataFetcher$value = FieldImpl.$default$dataFetcher();
+			if (!this.dataFetcher$set) {
+				dataFetcher$value = FieldImpl.$default$dataFetcher();
+			}
 			Value<?> defaultValue$value = this.defaultValue$value;
-			if (!this.defaultValue$set) defaultValue$value = FieldImpl.$default$defaultValue();
+			if (!this.defaultValue$set) {
+				defaultValue$value = FieldImpl.$default$defaultValue();
+			}
 			Relation relation$value = this.relation$value;
-			if (!this.relation$set) relation$value = FieldImpl.$default$relation();
+			if (!this.relation$set) {
+				relation$value = FieldImpl.$default$relation();
+			}
 			String annotation$value = this.annotation$value;
-			if (!this.annotation$set) annotation$value = FieldImpl.$default$annotation();
+			if (!this.annotation$set) {
+				annotation$value = FieldImpl.$default$annotation();
+			}
 			List<AppliedDirective> appliedDirectives$value = this.appliedDirectives$value;
-			if (!this.appliedDirectives$set) appliedDirectives$value = FieldImpl.$default$appliedDirectives();
+			if (!this.appliedDirectives$set) {
+				appliedDirectives$value = FieldImpl.$default$appliedDirectives();
+			}
 			List<String> comments$value = this.comments$value;
-			if (!this.comments$set) comments$value = FieldImpl.$default$comments();
-			return new FieldImpl(this.documentParser, this.name, this.fieldTypeAST, id$value, this.owningType, inputParameters$value, dataFetcher$value, defaultValue$value, relation$value, annotation$value, appliedDirectives$value, comments$value, this.description);
+			if (!this.comments$set) {
+				comments$value = FieldImpl.$default$comments();
+			}
+			return new FieldImpl(this.documentParser, this.name, this.fieldTypeAST, id$value, this.owningType,
+					inputParameters$value, dataFetcher$value, defaultValue$value, relation$value, annotation$value,
+					appliedDirectives$value, comments$value, this.description);
 		}
 
 		@java.lang.Override
-		
-		
+
 		public java.lang.String toString() {
-			return "FieldImpl.FieldImplBuilder(documentParser=" + this.documentParser + ", name=" + this.name + ", fieldTypeAST=" + this.fieldTypeAST + ", id$value=" + this.id$value + ", owningType=" + this.owningType + ", inputParameters$value=" + this.inputParameters$value + ", dataFetcher$value=" + this.dataFetcher$value + ", defaultValue$value=" + this.defaultValue$value + ", relation$value=" + this.relation$value + ", annotation$value=" + this.annotation$value + ", appliedDirectives$value=" + this.appliedDirectives$value + ", comments$value=" + this.comments$value + ", description=" + this.description + ")";
+			return "FieldImpl.FieldImplBuilder(documentParser=" + this.documentParser + ", name=" + this.name
+					+ ", fieldTypeAST=" + this.fieldTypeAST + ", id$value=" + this.id$value + ", owningType="
+					+ this.owningType + ", inputParameters$value=" + this.inputParameters$value + ", dataFetcher$value="
+					+ this.dataFetcher$value + ", defaultValue$value=" + this.defaultValue$value + ", relation$value="
+					+ this.relation$value + ", annotation$value=" + this.annotation$value + ", appliedDirectives$value="
+					+ this.appliedDirectives$value + ", comments$value=" + this.comments$value + ", description="
+					+ this.description + ")";
 		}
 	}
 
-	
-	
 	public static FieldImpl.FieldImplBuilder builder() {
 		return new FieldImpl.FieldImplBuilder();
 	}
 
-	
-	
 	public FieldImpl.FieldImplBuilder toBuilder() {
-		return new FieldImpl.FieldImplBuilder().documentParser(this.documentParser).name(this.name).fieldTypeAST(this.fieldTypeAST).id(this.id).owningType(this.owningType).inputParameters(this.inputParameters).dataFetcher(this.dataFetcher).defaultValue(this.defaultValue).relation(this.relation).annotation(this.annotation).appliedDirectives(this.appliedDirectives).comments(this.comments).description(this.description);
+		return new FieldImpl.FieldImplBuilder().documentParser(this.documentParser).name(this.name)
+				.fieldTypeAST(this.fieldTypeAST).id(this.id).owningType(this.owningType)
+				.inputParameters(this.inputParameters).dataFetcher(this.dataFetcher).defaultValue(this.defaultValue)
+				.relation(this.relation).annotation(this.annotation).appliedDirectives(this.appliedDirectives)
+				.comments(this.comments).description(this.description);
 	}
 
 	/**
 	 * The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the field, from its
 	 * typeName, after the whole parsing is finished
 	 */
-	
-	
+
 	public DocumentParser getDocumentParser() {
 		return this.documentParser;
 	}
@@ -567,8 +563,8 @@ public class FieldImpl implements Field {
 	/**
 	 * The name of the field
 	 */
-	
-	
+
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -579,8 +575,8 @@ public class FieldImpl implements Field {
 	 * 
 	 * @return
 	 */
-	
-	
+
+	@Override
 	public FieldTypeAST getFieldTypeAST() {
 		return this.fieldTypeAST;
 	}
@@ -591,8 +587,7 @@ public class FieldImpl implements Field {
 	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
 	 * Personalization</A>
 	 */
-	
-	
+
 	public Boolean getId() {
 		return this.id;
 	}
@@ -600,8 +595,8 @@ public class FieldImpl implements Field {
 	/**
 	 * The {@link Type} which contains this field
 	 */
-	
-	
+
+	@Override
 	public Type getOwningType() {
 		return this.owningType;
 	}
@@ -609,8 +604,8 @@ public class FieldImpl implements Field {
 	/**
 	 * All fields in an object may have parameters. A parameter is actually a field.
 	 */
-	
-	
+
+	@Override
 	public List<Field> getInputParameters() {
 		return this.inputParameters;
 	}
@@ -618,8 +613,8 @@ public class FieldImpl implements Field {
 	/**
 	 * The data fetcher associated to this field, or null if this field has no data fetcher
 	 */
-	
-	
+
+	@Override
 	public DataFetcher getDataFetcher() {
 		return this.dataFetcher;
 	}
@@ -630,8 +625,8 @@ public class FieldImpl implements Field {
 	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
 	 * field, and obviously, we can't instanciate any object or enum yet, as we dont't even generated any code.
 	 */
-	
-	
+
+	@Override
 	public Value<?> getDefaultValue() {
 		return this.defaultValue;
 	}
@@ -639,8 +634,8 @@ public class FieldImpl implements Field {
 	/**
 	 * Contains the description of the relation that this field holds
 	 */
-	
-	
+
+	@Override
 	public Relation getRelation() {
 		return this.relation;
 	}
@@ -648,8 +643,8 @@ public class FieldImpl implements Field {
 	/**
 	 * All directives that have been defined in the GraphQL schema for this field
 	 */
-	
-	
+
+	@Override
 	public List<AppliedDirective> getAppliedDirectives() {
 		return this.appliedDirectives;
 	}
@@ -657,8 +652,8 @@ public class FieldImpl implements Field {
 	/**
 	 * The comments that have been found before this field, in the provided GraphQL schema
 	 */
-	
-	
+
+	@Override
 	public List<String> getComments() {
 		return this.comments;
 	}
@@ -666,8 +661,8 @@ public class FieldImpl implements Field {
 	/**
 	 * The description of this field, in the provided GraphQL schema
 	 */
-	
-	
+
+	@Override
 	public Description getDescription() {
 		return this.description;
 	}
@@ -675,8 +670,7 @@ public class FieldImpl implements Field {
 	/**
 	 * The name of the field
 	 */
-	
-	
+
 	public void setName(final String name) {
 		this.name = name;
 	}
@@ -685,8 +679,7 @@ public class FieldImpl implements Field {
 	 * Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for more
 	 * information, here.
 	 */
-	
-	
+
 	public void setFieldTypeAST(final FieldTypeAST fieldTypeAST) {
 		this.fieldTypeAST = fieldTypeAST;
 	}
@@ -697,8 +690,7 @@ public class FieldImpl implements Field {
 	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
 	 * Personalization</A>
 	 */
-	
-	
+
 	public void setId(final Boolean id) {
 		this.id = id;
 	}
@@ -706,8 +698,7 @@ public class FieldImpl implements Field {
 	/**
 	 * The {@link Type} which contains this field
 	 */
-	
-	
+
 	public void setOwningType(final Type owningType) {
 		this.owningType = owningType;
 	}
@@ -715,8 +706,7 @@ public class FieldImpl implements Field {
 	/**
 	 * All fields in an object may have parameters. A parameter is actually a field.
 	 */
-	
-	
+
 	public void setInputParameters(final List<Field> inputParameters) {
 		this.inputParameters = inputParameters;
 	}
@@ -724,8 +714,7 @@ public class FieldImpl implements Field {
 	/**
 	 * The data fetcher associated to this field, or null if this field has no data fetcher
 	 */
-	
-	
+
 	public void setDataFetcher(final DataFetcher dataFetcher) {
 		this.dataFetcher = dataFetcher;
 	}
@@ -736,8 +725,7 @@ public class FieldImpl implements Field {
 	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
 	 * field, and obviously, we can't instanciate any object or enum yet, as we dont't even generated any code.
 	 */
-	
-	
+
 	public void setDefaultValue(final Value<?> defaultValue) {
 		this.defaultValue = defaultValue;
 	}
@@ -745,8 +733,7 @@ public class FieldImpl implements Field {
 	/**
 	 * Contains the description of the relation that this field holds
 	 */
-	
-	
+
 	public void setRelation(final Relation relation) {
 		this.relation = relation;
 	}
@@ -754,8 +741,7 @@ public class FieldImpl implements Field {
 	/**
 	 * All directives that have been defined in the GraphQL schema for this field
 	 */
-	
-	
+
 	public void setAppliedDirectives(final List<AppliedDirective> appliedDirectives) {
 		this.appliedDirectives = appliedDirectives;
 	}
@@ -763,71 +749,101 @@ public class FieldImpl implements Field {
 	/**
 	 * The description of this field, in the provided GraphQL schema
 	 */
-	
-	
+
 	public void setDescription(final Description description) {
 		this.description = description;
 	}
 
 	@java.lang.Override
-	
-	
+
 	public boolean equals(final java.lang.Object o) {
-		if (o == this) return true;
-		if (!(o instanceof FieldImpl)) return false;
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof FieldImpl)) {
+			return false;
+		}
 		final FieldImpl other = (FieldImpl) o;
-		if (!other.canEqual((java.lang.Object) this)) return false;
+		if (!other.canEqual(this)) {
+			return false;
+		}
 		final java.lang.Object this$id = this.getId();
 		final java.lang.Object other$id = other.getId();
-		if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+		if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
+			return false;
+		}
 		final java.lang.Object this$documentParser = this.getDocumentParser();
 		final java.lang.Object other$documentParser = other.getDocumentParser();
-		if (this$documentParser == null ? other$documentParser != null : !this$documentParser.equals(other$documentParser)) return false;
+		if (this$documentParser == null ? other$documentParser != null
+				: !this$documentParser.equals(other$documentParser)) {
+			return false;
+		}
 		final java.lang.Object this$name = this.getName();
 		final java.lang.Object other$name = other.getName();
-		if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+		if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
+			return false;
+		}
 		final java.lang.Object this$fieldTypeAST = this.getFieldTypeAST();
 		final java.lang.Object other$fieldTypeAST = other.getFieldTypeAST();
-		if (this$fieldTypeAST == null ? other$fieldTypeAST != null : !this$fieldTypeAST.equals(other$fieldTypeAST)) return false;
+		if (this$fieldTypeAST == null ? other$fieldTypeAST != null : !this$fieldTypeAST.equals(other$fieldTypeAST)) {
+			return false;
+		}
 		final java.lang.Object this$owningType = this.getOwningType();
 		final java.lang.Object other$owningType = other.getOwningType();
-		if (this$owningType == null ? other$owningType != null : !this$owningType.equals(other$owningType)) return false;
+		if (this$owningType == null ? other$owningType != null : !this$owningType.equals(other$owningType)) {
+			return false;
+		}
 		final java.lang.Object this$inputParameters = this.getInputParameters();
 		final java.lang.Object other$inputParameters = other.getInputParameters();
-		if (this$inputParameters == null ? other$inputParameters != null : !this$inputParameters.equals(other$inputParameters)) return false;
+		if (this$inputParameters == null ? other$inputParameters != null
+				: !this$inputParameters.equals(other$inputParameters)) {
+			return false;
+		}
 		final java.lang.Object this$dataFetcher = this.getDataFetcher();
 		final java.lang.Object other$dataFetcher = other.getDataFetcher();
-		if (this$dataFetcher == null ? other$dataFetcher != null : !this$dataFetcher.equals(other$dataFetcher)) return false;
+		if (this$dataFetcher == null ? other$dataFetcher != null : !this$dataFetcher.equals(other$dataFetcher)) {
+			return false;
+		}
 		final java.lang.Object this$defaultValue = this.getDefaultValue();
 		final java.lang.Object other$defaultValue = other.getDefaultValue();
-		if (this$defaultValue == null ? other$defaultValue != null : !this$defaultValue.equals(other$defaultValue)) return false;
+		if (this$defaultValue == null ? other$defaultValue != null : !this$defaultValue.equals(other$defaultValue)) {
+			return false;
+		}
 		final java.lang.Object this$relation = this.getRelation();
 		final java.lang.Object other$relation = other.getRelation();
-		if (this$relation == null ? other$relation != null : !this$relation.equals(other$relation)) return false;
+		if (this$relation == null ? other$relation != null : !this$relation.equals(other$relation)) {
+			return false;
+		}
 		final java.lang.Object this$annotation = this.getAnnotation();
 		final java.lang.Object other$annotation = other.getAnnotation();
-		if (this$annotation == null ? other$annotation != null : !this$annotation.equals(other$annotation)) return false;
+		if (this$annotation == null ? other$annotation != null : !this$annotation.equals(other$annotation)) {
+			return false;
+		}
 		final java.lang.Object this$appliedDirectives = this.getAppliedDirectives();
 		final java.lang.Object other$appliedDirectives = other.getAppliedDirectives();
-		if (this$appliedDirectives == null ? other$appliedDirectives != null : !this$appliedDirectives.equals(other$appliedDirectives)) return false;
+		if (this$appliedDirectives == null ? other$appliedDirectives != null
+				: !this$appliedDirectives.equals(other$appliedDirectives)) {
+			return false;
+		}
 		final java.lang.Object this$comments = this.getComments();
 		final java.lang.Object other$comments = other.getComments();
-		if (this$comments == null ? other$comments != null : !this$comments.equals(other$comments)) return false;
+		if (this$comments == null ? other$comments != null : !this$comments.equals(other$comments)) {
+			return false;
+		}
 		final java.lang.Object this$description = this.getDescription();
 		final java.lang.Object other$description = other.getDescription();
-		if (this$description == null ? other$description != null : !this$description.equals(other$description)) return false;
+		if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
+			return false;
+		}
 		return true;
 	}
 
-	
-	
 	protected boolean canEqual(final java.lang.Object other) {
 		return other instanceof FieldImpl;
 	}
 
 	@java.lang.Override
-	
-	
+
 	public int hashCode() {
 		final int PRIME = 59;
 		int result = 1;

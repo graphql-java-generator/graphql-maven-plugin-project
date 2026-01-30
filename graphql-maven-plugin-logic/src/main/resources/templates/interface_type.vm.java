@@ -2,17 +2,13 @@
 #################################################################################################################
 ## Import of common.vm  (commons Velocity macro and definitions)
 #################################################################################################################
-#parse ("templates/common.vm")
+#parse ("templates/common.vm")##
 ##
 ##
 package ${configuration.packageName};
 
 #foreach($import in ${object.imports})
 import $import;
-#end
-
-#if ($configuration.generateJacksonAnnotations)
-import com.fasterxml.jackson.annotation.JsonProperty;
 #end
 
 import com.graphql_java_generator.annotation.GraphQLDirective;

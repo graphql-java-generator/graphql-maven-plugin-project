@@ -178,7 +178,8 @@ ${argument.javaName}##
 #end
 	 * @return 
 	 * 		It may return any value that is valid for a spring-graphql controller, annotated by 
-	 * 		the <code>@SchemaMapping</code> annotation
+	 * 		the <code>@SchemaMapping</code> annotation.
+	 * 		The return value must map to the type defined in the GraphQL schema: ${dataFetcher.field.graphQLType}
 	 */
 	@SchemaMapping(field = "${dataFetcher.field.name}") #if (! $configuration.generateBatchLoaderEnvironment)// You may check the generateBatchLoaderEnvironment plugin parameter to simplify the use of data loaders, with the help of the @BatchMapping annotation#end
 #########################

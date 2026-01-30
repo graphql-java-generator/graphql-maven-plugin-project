@@ -39,16 +39,25 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * batch):
 	 * </P>
 	 * <TABLE>
-	 * <ROW>
+	 * <TR>
 	 * <TH>Value</TH>
-	 * <TH>Return type</TH></ROW> <ROW>
-	 * <TD>MONO_MAP</TD></TD>Mono&lt;Map&lt;K,V&gt;&gt;</TD></ROW> <ROW>
+	 * <TH>Return type</TH>
+	 * </TR>
+	 * <TR>
+	 * <TD>MONO_MAP</TD></TD>Mono&lt;Map&lt;K,V&gt;&gt;</TD>
+	 * </TR>
+	 * <TR>
 	 * <TD>MAP</TD>
-	 * <TD>Map&lt;K,V&gt;</TD></ROW> <ROW>
-	 * <TD>FLUX></TD>
-	 * <TD>Flux&lt;V&gt;</TD></ROW> <ROW>
+	 * <TD>Map&lt;K,V&gt;</TD>
+	 * </TR>
+	 * <TR>
+	 * <TD>FLUX</TD>
+	 * <TD>Flux&lt;V&gt;</TD>
+	 * </TR>
+	 * <TR>
 	 * <TD>COLLECTION</TD>
-	 * <TD>Collection&lt;V&gt;</TD></ROW>
+	 * <TD>Collection&lt;V&gt;</TD>
+	 * </TR>
 	 * </TABLE>
 	 * <P>
 	 * The default value is <code>Flux&lt;V&gt;</code>

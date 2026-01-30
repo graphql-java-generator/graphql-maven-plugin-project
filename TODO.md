@@ -1,7 +1,17 @@
 Here are the next tasks listed, as a TODO list:
-* Get back to java 17 before any release
+* Check documentation (wiki+README) that the schema can be given in json (tested in the forum client module)
+* Add checks with queries that return interfaces (already ok?) and unions (also already ok?)
+* Check error when using a query the needs a DataLoader, but the DataFetchersDelegate has not been defined (must be an interface)
+* Add a check that all needed DataFetchersDelegate for interfaces have been defined. That is :
+    * 
+* The forum samples should run with java 25 (or update the tutorial to java 25)
+* (for release 4, improve the batch mapper and data loader generation, WIP in the master_4x_change_batching_generation)
+    * Improve DataFetcherDelegates for interfaces: check their real use by the server
+    * Improve the way BatchMapper are generated
+    * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
+    * Add a test to log useless methods in the implementation of dataFetchersDelegate
 * Upgrade to maven 4
-* Upgrade to gradle 10
+* Check compatibility with gradle 10
 * (to check) The gradle plugin may not compile without having first build locally the maven plugin (due to the custom-resttemplate dependency added in 3.1)
 * Check compilation with java 25: got a report that it wouldn't work
 * Manage mockito warning with jdk 25 :
@@ -23,11 +33,6 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
     * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
 * Add the generateDataFetchersForFields parameter in the tutorials
 * Dozer is deprecated. Replace it by [mapstruct](https://github.com/mapstruct/mapstruct) or [modelmapper](https://github.com/modelmapper/modelmapper)
-* (for release 4)
-    * Remove DataFetcherDelegates on interfaces, as they are not used !   :((
-        * Propose a PR to add doc and display warnings in spring-graphql
-        * Propose a PR to add doc and display warnings in graphql-java
-    * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
 * plugin doc:
     * Find and correct the dead links
 	* Check the generated doc for the `ignoredSpringMappings` plugin parameter

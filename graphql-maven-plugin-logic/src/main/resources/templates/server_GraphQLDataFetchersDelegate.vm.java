@@ -46,7 +46,7 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 ##
 #if(${dataFetcher.batchMapping})
 	/**
-	 * This methods loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}. It is generated as the 
+	 * This method loads the data for ${dataFetcher.graphQLType}.${dataFetcher.field.name}. It is generated as the 
 	 * <code>generateBatchMappingDataFetchers</code> plugin parameter is true. <br/>
 	 * 
 	 * @param batchLoaderEnvironment
@@ -123,6 +123,11 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 * @param ${argument.camelCaseName} 
 	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
 #end
+	 * @return 
+	 * 		It may return any value that is valid for a spring-graphql controller, annotated by 
+	 * 		the <code>@SchemaMapping</code> annotation.
+	 * 		The return value must map to the type defined in the GraphQL schema: ${dataFetcher.field.graphQLType}
+	 * 
 	 * @throws NoSuchElementException 
 	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 

@@ -233,7 +233,7 @@ abstract class AbstractDocumentParser_Forum_Client {
 		// imports).
 		assertFalse(post.getImports().contains("java.util.Date"), "expecting java.util.Date");
 
-		assertFalse(post.getImports().contains("com.fasterxml.jackson.annotation.JsonProperty"),
+		assertTrue(post.getImports().contains("com.fasterxml.jackson.annotation.JsonProperty"),
 				"expecting com.fasterxml.jackson.annotation.JsonProperty");
 		assertTrue(post.getImports().contains("tools.jackson.databind.annotation.JsonDeserialize"),
 				"expecting tools.jackson.databind.annotation.JsonDeserialize");
