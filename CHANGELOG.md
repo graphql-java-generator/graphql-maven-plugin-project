@@ -1,42 +1,45 @@
-[TOC]
 
+<!--ts-->
+<!--te-->
 
-# Breaking changes in the 3.x releases
-
-* The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
-* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
-    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
     
-# Breaking changes in the 4.x releases
-
-* Upgrade to Spring Boot 4 and Spring Framework 7
-    * This implies an upgrade from Jackson 2 to Jackson 3. 
-        * Doing this implies a change from ObjectNode to JsonNode (and the GraphQLObjectMapper client class has been renamed to GraphQLJsonMapper)
-    * [Server mode] When using an alternate path, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.path`
-
-?? Removal of deprecated root response
 
 # 4.x versions
 
-# 4.0
+## Main changes in the 4.x releases (including breaking changes)
 
-All mode:
-* Upgrade to Spring Boot 4 and Spring Framework 7
-    * Jackson switch to 3.x versions, with a major refactoring, including json schema
-        * Note: if you're using custom scalars that map to jackson types, you'll have to change the custom scalar definition in your pom or gradle files.
-
-
-Client mode:
-* TODO: impact on json schema
+* Upgrade to Spring Boot 4 and Spring Framework 7. This implies:
+    * Upgrade from Jackson 2 to Jackson 3. 
+        * If you're using the JSON scalar, you may have to change the javaType parameter from `om.fasterxml.jackson.databind.node.ObjectNode` to `tools.jackson.databind.node.ObjectNode`
+    * In server mode, when using an alternate path to expose the GraphQL server, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.http.path`
+* Needs at least java 17 (tested with Java 25)
 
 
-# 3.x versions
+## 4.0
 
-## Not yet released
+All modes (client and server):
+* Upgrade to Spring Boot 4 and Spring Framework 7. This implies:
+    * Upgrade from Jackson 2 to Jackson 3. 
+        * If you're using the JSON scalar, you may have to change the javaType parameter from `om.fasterxml.jackson.databind.node.ObjectNode` to `tools.jackson.databind.node.ObjectNode`
+    * In server mode, when using an alternate path to expose the GraphQL server, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.http.path`
+
+Gradle plugin:
+* Correction of issue 26: Gradle deprecation in GeneratePojoExtension.isGenerateJacksonAnnotations_Raw
+
 
 Client mode:
 * When connected to two different GraphQL servers, there could be conflicts between directive defined in this two schemas
 * Removal of two templates (CUSTOM_SCALAR_REGISTRY_INITIALIZER and DIRECTIVE_REGISTRY_INITIALIZER), replaced by one: REGISTRIES_INITIALIZER. This allows a better isolation of some plugin's internal technical code.
+
+
+# 3.x versions
+
+## Breaking changes in the 3.x releases
+
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
+* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
+    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
+
 
 ## 3.1
 

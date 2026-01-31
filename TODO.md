@@ -1,27 +1,17 @@
 Here are the next tasks listed, as a TODO list:
 * Check documentation (wiki+README) that the schema can be given in json (tested in the forum client module)
 * Add checks with queries that return interfaces (already ok?) and unions (also already ok?)
-* Check error when using a query the needs a DataLoader, but the DataFetchersDelegate has not been defined (must be an interface)
-* Add a check that all needed DataFetchersDelegate for interfaces have been defined. That is :
-    * 
 * The forum samples should run with java 25 (or update the tutorial to java 25)
 * (for release 4, improve the batch mapper and data loader generation, WIP in the master_4x_change_batching_generation)
     * Improve DataFetcherDelegates for interfaces: check their real use by the server
     * Improve the way BatchMapper are generated
     * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
     * Add a test to log useless methods in the implementation of dataFetchersDelegate
-* Upgrade to maven 4
-* Check compatibility with gradle 10
+* Upgrade to maven 4 (tested ok with maven 4rc5)
+* Check compatibility with gradle 10 (
 * (to check) The gradle plugin may not compile without having first build locally the maven plugin (due to the custom-resttemplate dependency added in 3.1)
 * Check compilation with java 25: got a report that it wouldn't work
-* Manage mockito warning with jdk 25 :
-```
-Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
-WARNING: A Java agent has been loaded dynamically (C:\Users\egauthier\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-```
+* Restore the json schema validation, in GenerateCodeJsonSchemaPersonalization
 * Investigate the compilation warning in GenerateCodeGenerator: there seems to be an issue with Gradle when loading a template from an external jar
     * In the catch, 'template' is not initialized, and 'theTemplate' is initialized, but not used
 * Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
@@ -60,7 +50,6 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 * Check the generated doc for the `ignoredSpringMappings` plugin parameter
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
-* Issue #113: accept a schema.json as an input for code generation (instead of graphqls files)
 * Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)
 * [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
 * Tutorial: add the documentation about the application.yml file

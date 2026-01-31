@@ -66,13 +66,14 @@ The 3.x versions:
 * Is compatible with java 17 and upper (tested ok with java 25)
 * Is compatible with JPMS (Java Modules)
 * Doesn't maintain the Gradle graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name if you was not already using it).
-* The project can't build in java 25, but the published plugin works with java 25.
+* The project won't build in java 25, but the published plugin is compatible with java 25.
+* Is based on spring boot 3 and spring framework 5
 
 The 4.x versions:
-* Is compatible with java 25 and upper
+* Is compatible with java 17 and upper (tested ok with java 25)
 * Is compatible with JPMS (Java Modules)
 * Doesn't maintain the Gradle graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name if you was not already using it).
-
+* Is based on spring boot 4 and spring framework 7 (see the [CHANGELOG](CHANGELOG.md) for the impacts)
 
 # Availability: Maven and Gradle
 
@@ -151,7 +152,7 @@ This plugin respects all the GraphQL specifications:
 
 # Change log
 
-The Change Log is available [here](CHANGELOG.md)
+The change log is available on the [CHANGELOG](CHANGELOG.md) page
 
 
 # Note for contributors
