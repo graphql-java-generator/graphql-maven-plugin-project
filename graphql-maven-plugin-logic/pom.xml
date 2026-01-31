@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>4.0</version>
+		<version>0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-logic</artifactId>
