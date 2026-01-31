@@ -100,7 +100,7 @@ public class GenerateCustomTemplate implements Runnable {
 
 	@Override
 	public void run() {
-		// System.out.println("project.basedir: " + projectProperties.getProperty("project.basedir"));
+		// System.out.println("cloned_project_basedir: " + projectProperties.getProperty("cloned_project_basedir"));
 		// System.out.println("SOURCE_PATH=" + getSourcePath().normalize());
 		// System.out.println("TARGET_PATH=" + getTargetPath().normalize());
 
@@ -114,12 +114,12 @@ public class GenerateCustomTemplate implements Runnable {
 	}
 
 	private Path getSourcePath() {
-		String path = projectProperties.getProperty("project.basedir") + "/" + SOURCE_PATH;
+		String path = projectProperties.getProperty("cloned_project_basedir") + "/" + SOURCE_PATH;
 		return Paths.get(path);
 	}
 
 	private Path getTargetPath() {
-		return Paths.get(projectProperties.getProperty("project.basedir") + "/" + TARGET_PATH);
+		return Paths.get(projectProperties.getProperty("cloned_project_basedir") + "/" + TARGET_PATH);
 	}
 
 	/**

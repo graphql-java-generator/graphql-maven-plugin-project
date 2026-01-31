@@ -16,8 +16,8 @@
 	</description>
 
 	<properties>
-		<!-- Parameters to pass to the buildScript -->
-		<my.project.basedir>${project.basedir}</my.project.basedir>
+		<!--Parameters to pass to the buildScript, as it seems unable to get the maven native "project.basedir" property -->
+		<cloned_project_basedir>${project.basedir}</cloned_project_basedir>
 	</properties>
 	
 	<build>
