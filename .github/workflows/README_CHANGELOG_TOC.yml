@@ -1,7 +1,7 @@
 # This workflow updates the markdown fles at the root of the master branch, that is mainly
 # the README and the CHANGELOG files
 
-name: Wiki TOC
+name: README&CHANGELOG TOC
 
 # Controls when the action will run. 
 on:
