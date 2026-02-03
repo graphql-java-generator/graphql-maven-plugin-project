@@ -1,0 +1,42 @@
+# This workflow updates the markdown fles at the root of the master branch, that is mainly
+# the README and the CHANGELOG files
+
+name: Wiki TOC
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on any change on the wiki (on the master branch)
+  #gollum:    # This is triggered each time a file is changed on the wiki, including when the this script automatically run!
+  
+  # Below: push on the wiki, for the master branch 
+  #push:
+  #  paths:
+  #    - 'wiki/**'
+  #  branches:
+  #    - master
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  wiki_toc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{github.repository}}
+          ref: master
+      - run: |
+          ls
+          #curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc -o gh-md-toc
+          #chmod a+x gh-md-toc
+          # The ekalinin's github-markdown-toc script is executed directly from the wiki project, as
+          # it has been updated to work on the github project.
+          # More info on this page: https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/internal_howto_release#howto-update-the-wiki
+          ./gh-md-toc --insert --no-backup *.md
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Auto update markdown TOC
