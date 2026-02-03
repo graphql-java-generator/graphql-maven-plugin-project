@@ -21,7 +21,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  wiki_toc:
+  update_toc:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -30,13 +30,13 @@ jobs:
           repository: ${{github.repository}}
           ref: master
       - run: |
-          ls
+          #ls
           #curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc -o gh-md-toc
           #chmod a+x gh-md-toc
           # The ekalinin's github-markdown-toc script is executed directly from the wiki project, as
           # it has been updated to work on the github project.
           # More info on this page: https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/internal_howto_release#howto-update-the-wiki
-          ./gh-md-toc --insert --no-backup *.md
+          ./gh-md-toc --insert --no-backup /*.md
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto update markdown TOC
