@@ -1,3 +1,23 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [What is it?](#what-is-it)
+- [Three main versions: 1.x, 2.x, 3.x and 4.x](#three-main-versions-1x-2x-3x-and-4x)
+- [Availability: Maven and Gradle](#availability-maven-and-gradle)
+  - [Maven plugin](#maven-plugin)
+  - [Gradle Plugin](#gradle-plugin)
+- [The plugin goals/tasks](#the-plugin-goalstasks)
+- [The Documentation](#the-documentation)
+- [Compatibility with GraphQL](#compatibility-with-graphql)
+- [Change log](#change-log)
+- [Note for contributors](#note-for-contributors)
+  - [Branches](#branches)
+  - [Project organization](#project-organization)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 <!--ts-->
    * [What is it?](#what-is-it)
