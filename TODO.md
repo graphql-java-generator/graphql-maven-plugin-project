@@ -1,3 +1,10 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 Here are the next tasks listed, as a TODO list:
 * Check documentation (wiki+README) that the schema can be given in json (tested in the forum client module)
 * Add checks with queries that return interfaces (already ok?) and unions (also already ok?)

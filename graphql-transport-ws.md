@@ -1,3 +1,30 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [GraphQL over WebSocket Protocol](#graphql-over-websocket-protocol)
+  - [Nomenclature](#nomenclature)
+  - [Communication](#communication)
+  - [Message types](#message-types)
+    - [`ConnectionInit`](#connectioninit)
+    - [`ConnectionAck`](#connectionack)
+    - [`Ping`](#ping)
+    - [`Pong`](#pong)
+    - [`Subscribe`](#subscribe)
+    - [`Next`](#next)
+    - [`Error`](#error)
+    - [`Complete`](#complete)
+    - [Invalid message](#invalid-message)
+  - [Examples](#examples)
+    - [Successful connection initialisation](#successful-connection-initialisation)
+    - [Connection initialisation timeout](#connection-initialisation-timeout)
+    - [Single result operation](#single-result-operation)
+      - [`query` and `mutation` operations without streaming directives](#query-and-mutation-operations-without-streaming-directives)
+    - [Streaming operation](#streaming-operation)
+      - [`subscription` operation and queries with streaming directives](#subscription-operation-and-queries-with-streaming-directives)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # GraphQL over WebSocket Protocol
 
 ## Nomenclature

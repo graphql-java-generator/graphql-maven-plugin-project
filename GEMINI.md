@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Project Overview](#project-overview)
+  - [Key Features](#key-features)
+- [Building and Running](#building-and-running)
+- [Development Conventions](#development-conventions)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Project Overview
 
 This project is a Java-based code generator for GraphQL. It simplifies the development of GraphQL clients and servers by generating boilerplate code from a GraphQL schema. This allows developers to focus on the business logic of their applications.
