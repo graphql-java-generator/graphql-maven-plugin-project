@@ -17,6 +17,7 @@ jobs:
           # Fichiers/Globs à cibler
           TARGET_PATHS: |
             README.md
+            CHANGELOG.md
             docs/**/*.md
           # Options utiles
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
