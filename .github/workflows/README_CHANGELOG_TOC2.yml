@@ -1,0 +1,23 @@
+name: README_CHANGELOG_TOC2
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate TOC
+        uses: technote-space/toc-generator@v4
+        with:
+          # Fichiers/Globs à cibler
+          TARGET_PATHS: |
+            README.md
+            docs/**/*.md
+          # Options utiles
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # MAX_HEADER_LEVEL: 6
+          # MIN_HEADER_LEVEL: 2
