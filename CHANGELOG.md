@@ -1,8 +1,5 @@
-
-<!--ts-->
-<!--te-->
-
-    
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 # 4.x versions
 
