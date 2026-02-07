@@ -76,7 +76,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # 4.x versions
-
+ 
 ## Main changes in the 4.x releases (including breaking changes)
 
 * Upgrade to Spring Boot 4 and Spring Framework 7. This implies:
