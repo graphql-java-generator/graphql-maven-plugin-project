@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+          repository: ${{github.repository}}.wiki
+          ref: master
       - name: Generate TOC
         uses: technote-space/toc-generator@v4
         with:
