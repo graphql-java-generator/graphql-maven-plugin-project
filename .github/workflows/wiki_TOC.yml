@@ -1,24 +1,36 @@
 # https://github.com/technote-space/toc-generator
 name: wiki_TOC
+
 on:
   push:
-    branches: master
-  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  toc-wiki:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-          repository: ${{github.repository}}.wiki
+      # 1) Checkout du REPO WIKI (pas le repo principal)
+      - name: Checkout wiki repository
+        uses: actions/checkout@v4
+        with:
+          # Ex: owner/repo.wiki
+          repository: ${{ github.repository }}.wiki
           ref: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2) Génération/MAJ de la TOC sur toutes les pages .md du Wiki
       - name: Generate TOC
         uses: technote-space/toc-generator@v4
         with:
-          # Fichiers/Globs à cibler
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Cible toutes les pages Markdown du Wiki
           TARGET_PATHS: |
-            *.md
-          # Options utiles
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # MAX_HEADER_LEVEL: 6
-          # MIN_HEADER_LEVEL: 2
+            **/*.md
+          # Optionnel : niveaux de titres pris en compte
+          MIN_HEADER_LEVEL: 2
+          MAX_HEADER_LEVEL: 6
+          # Optionnel : ne pas ajouter un titre "Table of Contents" automatique
+          # TOC_TITLE: ""
