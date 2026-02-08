@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +21,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ClientHttpResponse;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractor;

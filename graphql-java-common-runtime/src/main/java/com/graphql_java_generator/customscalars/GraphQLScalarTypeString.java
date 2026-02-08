@@ -1,9 +1,13 @@
-/**
- * 
- */
 package com.graphql_java_generator.customscalars;
 
+import java.util.Locale;
+
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -20,6 +24,10 @@ import graphql.schema.GraphQLScalarType;
  */
 public class GraphQLScalarTypeString {
 
+	public GraphQLScalarTypeString() {
+		// No action
+	}
+
 	/**
 	 * Useless String scalar.<BR/>
 	 * It's used both as a sample, to be completed by a developper, according to his/her needs, and for the use in some
@@ -32,25 +40,9 @@ public class GraphQLScalarTypeString {
 
 					new Coercing<String, String>() {
 
-						/**
-						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
-						 * scalar type. <br/>
-						 * Note : Throw {@link graphql.schema.CoercingSerializeException} if there is fundamental
-						 * problem during serialisation, don't return null to indicate failure. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your serialize
-						 * method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingSerializeException} instead as per the method contract.
-						 *
-						 * @param dataFetcherResult
-						 *            is never null
-						 *
-						 * @return a serialized value which may be null.
-						 *
-						 * @throws graphql.schema.CoercingSerializeException
-						 *             if value input can't be serialized
-						 */
 						@Override
-						public String serialize(Object input) throws CoercingSerializeException {
+						public String serialize(Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (!(input instanceof String)) {
 								throw new CoercingSerializeException(
 										"Can't parse the '" + input.toString() + "' string to a String");
@@ -59,23 +51,9 @@ public class GraphQLScalarTypeString {
 							}
 						}
 
-						/**
-						 * Called to resolve an input from a query variable into a Java object acceptable for the scalar
-						 * type. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your
-						 * parseValue method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingParseValueException} instead as per the method contract.
-						 *
-						 * @param input
-						 *            is never null
-						 *
-						 * @return a parsed value which is never null
-						 *
-						 * @throws graphql.schema.CoercingParseValueException
-						 *             if value input can't be parsed
-						 */
 						@Override
-						public String parseValue(Object o) throws CoercingParseValueException {
+						public String parseValue(Object o, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException(
 										"Can't parse the '" + o.toString() + "' string to a String");
@@ -84,30 +62,16 @@ public class GraphQLScalarTypeString {
 							}
 						}
 
-						/**
-						 * Called during query validation to convert a query input AST node into a Java object
-						 * acceptable for the scalar type. The input object will be an instance of
-						 * {@link graphql.language.Value}. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your
-						 * parseLiteral method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingParseLiteralException} instead as per the method contract.
-						 *
-						 * @param input
-						 *            is never null
-						 *
-						 * @return a parsed value which is never null
-						 *
-						 * @throws graphql.schema.CoercingParseLiteralException
-						 *             if input literal can't be parsed
-						 */
 						@Override
-						public String parseLiteral(Object o) throws CoercingParseLiteralException {
+						public String parseLiteral(@NonNull Value<?> input, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
-							if (!(o instanceof StringValue)) {
+							if (!(input instanceof StringValue)) {
 								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a String");
+										"Can't parse the '" + input.toString() + "' string to a String");
 							} else {
-								return ((StringValue) o).getValue();
+								return ((StringValue) input).getValue();
 							}
 						}
 					})

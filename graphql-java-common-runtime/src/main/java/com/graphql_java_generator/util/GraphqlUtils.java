@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.util;
 
 import java.io.File;
@@ -70,7 +67,7 @@ public class GraphqlUtils {
 	final static String PROPERTIES_FILE = "graphql-java-runtime.properties";
 	final static String PROP_RUNTIME_VERSION = "graphql-java-runtime.version";
 
-	public static Character JAVA_KEYWORD_PREFIX = '_';
+	public static char JAVA_KEYWORD_PREFIX = '_';
 
 	public GraphqlUtils() {
 		// List all java reserved keywords.
@@ -964,10 +961,10 @@ public class GraphqlUtils {
 		// Let's remove all spaces. It will be easier to insert the good double quotes,
 		// afterwards.
 		// Let's say scanBasePackages is: a, b, c,d
-		scanBasePackages = scanBasePackages.replace(" ", "");// scanBasePackages is now a,b,c,d
-		scanBasePackages = scanBasePackages.replace(",", "\",\"");// scanBasePackages is now a","b","c","d
-		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
-		return scanBasePackages;
+		return ",\"" + scanBasePackages//
+				.replace(" ", "")// scanBasePackages is now a,b,c,d
+				.replace(",", "\",\"")// scanBasePackages is now a","b","c","d
+				+ "\"";// scanBasePackages is now ,"a","b","c","d"
 	}
 
 }

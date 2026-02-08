@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.annotation;
 
 import java.lang.annotation.ElementType;

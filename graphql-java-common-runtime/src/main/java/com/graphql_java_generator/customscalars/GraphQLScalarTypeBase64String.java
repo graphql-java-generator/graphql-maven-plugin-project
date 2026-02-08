@@ -1,11 +1,14 @@
-/**
- * 
- */
 package com.graphql_java_generator.customscalars;
 
 import java.util.Base64;
+import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -17,6 +20,10 @@ import graphql.schema.GraphQLScalarType;
  */
 public class GraphQLScalarTypeBase64String {
 
+	public GraphQLScalarTypeBase64String() {
+		// No action
+	}
+
 	public static final GraphQLScalarType GraphQLBase64String = GraphQLScalarType.newScalar()//
 			.name("Base64String")//
 			.description("Base64-encoded binary")//
@@ -25,7 +32,8 @@ public class GraphQLScalarTypeBase64String {
 						// byte[] is the type while in the java code, either in the client and in the server
 					new Coercing<byte[], String>() {
 						@Override
-						public String serialize(Object input) {
+						public String serialize(@NonNull Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (input instanceof byte[]) {
 								return Base64.getEncoder().encodeToString((byte[]) input);
 							} else if (input instanceof String) {
@@ -38,7 +46,8 @@ public class GraphQLScalarTypeBase64String {
 						}
 
 						@Override
-						public byte[] parseValue(Object input) {
+						public byte[] parseValue(Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (input instanceof String) {
 								try {
 									return Base64.getDecoder().decode((String) input);
@@ -56,7 +65,9 @@ public class GraphQLScalarTypeBase64String {
 						}
 
 						@Override
-						public byte[] parseLiteral(Object input) {
+						public byte[] parseLiteral(@NonNull Value<?> input, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingSerializeException {
 							if (input instanceof StringValue) {
 								try {
 									return Base64.getDecoder().decode(((StringValue) input).getValue());

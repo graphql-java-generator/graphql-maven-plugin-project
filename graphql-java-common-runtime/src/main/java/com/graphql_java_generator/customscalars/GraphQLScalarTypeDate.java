@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.customscalars;
 
 import java.text.ParseException;
@@ -9,10 +6,14 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -27,6 +28,10 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public class GraphQLScalarTypeDate {
+
+	public GraphQLScalarTypeDate() {
+		// No action
+	}
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLScalarTypeDate.class);
@@ -49,25 +54,9 @@ public class GraphQLScalarTypeDate {
 							formater.setCalendar(new GregorianCalendar(Locale.ENGLISH));
 						}
 
-						/**
-						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
-						 * scalar type. <br/>
-						 * Note : Throw {@link graphql.schema.CoercingSerializeException} if there is fundamental
-						 * problem during serialization, don't return null to indicate failure. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your serialize
-						 * method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingSerializeException} instead as per the method contract.
-						 *
-						 * @param dataFetcherResult
-						 *            is never null
-						 *
-						 * @return a serialized value which may be null.
-						 *
-						 * @throws graphql.schema.CoercingSerializeException
-						 *             if value input can't be serialized
-						 */
 						@Override
-						public String serialize(Object input) throws CoercingSerializeException {
+						public String serialize(Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (input instanceof Date) {
 								synchronized (formater) {
 									return formater.format((Date) input);
@@ -79,23 +68,9 @@ public class GraphQLScalarTypeDate {
 							}
 						}
 
-						/**
-						 * Called to resolve an input from a query variable into a Java object acceptable for the scalar
-						 * type. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your
-						 * parseValue method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingParseValueException} instead as per the method contract.
-						 *
-						 * @param input
-						 *            is never null
-						 *
-						 * @return a parsed value which is never null
-						 *
-						 * @throws graphql.schema.CoercingParseValueException
-						 *             if value input can't be parsed
-						 */
 						@Override
-						public Date parseValue(Object o) throws CoercingParseValueException {
+						public Date parseValue(Object o, @NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingSerializeException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException("Can't parse the '" + o.toString()
 										+ "' string to a Date (it should be a String but is a " + o.getClass().getName()
@@ -111,33 +86,19 @@ public class GraphQLScalarTypeDate {
 							}
 						}
 
-						/**
-						 * Called during query validation to convert a query input AST node into a Java object
-						 * acceptable for the scalar type. The input object will be an instance of
-						 * {@link graphql.language.Value}. <br/>
-						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your
-						 * parseLiteral method, but rather catch them and fire them as
-						 * {@link graphql.schema.CoercingParseLiteralException} instead as per the method contract.
-						 *
-						 * @param input
-						 *            is never null
-						 *
-						 * @return a parsed value which is never null
-						 *
-						 * @throws graphql.schema.CoercingParseLiteralException
-						 *             if input literal can't be parsed
-						 */
 						@Override
-						public Date parseLiteral(Object o) throws CoercingParseLiteralException {
+						public Date parseLiteral(@NonNull Value<?> input, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
 							String val = null;
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
-							if (!(o instanceof StringValue)) {
-								throw new CoercingParseValueException("Can't parse the '" + o.toString()
+							if (!(input instanceof StringValue)) {
+								throw new CoercingParseValueException("Can't parse the '" + input.toString()
 										+ "' string value to a Date (it should be a StringValue but is a "
-										+ o.getClass().getName() + ")");
+										+ input.getClass().getName() + ")");
 							} else {
 								try {
-									val = ((StringValue) o).getValue();
+									val = ((StringValue) input).getValue();
 									logger.trace("Parsing date from this literal: '{}'", val);
 									synchronized (formater) {
 										return formater.parse(val);

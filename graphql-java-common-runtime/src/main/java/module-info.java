@@ -6,6 +6,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_comm
 	requires transitive spring.beans;
 	requires transitive spring.context;
 	requires transitive spring.core;
+	requires transitive org.jspecify;
 
 	exports com.graphql_java_generator.annotation;
 	exports com.graphql_java_generator.customscalars;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -20,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ TYPE, FIELD, METHOD })
 public @interface GraphQLIgnore {
-
+	// This annotation is just a marker
 }

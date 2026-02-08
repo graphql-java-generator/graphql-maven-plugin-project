@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client;
 
 import org.springframework.web.reactive.socket.WebSocketSession;
