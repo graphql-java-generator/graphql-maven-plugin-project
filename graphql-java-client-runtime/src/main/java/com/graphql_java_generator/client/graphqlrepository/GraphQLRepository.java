@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.graphqlrepository;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.exception;
 
 import java.util.List;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.server.oauth2;
 
 import org.springframework.web.bind.annotation.GetMapping;

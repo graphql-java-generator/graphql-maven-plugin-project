@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.graphqlrepository;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;

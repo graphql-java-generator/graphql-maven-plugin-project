@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.samples.forum.client.subscription;
 
 import java.util.concurrent.CountDownLatch;

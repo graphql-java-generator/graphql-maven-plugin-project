@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.generated.customscalars;
 
 import graphql.language.StringValue;

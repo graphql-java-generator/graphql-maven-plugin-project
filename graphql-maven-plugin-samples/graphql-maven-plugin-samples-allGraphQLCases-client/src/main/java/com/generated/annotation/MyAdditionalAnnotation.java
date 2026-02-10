@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.generated.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;

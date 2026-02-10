@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.forum.server.jpa;
 
 import java.util.List;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.server.util;
 
 import java.lang.reflect.Field;

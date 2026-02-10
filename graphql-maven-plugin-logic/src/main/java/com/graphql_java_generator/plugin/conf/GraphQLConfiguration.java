@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.conf;
 
 import org.slf4j.Logger;

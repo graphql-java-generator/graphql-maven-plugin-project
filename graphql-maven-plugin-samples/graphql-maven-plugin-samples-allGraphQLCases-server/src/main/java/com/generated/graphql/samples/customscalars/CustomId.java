@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.generated.graphql.samples.customscalars;
 
 /**

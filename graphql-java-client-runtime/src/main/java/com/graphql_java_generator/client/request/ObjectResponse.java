@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.request;
 
 import org.springframework.graphql.client.GraphQlClient;

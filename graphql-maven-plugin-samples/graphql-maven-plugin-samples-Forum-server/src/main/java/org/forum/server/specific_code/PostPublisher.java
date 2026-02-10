@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.forum.server.specific_code;
 
 import org.forum.server.graphql.Board;

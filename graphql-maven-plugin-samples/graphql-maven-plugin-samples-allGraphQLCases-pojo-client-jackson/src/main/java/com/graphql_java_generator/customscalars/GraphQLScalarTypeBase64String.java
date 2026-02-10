@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.customscalars;
 
 import java.util.Base64;

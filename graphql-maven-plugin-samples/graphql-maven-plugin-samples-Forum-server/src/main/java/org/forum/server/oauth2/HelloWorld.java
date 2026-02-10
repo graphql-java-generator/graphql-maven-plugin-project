@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.forum.server.oauth2;
 
 import java.security.Principal;

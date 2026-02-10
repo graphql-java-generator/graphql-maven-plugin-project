@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.demo.subscription;
 
 import java.util.concurrent.TimeUnit;

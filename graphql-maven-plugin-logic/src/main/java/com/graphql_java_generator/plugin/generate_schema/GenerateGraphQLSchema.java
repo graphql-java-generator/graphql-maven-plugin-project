@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.generate_schema;
 
 import java.io.File;

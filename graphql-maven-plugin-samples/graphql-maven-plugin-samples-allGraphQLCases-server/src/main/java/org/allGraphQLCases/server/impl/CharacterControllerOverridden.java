@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.server.impl;
 
 import org.springframework.graphql.data.method.annotation.Argument;

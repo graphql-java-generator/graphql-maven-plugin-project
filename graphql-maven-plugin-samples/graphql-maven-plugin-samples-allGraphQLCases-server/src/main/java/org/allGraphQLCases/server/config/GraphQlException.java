@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.server.config;
 
 import java.util.List;

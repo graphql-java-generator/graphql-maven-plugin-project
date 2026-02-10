@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.non_spring_app;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.response;
 
 import java.util.ArrayList;

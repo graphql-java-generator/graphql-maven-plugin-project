@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.server.impl;
 
 import java.util.ArrayList;

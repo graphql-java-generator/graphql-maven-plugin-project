@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.starwars.server.datafetchersdelegate;
 
 import java.util.Optional;

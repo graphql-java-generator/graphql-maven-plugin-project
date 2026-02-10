@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.starwars.server.jpa;
 
 import java.util.List;

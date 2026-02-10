@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.mavenplugin;
 
 import org.apache.maven.plugins.annotations.Parameter;

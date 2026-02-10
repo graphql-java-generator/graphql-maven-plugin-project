@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.generated.graphql.samples.customscalar;
 
 import graphql.language.BooleanValue;

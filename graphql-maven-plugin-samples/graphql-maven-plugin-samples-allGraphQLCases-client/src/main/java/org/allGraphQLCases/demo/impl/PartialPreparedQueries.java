@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.demo.impl;
 
 import java.time.OffsetDateTime;
