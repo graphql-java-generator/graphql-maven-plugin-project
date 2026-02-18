@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DirectiveRegistryImpl implements DirectiveRegistry {
 
-	////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////
 	// Start of static methods
 
 	/**
@@ -55,12 +55,16 @@ public class DirectiveRegistryImpl implements DirectiveRegistry {
 	}
 
 	// End of static methods
-	////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Map of all registered directives, for one schema.
 	 */
 	private static Map<String, Directive> directiveTypes = new HashMap<>();
+
+	public DirectiveRegistryImpl() {
+		// Empty block
+	}
 
 	@Override
 	public void registerDirective(Directive type) {

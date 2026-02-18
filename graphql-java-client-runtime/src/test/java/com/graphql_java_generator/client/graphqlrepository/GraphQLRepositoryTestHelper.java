@@ -8,6 +8,10 @@ import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvo
 
 public class GraphQLRepositoryTestHelper {
 
+	public GraphQLRepositoryTestHelper() {
+		//
+	}
+
 	public static Object getRegisteredGraphQLRequest(GraphQLRepositoryInvocationHandler<?> invocationHandler,
 			Class<?> repoClass, String methodName, Class<?>... argumentTypes)
 			throws NoSuchMethodException, SecurityException {

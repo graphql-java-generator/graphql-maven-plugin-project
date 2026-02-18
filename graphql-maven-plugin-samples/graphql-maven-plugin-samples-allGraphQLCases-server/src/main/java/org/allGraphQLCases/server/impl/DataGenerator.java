@@ -159,7 +159,7 @@ public class DataGenerator {
 		} else if (type == OffsetDateTime.class) {
 			return OffsetDateTime.now();
 		} else if (type == Double.class) {
-			return (double) (Math.random() * Double.MAX_VALUE);
+			return Math.random() * Double.MAX_VALUE;
 		} else if (type.isEnum()) {
 			int x = RANDOM.nextInt(type.getEnumConstants().length);
 			return type.getEnumConstants()[x];

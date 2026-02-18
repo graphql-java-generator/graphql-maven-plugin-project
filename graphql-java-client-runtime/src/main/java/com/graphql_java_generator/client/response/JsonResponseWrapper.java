@@ -30,4 +30,8 @@ public class JsonResponseWrapper {
 	 * page about request execution</A> about this.
 	 */
 	public JsonNode extensions;
+
+	public JsonResponseWrapper() {
+		// Empty constructor
+	}
 }

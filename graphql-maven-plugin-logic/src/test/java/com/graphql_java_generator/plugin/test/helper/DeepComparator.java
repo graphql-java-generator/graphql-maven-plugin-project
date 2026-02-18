@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.test.helper;
 
 import java.lang.reflect.Field;

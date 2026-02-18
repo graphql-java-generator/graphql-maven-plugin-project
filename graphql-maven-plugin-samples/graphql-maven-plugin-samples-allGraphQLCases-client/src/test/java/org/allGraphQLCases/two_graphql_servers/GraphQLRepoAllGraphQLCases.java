@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.two_graphql_servers;
 
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;

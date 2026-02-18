@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.subscription.graphqlrepository;
 
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;

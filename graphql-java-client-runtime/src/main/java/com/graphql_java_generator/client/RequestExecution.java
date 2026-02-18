@@ -1,6 +1,3 @@
-/**
-* 
-*/
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
@@ -24,9 +21,13 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 @Deprecated
 public interface RequestExecution {
 
+	@Deprecated
 	Marker GRAPHQL_MARKER = MarkerFactory.getMarker("GRAPHQL");
+	@Deprecated
 	Marker GRAPHQL_QUERY_MARKER = MarkerFactory.getMarker("GRAPHQL_QUERY");
+	@Deprecated
 	Marker GRAPHQL_MUTATION_MARKER = MarkerFactory.getMarker("GRAPHQL_MUTATION");
+	@Deprecated
 	Marker GRAPHQL_SUBSCRIPTION_MARKER = MarkerFactory.getMarker("GRAPHQL_SUBSCRIPTION");
 
 	/**
@@ -49,6 +50,7 @@ public interface RequestExecution {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
+	@Deprecated
 	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException;
 
@@ -87,6 +89,7 @@ public interface RequestExecution {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
+	@Deprecated
 	public <R extends GraphQLRequestObject, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType,
 			Class<T> messageType) throws GraphQLRequestExecutionException;

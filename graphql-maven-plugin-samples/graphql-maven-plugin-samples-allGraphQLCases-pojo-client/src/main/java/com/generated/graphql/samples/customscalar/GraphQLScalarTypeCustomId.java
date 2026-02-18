@@ -1,6 +1,13 @@
 package com.generated.graphql.samples.customscalar;
 
+import java.util.Locale;
+
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -47,7 +54,8 @@ public class GraphQLScalarTypeCustomId {
 						 *             if value input can't be serialized
 						 */
 						@Override
-						public String serialize(Object input) throws CoercingSerializeException {
+						public String serialize(@NonNull Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (!(input instanceof CustomId)) {
 								throw new CoercingSerializeException(
 										"Can't parse the '" + input.toString() + "' to a String"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -72,7 +80,8 @@ public class GraphQLScalarTypeCustomId {
 						 *             if value input can't be parsed
 						 */
 						@Override
-						public CustomId parseValue(Object o) throws CoercingParseValueException {
+						public CustomId parseValue(@NonNull Object o, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException(
 										"Can't parse the '" + o.toString() + "' string to a String"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -98,7 +107,9 @@ public class GraphQLScalarTypeCustomId {
 						 *             if input literal can't be parsed
 						 */
 						@Override
-						public CustomId parseLiteral(Object o) throws CoercingParseLiteralException {
+						public CustomId parseLiteral(@NonNull Value<?> o, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {
 								throw new CoercingParseValueException(

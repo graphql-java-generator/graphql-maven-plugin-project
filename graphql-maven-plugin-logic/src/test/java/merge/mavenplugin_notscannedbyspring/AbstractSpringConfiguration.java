@@ -1,6 +1,3 @@
-/**
- * 
- */
 package merge.mavenplugin_notscannedbyspring;
 
 import java.io.File;

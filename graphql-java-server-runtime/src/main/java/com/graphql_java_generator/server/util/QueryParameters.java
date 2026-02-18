@@ -28,6 +28,10 @@ public class QueryParameters {
 	private String operationName;
 	private Map<String, Object> variables = Collections.emptyMap();
 
+	public QueryParameters() {
+		// Default constructor
+	}
+
 	public String getQuery() {
 		return query;
 	}

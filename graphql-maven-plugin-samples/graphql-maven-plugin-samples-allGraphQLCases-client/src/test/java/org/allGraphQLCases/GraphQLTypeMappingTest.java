@@ -1,10 +1,10 @@
-/**
- * 
- */
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.allGraphQLCases.client.util.GraphQLTypeMappingImpl;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,13 @@ import com.graphql_java_generator.client.GraphQLTypeMappingRegistry;
 public class GraphQLTypeMappingTest {
 
 	@Test
-	void test_getResourceAsStream() throws ClassNotFoundException {
+	void test_getResourceAsStream() throws ClassNotFoundException, IOException {
 		final String RESOURCE_PATH = "typeMappingAllGraphQLCases.csv";
 		ClassLoader classLoader = GraphQLTypeMappingImpl.class.getClassLoader();
-		assertNotNull(classLoader.getResourceAsStream(RESOURCE_PATH));
+		try (InputStream resource = classLoader.getResourceAsStream(RESOURCE_PATH)) {
+			assertNotNull(resource);
+		}
+
 	}
 
 	@Test

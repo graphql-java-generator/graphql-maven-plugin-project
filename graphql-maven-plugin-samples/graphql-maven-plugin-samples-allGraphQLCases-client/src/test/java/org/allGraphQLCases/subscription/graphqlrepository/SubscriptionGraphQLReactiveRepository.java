@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.subscription.graphqlrepository;
 
 import java.util.Optional;

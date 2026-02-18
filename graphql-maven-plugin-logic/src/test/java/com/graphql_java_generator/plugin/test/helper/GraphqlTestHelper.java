@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.test.helper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -60,7 +60,10 @@ public class Main implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		try (ConfigurableApplicationContext context = SpringApplication.run(Main.class, args)) {
-			// No action
+			// A dummy body, to avoid a java 25 warning
+			if (context == null) {
+				System.out.println("This will never happen");
+			}
 		}
 	}
 

@@ -140,6 +140,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Date> issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
 		logger.debug("Executing subscription issue53({})", date); //$NON-NLS-1$
 		// The Flux class, from Spring reactive, implements the Publisher interface.
@@ -153,6 +154,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_SubscriptionTestParam_SINS param) {
 		logger.debug("Executing subscription subscriptionTest({})", param); //$NON-NLS-1$
@@ -239,6 +241,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<String>> subscriptionWithNullResponse(DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription subscriptionWithNullResponse()"); //$NON-NLS-1$
 
@@ -254,6 +257,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	 * Returns a Flux, that will produce a list of two random dates, every 0.1s
 	 */
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<List<Date>>> subscribeToAListOfScalars(DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription subscribeToAListOfScalars()"); //$NON-NLS-1$
 
@@ -263,6 +267,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<String>> _if(DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription _if()"); //$NON-NLS-1$
 
@@ -272,6 +277,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<String>> _implements(DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription _implements()"); //$NON-NLS-1$
 
@@ -324,6 +330,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnEnum(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
@@ -332,6 +339,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryEnum(
 			DataFetchingEnvironment dataFetchingEnvironment,
 			org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES _enum) {
@@ -341,6 +349,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>>> returnListOfEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
@@ -349,6 +358,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>>> returnListOfMandatoryEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
@@ -357,6 +367,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<Optional<List<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>>>> returnListOfListOfEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
@@ -371,6 +382,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription enumWithReservedJavaKeywordAsValues()"); //$NON-NLS-1$
@@ -382,6 +394,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfMandatoryEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Executing subscription listOfEnumWithReservedJavaKeywordAsValues()"); //$NON-NLS-1$
@@ -400,6 +413,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Publisher<Optional<ObjectNode>> json(DataFetchingEnvironment dataFetchingEnvironment,
 			tools.jackson.databind.node.ObjectNode jsonParam) {
 		try {
@@ -417,6 +431,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Publisher<Optional<List<ObjectNode>>> jsons(DataFetchingEnvironment dataFetchingEnvironment,
 			List<tools.jackson.databind.node.ObjectNode> jsonsParam) {
 		try {
@@ -436,6 +451,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Publisher<List<STP_TypeWithJson_STS>> jsonsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
 			List<SINP_InputWithJson_SINS> input) {
 		logger.debug("Executing subscription jsonsWithInput()");
@@ -492,6 +508,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public Publisher<List<STP_TypeWithObject_STS>> objectsWithInput(DataFetchingEnvironment dataFetchingEnvironment,
 			List<SINP_InputWithObject_SINS> input) {
 		logger.debug("Executing subscription jsonsWithInput()");

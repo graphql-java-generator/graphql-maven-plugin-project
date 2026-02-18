@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,16 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.allGraphQLCases.client.CTP_Foo140_CTS;
-import org.allGraphQLCases.client.CIP_IBar1_CIS;
 import org.allGraphQLCases.client.CIP_IBar12_CIS;
+import org.allGraphQLCases.client.CIP_IBar1_CIS;
 import org.allGraphQLCases.client.CIP_IBar2_CIS;
 import org.allGraphQLCases.client.CIP_IFoo1_CIS;
-import org.allGraphQLCases.client.CTP_TBar1_CTS;
+import org.allGraphQLCases.client.CTP_Foo140_CTS;
 import org.allGraphQLCases.client.CTP_TBar12_CTS;
+import org.allGraphQLCases.client.CTP_TBar1_CTS;
 import org.allGraphQLCases.client.CTP_TBar2_CTS;
-import org.allGraphQLCases.client.CTP_TFoo1_CTS;
 import org.allGraphQLCases.client.CTP_TFoo12_CTS;
+import org.allGraphQLCases.client.CTP_TFoo1_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -52,9 +49,9 @@ public class PojoThatImplementsInterfaceIT {
 		CTP_TBar1_CTS tbar1 = new CTP_TBar1_CTS();
 		CIP_IBar1_CIS ibar1 = new CTP_TBar1_CTS();
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for IFoo1
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 
 		assertNull(ifoo1.getBar());
 
@@ -68,9 +65,9 @@ public class PojoThatImplementsInterfaceIT {
 		ifoo1.setBar(null);
 		assertNull(ifoo1.getBar());
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for TFoo1
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 
 		assertNull(tfoo1.getBar());
 
@@ -101,9 +98,9 @@ public class PojoThatImplementsInterfaceIT {
 		CTP_TBar12_CTS tbar12 = new CTP_TBar12_CTS();
 		CIP_IBar12_CIS ibar12 = new CTP_TBar12_CTS();
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for IFoo1
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		assertNull(ifoo1.getBar());
 
 		ifoo1.setBar(tbar1);
@@ -125,9 +122,9 @@ public class PojoThatImplementsInterfaceIT {
 		ifoo1.setBar(null);
 		assertNull(ifoo1.getBar());
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for TFoo1
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		assertNull(tfoo1.getBar());
 
 		tfoo1.setBar(tbar1);
@@ -149,9 +146,9 @@ public class PojoThatImplementsInterfaceIT {
 		tfoo1.setBar(null);
 		assertNull(tfoo1.getBar());
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for IFoo12
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		assertNull(ifoo12.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo12.setBar(tbar1));
@@ -173,9 +170,9 @@ public class PojoThatImplementsInterfaceIT {
 		ifoo12.setBar(null);
 		assertNull(ifoo12.getBar());
 
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		// Setter for TFoo12
-		//////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////
 		assertNull(tfoo12.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo12.setBar(tbar1));

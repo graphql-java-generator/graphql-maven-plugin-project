@@ -1,13 +1,10 @@
-/**
- * 
- */
 package org.allGraphQLCases.two_graphql_servers;
 
 import java.util.Date;
 import java.util.List;
 
-import org.forum.client.Topic;
 import org.forum.client.QueryExecutorForum;
+import org.forum.client.Topic;
 
 import com.graphql_java_generator.client.graphqlrepository.BindParameter;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;

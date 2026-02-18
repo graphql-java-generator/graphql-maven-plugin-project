@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.oauth;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,27 +38,27 @@ public class CheckOAuthIT {
 	void testThatOAuth2IsActive() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 
 		// Preparation
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				SpringTestConfigWithoutOAuth.class);
+		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+				SpringTestConfigWithoutOAuth.class)) {
 
-		// For some tests, we need to execute additional partialQueries
-		this.queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
-		assertNotNull(this.queryType);
-		this.mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
-		assertNotNull(this.mutation);
+			// For some tests, we need to execute additional partialQueries
+			this.queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
+			assertNotNull(this.queryType);
+			this.mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
+			assertNotNull(this.mutation);
 
-		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryType
-				.getWithListOfListGraphQLRequest("{matrix}");
-		//
-		List<List<Double>> matrixSrc = new ArrayList<>();
+			GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = this.queryType
+					.getWithListOfListGraphQLRequest("{matrix}");
+			//
+			List<List<Double>> matrixSrc = new ArrayList<>();
 
-		// Go, go, go
-		GraphQlTransportException e = assertThrows(GraphQlTransportException.class,
-				() -> this.queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
+			// Go, go, go
+			GraphQlTransportException e = assertThrows(GraphQlTransportException.class,
+					() -> this.queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
 
-		// Verification
-		assertTrue(e.getMessage().contains("401 Unauthorized"), "The OAuth2 use control must be active on server side");
-
-		ctx.close();
+			// Verification
+			assertTrue(e.getMessage().contains("401 Unauthorized"),
+					"The OAuth2 use control must be active on server side");
+		}
 	}
 }

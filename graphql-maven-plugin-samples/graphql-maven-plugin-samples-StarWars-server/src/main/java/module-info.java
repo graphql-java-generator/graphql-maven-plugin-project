@@ -1,13 +1,14 @@
+@SuppressWarnings({ "requires-automatic" }) //
 module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_StarWars_server {
 
 	// /////////////////////////////////////////////////////////////
 	// Modules needed for the server generated code (start), as the "copyRuntimeSources" plugin parameter is true
-	requires tools.jackson.databind;
 	requires com.graphqljava;
+	requires jakarta.persistence; // Only if the "generateJPAAnnotation" plugin parameter is set to true
 	requires org.reactivestreams;
 	requires org.slf4j;
-	requires jakarta.persistence; // Only if the "generateJPAAnnotation" plugin parameter is set to true
 	requires org.dataloader;
+	requires org.jspecify;
 	requires spring.beans;
 	requires spring.boot;
 	requires spring.core;
@@ -17,6 +18,8 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 	requires spring.graphql;
 	requires spring.context;
 	requires reactor.core;
+	requires tools.jackson.databind;
+
 	// Modules needed for the server generated code (end)
 	// /////////////////////////////////////////////////////////////
 

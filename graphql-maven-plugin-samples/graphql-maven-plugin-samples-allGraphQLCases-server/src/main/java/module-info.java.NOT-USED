@@ -13,6 +13,7 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 
 	// requires jakarta.persistence; // Only if the "generateJPAAnnotation" plugin parameter is set to true
 	requires org.dataloader;
+	requires org.jspecify;
 	// requires spring.data.jpa; // Only if the "generateJPAAnnotation" plugin parameter is set to true
 	// requires spring.data.jpa; // Only if the "generateJPAAnnotation" plugin parameter is set to true
 
@@ -32,7 +33,6 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plu
 	requires com.graphqljava.extendedscalars;
 	requires dozer.core;
 	requires jakarta.annotation;
-	requires org.jspecify;
 	requires spring.security.config;
 	requires spring.security.core;
 	requires spring.security.oauth2.jose;

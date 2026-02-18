@@ -22,6 +22,10 @@ public class GraphQLRepositoryProxyBeanFactory {
 	@Autowired
 	ApplicationContext ctx;
 
+	public GraphQLRepositoryProxyBeanFactory() {
+		// Empty block
+	}
+
 	/**
 	 * 
 	 * @param <R>
@@ -35,8 +39,8 @@ public class GraphQLRepositoryProxyBeanFactory {
 	@SuppressWarnings("unchecked")
 	public <R> R createGraphQLRepositoryInvocationHandler(ClassLoader classLoader, Class<R> clazz)
 			throws GraphQLRequestPreparationException {
-		GraphQLRepositoryInvocationHandler<?> invocationHandler = new GraphQLRepositoryInvocationHandler<R>(clazz,
+		GraphQLRepositoryInvocationHandler<?> invocationHandler = GraphQLRepositoryInvocationHandler.factory(clazz,
 				this.ctx);
-		return (R) Proxy.newProxyInstance(classLoader, new Class[] { clazz }, invocationHandler);
+		return (R) Proxy.newProxyInstance(classLoader, new Class<?>[] { clazz }, invocationHandler);
 	}
 }

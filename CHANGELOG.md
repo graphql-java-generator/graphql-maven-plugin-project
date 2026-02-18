@@ -86,6 +86,11 @@
 * Needs at least java 17 (tested with Java 25)
 
 
+## 4.0.1
+
+All modes (client and server):
+* Removes all compilation warning (up to java 25) in the generated code, including the runtime
+
 ## 4.0
 
 All modes (client and server):

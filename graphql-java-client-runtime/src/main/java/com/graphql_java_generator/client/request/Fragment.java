@@ -51,6 +51,7 @@ public class Fragment {
 	 */
 	public Fragment(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields, String packageName,
 			boolean inlineFragment, Class<?> clazz, String schema) throws GraphQLRequestPreparationException {
+		Class<?> clazzLocal = clazz;
 
 		// We expect a string like this: " fragmentName on fragmentTargetType"
 		// Let's read these three tokens
@@ -69,7 +70,7 @@ public class Fragment {
 			typeName = qt.readNextRealToken(null, "reading fragment name");
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////
 		// The content of the fragment is the same as reading the response for the given type.
 
 		// So, we wait for the first {
@@ -88,8 +89,8 @@ public class Fragment {
 			}
 
 			// Hum, hum. We should not arrive here
-			throw new GraphQLRequestPreparationException("Unexpected token '" + token
-					+ "' while searching for the starting '{' in fragment '" + getName() + "'");
+			throw new GraphQLRequestPreparationException(
+					"Unexpected token '" + token + "' while searching for the starting '{' in fragment '" + name + "'");
 		}
 
 		// Ok, we're ready to read the fragment content
@@ -97,13 +98,13 @@ public class Fragment {
 			// If the typeName was provided in the fragment definition, then we load the class that represents the
 			// GraphQL type on which the fragment applies. This allows to check the input parameters, and their type
 			try {
-				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(packageName, typeName, schema);
+				clazzLocal = GraphqlClientUtils.graphqlClientUtils.getClass(packageName, typeName, schema);
 			} catch (RuntimeException e) {
 				throw new GraphQLRequestPreparationException(e.getMessage(), e);
 			}
 		}
 
-		content = new QueryField(clazz);
+		content = new QueryField(clazzLocal);
 		content.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 	}
 

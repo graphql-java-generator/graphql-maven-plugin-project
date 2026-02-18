@@ -8,9 +8,6 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Import({ GraphQLRepositoryProxyBeansRegistrar.class, GraphQLReactiveRepositoryProxyBeansRegistrar.class })
 /**
  * This annotation can be applied to some Configuration annotated class with packages to scan interfaces, as below. This
  * annotation add the configuration to add both reactive and non-reactive GraphQL repositories. <code>
@@ -21,6 +18,9 @@ import org.springframework.core.annotation.AliasFor;
  * 
  * @see https://stackoverflow.com/questions/39507736/dynamic-proxy-bean-with-autowiring-capability
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Import({ GraphQLRepositoryProxyBeansRegistrar.class, GraphQLReactiveRepositoryProxyBeansRegistrar.class })
 public @interface EnableGraphQLRepositories {
 
 	@AliasFor("basePackages")

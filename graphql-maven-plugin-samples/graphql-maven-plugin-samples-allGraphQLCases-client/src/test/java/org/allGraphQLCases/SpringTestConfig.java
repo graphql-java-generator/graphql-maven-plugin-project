@@ -7,6 +7,7 @@ import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.forum.client.QueryExecutorForum;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -31,7 +32,6 @@ import org.springframework.graphql.client.GraphQlClientInterceptor;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -74,7 +74,6 @@ public class SpringTestConfig {
 
 	/** MyInterceptor allows to check the Subscription data that will be sent back to the client */
 	static class MyInterceptor implements GraphQlClientInterceptor {
-		@SuppressWarnings("hiding")
 		private static Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 		final private String beanSuffix;
 

@@ -74,7 +74,7 @@ public class GenerateServerCodeMojo extends AbstractGenerateServerCodeMojo {
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
 	public class SpringConfiguration {
-
+		// Empty block
 	}
 
 	protected GenerateServerCodeMojo() {

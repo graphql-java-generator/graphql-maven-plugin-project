@@ -1,8 +1,14 @@
 package com.graphql_java_generator.customscalars;
 
 import java.util.Base64;
+import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -22,7 +28,8 @@ public class GraphQLScalarTypeBase64String {
 						// byte[] is the type while in the java code, either in the client and in the server
 					new Coercing<byte[], String>() {
 						@Override
-						public String serialize(Object input) {
+						public String serialize(@NonNull Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (input instanceof byte[]) {
 								return Base64.getEncoder().encodeToString((byte[]) input);
 							} else if (input instanceof String) {
@@ -35,35 +42,38 @@ public class GraphQLScalarTypeBase64String {
 						}
 
 						@Override
-						public byte[] parseValue(Object input) {
-							if (input instanceof String) {
+						public byte[] parseValue(@NonNull Object o, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingParseValueException {
+							if (o instanceof String) {
 								try {
-									return Base64.getDecoder().decode((String) input);
+									return Base64.getDecoder().decode((String) o);
 								} catch (IllegalArgumentException e) {
 									throw new CoercingParseValueException(
-											"Input string \"" + input + "\" is not a valid Base64 value", e);
+											"Input string \"" + o + "\" is not a valid Base64 value", e);
 								}
-							} else if (input instanceof byte[]) {
-								return (byte[]) input;
+							} else if (o instanceof byte[]) {
+								return (byte[]) o;
 							} else {
 								throw new CoercingParseValueException(
 										"The input object should be either a String or a byte array, but is a "
-												+ input.getClass().getName());
+												+ o.getClass().getName());
 							}
 						}
 
 						@Override
-						public byte[] parseLiteral(Object input) {
-							if (input instanceof StringValue) {
+						public byte[] parseLiteral(@NonNull Value<?> o, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
+							if (o instanceof StringValue) {
 								try {
-									return Base64.getDecoder().decode(((StringValue) input).getValue());
+									return Base64.getDecoder().decode(((StringValue) o).getValue());
 								} catch (IllegalArgumentException e) {
 									throw new CoercingParseLiteralException(
-											"Input string \"" + input + "\" is not a valid Base64 value", e);
+											"Input string \"" + o + "\" is not a valid Base64 value", e);
 								}
 							} else {
 								throw new CoercingParseValueException(
-										"Can't parse the '" + input.toString() + "' string to an Base64 string");
+										"Can't parse the '" + o.toString() + "' string to an Base64 string");
 							}
 						}
 					})

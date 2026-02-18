@@ -16,6 +16,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.CONCURRENT)
 class QueryTokenizerTest {
 
+	public QueryTokenizerTest() {
+		super();
+	}
+
 	@Test
 	void testQueryTokenizer() {
 

@@ -21,9 +21,10 @@ public class GraphQLRequestExecutionException extends Exception implements Graph
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<ResponseError> errors;
-	private final Object data;
-	private final ClientGraphQlResponse response;
+	// These fields must be transient, to avoid a java compilation warning
+	private transient final List<ResponseError> errors;
+	private transient final Object data;
+	private transient final ClientGraphQlResponse response;
 
 	public GraphQLRequestExecutionException(String msg) {
 		super(msg);
@@ -89,8 +90,9 @@ public class GraphQLRequestExecutionException extends Exception implements Graph
 			sb.append(errors.size());
 			sb.append(" error(s) occurred: "); //$NON-NLS-1$
 			for (ResponseError error : errors) {
-				if (!first)
+				if (!first) {
 					sb.append(", "); //$NON-NLS-1$
+				}
 				sb.append(error.getMessage());
 			}
 		}

@@ -19,12 +19,13 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
+import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.Query;
+import com.graphql_java_generator.domain.client.forum.QueryExecutorForum;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -33,8 +34,15 @@ import tools.jackson.core.JacksonException;
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_ForumTest {
 
+	// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
+	GraphQLQueryExecutor queryExecutor = new QueryExecutorForum();
+
 	Query queryType;
 	Map<String, Object> params;
+
+	public AbstractGraphQLRequest_ForumTest() {
+		//
+	}
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
@@ -53,8 +61,6 @@ class AbstractGraphQLRequest_ForumTest {
 	@Test
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JacksonException {
-		// Creating a MyQueryTypeExecutorMySchema is mandatory to initialize the GraphQLTypeMappingRegistry
-		new MyQueryTypeExecutorAllGraphQLCases();
 
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable "

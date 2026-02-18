@@ -8,15 +8,15 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Documented
-@Retention(RUNTIME)
-@Target({ METHOD, PARAMETER })
 /**
  * This annotation marks a parameter as being the value for either a Bind Parameter or a GraphQL variable. It should be
  * used only on parameters of method of interfaces, marked by a {@link GraphQLRepository} annotation.
  * 
  * @author etienne-sf
  */
+@Documented
+@Retention(RUNTIME)
+@Target({ METHOD, PARAMETER })
 public @interface BindParameter {
 
 	/**

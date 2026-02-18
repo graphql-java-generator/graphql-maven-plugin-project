@@ -19,13 +19,13 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 
+import com.graphql_java_generator.client.RegistriesInitializer;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.MemberType;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.forum.Query;
-import com.graphql_java_generator.domain.client.forum.RegistriesInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -35,8 +35,15 @@ import tools.jackson.core.JacksonException;
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_GraphQLVariablesTest {
 
+	// Initialization of the RegistriesInitializers
+	RegistriesInitializer registriesInitializerForum = com.graphql_java_generator.domain.client.forum.RegistriesInitializerImpl.registriesInitializer;
+
 	Query queryType;
 	Map<String, Object> params;
+
+	public AbstractGraphQLRequest_GraphQLVariablesTest() {
+		//
+	}
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
@@ -60,7 +67,6 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"mutation crPst  ($post: PostInput!, $anIntParam: Int){createPost(post: $post){id date author{id}}}");
-		RegistriesInitializer.initializeAllRegistries();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a \"title\"").withContent("some content with an antislash: \\").build();
@@ -86,7 +92,6 @@ class AbstractGraphQLRequest_GraphQLVariablesTest {
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
-		RegistriesInitializer.initializeAllRegistries();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a title").withContent("some content").build();

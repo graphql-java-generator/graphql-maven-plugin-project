@@ -111,7 +111,7 @@ public abstract class DocumentParser implements InitializingBean {
 	 */
 	@Autowired
 	protected GraphqlUtils graphqlUtils;
-	/////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
 	/**
 	 * This Spring Bean is responsible for finding and loading all the GraphQL schema files, based on the project
@@ -196,10 +196,10 @@ public abstract class DocumentParser implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() {
 		logger.debug("Starting DocumentParser\'s PostConstruct intialization");
-		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL scalars: standard and customs depending on the use case
 		initScalarTypes(UUID.class);
-		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard directives
 		//
 		// @skip
@@ -347,6 +347,7 @@ public abstract class DocumentParser implements InitializingBean {
 		for (TypeDefinition<?> def : typeDefinitionRegistry.types().values()) {
 			// directive
 			if ((Object) def instanceof DirectiveDefinition) {
+				// Empty block
 			} else
 			// This test is awful, but without the (Object) there is a compilation error. And I want to be sure that
 			// these tests resist to a change in the graphql-java hierarchy change (like it already happened), so I
@@ -394,6 +395,7 @@ public abstract class DocumentParser implements InitializingBean {
 			// No action, we already parsed it
 			// union
 			if (def instanceof UnionTypeDefinition) {
+				// Empty block
 			} else
 			// Unions are read latter, once all GraphQL types have been parsed
 			{

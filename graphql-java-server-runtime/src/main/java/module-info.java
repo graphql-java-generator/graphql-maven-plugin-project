@@ -1,3 +1,4 @@
+@SuppressWarnings({ "requires-automatic", "requires-transitive-automatic" }) //
 module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime {
 
 	exports com.graphql_java_generator.server.util;

@@ -1,3 +1,4 @@
+@SuppressWarnings({ "requires-automatic" }) //
 module com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client {
 
 	// Dependency for the generated code

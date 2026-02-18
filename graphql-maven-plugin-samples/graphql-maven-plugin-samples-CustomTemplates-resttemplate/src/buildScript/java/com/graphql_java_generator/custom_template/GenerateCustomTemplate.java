@@ -68,8 +68,8 @@ public class GenerateCustomTemplate implements Runnable {
 			"## project, from the original template", //
 			"##", //
 			"##", //
-			"##"//
-	);
+			"##", //
+			"// This is a custom template based on the standard '${templateFile}' template (code=${templateName})");
 	/** Lines to insert after the line starting with INSERTION_MARKER */
 	private static final List<String> LINES_TO_INSERT_AFTER_INSERTION_MARKER = List.of(//
 			"",
@@ -167,8 +167,9 @@ public class GenerateCustomTemplate implements Runnable {
 			sb.append(toInsert).append(sep);
 		}
 
+		// The first line of the original template is the comment that it's a standard template. We ignore this line.
 		// Lines before insertion point
-		for (int i = 0; i < insertionIndex; i++) {
+		for (int i = 1; i < insertionIndex; i++) {
 			sb.append(lines.get(i)).append(sep);
 		}
 

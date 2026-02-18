@@ -8,4 +8,7 @@ public class Extension {
 	public String code;
 	public String timestamp;
 
+	public Extension() {
+		// Empty constructor
+	}
 }

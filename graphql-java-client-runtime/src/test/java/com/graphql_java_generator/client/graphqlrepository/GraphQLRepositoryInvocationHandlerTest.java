@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.graphqlrepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -92,6 +89,10 @@ public class GraphQLRepositoryInvocationHandlerTest {
 
 	private AutoCloseable closeableMockito;
 
+	public GraphQLRepositoryInvocationHandlerTest() {
+		//
+	}
+
 	@BeforeEach
 	void beforeEach() throws GraphQLRequestPreparationException {
 		closeableMockito = MockitoAnnotations.openMocks(this);
@@ -118,8 +119,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 		// when(spyQueryExecutor.getClass()).thenReturn(GraphQLQueryExecutor.class);
 
 		// The invocationHandler is created, based on the given context
-		invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCase>(
-				GraphQLRepositoryTestCase.class, applicationContext);
+		invocationHandler = GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCase.class,
+				applicationContext);
 		graphQLRepository = invocationHandler.getProxyInstance();
 	}
 
@@ -143,8 +144,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_noInterfaceAnnotation() {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingInterfaceAnnotation>(
-						GraphQLRepositoryTestCaseMissingInterfaceAnnotation.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler
+						.factory(GraphQLRepositoryTestCaseMissingInterfaceAnnotation.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("one of these annotations: '" + GraphQLRepository.class.getName()), //$NON-NLS-1$
@@ -156,8 +157,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_missingMethodAnnotation() {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingMethodAnnotation>(
-						GraphQLRepositoryTestCaseMissingMethodAnnotation.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseMissingMethodAnnotation.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("@PartialRequest or @FullRequest"), e.getMessage()); //$NON-NLS-1$
@@ -168,8 +169,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_badReturnType() {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadReturnType>(
-						GraphQLRepositoryTestCaseBadReturnType.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseBadReturnType.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(
@@ -190,8 +191,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 
 		// Go, go, go
 		IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadExecutor>(
-						GraphQLRepositoryTestCaseBadExecutor.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseBadExecutor.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains(
@@ -216,8 +217,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_noGraphQLRequestExecutionException() throws GraphQLRequestExecutionException {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingException>(
-						GraphQLRepositoryTestCaseMissingException.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseMissingException.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("'com.graphql_java_generator.exception.GraphQLRequestExecutionException'"), //$NON-NLS-1$
@@ -233,8 +234,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_withMapParameter() throws GraphQLRequestExecutionException {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithMap>(
-						GraphQLRepositoryTestCaseParameterWithMap.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseParameterWithMap.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage()); //$NON-NLS-1$
@@ -249,8 +250,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	void testError_withVarArgParameter() throws GraphQLRequestExecutionException {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithVararg>(
-						GraphQLRepositoryTestCaseParameterWithVararg.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseParameterWithVararg.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage()); //$NON-NLS-1$
@@ -261,8 +262,8 @@ public class GraphQLRepositoryInvocationHandlerTest {
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithFloatParam>(
-						GraphQLRepositoryTestCaseParameterWithFloatParam.class, applicationContext));
+				() -> GraphQLRepositoryInvocationHandler.factory(GraphQLRepositoryTestCaseParameterWithFloatParam.class,
+						applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains(
@@ -391,7 +392,7 @@ public class GraphQLRepositoryInvocationHandlerTest {
 	@Test
 	void testInvoke_partialRequest_withBooleanParam()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
-
+		// Empty block
 	}
 
 	@SuppressWarnings("unchecked")
@@ -476,18 +477,22 @@ public class GraphQLRepositoryInvocationHandlerTest {
 		SubscriptionCallback<Human> callback = new SubscriptionCallback<Human>() {
 			@Override
 			public void onConnect() {
+				// Empty block
 			}
 
 			@Override
 			public void onMessage(Human t) {
+				// Empty block
 			}
 
 			@Override
 			public void onClose(int statusCode, String reason) {
+				// Empty block
 			}
 
 			@Override
 			public void onError(Throwable cause) {
+				// Empty block
 			}
 		};
 		Episode episode = Episode.JEDI;

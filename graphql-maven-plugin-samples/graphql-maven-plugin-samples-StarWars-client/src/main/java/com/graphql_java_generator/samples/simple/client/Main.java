@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import com.generated.graphql.Episode;
@@ -45,7 +46,14 @@ public class Main implements CommandLineRunner {
 	SubscriptionRequests subscriptionRequests;
 
 	public static void main(String[] args) throws Exception {
-		SpringApplication.run(Main.class, args);
+		try (ConfigurableApplicationContext ctx = SpringApplication.run(Main.class, args)) {
+			// Nothing to do, as the execution is done in the run() method, which is called by Spring, once the context
+			// is loaded
+
+			if (ctx == null) {
+				System.out.println("a useless test, to avoid a java compilation warning");
+			}
+		}
 	}
 
 	/**
@@ -122,9 +130,9 @@ public class Main implements CommandLineRunner {
 		System.out.println(client.droidDoesNotExist());
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////// Below is the configuration, based on Spring beans
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Below is the configuration, based on Spring beans
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * This sample uses in https, but with a self-signed certificate. So we need to avoid certificate controls. This
@@ -134,6 +142,7 @@ public class Main implements CommandLineRunner {
 	 * @return
 	 * @throws SSLException
 	 */
+	@SuppressWarnings("deprecation")
 	@Bean(name = "httpClient")
 	HttpClient insecureHttpClient() throws SSLException {
 		int method = 2;

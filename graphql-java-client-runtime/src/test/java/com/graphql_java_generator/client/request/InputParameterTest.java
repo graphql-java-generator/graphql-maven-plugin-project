@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.client.RegistriesInitializer;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.InputWithJson;
 import com.graphql_java_generator.domain.client.allGraphQLCases.InputWithObject;
-import com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializer;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -47,8 +47,17 @@ import tools.jackson.databind.node.ObjectNode;
 @Execution(ExecutionMode.CONCURRENT)
 class InputParameterTest {
 
+	// Initialization of the RegistriesInitializers
+	RegistriesInitializer registriesInitializerAllGraphQLCases = com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializerImpl.registriesInitializer;
+	RegistriesInitializer registriesInitializerForum = com.graphql_java_generator.domain.client.forum.RegistriesInitializerImpl.registriesInitializer;
+
+	public InputParameterTest() {
+		//
+	}
+
 	@BeforeEach
 	void setUp() throws Exception {
+		// Empty block
 	}
 
 	@Test
@@ -189,8 +198,6 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_byteArray()
 			throws GraphQLRequestExecutionException, UnsupportedEncodingException {
 		// Preparation
-		RegistriesInitializer.initializeAllRegistries();
-		//
 		String name = "aName";
 		String str = "This a string with some special characters éàëöô";
 		byte[] bytes = str.getBytes("UTF-8");
@@ -346,7 +353,6 @@ class InputParameterTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
-		RegistriesInitializer.initializeAllRegistries();
 		String name = "aName";
 		String bindParameterName = "variableName";
 		InputParameter customScalarInputParameter = InputParameter.newBindParameter("AllGraphQLCases", name,
@@ -369,8 +375,6 @@ class InputParameterTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Long_OK() throws GraphQLRequestExecutionException {
-		RegistriesInitializer.initializeAllRegistries();
-
 		GraphQLScalarType graphQLScalarTypeLong = ExtendedScalars.GraphQLLong;
 		String name = "aName";
 		String bindParameterName = "variableName";
@@ -396,8 +400,6 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_BindParameter_InputType_CustomScalar_Date_OK()
 			throws GraphQLRequestExecutionException {
 		// Given
-		RegistriesInitializer.initializeAllRegistries();
-
 		String name = "aName";
 		String bindParameterName = "variableName";
 
@@ -421,7 +423,6 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_GraphQLVariable_InputType_CustomScalar_Date_OK()
 			throws GraphQLRequestExecutionException {
 		// Preparation
-		RegistriesInitializer.initializeAllRegistries();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a title").withContent("some content").build();
@@ -444,7 +445,6 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_InputTypeWithJsonField()
 			throws StreamReadException, JacksonException, GraphQLRequestExecutionException {
 		// Preparation
-		RegistriesInitializer.initializeAllRegistries();// Schema AllGraphQLCases
 		ObjectNode json = new ObjectMapper().readValue(
 				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
 				ObjectNode.class);
@@ -479,7 +479,6 @@ class InputParameterTest {
 		Map<?, ?> map = new ObjectMapper().readValue(
 				"{\"field\":\"value\", \"subObject\": {\"field2\" : [1,2,3], \"field3\" : [1.1,22.2,3.3]} ,  \"booleans\" : [true , false]}",
 				HashMap.class);
-		RegistriesInitializer.initializeAllRegistries();
 		InputWithObject input = InputWithObject.builder()//
 				.withTest("getValueForGraphqlQuery_InputTypeWithObjectField")//
 				.withObject(map)//

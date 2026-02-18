@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.graphql_java_generator.client.request;
 
 import java.lang.reflect.Field;
@@ -69,12 +66,12 @@ public class InputParameter {
 		 * of the request
 		 */
 		GRAPHQL_VARIABLE
-	};
+	}
 
 	/** Indicates what is being read by the {@link #readTokenizerForInputParameters(StringTokenizer) method */
 	private enum InputParameterStep {
 		NAME, VALUE
-	};
+	}
 
 	/**
 	 * value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one schema,
@@ -486,6 +483,10 @@ public class InputParameter {
 					}
 					step = InputParameterStep.NAME;
 					break;
+				default:
+					throw new GraphQLRequestPreparationException(
+							"Internal error: unknown step while reading input parameters for the field '" + fieldName
+									+ "': " + step);
 				}
 			}// switch (token)
 		} // while (st.hasMoreTokens())
@@ -887,8 +888,9 @@ public class InputParameter {
 				return getQuotedString((String) ret);
 			} else if (ret instanceof ObjectNode) {
 				StringBuilder sb = new StringBuilder();
-				appendStringContentForGraphqlQueryFromObjectNode(sb,
-						((ObjectNode) ret).traverse(new ObjectReadContext.Base()), (ObjectNode) ret);
+				try (JsonParser jsonParser = ((ObjectNode) ret).traverse(new ObjectReadContext.Base())) {
+					appendStringContentForGraphqlQueryFromObjectNode(sb, jsonParser, (ObjectNode) ret);
+				}
 				return sb.toString();
 			} else if (ret instanceof Map) {
 				StringBuilder sb = new StringBuilder();
@@ -961,7 +963,7 @@ public class InputParameter {
 				} else {
 					sb.append(",");
 				}
-				sb.append(jsonParser.getText());
+				sb.append(jsonParser.getString());
 				sb.append(":");
 				// Let's recurse once, to read the content of this field (which may be a value, an object or an
 				// array)
@@ -974,7 +976,7 @@ public class InputParameter {
 				// Note: this token is never returned by regular JSON readers, but only by readers that expose other
 				// kinds of source (like <code>JsonNode</code>-based JSON trees, Maps, Lists and such).
 				// below is an attempt to render this 'strange' object
-				sb.append(jsonParser.getText());
+				sb.append(jsonParser.getString());
 				break;
 			case VALUE_STRING:
 				if (arrayJustStarted) {
@@ -983,7 +985,7 @@ public class InputParameter {
 					sb.append(",");
 				}
 				sb.append('\"');
-				sb.append(jsonParser.getText());
+				sb.append(jsonParser.getString());
 				sb.append('\"');
 				break;
 			case VALUE_NUMBER_INT:

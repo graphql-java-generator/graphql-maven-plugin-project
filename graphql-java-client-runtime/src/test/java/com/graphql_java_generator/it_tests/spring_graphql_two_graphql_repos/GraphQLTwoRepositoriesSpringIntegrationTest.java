@@ -38,8 +38,8 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorAllGraphQLCases;
 import com.graphql_java_generator.domain.client.forum.Member;
-import com.graphql_java_generator.domain.client.forum.MutationExecutorMySchema;
-import com.graphql_java_generator.domain.client.forum.QueryExecutorMySchema;
+import com.graphql_java_generator.domain.client.forum.MutationExecutorForum;
+import com.graphql_java_generator.domain.client.forum.QueryExecutorForum;
 import com.graphql_java_generator.domain.client.forum.Topic;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -61,7 +61,7 @@ public class GraphQLTwoRepositoriesSpringIntegrationTest {
 	@Configuration
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
 	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class,
-			QueryExecutorMySchema.class })
+			QueryExecutorForum.class })
 	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok" })
 	public static class SpringConfigTwoServers {
 		@Bean
@@ -93,7 +93,7 @@ public class GraphQLTwoRepositoriesSpringIntegrationTest {
 	@MockitoSpyBean
 	TheSubscriptionTypeExecutorAllGraphQLCases spySubscriptionExecutor;// allGraphQLCases
 	@MockitoSpyBean
-	MutationExecutorMySchema spyForumMutationExecutor;// Forum
+	MutationExecutorForum spyForumMutationExecutor;// Forum
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach

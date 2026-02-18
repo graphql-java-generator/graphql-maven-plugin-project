@@ -3,6 +3,7 @@ package com.graphql_java_generator.client.request;
 import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.RegistriesInitializer;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
@@ -24,15 +25,16 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 abstract public class ObjectResponse extends AbstractGraphQLRequest {
 
 	/** {@inheritDoc} */
-	public ObjectResponse(GraphQlClient graphQlClient, String schema, String graphQLRequest)
-			throws GraphQLRequestPreparationException {
-		super(graphQlClient, schema, graphQLRequest);
+	public ObjectResponse(GraphQlClient graphQlClient, RegistriesInitializer registriesInitializer,
+			String graphQLRequest) throws GraphQLRequestPreparationException {
+		super(graphQlClient, registriesInitializer, graphQLRequest);
 	}
 
 	/** {@inheritDoc} */
-	public ObjectResponse(GraphQlClient graphQlClient, String schema, String graphQLRequest, RequestType requestType,
-			String queryName, InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super(graphQlClient, schema, graphQLRequest, requestType, queryName, inputParams);
+	public ObjectResponse(GraphQlClient graphQlClient, RegistriesInitializer registriesInitializer,
+			String graphQLRequest, RequestType requestType, String queryName, InputParameter... inputParams)
+			throws GraphQLRequestPreparationException {
+		super(graphQlClient, registriesInitializer, graphQLRequest, requestType, queryName, inputParams);
 	}
 
 }

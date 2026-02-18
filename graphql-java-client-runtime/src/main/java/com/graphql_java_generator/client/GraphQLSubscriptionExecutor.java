@@ -7,5 +7,5 @@ package com.graphql_java_generator.client;
  * @author etienne-sf
  */
 public interface GraphQLSubscriptionExecutor {
-
+	// Empty block
 }

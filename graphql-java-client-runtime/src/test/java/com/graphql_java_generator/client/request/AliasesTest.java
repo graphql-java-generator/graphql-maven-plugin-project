@@ -34,6 +34,10 @@ class AliasesTest {
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();
 
+	public AliasesTest() {
+		//
+	}
+
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {

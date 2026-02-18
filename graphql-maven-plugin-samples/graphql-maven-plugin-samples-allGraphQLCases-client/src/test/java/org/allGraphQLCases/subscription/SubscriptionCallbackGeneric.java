@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.subscription;
 
 import java.util.concurrent.CountDownLatch;

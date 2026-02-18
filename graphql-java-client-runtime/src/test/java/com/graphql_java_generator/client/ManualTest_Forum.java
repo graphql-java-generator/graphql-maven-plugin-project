@@ -24,6 +24,10 @@ public class ManualTest_Forum {
 	static Query queryType = new Query();
 	static Mutation mutationType = new Mutation();
 
+	public ManualTest_Forum() {
+		// Empty block
+	}
+
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args)
 			throws GraphQLRequestExecutionException, IOException, GraphQLRequestPreparationException {

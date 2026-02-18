@@ -23,6 +23,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLJsonMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
+import com.graphql_java_generator.client.RegistriesInitializer;
 import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -59,6 +60,9 @@ public abstract class AbstractGraphQLRequest {
 
 	final GraphQlClient graphQlClient;
 
+	/** The RegistriesInitializer class */
+	final RegistriesInitializer registriesInitializer;
+
 	/** The query, if any */
 	QueryField query = null;
 
@@ -93,14 +97,6 @@ public abstract class AbstractGraphQLRequest {
 	 * good to be executed for this partial query.
 	 */
 	final String requestName;
-	/**
-	 * The package name, where the GraphQL generated classes are. It's used to load the class definition, and get the
-	 * GraphQL metadata coming from the GraphQL schema.
-	 */
-	protected final String packageName;
-
-	/** The schema for which this request is valid */
-	private final String schema;
 
 	/** Indicates what is being read, when reading the GraphQL variable list */
 	private enum Step {
@@ -114,10 +110,14 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @author etienne_sf
 	 */
-	public static class Payload {
+	public static final class Payload {
 		String query = null;
 		Map<String, Object> variables = new HashMap<>();
 		String operationName = null;
+
+		public Payload() {
+			// Empty bloc
+		}
 
 		public String getQuery() {
 			return query;
@@ -182,9 +182,12 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @param graphQlClient
 	 *            The {@link GraphQlClient} that is responsible for the actual execution of the request
-	 * @param schema
-	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
-	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
+	 * @param registriesInitializer
+	 *            This class contains all the parameters that are specific to the generated code, including the schema
+	 *            (value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used), the
+	 *            packageName (the package name, where the GraphQL generated classes are. It's used to load the class
+	 *            definition, and get the GraphQL metadata coming from the GraphQL schema)...
 	 * @param graphQLRequest
 	 *            The <B>partial</B> GraphQL request, in text format. Writing partial request allows use to execute a
 	 *            query/mutation/subscription, and only define what's expected as a response for this
@@ -201,9 +204,14 @@ public abstract class AbstractGraphQLRequest {
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest,
-			RequestType requestType, String fieldName, InputParameter... inputParams)
+	public AbstractGraphQLRequest(GraphQlClient graphQlClient, RegistriesInitializer registriesInitializer,
+			String graphQLRequest, RequestType requestType, String fieldName, InputParameter... inputParams)
 			throws GraphQLRequestPreparationException {
+		if (registriesInitializer == null) {
+			throw new NullPointerException("The registriesInitializer parameter may bot be null");
+		}
+		this.registriesInitializer = registriesInitializer;
+
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided"); //$NON-NLS-1$
 		}
@@ -211,19 +219,14 @@ public abstract class AbstractGraphQLRequest {
 			throw new NullPointerException("fieldName is mandatory, but a null value has been provided"); //$NON-NLS-1$
 		}
 		if (graphQlClient == null) {
-			this.graphQlClient = SpringContextBean.getGraphQlClient(schema, requestType);
+			this.graphQlClient = SpringContextBean.getGraphQlClient(registriesInitializer.getSchema(), requestType);
 		} else {
 			this.graphQlClient = graphQlClient;
 		}
-		if (schema == null) {
-			throw new NullPointerException("The schema parameter may bot be null");
-		}
 
-		this.schema = schema;
 		this.requestType = requestType;
-		requestName = null;
+		this.requestName = null;
 		this.graphQLRequest = graphQLRequest;
-		packageName = getGraphQLClassesPackageName();
 
 		QueryField field;
 		switch (requestType) {
@@ -266,7 +269,7 @@ public abstract class AbstractGraphQLRequest {
 				throw new GraphQLRequestPreparationException(
 						"The Partial GraphQL Request should start by a '{', but it doesn't: " + graphQLRequest); //$NON-NLS-1$
 			}
-			field.readTokenizerForResponseDefinition(qt, aliasFields, schema);
+			field.readTokenizerForResponseDefinition(qt, aliasFields, registriesInitializer.getSchema());
 		}
 
 		// Let's finish the job
@@ -286,9 +289,12 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @param graphQlClient
 	 *            The {@link GraphQlClient} that is responsible for the actual execution of the request
-	 * @param schema
-	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
-	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
+	 * @param registriesInitializer
+	 *            This class contains all the parameters that are specific to the generated code, including the schema
+	 *            (value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used), the
+	 *            packageName (the package name, where the GraphQL generated classes are. It's used to load the class
+	 *            definition, and get the GraphQL metadata coming from the GraphQL schema)...
 	 * @param graphQLRequest
 	 *            The GraphQL request, in text format, as defined in the GraphQL specifications, and as it can be used
 	 *            in GraphiQL. Please read the
@@ -297,19 +303,18 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest)
-			throws GraphQLRequestPreparationException {
-		if (schema == null) {
-			throw new NullPointerException("The schema parameter may bot be null");
+	public AbstractGraphQLRequest(GraphQlClient graphQlClient, RegistriesInitializer registriesInitializer,
+			String graphQLRequest) throws GraphQLRequestPreparationException {
+		if (registriesInitializer == null) {
+			throw new NullPointerException("The registriesInitializer parameter may bot be null");
 		}
-		this.schema = schema;
+		this.registriesInitializer = registriesInitializer;
 
 		// The graphQLClient is set later, once the type if request is known
 		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
-		packageName = getGraphQLClassesPackageName();
-		requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
-											// subscription keyword, then it must be a query.
+		this.requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
+												// subscription keyword, then it must be a query.
 		boolean requestTypeHasBeenRead = false; // Used for a basic check in unknown tokens, to see if this token can be
 												// the request name
 		List<InputParameter> inputParameters = new ArrayList<>(); // The list of GraphQL variables for this query
@@ -324,7 +329,8 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment": //$NON-NLS-1$
-				fragments.add(new Fragment(qt, aliasFields, packageName, false, null, schema));
+				fragments.add(new Fragment(qt, aliasFields, registriesInitializer.getPackageName(), false, null,
+						registriesInitializer.getSchema()));
 				break;
 			case "query": //$NON-NLS-1$
 			case "mutation": //$NON-NLS-1$
@@ -334,7 +340,7 @@ public abstract class AbstractGraphQLRequest {
 				break;
 			case "(": //$NON-NLS-1$
 				try {
-					readRequestParameters(qt, inputParameters, schema);
+					readRequestParameters(qt, inputParameters, registriesInitializer.getSchema());
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException(
 							e.getMessage() + " (while reading the request parameters)", e); //$NON-NLS-1$
@@ -346,17 +352,17 @@ public abstract class AbstractGraphQLRequest {
 				case query:
 					query = getQueryContext();// Get the query field from the concrete class
 					query.inputParameters = inputParameters;
-					query.readTokenizerForResponseDefinition(qt, aliasFields, schema);
+					query.readTokenizerForResponseDefinition(qt, aliasFields, registriesInitializer.getSchema());
 					break;
 				case mutation:
 					mutation = getMutationContext();// Get the mutation field from the concrete class
 					mutation.inputParameters = inputParameters;
-					mutation.readTokenizerForResponseDefinition(qt, aliasFields, schema);
+					mutation.readTokenizerForResponseDefinition(qt, aliasFields, registriesInitializer.getSchema());
 					break;
 				case subscription:
 					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
 					subscription.inputParameters = inputParameters;
-					subscription.readTokenizerForResponseDefinition(qt, aliasFields, schema);
+					subscription.readTokenizerForResponseDefinition(qt, aliasFields, registriesInitializer.getSchema());
 					break;
 				default:
 					throw new GraphQLRequestPreparationException("Non managed request type '" + requestType //$NON-NLS-1$
@@ -379,7 +385,7 @@ public abstract class AbstractGraphQLRequest {
 			throw new GraphQLRequestPreparationException("No response definition found"); //$NON-NLS-1$
 		}
 		if (graphQlClient == null) {
-			this.graphQlClient = SpringContextBean.getGraphQlClient(schema, requestType);
+			this.graphQlClient = SpringContextBean.getGraphQlClient(registriesInitializer.getSchema(), requestType);
 		} else {
 			this.graphQlClient = graphQlClient;
 		}
@@ -870,12 +876,12 @@ public abstract class AbstractGraphQLRequest {
 			sb.append(" ").append(requestName); //$NON-NLS-1$
 		}
 
-		//////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////
 		// Step 2 : collect the GraphQL variables
 		String separator = ""; //$NON-NLS-1$
 		for (InputParameter param : request.inputParameters) {
 			if (param.getType() == InputParameterType.GRAPHQL_VARIABLE) {
-				//////////////////////////////////////////////////////////////////////
+				////////////////////////////////////
 				// Let's complete the variable list
 				sbGraphQLVariables.append(separator)//
 						.append("$")// //$NON-NLS-1$
@@ -897,13 +903,13 @@ public abstract class AbstractGraphQLRequest {
 
 				sbGraphQLVariables.append(param.isMandatory() ? "!" : ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-				//////////////////////////////////////////////////////////////////////
+				////////////////////////////////////
 				// And the request's variable value list (for the json variables field), only if the value is provided.
 				// This is important to allow default values management by the GraphQL server
 				if (params != null && params.containsKey(param.getBindParameterName())) {
 					payload.variables.put(param.getBindParameterName(), param.getValueForGraphqlQuery(params));
 				}
-				//////////////////////////////////////////////////////////////////////
+				////////////////////////////////////
 
 				if (param.getDefaultValue() != null) {
 					sbGraphQLVariables.append("=");
@@ -940,7 +946,8 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 */
 	public GraphQLJsonMapper getGraphQLObjectMapper() {
-		return new GraphQLJsonMapper(getGraphQLClassesPackageName(), aliasFields, schema);
+		return new GraphQLJsonMapper(registriesInitializer.getPackageName(), aliasFields,
+				registriesInitializer.getSchema());
 	}
 
 	/**
@@ -953,21 +960,15 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
-	 * This method returns the package name, where the GraphQL generated classes are. It's used to load the class
-	 * definition, and get the GraphQL metadata coming from the GraphQL schema.
-	 * 
-	 * @return
-	 */
-	protected abstract String getGraphQLClassesPackageName();
-
-	/**
 	 * Retrieved the {@link QueryField} for the query (that is the query type coming from the GraphQL schema) from the
 	 * concrete class.
 	 * 
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	protected abstract QueryField getQueryContext() throws GraphQLRequestPreparationException;
+	private QueryField getQueryContext() throws GraphQLRequestPreparationException {
+		return new QueryField(registriesInitializer.getQueryRootResponseClass(), "query");
+	}
 
 	/**
 	 * Retrieved the {@link QueryField} for the mutation (that is the mutation type coming from the GraphQL schema) from
@@ -975,10 +976,9 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @return
 	 */
-	protected abstract QueryField getMutationContext() throws GraphQLRequestPreparationException;
-
-	/** Returns the subscription class for this schema */
-	protected abstract Class<? extends GraphQLRequestObject> getSubscriptionClass();
+	private QueryField getMutationContext() throws GraphQLRequestPreparationException {
+		return new QueryField(registriesInitializer.getMutationRootResponseClass(), "mutation");
+	}
 
 	/**
 	 * Retrieved the {@link QueryField} for the subscription (that is the subscription type coming from the GraphQL
@@ -986,7 +986,9 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @return
 	 */
-	protected abstract QueryField getSubscriptionContext() throws GraphQLRequestPreparationException;
+	private QueryField getSubscriptionContext() throws GraphQLRequestPreparationException {
+		return new QueryField(registriesInitializer.getSubscriptionRootResponseClass(), "subscription");
+	}
 
 	public QueryField getQuery() {
 		return query;

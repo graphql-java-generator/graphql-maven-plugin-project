@@ -34,6 +34,7 @@ public class ManualTest_StarWars_GraphQLJava {
 
 	public static void main(String[] args) throws GraphQLRequestExecutionException, IOException {
 		ManualTest_StarWars_GraphQLJava test = new ManualTest_StarWars_GraphQLJava();
+		test.graphQL = test.getGraphQL();
 		test.executeHero();
 		// test.executeHuman();
 	}
@@ -41,7 +42,7 @@ public class ManualTest_StarWars_GraphQLJava {
 	GraphQL graphQL;
 
 	public ManualTest_StarWars_GraphQLJava() {
-		graphQL = getGraphQL();
+		// Empty block
 	}
 
 	GraphQL getGraphQL() {

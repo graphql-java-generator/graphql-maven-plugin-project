@@ -10,5 +10,5 @@ import com.graphql_java_generator.annotation.GraphQLInterfaceType;
  */
 @GraphQLInterfaceType("TheInterfaceName")
 public class AnInterface {
-
+	// Empty block
 }

@@ -275,8 +275,8 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			i += generateOneJavaFile("GraphQLWiring", true, "generating GraphQLWiring", context, CodeTemplate.WIRING);
 
 			// RegistriesInitializer
-			logger.debug("Generating RegistriesInitializer");
-			i += generateOneJavaFile("RegistriesInitializer", true, "Generating RegistriesInitializer", context,
+			logger.debug("Generating RegistriesInitializerImpl");
+			i += generateOneJavaFile("RegistriesInitializerImpl", true, "Generating RegistriesInitializerImpl", context,
 					CodeTemplate.REGISTRIES_INITIALIZER);
 
 			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
@@ -364,7 +364,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 		int nbBytesRead;
 		byte[] bytes = new byte[NB_BYTES];
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the common runtime
 		try (JarInputStream jar = new JarInputStream(
 				new ClassPathResource(COMMON_RUNTIME_SOURCE_FILENAME).getInputStream())) {
@@ -411,7 +411,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 2 : the client runtime
 		if (configuration.getMode().equals(PluginMode.client)) {
 			try (JarInputStream jar = new JarInputStream(
@@ -474,7 +474,7 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			}
 		} // if (mode==client)
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step3 : the server runtime
 		if (configuration.getMode().equals(PluginMode.server)) {
 			try (JarInputStream jar = new JarInputStream(
@@ -593,10 +593,6 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 	 */
 	int generateGraphQLRequest(boolean reactive) {
 		VelocityContext context = getVelocityContext();
-
-		context.put("query", generateCodeDocumentParser.getQueryType());
-		context.put("mutation", generateCodeDocumentParser.getMutationType());
-		context.put("subscription", generateCodeDocumentParser.getSubscriptionType());
 
 		String classname = (reactive) ? "GraphQLReactiveRequest" : "GraphQLRequest";
 		CodeTemplate codeTemplate = (reactive) ? CodeTemplate.GRAPHQL_REACTIVE_REQUEST : CodeTemplate.GRAPHQL_REQUEST;
@@ -889,6 +885,9 @@ public class GenerateCodeGenerator implements Generator, InitializingBean {
 			CodeTemplate templateCode) {
 
 		context.put("targetFileName", classname);
+		context.put("query", generateCodeDocumentParser.getQueryType());
+		context.put("mutation", generateCodeDocumentParser.getMutationType());
+		context.put("subscription", generateCodeDocumentParser.getSubscriptionType());
 
 		File targetFile = getJavaFile(classname, utilityClass);
 		logger.debug("Generating {} into {}", msg, targetFile);

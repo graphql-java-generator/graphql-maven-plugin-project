@@ -9,9 +9,6 @@ import java.lang.annotation.Target;
 
 import com.graphql_java_generator.annotation.RequestType;
 
-@Documented
-@Retention(RUNTIME)
-@Target(METHOD)
 /**
  * This annotation marks the method of an interface, as being a partial GraphQL request. See the Project Wiki <A HREF=
  * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_exec_graphql_requests">request
@@ -19,6 +16,9 @@ import com.graphql_java_generator.annotation.RequestType;
  * 
  * @author etienne-sf
  */
+@Documented
+@Retention(RUNTIME)
+@Target(METHOD)
 public @interface PartialRequest {
 
 	/**

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.graphqlrepositories;
 
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;

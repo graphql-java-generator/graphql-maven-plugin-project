@@ -1,7 +1,14 @@
 package com.generated.graphql.samples.customscalar;
 
+import java.util.Locale;
+
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.BooleanValue;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -48,7 +55,8 @@ public class GraphQLScalarTypeMyBoolean {
 						 *             if value input can't be serialized
 						 */
 						@Override
-						public Boolean serialize(Object input) throws CoercingSerializeException {
+						public Boolean serialize(@NonNull Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (!(input instanceof Boolean)) {
 								throw new CoercingSerializeException(
 										"Can't parse the '" + input.toString() + "' to a String"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -73,7 +81,8 @@ public class GraphQLScalarTypeMyBoolean {
 						 *             if value input can't be parsed
 						 */
 						@Override
-						public Boolean parseValue(Object o) throws CoercingParseValueException {
+						public Boolean parseValue(@NonNull Object o, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException(
 										"Can't parse the '" + o.toString() + "' string to a Boolean"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -99,7 +108,9 @@ public class GraphQLScalarTypeMyBoolean {
 						 *             if input literal can't be parsed
 						 */
 						@Override
-						public Boolean parseLiteral(Object o) throws CoercingParseLiteralException {
+						public Boolean parseLiteral(@NonNull Value<?> o, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (o instanceof StringValue) {
 								return Boolean.valueOf(((StringValue) o).getValue());

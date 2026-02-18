@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.samples.forum.test.client.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,7 +93,7 @@ class SubscriptionIT {
 
 		// Go, go, go
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// There may be bugs in server implementation, that don't were properly on the second subscription. Let's check
 		// that by having two iterations of the same test
 

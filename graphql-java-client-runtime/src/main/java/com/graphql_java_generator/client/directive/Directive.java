@@ -114,7 +114,7 @@ public class Directive {
 		return directiveLocations;
 	}
 
-	public void setDirectiveLocations(List<DirectiveLocation> directiveLocations) {
+	public final void setDirectiveLocations(List<DirectiveLocation> directiveLocations) {
 		this.directiveLocations = directiveLocations;
 	}
 
@@ -139,11 +139,11 @@ public class Directive {
 	 * 
 	 * @return
 	 */
-	public String getPackageName() {
+	public final String getPackageName() {
 		return packageName;
 	}
 
-	public void setPackageName(String packageName) {
+	public final void setPackageName(String packageName) {
 		this.packageName = packageName;
 	}
 

@@ -15,6 +15,10 @@ public class GraphQLTypeMappingRegistry {
 	 */
 	private static Map<String, GraphQLTypeMapping> graphQLTypeMappings = new HashMap<>();
 
+	public GraphQLTypeMappingRegistry() {
+		// No action
+	}
+
 	/**
 	 * Registers the given GraphQLTypeMapping instance for the given schema
 	 * 

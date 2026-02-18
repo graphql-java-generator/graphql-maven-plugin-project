@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.samples.forum.test.client.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -103,13 +100,13 @@ class SubscriptionNewTestIT {
 		postInput2.setInput(getTopicPostInput(author2, "Some other content (2)",
 				new GregorianCalendar(2002, 9 - 1, 19).getTime(), false, "The good title for a post (2)"));
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		logger.debug(
 				"Creating dummy posts, to check that we won't receive a notification, latter on, for this one, once subscribed");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);
 		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Go, go, go
 		logger.debug("--------------------------------------------------------------------------------------------");
 		logger.debug("(client 1) Subscribing to the GraphQL subscription");
@@ -139,7 +136,7 @@ class SubscriptionNewTestIT {
 		logger.trace("Checking callback2");
 		checkNotification(callback2, createdPost, postInput1);
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's do it again (there was an issue that prevent a second notification to arrive)
 		logger.debug("--------------------------------------------------------------------------------------------");
 		logger.debug("(client 3) Subscribing to the GraphQL subscription");
@@ -166,7 +163,7 @@ class SubscriptionNewTestIT {
 		logger.trace("Checking callback3");
 		checkNotification(callback3, createdPost, postInput2);
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// We must free the server resource at the end
 		client1.unsubscribe();
 		client2.unsubscribe();

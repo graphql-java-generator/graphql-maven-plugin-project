@@ -40,6 +40,10 @@ public class GraphqlServerUtils {
 	public static GraphqlServerUtils graphqlServerUtils = new GraphqlServerUtils();
 	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
+	public GraphqlServerUtils() {
+		// Nothing to do
+	}
+
 	/**
 	 * Implementation of a {@link ClassNameTypeResolver} to manage the possible prefix and suffix on the generated
 	 * POJOs.

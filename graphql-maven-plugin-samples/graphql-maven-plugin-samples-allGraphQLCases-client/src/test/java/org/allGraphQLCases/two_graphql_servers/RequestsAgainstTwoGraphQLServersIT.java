@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.two_graphql_servers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

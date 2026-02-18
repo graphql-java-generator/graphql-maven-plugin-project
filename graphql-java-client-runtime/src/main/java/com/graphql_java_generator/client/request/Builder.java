@@ -106,9 +106,7 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder withQueryResponseDef(String queryResponseDef) throws GraphQLRequestPreparationException {
-		if (queryResponseDef == null) {
-			queryResponseDef = "";
-		}
+		String queryResponseDefLocal = (queryResponseDef == null) ? "" : queryResponseDef;
 
 		String genericErrorMessage = null;
 
@@ -117,15 +115,15 @@ public class Builder {
 			if (fullRequest) {
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Full request)";
 				objectResponse = (ObjectResponse) graphQLRequestClass.getConstructor(String.class)
-						.newInstance(queryResponseDef);
+						.newInstance(queryResponseDefLocal);
 			} else {
 				// No, it's a Partial request
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Partial request)";
 
 				Constructor<? extends AbstractGraphQLRequest> constructor = graphQLRequestClass.getConstructor(
 						GraphQlClient.class, String.class, RequestType.class, String.class, InputParameter[].class);
-				objectResponse = (ObjectResponse) constructor.newInstance(graphQlClient, queryResponseDef, requestType,
-						fieldName, inputParams);
+				objectResponse = (ObjectResponse) constructor.newInstance(graphQlClient, queryResponseDefLocal,
+						requestType, fieldName, inputParams);
 			}
 
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException

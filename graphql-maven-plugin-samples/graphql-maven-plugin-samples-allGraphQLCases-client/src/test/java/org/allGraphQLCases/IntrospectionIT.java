@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

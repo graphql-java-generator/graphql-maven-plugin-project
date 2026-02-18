@@ -5,10 +5,12 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_clie
 	requires transitive tools.jackson.core;
 	requires transitive tools.jackson.databind;
 	requires transitive jakarta.annotation;
+	requires transitive reactor.core;
 	requires transitive spring.beans;
 	requires transitive spring.boot;
 	requires transitive spring.boot.autoconfigure;
 	requires transitive spring.context;
+	requires transitive spring.graphql;
 	// requires transitive spring.jcl;
 	requires transitive spring.security.oauth2.client;
 	requires transitive spring.web;
@@ -17,8 +19,6 @@ module com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_clie
 	requires org.apache.commons.text;
 	requires org.apache.commons.lang3;
 	requires org.reactivestreams;
-	requires reactor.core;
-	requires spring.graphql;
 
 	// Allow reflection on the client runtime
 	opens com.graphql_java_generator.client to tools.jackson.databind, spring.beans, spring.core, spring.context;

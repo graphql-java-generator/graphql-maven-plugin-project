@@ -6,6 +6,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Here are the next tasks listed, as a TODO list:
+* Gradle: enable configuration cache to test and speed up the project build: https://docs.gradle.org/9.2.1/userguide/configuration_cache_enabling.html
 * Check documentation (wiki+README) that the schema can be given in json (tested in the forum client module)
 * Add checks with queries that return interfaces (already ok?) and unions (also already ok?)
 * The forum samples should run with java 25 (or update the tutorial to java 25)

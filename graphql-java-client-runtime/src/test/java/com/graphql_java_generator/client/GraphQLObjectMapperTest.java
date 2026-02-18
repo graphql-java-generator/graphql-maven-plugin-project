@@ -26,6 +26,10 @@ import tools.jackson.core.exc.StreamReadException;
 
 class GraphQLObjectMapperTest {
 
+	GraphQLObjectMapperTest() {
+		// Empty block
+	}
+
 	@Test
 	void testBoolean() throws StreamReadException, JacksonException {
 		// Preparation

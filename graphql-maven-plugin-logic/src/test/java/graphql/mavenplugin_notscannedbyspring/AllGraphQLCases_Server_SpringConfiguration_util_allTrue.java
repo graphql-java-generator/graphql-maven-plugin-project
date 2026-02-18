@@ -1,6 +1,3 @@
-/**
- * 
- */
 package graphql.mavenplugin_notscannedbyspring;
 
 import java.io.File;

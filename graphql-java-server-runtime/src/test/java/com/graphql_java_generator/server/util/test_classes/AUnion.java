@@ -10,5 +10,5 @@ import com.graphql_java_generator.annotation.GraphQLUnionType;
  */
 @GraphQLUnionType("TheUnionName")
 public class AUnion {
-
+	// Empty block
 }

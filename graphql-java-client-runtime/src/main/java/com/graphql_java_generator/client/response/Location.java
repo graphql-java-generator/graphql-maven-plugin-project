@@ -9,6 +9,10 @@ public class Location {
 	public int column;
 	public String sourceName;
 
+	public Location() {
+		// Empty constructor
+	}
+
 	@Override
 	public String toString() {
 		return "line=" + line + ", column=" + column + (sourceName == null ? "" : " of " + sourceName);

@@ -19,12 +19,19 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 @Deprecated
 public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 
+	@Deprecated
+	public RequestExecutionSpringReactiveImpl() {
+		// Empty bloc
+	}
+
+	@Deprecated
 	@Override
 	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 		return graphQLRequest.exec(dataResponseType, parameters);
 	}
 
+	@Deprecated
 	@Override
 	public <R extends GraphQLRequestObject, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType,

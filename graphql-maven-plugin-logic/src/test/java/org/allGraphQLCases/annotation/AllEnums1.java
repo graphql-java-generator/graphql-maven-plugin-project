@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.allGraphQLCases.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;

@@ -142,6 +142,10 @@ public class OAuthTokenExtractor {
 	 * {@link #DUMMY_REQUEST} is executed
 	 */
 	public static class OAuthTokenFilter implements ExchangeFilterFunction {
+		public OAuthTokenFilter() {
+			// No action
+		}
+
 		@Override
 		public @NonNull Mono<ClientResponse> filter(@NonNull ClientRequest request, @NonNull ExchangeFunction next) {
 			String url = request.url().toString();

@@ -2,10 +2,12 @@ package com.graphql_java_generator.plugin.language.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
+
 import graphql.language.Comment;
 
 /**
@@ -42,6 +44,9 @@ public class DirectiveImpl implements Directive {
 	 */
 	private boolean standard = false;
 
+	public DirectiveImpl() {
+	}
+
 	public void setComments(List<Comment> comments) {
 		this.comments = new ArrayList<>(comments.size());
 		for (Comment c : comments) {
@@ -54,16 +59,11 @@ public class DirectiveImpl implements Directive {
 		return repeatable;
 	}
 
-	
-	
-	public DirectiveImpl() {
-	}
-
 	/**
 	 * The name of the object type
 	 */
-	
-	
+
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -71,8 +71,8 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * A directive may have arguments. An argument is actually a field.
 	 */
-	
-	
+
+	@Override
 	public List<Field> getArguments() {
 		return this.arguments;
 	}
@@ -80,8 +80,8 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * Returns the list of location that this directive may have
 	 */
-	
-	
+
+	@Override
 	public List<DirectiveLocation> getDirectiveLocations() {
 		return this.directiveLocations;
 	}
@@ -89,8 +89,8 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * The comments that have been found before this object, in the provided GraphQL schema
 	 */
-	
-	
+
+	@Override
 	public List<String> getComments() {
 		return this.comments;
 	}
@@ -98,8 +98,8 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * The description of this directive, in the provided GraphQL schema
 	 */
-	
-	
+
+	@Override
 	public Description getDescription() {
 		return this.description;
 	}
@@ -108,8 +108,8 @@ public class DirectiveImpl implements Directive {
 	 * True if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema. Default
 	 * value is false (non standard)
 	 */
-	
-	
+
+	@Override
 	public boolean isStandard() {
 		return this.standard;
 	}
@@ -117,8 +117,7 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * The name of the object type
 	 */
-	
-	
+
 	public void setName(final String name) {
 		this.name = name;
 	}
@@ -126,8 +125,7 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * A directive may have arguments. An argument is actually a field.
 	 */
-	
-	
+
 	public void setArguments(final List<Field> arguments) {
 		this.arguments = arguments;
 	}
@@ -135,8 +133,7 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * Returns the list of location that this directive may have
 	 */
-	
-	
+
 	public void setDirectiveLocations(final List<DirectiveLocation> directiveLocations) {
 		this.directiveLocations = directiveLocations;
 	}
@@ -144,8 +141,7 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * The description of this directive, in the provided GraphQL schema
 	 */
-	
-	
+
 	public void setDescription(final Description description) {
 		this.description = description;
 	}
@@ -153,8 +149,7 @@ public class DirectiveImpl implements Directive {
 	/**
 	 * Indicates whether this directive is repeatable or not
 	 */
-	
-	
+
 	public void setRepeatable(final boolean repeatable) {
 		this.repeatable = repeatable;
 	}
@@ -163,49 +158,65 @@ public class DirectiveImpl implements Directive {
 	 * True if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema. Default
 	 * value is false (non standard)
 	 */
-	
-	
+
 	public void setStandard(final boolean standard) {
 		this.standard = standard;
 	}
 
 	@java.lang.Override
-	
-	
+
 	public boolean equals(final java.lang.Object o) {
-		if (o == this) return true;
-		if (!(o instanceof DirectiveImpl)) return false;
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof DirectiveImpl)) {
+			return false;
+		}
 		final DirectiveImpl other = (DirectiveImpl) o;
-		if (!other.canEqual((java.lang.Object) this)) return false;
-		if (this.isRepeatable() != other.isRepeatable()) return false;
-		if (this.isStandard() != other.isStandard()) return false;
+		if (!other.canEqual(this)) {
+			return false;
+		}
+		if (this.isRepeatable() != other.isRepeatable()) {
+			return false;
+		}
+		if (this.isStandard() != other.isStandard()) {
+			return false;
+		}
 		final java.lang.Object this$name = this.getName();
 		final java.lang.Object other$name = other.getName();
-		if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+		if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
+			return false;
+		}
 		final java.lang.Object this$arguments = this.getArguments();
 		final java.lang.Object other$arguments = other.getArguments();
-		if (this$arguments == null ? other$arguments != null : !this$arguments.equals(other$arguments)) return false;
+		if (this$arguments == null ? other$arguments != null : !this$arguments.equals(other$arguments)) {
+			return false;
+		}
 		final java.lang.Object this$directiveLocations = this.getDirectiveLocations();
 		final java.lang.Object other$directiveLocations = other.getDirectiveLocations();
-		if (this$directiveLocations == null ? other$directiveLocations != null : !this$directiveLocations.equals(other$directiveLocations)) return false;
+		if (this$directiveLocations == null ? other$directiveLocations != null
+				: !this$directiveLocations.equals(other$directiveLocations)) {
+			return false;
+		}
 		final java.lang.Object this$comments = this.getComments();
 		final java.lang.Object other$comments = other.getComments();
-		if (this$comments == null ? other$comments != null : !this$comments.equals(other$comments)) return false;
+		if (this$comments == null ? other$comments != null : !this$comments.equals(other$comments)) {
+			return false;
+		}
 		final java.lang.Object this$description = this.getDescription();
 		final java.lang.Object other$description = other.getDescription();
-		if (this$description == null ? other$description != null : !this$description.equals(other$description)) return false;
+		if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
+			return false;
+		}
 		return true;
 	}
 
-	
-	
 	protected boolean canEqual(final java.lang.Object other) {
 		return other instanceof DirectiveImpl;
 	}
 
 	@java.lang.Override
-	
-	
+
 	public int hashCode() {
 		final int PRIME = 59;
 		int result = 1;
@@ -225,9 +236,11 @@ public class DirectiveImpl implements Directive {
 	}
 
 	@java.lang.Override
-	
-	
+
 	public java.lang.String toString() {
-		return "DirectiveImpl(name=" + this.getName() + ", arguments=" + this.getArguments() + ", directiveLocations=" + this.getDirectiveLocations() + ", comments=" + this.getComments() + ", description=" + this.getDescription() + ", repeatable=" + this.isRepeatable() + ", standard=" + this.isStandard() + ")";
+		return "DirectiveImpl(name=" + this.getName() + ", arguments=" + this.getArguments() + ", directiveLocations="
+				+ this.getDirectiveLocations() + ", comments=" + this.getComments() + ", description="
+				+ this.getDescription() + ", repeatable=" + this.isRepeatable() + ", standard=" + this.isStandard()
+				+ ")";
 	}
 }

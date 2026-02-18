@@ -52,6 +52,10 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	Map<String, Object> params = new HashMap<>();
 	static ObjectMapper objectMapper = new ObjectMapper();
 
+	public AbstractGraphQLRequest_allGraphQLCasesTest() {
+		//
+	}
+
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
@@ -361,7 +365,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
 				null, null);
 
-		//////////////////////////////
+		//////////////////////////
 
 		String value = "\\, \"  trailing antislash \\";
 		String query = "{directiveOnQuery(uppercase: true) @testDirective(value:\""
@@ -472,7 +476,6 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	 * @return The value that can be used in a standard {@link ObjectMapper}, when generated a json from a map of
 	 *         values.
 	 */
-	@SuppressWarnings("deprecation")
 	private static Object getComparableStringValue(Object o) {
 		if (o instanceof List<?>) {
 			List<Object> ret = new ArrayList<>();
@@ -483,7 +486,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		} else if (o instanceof Date) {
 			// We use the deprecated seralize() method, as we can't instantiate a GraphQLContext object here (needed for
 			// the non deprecated version of this method)
-			return GraphQLScalarTypeDate.Date.getCoercing().serialize(o);
+			return GraphQLScalarTypeDate.Date.getCoercing().serialize(o, null, null);
 		} else {
 			// The given value can be used as is
 			return o;

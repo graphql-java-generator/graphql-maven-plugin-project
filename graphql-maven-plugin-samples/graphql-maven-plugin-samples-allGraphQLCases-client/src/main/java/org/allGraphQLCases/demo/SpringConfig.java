@@ -3,6 +3,7 @@ package org.allGraphQLCases.demo;
 import java.net.URI;
 import java.util.Collections;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -61,7 +61,7 @@ public class SpringConfig {
 
 	@Bean
 	@Primary // Overrides the default one provided by the plugin
-	@SuppressWarnings("static-method") 
+	@SuppressWarnings("static-method")
 	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
 	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
 	public WebClient webClientAllGraphQLCases(//

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.test.compiler;
 
 import java.io.File;
@@ -136,11 +133,16 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		// Let's manage the classpath
 		List<String> optionList = new ArrayList<String>();
 
-		// We check compatibility with Java 8
+		// We check compatibility with the provided java version and release
 		optionList.add("-source");
 		optionList.add(javaRelease);
 		optionList.add("-target");
 		optionList.add(javaRelease);
+
+		// No warning should be emitted, so that project that use the -Werror (warning as error) compiler parameter can
+		// you the plugin
+		optionList.add("-Xlint:all");
+		optionList.add("-Werror");
 
 		if (classpath != null) {
 			optionList.add("-classpath");
@@ -163,19 +165,15 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 
 		// Let's do the compilation
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(javaFiles);
-		// boolean success = compiler.getTask(sw, fileManager, diagnosticListener, optionList, null,
-		// compilationUnits).call();
-		boolean success = compiler.getTask(null, fileManager, new DiagnosticListenerImpl(log, className), optionList,
-				null, compilationUnits).call();
-		try {
-			fileManager.close();
+		try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null)) {
+			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(javaFiles);
+			// boolean success = compiler.getTask(sw, fileManager, diagnosticListener, optionList, null,
+			// compilationUnits).call();
+			return compiler.getTask(null, fileManager, new DiagnosticListenerImpl(log, className), optionList, null,
+					compilationUnits).call();
 		} catch (IOException e) {
 			throw new RuntimeException("Error after generating the java source file", e);
 		}
-
-		return success;
 	}
 
 	/**
@@ -207,20 +205,10 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		File javaFile = getJavaFile();
 		createFolderHierarchy(javaFile);
 
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(javaFile);
+		try (FileOutputStream fos = new FileOutputStream(javaFile)) {
 			fos.write(javaSource.getBytes(javaFileCharset));
 		} catch (IOException e) {
-			throw new RuntimeException("Could generate the java source file", e);
-		} finally {
-			try {
-				if (fos != null) {
-					fos.close();
-				}
-			} catch (IOException e) {
-				log.error("Could not close the OutputStream to the java source file", e);
-			}
+			throw new RuntimeException("Could not generate the java source file", e);
 		}
 
 		return javaFile;

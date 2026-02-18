@@ -15,7 +15,7 @@ import org.apache.commons.io.FileUtils;
  */
 public abstract class AbstractCustomTemplateIntegrationTest extends AbstractIntegrationTest {
 
-	protected static final String CUSTOMIZED_CODE_FIRST_LINE = "/** This template is custom **/";
+	protected static final String CUSTOMIZED_CODE_FIRST_LINE = "// This template is custom";
 
 	public AbstractCustomTemplateIntegrationTest(Class<?> springConfClass) {
 		super(springConfClass);
@@ -23,7 +23,7 @@ public abstract class AbstractCustomTemplateIntegrationTest extends AbstractInte
 
 	/**
 	 * Helper method that validates that given dir contains files generated with custom templates Custom template file
-	 * are identified by it's first line. It's value is \/** This template is custom **\/
+	 * are identified by it's first line. It's value is "// This template is custom"
 	 * 
 	 * @param generatedSourcesDir
 	 */

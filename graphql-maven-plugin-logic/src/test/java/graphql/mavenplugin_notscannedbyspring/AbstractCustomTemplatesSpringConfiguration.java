@@ -157,7 +157,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 							String content = new String(Files.readAllBytes(sourcePath), StandardCharsets.UTF_8);
 							// Let's insert a new java comment in the first line. The test will check that all the
 							// generated java class files begin with this comment
-							content = "/** This template is custom **/\n" + content;
+							content = "// This template is custom\n" + content;
 							Files.write(targetPath, content.getBytes(StandardCharsets.UTF_8));
 						} catch (IOException e) {
 							throw new RuntimeException(e);

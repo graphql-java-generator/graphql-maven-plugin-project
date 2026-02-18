@@ -30,31 +30,42 @@ public class Error implements GraphQLError {
 
 	// Using SourceLocation in the Location field prevent proper deserialization. So we have to map at runtime, to
 	// implement the GraphQLError interface. Another solution would be to create a custom deserializer.
+	// this field is transient to avoid a java compilation warning
 	@JsonDeserialize(contentAs = Location.class)
-	public List<Location> locations;
+	public transient List<Location> locations;
 
 	public String description;
 
 	public String validationErrorType;
 
+	// this field is transient to avoid a java compilation warning
 	@JsonDeserialize(contentAs = String.class)
-	public List<String> queryPath;
+	public transient List<String> queryPath;
 
 	public String errorType;
 
-	public List<String> path;
+	// this field is transient to avoid a java compilation warning
+	public transient List<String> path;
 
 	/**
 	 * The extensions field of errors, stored as is from the incoming GraphQL response. It can be retrieved thanks to
 	 * one of these methods: {@link #getExtensions()}, {@link #getExtensionsAsJsonNode()},
-	 * {@link #getExtensionsAsMapOfJsonNode()}, {@link #getExtensionsField(String, Class)}
+	 * {@link #getExtensionsAsMapOfJsonNode()}, {@link #getExtensionsField(String, Class)}. Note: this field is
+	 * transient to avoid a java compilation warning
 	 */
-	public JsonNode extensions;
+	public transient JsonNode extensions;
 
-	private Map<String, Object> extensionsAsMapOfObject = null;
-	private Map<String, JsonNode> extensionsAsMapOfJsonNode = null;
+	// this field is transient to avoid a java compilation warning
+	private transient Map<String, Object> extensionsAsMapOfObject = null;
+
+	// this field is transient to avoid a java compilation warning
+	private transient Map<String, JsonNode> extensionsAsMapOfJsonNode = null;
 
 	private ObjectMapper localObjectMapper = null;
+
+	public Error() {
+		// Empty constructor
+	}
 
 	/**
 	 * Logs this error to the given {@link Logger}
@@ -100,6 +111,7 @@ public class Error implements GraphQLError {
 	public Map<String, Object> getExtensions() {
 		if (extensionsAsMapOfObject == null) {
 			extensionsAsMapOfObject = getMapper().convertValue(extensions, new TypeReference<Map<String, Object>>() {
+				// Empty block
 			});
 		}
 		return extensionsAsMapOfObject;
@@ -114,6 +126,7 @@ public class Error implements GraphQLError {
 		if (extensionsAsMapOfJsonNode == null) {
 			extensionsAsMapOfJsonNode = getMapper().convertValue(extensions,
 					new TypeReference<Map<String, JsonNode>>() {
+						// Empty block
 					});
 		}
 		return extensionsAsMapOfJsonNode;

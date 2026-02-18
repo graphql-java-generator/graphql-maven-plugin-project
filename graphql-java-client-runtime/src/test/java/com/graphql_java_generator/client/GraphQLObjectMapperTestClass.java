@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client;
 
 import java.util.Date;
@@ -18,7 +15,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
  * 
  * @author etienne-sf
  */
-public class GraphQLObjectMapperTestClass {
+class GraphQLObjectMapperTestClass {
 
 	Map<String, Object> aliasValues = new HashMap<>();
 

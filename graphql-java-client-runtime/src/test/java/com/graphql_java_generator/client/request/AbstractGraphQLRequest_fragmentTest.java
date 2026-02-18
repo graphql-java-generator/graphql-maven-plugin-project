@@ -33,6 +33,10 @@ class AbstractGraphQLRequest_fragmentTest {
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();
 
+	public AbstractGraphQLRequest_fragmentTest() {
+		//
+	}
+
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {

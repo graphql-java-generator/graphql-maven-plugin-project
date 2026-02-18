@@ -3,7 +3,7 @@ package com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
 import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
-import com.graphql_java_generator.domain.client.forum.QueryExecutorMySchema;
+import com.graphql_java_generator.domain.client.forum.QueryExecutorForum;
 import com.graphql_java_generator.domain.client.forum.Topic;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -14,7 +14,7 @@ import com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.Grap
  * 
  * @author etienne-sf
  */
-@GraphQLRepository(queryExecutor = QueryExecutorMySchema.class)
+@GraphQLRepository(queryExecutor = QueryExecutorForum.class)
 public interface GraphQLTwoRepositoriesForumTestCase {
 
 	/** A Mutation */

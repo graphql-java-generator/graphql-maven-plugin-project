@@ -27,6 +27,10 @@ class AbstractGraphQLRequest_unionTest {
 
 	Map<String, Object> params = new HashMap<>();
 
+	public AbstractGraphQLRequest_unionTest() {
+		//
+	}
+
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {

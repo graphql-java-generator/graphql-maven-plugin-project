@@ -41,6 +41,10 @@ class AbstractGraphQLRequest_StarWarsTest {
 	CharacterInput characterInput;
 	Map<String, Object> paramsWithOneMandatoryParam;
 
+	public AbstractGraphQLRequest_StarWarsTest() {
+		//
+	}
+
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {

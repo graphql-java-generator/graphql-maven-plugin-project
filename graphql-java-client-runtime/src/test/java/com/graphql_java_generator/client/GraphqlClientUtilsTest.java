@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -37,11 +36,9 @@ class GraphqlClientUtilsTest {
 
 	GraphqlClientUtils graphqlClientUtils;
 
-	@BeforeAll
-	static void beforeAll() {
-		com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializer.initializeAllRegistries();
-		com.graphql_java_generator.domain.client.forum.RegistriesInitializer.initializeAllRegistries();
-	}
+	// Initialization of the RegistriesInitializers
+	RegistriesInitializer registriesInitializerAllGraphQLCases = com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializerImpl.registriesInitializer;
+	RegistriesInitializer registriesInitializerForum = com.graphql_java_generator.domain.client.forum.RegistriesInitializerImpl.registriesInitializer;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -115,7 +112,7 @@ class GraphqlClientUtilsTest {
 	void checkFieldOfGraphQLType_Objets() throws GraphQLRequestPreparationException {
 		GraphQLRequestPreparationException e;
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Wrong field names, for interface and classes (shouldBeScalar : null)
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, Character.class));
@@ -129,7 +126,7 @@ class GraphqlClientUtilsTest {
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, Human.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Wrong field names, for interface and classes (shouldBeScalar : false)
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, Character.class));
@@ -143,7 +140,7 @@ class GraphqlClientUtilsTest {
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, Human.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Wrong field names, for interface and classes (shouldBeScalar : true)
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, Character.class));
@@ -157,7 +154,7 @@ class GraphqlClientUtilsTest {
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, Human.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Correct field names (check with wrong scalar type, then correct scalar type). Variation for shouldBeScalar
 		// (null or not)
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -220,7 +217,7 @@ class GraphqlClientUtilsTest {
 	void checkFieldOfGraphQLType_Query() throws GraphQLRequestPreparationException {
 		GraphQLRequestPreparationException e;
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Wrong field name, for interface and classes (shouldBeScalar : null, true, false)
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, MyQueryType.class));
@@ -234,7 +231,7 @@ class GraphqlClientUtilsTest {
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, MyQueryType.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Correct field name, for interface and classes (shouldBeScalar : null, true, false)
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlClientUtils.checkFieldOfGraphQLType("hero", true, MyQueryType.class));
@@ -345,7 +342,7 @@ class GraphqlClientUtilsTest {
 		Map<String, String> map;
 		RuntimeException e;
 
-		//////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Error checks
 		e = assertThrows(RuntimeException.class, () -> graphqlClientUtils
 				.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "does not exist"));
@@ -361,7 +358,7 @@ class GraphqlClientUtilsTest {
 						"oneParameter"));
 		assertTrue(e.getMessage().contains("does not exist"));
 
-		//////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Directive on the GraphQLDirectiveTest_ClassCase class
 		assertEquals(0, graphqlClientUtils
 				.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "noParameters").size(),
@@ -397,7 +394,7 @@ class GraphqlClientUtilsTest {
 		assertTrue(map.keySet().contains("paramParam"));
 		assertEquals("valueParam", map.get("paramParam"));
 
-		//////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Directive on the GraphQLDirectiveTest_InterfaceCase interface
 		map = graphqlClientUtils.getDirectiveParameters(GraphQLDirectiveTest_InterfaceCase.class, null,
 				"interface directive");

@@ -59,7 +59,7 @@ public class GraphQLMojo extends AbstractGraphQLMojo {
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })
 	public class SpringConfiguration {
-
+		// Empty block
 	}
 
 	public GraphQLMojo() {

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.samples.forum.test.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

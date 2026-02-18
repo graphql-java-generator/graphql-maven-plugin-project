@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,8 +13,10 @@
 	<artifactId>graphql-maven-plugin-samples</artifactId>
 	<packaging>pom</packaging>
 	<description>
-		This maven pom project embeds the various samples for the graphql-maven-plugin.
-		These samples act both as samples, and integration tests, to validate the behavior of the plugin in different configurations.
+		This maven pom project embeds the various samples for the
+		graphql-maven-plugin.
+		These samples act both as samples, and integration tests, to validate
+		the behavior of the plugin in different configurations.
 	</description>
 
 	<modules>
@@ -38,6 +42,28 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${java.majorVersion}</source>
+						<target>${java.majorVersion}</target>
+						<release>${java.majorVersion}</release>
+					</configuration>
+					<executions>
+						<execution>
+							<id>default-compile</id>
+							<configuration>
+								<compilerArgs>
+									<!-- This insures that no warning is propagated to the generated code, when using copyRuntimeSources=true -->
+									<arg>-Xlint:all</arg>
+									<arg>-Werror</arg>  <!-- Blocks the build if any
+										warning occurs -->
+								</compilerArgs>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<groupId>com.graphql-java-generator</groupId>
 					<artifactId>graphql-maven-plugin</artifactId>
 					<version>${project.version}</version>
@@ -55,7 +81,8 @@
 							</goals>
 							<configuration>
 								<sources>
-									<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+									<source>
+										${project.build.directory}/generated-sources/graphql-maven-plugin</source>
 								</sources>
 							</configuration>
 						</execution>
@@ -65,7 +92,8 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
-				<!-- We don't want to spam the repository with test/sample artefacts -->
+				<!-- We don't want to spam the repository with test/sample
+				artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>

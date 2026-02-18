@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.plugin.test.compiler;
 
 import java.io.File;
@@ -37,9 +34,9 @@ public class GeneratedSourceCompilerFactory {
 	 */
 	public static GeneratedSourceCompiler getGeneratedSourceCompiler(Logger log, String className, File javaSrcFolder,
 			File classTargetFolder, String classpath, String encoding, String javaVersion, String javaRelease) {
-		classpath = (classpath == null) ? System.getProperty("java.class.path") : classpath;
-		return new GeneratedSourceCompilerImpl(log, className, javaSrcFolder, classTargetFolder, classpath,
-				Charset.forName(encoding), javaVersion, javaRelease);
+		return new GeneratedSourceCompilerImpl(log, className, javaSrcFolder, classTargetFolder,
+				(classpath == null) ? System.getProperty("java.class.path") : classpath, Charset.forName(encoding),
+				javaVersion, javaRelease);
 	}
 
 }

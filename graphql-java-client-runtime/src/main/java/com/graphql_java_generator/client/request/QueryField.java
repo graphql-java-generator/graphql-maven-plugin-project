@@ -174,6 +174,11 @@ public class QueryField {
 
 			switch (token) {
 			case "@":
+				if (currentField == null) {
+					throw new GraphQLRequestPreparationException(
+							"The given query has a directive (token '@') that is not preceded by a field name (error while reading field '"
+									+ name + "'");
+				}
 				// We're found a GraphQL directive.
 				currentField.directives.add(new Directive(qt, schema));
 				break;
@@ -334,7 +339,7 @@ public class QueryField {
 	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> parameters, boolean appendName)
 			throws GraphQLRequestExecutionException {
 
-		//////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////
 		// We start with the field name and the parameters
 		if (appendName) {
 			if (alias == null) {
@@ -345,13 +350,13 @@ public class QueryField {
 
 			InputParameter.appendInputParametersToGraphQLRequests(false, sb, inputParameters, parameters);
 		}
-		//////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////
 		// Then the directives
 		for (Directive d : directives) {
 			d.appendToGraphQLRequests(sb, parameters);
 		}
 
-		//////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////
 		// Then field list (if any)
 		boolean appendSpaceLocal = false;
 

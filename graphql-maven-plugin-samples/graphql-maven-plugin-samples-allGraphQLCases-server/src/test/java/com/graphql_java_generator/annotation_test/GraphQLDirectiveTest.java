@@ -4,6 +4,7 @@
 package com.graphql_java_generator.annotation_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -23,6 +24,7 @@ import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SIP_AllFieldCasesInterface_SIS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -64,21 +66,21 @@ public class GraphQLDirectiveTest {
 			parameterValues.add(paramValue);
 			return this;
 		}
-	};
+	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Start of the test's code (specific to server mode)
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Test
 	void testGraphQLDirective_onEveryDataFetchersDelegateMethodAndArguments() {
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the class annotations
 
 		// No GraphQLDirective on data fetcher delegate classes
 		checkClassDirective(null, DataFetchersDelegateAllFieldCases.class);
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step2 : the method annotations
 		checkMethodDirective(//
 				Arrays.asList(//
@@ -86,7 +88,7 @@ public class GraphQLDirectiveTest {
 				DataFetchersDelegateAllFieldCases.class, //
 				Arrays.asList("listWithIdSubTypes"));
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step3 : the parameter annotations
 		checkMethodArgumentDirective(//
 				Arrays.asList(//
@@ -97,9 +99,9 @@ public class GraphQLDirectiveTest {
 				"uppercase");
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Start of the test's code (common to client and server mode)
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Disabled
 	@Test
@@ -109,7 +111,7 @@ public class GraphQLDirectiveTest {
 
 	@Test
 	void testGraphQLDirective_onEnumObjetsAndValues() throws Exception {
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the enum annotations
 		checkClassDirective(//
 				Arrays.asList(//
@@ -133,7 +135,7 @@ public class GraphQLDirectiveTest {
 								.withParamValue("an Episode extension")), //
 				SEP_Episode_SES.class);
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 2 : the value annotations
 		checkEnumValueDirective(//
 				Arrays.asList(//
@@ -154,7 +156,7 @@ public class GraphQLDirectiveTest {
 
 	@Test
 	void testGraphQLDirective_onInputTypeAndFieldsAndGettersSetters() throws Exception {
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the class annotations
 		checkClassDirective(//
 				Arrays.asList(//
@@ -165,7 +167,7 @@ public class GraphQLDirectiveTest {
 						new ExpectedDirective("@testExtendKeyword")), //
 				SINP_AllFieldCasesInput_SINS.class);
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 2 : the field getter and setter annotations
 		checkMethodDirective(//
 				Arrays.asList(//
@@ -176,7 +178,7 @@ public class GraphQLDirectiveTest {
 				SINP_AllFieldCasesInput_SINS.class, //
 				Arrays.asList("getId", "setId"));
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 3 : the field (attribute) annotations
 		checkAttributeDirective(//
 				Arrays.asList(//
@@ -190,7 +192,7 @@ public class GraphQLDirectiveTest {
 
 	@Test
 	void testGraphQLDirective_onInterfaceAndFieldsAndGettersSetters() {
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the class annotations
 		checkClassDirective(//
 				Arrays.asList(//
@@ -201,7 +203,7 @@ public class GraphQLDirectiveTest {
 						new ExpectedDirective("@testExtendKeyword")), //
 				SIP_AllFieldCasesInterface_SIS.class);
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 2 : the field getter annotations
 		checkMethodDirective(//
 				Arrays.asList(//
@@ -228,7 +230,7 @@ public class GraphQLDirectiveTest {
 	@Test
 	void testGraphQLDirective_onObjetTypeAndFieldsAndGettersSetters() throws Exception {
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 1 : the class annotations
 		checkClassDirective(//
 				Arrays.asList(//
@@ -246,7 +248,7 @@ public class GraphQLDirectiveTest {
 								.withParamValue("comes from type extension")), //
 				STP_AllFieldCases_STS.class);
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 2 : the field getter and setter annotations
 		checkMethodDirective(//
 				Arrays.asList(//
@@ -257,7 +259,7 @@ public class GraphQLDirectiveTest {
 				STP_AllFieldCases_STS.class, //
 				Arrays.asList("getId", "setId"));
 
-		//////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////
 		// Step 3 : the field (attribute) annotations
 		checkAttributeDirective(//
 				Arrays.asList(//
@@ -281,9 +283,9 @@ public class GraphQLDirectiveTest {
 				SUP_AnyCharacter_SUS.class);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal methods
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Check that the given <i>expectedDirectives</i> exist on the given <i>cls</i>
@@ -411,12 +413,11 @@ public class GraphQLDirectiveTest {
 		checkDirectiveAnnotationList(expectedDirectives, Arrays.asList(annotations), src);
 	}
 
-	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
+	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectivesParam,
 			List<GraphQLDirective> annotations, String src) {
 
-		if (expectedDirectives == null) {
-			expectedDirectives = new ArrayList<>();
-		}
+		List<ExpectedDirective> expectedDirectives = expectedDirectivesParam == null ? //
+				new ArrayList<>() : expectedDirectivesParam;
 
 		assertEquals(expectedDirectives.size(), annotations.size(), "Nb of @GraphQLDirective for " + src);
 
@@ -435,8 +436,11 @@ public class GraphQLDirectiveTest {
 		} // for
 	}
 
-	private void assertlistOfStringIsEqual(List<String> expected, List<String> actual, String src) {
-		if (expected == null || expected.size() == 0) {
+	private void assertlistOfStringIsEqual(@NonNull List<String> expected, List<String> actual, String src) {
+		if (expected == null) {
+			assertTrue(actual == null || actual.size() == 0,
+					"if one list is null, both should be null or empty (" + src + ")");
+		} else if (expected.size() == 0) {
 			assertTrue(actual == null || actual.size() == 0,
 					"if one list is null, both should be null or empty (" + src + ")");
 		} else {
@@ -444,15 +448,19 @@ public class GraphQLDirectiveTest {
 					"if one list is not empty, both should be not empty (" + src + ")");
 		}
 
-		assertEquals(expected.size(), actual.size(), "Checking list size for " + src);
+		if (expected != null) {
+			assertNotNull(actual);
+			assertEquals(expected.size(), actual.size(), "Checking list size for " + src);
 
-		// As both list are of the same size, if each item of expected exists in actual, then it's ok
-		for (int i = 0; i < expected.size(); i += 1) {
-			if (!actual.contains(expected.get(i))) {
-				// This "if" could be done in one step, in a assertTrue statement. But doing this allows to put a break
-				// point
-				fail("The item '" + expected.get(i) + "' is expected, and should exist in the the actual list (" + src
-						+ ")");
+			// As both list are of the same size, if each item of expected exists in actual, then it's ok
+			for (int i = 0; i < expected.size(); i += 1) {
+				if (!actual.contains(expected.get(i))) {
+					// This "if" could be done in one step, in a assertTrue statement. But doing this allows to put a
+					// break
+					// point
+					fail("The item '" + expected.get(i) + "' is expected, and should exist in the the actual list ("
+							+ src + ")");
+				}
 			}
 		}
 	}

@@ -28,6 +28,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 class QueryFieldTest {
 
+	public QueryFieldTest() {
+		//
+	}
+
 	@Test
 	void tests_addAlias() throws GraphQLRequestPreparationException {
 		// Preparation
@@ -86,7 +90,7 @@ class QueryFieldTest {
 				"an already defined alias for the same class, but for another field"
 						+ " (the received error message is: " + e.getMessage() + ")");
 
-		///////////////////////////////////////////////
+		//////////////////////////////////////////////
 		// Some checks for aliases on an interface implemented by this class
 
 		// If the alias is the same for the same field, nothing should happen

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.testcases;
 
 import com.graphql_java_generator.annotation.GraphQLScalar;

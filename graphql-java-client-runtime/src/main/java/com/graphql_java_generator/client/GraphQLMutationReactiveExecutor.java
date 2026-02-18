@@ -7,5 +7,5 @@ package com.graphql_java_generator.client;
  * @author etienne-sf
  */
 public interface GraphQLMutationReactiveExecutor {
-
+	// Empty block
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,7 +19,7 @@ import org.springframework.graphql.client.GraphQlClient;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorAllGraphQLCases;
-import com.graphql_java_generator.domain.client.forum.QueryExecutorMySchema;
+import com.graphql_java_generator.domain.client.forum.QueryExecutorForum;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -38,7 +35,7 @@ public class GraphQLTwoRepositoriesSpringIntegrationMissingQueryExecutorTest {
 	@Configuration
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
 	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class,
-			QueryExecutorMySchema.class })
+			QueryExecutorForum.class })
 	@EnableGraphQLRepositories({
 			"com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ko_missing_queryExecutor" })
 	public static class SpringConfigTwoServers {

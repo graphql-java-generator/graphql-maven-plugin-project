@@ -110,12 +110,29 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	}
 
 	final Class<T> repositoryInterface;
-	final T proxyInstance;
+	private T proxyInstance = null;
 	final Object queryExecutor;
 	final Object mutationExecutor;
 	final Object subscriptionExecutor;
 
 	Map<Method, RegisteredMethod> registeredMethods = new HashMap<>();
+
+	/**
+	 * Starting from java 25, there is a warning about a "possible 'this' escape before subclass is fully initialized".
+	 * This implies that the constructor may not call the {@link #createProxyInstance()} method.<br/>
+	 * To override this limitation, the constructor is now private, and this factory creates the instance, then call the
+	 * {@link #createProxyInstance()} method.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public static <T> GraphQLRepositoryInvocationHandler<T> factory(Class<T> repositoryInterface,
+			ApplicationContext ctx) throws GraphQLRequestPreparationException {
+		GraphQLRepositoryInvocationHandler<T> handler = new GraphQLRepositoryInvocationHandler<T>(repositoryInterface,
+				ctx);
+		handler.createProxyInstance();
+		return handler;
+	}
 
 	/**
 	 * Builds the instance from the given Spring {@link ApplicationContext}: it extracts the query, mutation and
@@ -134,13 +151,13 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *            executors
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
+	private GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
 			throws GraphQLRequestPreparationException {
 		Package executorPackage;
 		logger.trace("Creating a new GraphQLRepositoryInvocationHandler for the GraphQL Repository {}", //$NON-NLS-1$
 				repositoryInterface.getName());
 		this.repositoryInterface = repositoryInterface;
-		String graphQLQueryExecutorClass; 
+		String graphQLQueryExecutorClass;
 
 		// Does the GraphQLRepository annotation define a queryExecutor ?
 		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
@@ -190,18 +207,17 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		if (queryExecutor == null) {
 			if (executorPackage == null) {
 				throw new RuntimeException("Error while preparing the GraphQL Repository '" //$NON-NLS-1$
-						+ repositoryInterface.getName()
-						+ "': found no Spring Bean of type "+graphQLQueryExecutorClass+". Please check the Spring component scan path."); //$NON-NLS-1$
+						+ repositoryInterface.getName() + "': found no Spring Bean of type " + graphQLQueryExecutorClass //$NON-NLS-1$
+						+ ". Please check the Spring component scan path.");
 			} else {
 				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '" //$NON-NLS-1$
-						+ repositoryInterface.getName()
-						+ "': found no Spring Bean of type "+graphQLQueryExecutorClass+" in the same package as the provided QueryExecutor (" //$NON-NLS-1$
-						+ graphQLRepoAnnotation.queryExecutor().getName()
+						+ repositoryInterface.getName() //
+						+ "': found no Spring Bean of type " + graphQLQueryExecutorClass //$NON-NLS-1$
+						+ " in the same package as the provided QueryExecutor (" //
+						+ ((graphQLRepoAnnotation == null) ? "null" : graphQLRepoAnnotation.queryExecutor().getName())//
 						+ "). Please check the Spring component scan path."); //$NON-NLS-1$
 			}
 		}
-
-		proxyInstance = createProxyInstance();
 	}
 
 	/**
@@ -211,7 +227,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @throws GraphQLRequestPreparationException
 	 *             Thrown if the given parameter for the constructor where not correct.
 	 */
-	private T createProxyInstance() throws GraphQLRequestPreparationException {
+	private final T createProxyInstance() throws GraphQLRequestPreparationException {
 		if (repositoryInterface == null) {
 			throw new NullPointerException("'repositoryInterface' may not be null"); //$NON-NLS-1$
 		}
@@ -230,7 +246,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 		// All basic tests are Ok. Let's go
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////
 		// CREATION OF THE PROXY INSTANCE
 		@SuppressWarnings("unchecked")
 		Class<T>[] classes = (Class<T>[]) new Class<?>[] { repositoryInterface };
@@ -256,7 +272,8 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @param clazz
 	 *            The class of the bean. The found bean can either be of this class, implement or extend it
 	 */
-	<C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz, boolean mandatory) {
+	final <C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz,
+			boolean mandatory) {
 		logger.trace("[getBeanOfTypeAndPackage] Starting execution"); //$NON-NLS-1$
 		if (pack == null) {
 			Collection<? extends C> beans = ctx.getBeansOfType(clazz).values();
@@ -300,8 +317,12 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * Getter for the proxy instance that has been created from this invocation handler.
 	 * 
 	 * @return
+	 * @throws GraphQLRequestPreparationException
 	 */
-	T getProxyInstance() {
+	T getProxyInstance() throws GraphQLRequestPreparationException {
+		if (proxyInstance == null) {
+			proxyInstance = createProxyInstance();
+		}
 		return proxyInstance;
 	}
 

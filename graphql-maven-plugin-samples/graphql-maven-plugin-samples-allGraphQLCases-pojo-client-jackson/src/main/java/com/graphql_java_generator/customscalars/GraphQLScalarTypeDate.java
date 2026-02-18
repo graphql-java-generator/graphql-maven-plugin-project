@@ -3,8 +3,14 @@ package com.graphql_java_generator.customscalars;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
+
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -53,7 +59,8 @@ public class GraphQLScalarTypeDate {
 						 *             if value input can't be serialized
 						 */
 						@Override
-						public String serialize(Object input) throws CoercingSerializeException {
+						public String serialize(@NonNull Object input, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingSerializeException {
 							if (!(input instanceof Date)) {
 								throw new CoercingSerializeException("Can't parse the '" + input.toString()
 										+ "' Date to a String (it should be a Date but is a "
@@ -81,7 +88,8 @@ public class GraphQLScalarTypeDate {
 						 *             if value input can't be parsed
 						 */
 						@Override
-						public Date parseValue(Object o) throws CoercingParseValueException {
+						public Date parseValue(@NonNull Object o, @NonNull GraphQLContext graphQLContext,
+								@NonNull Locale locale) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException("Can't parse the '" + o.toString()
 										+ "' string to a Date (it should be a String but is a " + o.getClass().getName()
@@ -114,7 +122,9 @@ public class GraphQLScalarTypeDate {
 						 *             if input literal can't be parsed
 						 */
 						@Override
-						public Date parseLiteral(Object o) throws CoercingParseLiteralException {
+						public Date parseLiteral(@NonNull Value<?> o, @NonNull CoercedVariables variables,
+								@NonNull GraphQLContext graphQLContext, @NonNull Locale locale)
+								throws CoercingParseLiteralException {
 							String val = null;
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {

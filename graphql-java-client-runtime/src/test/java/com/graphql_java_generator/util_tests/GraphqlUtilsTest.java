@@ -10,12 +10,12 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.RegistriesInitializer;
 import com.graphql_java_generator.domain.client.allGraphQLCases.EnumWithReservedJavaKeywordAsValues;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
@@ -24,14 +24,12 @@ import com.graphql_java_generator.util.GraphqlUtils;
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
 
+	// Initialization of the RegistriesInitializers
+	RegistriesInitializer registriesInitializerAllGraphQLCases = com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializerImpl.registriesInitializer;
+	RegistriesInitializer registriesInitializerForum = com.graphql_java_generator.domain.client.forum.RegistriesInitializerImpl.registriesInitializer;
+
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
-
-	@BeforeAll
-	public static void initCustomScalarRegistry() {
-		com.graphql_java_generator.domain.client.allGraphQLCases.RegistriesInitializer.initializeAllRegistries();
-		com.graphql_java_generator.domain.client.forum.RegistriesInitializer.initializeAllRegistries();
-	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)

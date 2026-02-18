@@ -22,7 +22,7 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	@Autowired
 	ApplicationContext ctx;
 
-	////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////
 	// Start of static methods
 
 	/**
@@ -74,13 +74,17 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 		return customScalarRegistries.get(schema).getCustomScalar(graphQLTypeName);
 	}
 	// End of static methods
-	////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Map of all registered Custom Scalars. The key is the type name or the Custom Scalar, as defined in the GraphQL
 	 * schema.
 	 */
 	Map<String, CustomScalar> customScalarTypes = new HashMap<>();
+
+	public CustomScalarRegistryImpl() {
+		super();
+	}
 
 	@Override
 	public void registerGraphQLScalarType(String typeName, GraphQLScalarType type, Class<?> valueClazz) {
