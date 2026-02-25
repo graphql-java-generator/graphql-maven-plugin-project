@@ -6,26 +6,25 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Here are the next tasks listed, as a TODO list:
-* Gradle: enable configuration cache to test and speed up the project build: https://docs.gradle.org/9.2.1/userguide/configuration_cache_enabling.html
-* Check documentation (wiki+README) that the schema can be given in json (tested in the forum client module)
+* Gradle: the plugin goals should run after the clean goal (otherwise the clean goal deletes the generated code)
+* [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
+* Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
+* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
+* Check the generated doc for the `ignoredSpringMappings` plugin parameter
+* Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
+* Improve the behaviour of the `ignoredSpringMappings` parameter : how to identify the already implemented spring mappings, to not generate them ?
 * Add checks with queries that return interfaces (already ok?) and unions (also already ok?)
-* The forum samples should run with java 25 (or update the tutorial to java 25)
-* (for release 4, improve the batch mapper and data loader generation, WIP in the master_4x_change_batching_generation)
+* (for release 4.x, improve the batch mapper and data loader generation, WIP in the master_4x_change_batching_generation)
     * Improve DataFetcherDelegates for interfaces: check their real use by the server
     * Improve the way BatchMapper are generated
     * Remove the useless methods of the DataFetchersDelegate: when a DataFetcherDelegate has withDataLoader=true, then two methods are generated for it. The one with the DataLoader (that is used), and the one without the DataLoader (that isn't used)
     * Add a test to log useless methods in the implementation of dataFetchersDelegate
 * Upgrade to maven 4 (tested ok with maven 4rc5)
-* Check compatibility with gradle 10 (
+* Check compatibility with gradle 10 (should be ok, as there is no deprecation build warning with gradle 9)
 * (to check) The gradle plugin may not compile without having first build locally the maven plugin (due to the custom-resttemplate dependency added in 3.1)
-* Check compilation with java 25: got a report that it wouldn't work
 * Restore the json schema validation, in GenerateCodeJsonSchemaPersonalization
-* Investigate the compilation warning in GenerateCodeGenerator: there seems to be an issue with Gradle when loading a template from an external jar
-    * In the catch, 'template' is not initialized, and 'theTemplate' is initialized, but not used
-* Correct the link to the `ignoredSpringMappings` in the wiki (FAQ Server)
-* Issue #214 and #215: add a `ignoredSpringMappings` parameter, to prevent the generation of some type Controllers, or field Controllers
 * Read the https://maven.apache.org/whatsnewinmaven4.html page, to check compatibility with maven 4
-* Empty the server Spring autoconfiguration class: controllers apparently can't be defined through bean declaration there. So this class content is currently useless
+
 * Check that the two generated graphQLClient (httpGraphQLClient and webSocketGraphQLClient) are properly documented in the tutorials
 * Check the links in the wiki (eg: https://graphql-maven-plugin-project.graphql-java-generator.com/client.html)
     * And close issue in the GraphQL-Forum-Gradle-Tutorial-client project)
@@ -55,11 +54,9 @@ Here are the next tasks listed, as a TODO list:
             * This would be a minority of cases, so do nothing, that is: 
                 * Generate a standard data fetcher
                 * try to still use a BatchLoader, but with a Context 
-* Check the generated doc for the `ignoredSpringMappings` plugin parameter
 * The arguments for a subobject are available in the `DataFetchingEnvironment`, thanks to the `getArgument(argName)` method. For a scalar field, the idea is to add a getter for the field, with the `DataFetchingEnvironment` as a parameter. This getter would be in the generated POJO. It would be nice to add the developper to configure the content of this getter.
     * See https://www.graphql-java.com/documentation/v20/data-fetching/
 * Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)
-* [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-logic, com.graphql_java_generator.plugin.language)

@@ -89,6 +89,9 @@
 
 ## 4.0.1
 
+Gradle plugin:
+* Resolve an issue, that the plugin's generate code could run before the clean goal.
+
 All modes (client and server):
 * Removes all compilation warning (up to java 25) in the generated code, including the runtime
 
