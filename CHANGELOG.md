@@ -4,7 +4,7 @@
 
 - [4.x versions](#4x-versions)
   - [Main changes in the 4.x releases (including breaking changes)](#main-changes-in-the-4x-releases-including-breaking-changes)
-  - [4.0.1](#401)
+  - [4.0.2](#402)
   - [4.0](#40)
 - [3.x versions](#3x-versions)
   - [Breaking changes in the 3.x releases](#breaking-changes-in-the-3x-releases)
