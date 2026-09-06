@@ -90,6 +90,7 @@
 ## Not released yet
 
 All modes (client and server):
+* Upgrade of spring-boot-starter-parent from 4.0.1 to 4.1.1
 * Upgrade of maven and plexus dependencies 
 
 
