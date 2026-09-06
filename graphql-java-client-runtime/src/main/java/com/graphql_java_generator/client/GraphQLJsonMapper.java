@@ -81,7 +81,7 @@ public class GraphQLJsonMapper {
 	}
 
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
-	public <T> T treeToValue(TreeNode value, Class<T> clazz) throws JacksonException {
+	public <T> T treeToValue(JsonNode value, Class<T> clazz) throws JacksonException {
 		return objectMapper.treeToValue(value, clazz);
 	}
 

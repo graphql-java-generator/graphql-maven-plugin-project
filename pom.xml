@@ -103,9 +103,9 @@
 		<java.majorVersion>${java.version}</java.majorVersion>
 		<maven.compiler.source>${java.majorVersion}</maven.compiler.source>
 		<maven.compiler.target>${java.majorVersion}</maven.compiler.target>
-		<maven.dependency.version>3.9.11</maven.dependency.version>
-		<maven-site-plugin.version>4.0.0-M7</maven-site-plugin.version>
-		<maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
+		<maven.dependency.version>3.9.16</maven.dependency.version>
+		<maven-site-plugin.version>4.0.0-M16</maven-site-plugin.version>
+		<maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
 
 		<!-- The lastReleasedVersion is the version displayed in the site. The
 		default value is the project version, which is Ok 
@@ -291,12 +291,6 @@
 			<!-- Dependencies used to build the Maven plugin -->
 			<dependency>
 				<groupId>org.apache.maven</groupId>
-				<artifactId>maven-aether-provider</artifactId>
-				<version>3.3.9</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-artifact</artifactId>
 				<version>${maven.dependency.version}</version>
 			</dependency>
@@ -345,14 +339,10 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.sonatype.plexus</groupId>
-				<artifactId>plexus-build-api</artifactId>
-				<version>0.0.7</version>
-			</dependency>
-			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-utils</artifactId>
-				<version>4.0.2</version>
+				<artifactId>plexus-build-api</artifactId>
+				<version>1.2.0</version> <!-- Caution the 1.3.0 is buggy, and generate a build error 
+											for mixed scope : Singleton and MojoExecutionScoped -->
 			</dependency>
 			<!-- dependencies within this project -->
 			<dependency>

@@ -56,6 +56,7 @@ public abstract class AbstractCustomJacksonSerializer<T> extends StdSerializer<T
 	 * @param gen
 	 * @throws IOException
 	 */
+	@SuppressWarnings("resource")
 	private void execSerialization(Object value, int listLevelParam, JsonGenerator gen) {
 		if (listLevelParam == 0) {
 			if (graphQLScalarType != null) {

@@ -16,8 +16,8 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
-import tools.jackson.core.TreeNode;
 import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.deser.DeserializationProblemHandler;
@@ -155,12 +155,12 @@ public class GraphQLDeserializationProblemHandler extends DeserializationProblem
 	 * @throws GraphQLRequestExecutionException
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object getAliasValue(JsonParser parser, Field targetField, TreeNode value)
+	public Object getAliasValue(JsonParser parser, Field targetField, JsonNode value)
 			throws IOException, GraphQLRequestExecutionException {
 		if (value instanceof ArrayNode) {
 			// value is a list. Let's do a recursive call for each of its item.
 			List<Object> list = new ArrayList<>(((ArrayNode) value).size());
-			for (TreeNode o : (ArrayNode) value) {
+			for (JsonNode o : (ArrayNode) value) {
 				list.add(getAliasValue(parser, targetField, o));
 			}
 			return list;

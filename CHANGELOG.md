@@ -87,6 +87,12 @@
 * Needs at least java 17 (tested with Java 25)
 
 
+## Not released yet
+
+All modes (client and server):
+* Upgrade of maven and plexus dependencies 
+
+
 ## 4.0.2
 
 Gradle plugin:
