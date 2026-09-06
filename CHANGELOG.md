@@ -4,6 +4,7 @@
 
 - [4.x versions](#4x-versions)
   - [Main changes in the 4.x releases (including breaking changes)](#main-changes-in-the-4x-releases-including-breaking-changes)
+  - [Not released yet](#not-released-yet)
   - [4.0.2](#402)
   - [4.0](#40)
 - [3.x versions](#3x-versions)
@@ -14,7 +15,7 @@
 - [2.x versions](#2x-versions)
   - [Main enhancement in the 2.x releases](#main-enhancement-in-the-2x-releases)
   - [Breaking changes in 2.x versions](#breaking-changes-in-2x-versions)
-  - [Not released yet](#not-released-yet)
+  - [Not released yet](#not-released-yet-1)
   - [2.9](#29)
   - [2.8](#28)
   - [2.7](#27)
