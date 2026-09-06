@@ -92,7 +92,7 @@
 
 All modes (client and server):
 * Upgrade of spring-boot-starter-parent from 4.0.1 to 4.1.1
-* Upgrade of maven and plexus dependencies 
+* Upgrade of maven and plexus dependencies (including plexus-utils up to 4.1.0, to solve security issues)c
 
 
 ## 4.0.2
