@@ -430,21 +430,14 @@
 
 			<!-- Other dependencies -->
 			<dependency>
-				<!-- This dependency is here to solve an issue with Mockito that
-				loads a wring version of byte-buddy -->
-				<groupId>net.bytebuddy</groupId>
-				<artifactId>byte-buddy</artifactId>
-				<version>1.17.6</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.20.0</version>
+				<version>2.22.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
-				<version>1.14.0</version>
+				<version>1.15.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.dozermapper</groupId>
@@ -476,12 +469,12 @@
 			<dependency>
 				<groupId>io.reactivex.rxjava3</groupId>
 				<artifactId>rxjava</artifactId>
-				<version>3.1.11</version>
+				<version>3.1.12</version>
 			</dependency>
 			<dependency>
 				<groupId>com.nimbusds</groupId>
 				<artifactId>oauth2-oidc-sdk</artifactId>
-				<version>11.27</version>
+				<version>11.38.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
