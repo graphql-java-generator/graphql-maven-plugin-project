@@ -41,8 +41,6 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 	/** The charset that will be use to generate the java file */
 	Charset javaFileCharset;
 
-	/** Java version, indirectly read from the pom file */
-	String javaVersion;
 	/** Java release, indirectly read from the pom file */
 	String javaRelease;
 
@@ -60,7 +58,7 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 	 * @param javaVersion
 	 */
 	public GeneratedSourceCompilerImpl(Logger log, String className, File javaSrcFolder, File classTargetFolder,
-			String classpath, Charset javaFileCharset, String javaVersion, String javaRelease) {
+			String classpath, Charset javaFileCharset, String javaRelease) {
 		this.log = log;
 		this.className = className;
 		this.javaSrcFolder = javaSrcFolder;
@@ -78,7 +76,6 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		}
 
 		this.javaFileCharset = javaFileCharset;
-		this.javaVersion = javaVersion;
 		this.javaRelease = javaRelease;
 	}
 
@@ -134,9 +131,7 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		List<String> optionList = new ArrayList<String>();
 
 		// We check compatibility with the provided java version and release
-		optionList.add("-source");
-		optionList.add(javaRelease);
-		optionList.add("-target");
+		optionList.add("--release");
 		optionList.add(javaRelease);
 
 		// No warning should be emitted, so that project that use the -Werror (warning as error) compiler parameter can

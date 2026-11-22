@@ -90,11 +90,18 @@
 
 ## Not released yet
 
+TODO : spring-boot to 4.2.0
+
 All modes (client and server):
 * Upgrade of spring-boot-starter-parent from 4.0.1 to 4.1.1
 * Upgrade of maven and plexus dependencies (including plexus-utils up to 4.1.0, to solve security issues)c
 * Upgrade of minor other dependencies
 
+Gradle plugin:
+* Issue #26 and #28: remove gradle 10 compatibility warning
+
+Internal issue:
+* The maven project would not build with java 21
 
 ## 4.0.2
 

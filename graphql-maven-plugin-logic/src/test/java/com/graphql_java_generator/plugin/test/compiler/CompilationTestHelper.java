@@ -17,8 +17,6 @@ public class CompilationTestHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompilationTestHelper.class);
 
-	@Value("${java.version}")
-	private String javaVersion;
 	@Value("${java.release}")
 	private String javaRelease;
 
@@ -34,7 +32,7 @@ public class CompilationTestHelper {
 		logger.info("Check full project compilation status with classpath: " + classpath);
 		GeneratedSourceCompiler compilerPortFacadeImpl = GeneratedSourceCompilerFactory.getGeneratedSourceCompiler(
 				logger, null, pluginConfiguration.getTargetSourceFolder(), pluginConfiguration.getTargetClassFolder(),
-				classpath, pluginConfiguration.getSourceEncoding(), javaVersion, javaRelease);
+				classpath, pluginConfiguration.getSourceEncoding(), javaRelease);
 
 		assertTrue(compilerPortFacadeImpl.compileAllSources(), "Full project compilation status");
 	}

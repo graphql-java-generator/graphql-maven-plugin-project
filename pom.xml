@@ -133,8 +133,6 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.14.0</version>
 					<configuration>
-						<source>${java.majorVersion}</source>
-						<target>${java.majorVersion}</target>
 						<release>${java.majorVersion}</release>
 					</configuration>
 				</plugin>
