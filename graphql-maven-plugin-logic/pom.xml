@@ -88,13 +88,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<trimStackTrace>false</trimStackTrace>
-					<!-- Allow JUnit to access the test classes -->
-					<argLine>
-						-javaagent:${org.mockito:mockito-core:jar}
-					</argLine>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

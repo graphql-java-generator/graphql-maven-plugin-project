@@ -105,6 +105,7 @@ client mode:
 
 Internal issue:
 * The maven project would not build with java 21
+* Removed wrong javaagent in pom.xml (would throw errors with running junit under eclipse)
 
 ## 4.0.2
 

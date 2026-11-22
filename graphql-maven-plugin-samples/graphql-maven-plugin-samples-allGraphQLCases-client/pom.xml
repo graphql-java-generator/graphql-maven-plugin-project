@@ -346,7 +346,6 @@
 				</executions>
 				<configuration>
 					<argLine>
--javaagent:${org.mockito:mockito-core:jar}
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.annotation_test=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.customtemplates=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core
 --add-opens com.graphql_java_generator.graphql_maven_plugin_project.graphql_maven_plugin_samples_allGraphQLCases_client/com.graphql_java_generator.samples.forum.test.client.subscription=tools.jackson.databind,com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_common_runtime,spring.beans,spring.context,spring.core

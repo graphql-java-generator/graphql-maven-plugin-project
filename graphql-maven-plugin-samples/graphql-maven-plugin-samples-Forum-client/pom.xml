@@ -107,11 +107,6 @@
 				</executions>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
-					<!-- Allow JUnit to access the test classes -->
-					<argLine>
-						-javaagent:${org.mockito:mockito-core:jar}
-					</argLine>
-					<!-- -javaagent:${net.bytebuddy:byte-buddy:jar} -->
 				</configuration>
 			</plugin>
 			<plugin>
