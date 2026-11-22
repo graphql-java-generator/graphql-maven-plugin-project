@@ -100,6 +100,9 @@ All modes (client and server):
 Gradle plugin:
 * Issue #26 and #28: remove gradle 10 compatibility warning
 
+client mode:
+* Issue #241: in some specific case, the client error management would raise this error : Databind Cannot invoke "java.util.Map.keySet()" because "this.extensionsAsMapOfJsonNode" is null
+
 Internal issue:
 * The maven project would not build with java 21
 

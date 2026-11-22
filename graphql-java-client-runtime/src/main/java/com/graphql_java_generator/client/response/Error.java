@@ -55,12 +55,6 @@ public class Error implements GraphQLError {
 	 */
 	public transient JsonNode extensions;
 
-	// this field is transient to avoid a java compilation warning
-	private transient Map<String, Object> extensionsAsMapOfObject = null;
-
-	// this field is transient to avoid a java compilation warning
-	private transient Map<String, JsonNode> extensionsAsMapOfJsonNode = null;
-
 	private ObjectMapper localObjectMapper = null;
 
 	public Error() {
@@ -109,12 +103,9 @@ public class Error implements GraphQLError {
 
 	@Override
 	public Map<String, Object> getExtensions() {
-		if (extensionsAsMapOfObject == null) {
-			extensionsAsMapOfObject = getMapper().convertValue(extensions, new TypeReference<Map<String, Object>>() {
-				// Empty block
-			});
-		}
-		return extensionsAsMapOfObject;
+		return getMapper().convertValue(extensions, new TypeReference<Map<String, Object>>() {
+			// Empty block
+		});
 	}
 
 	/**
@@ -123,13 +114,9 @@ public class Error implements GraphQLError {
 	 * @return
 	 */
 	public Map<String, JsonNode> getExtensionsAsMapOfJsonNode() {
-		if (extensionsAsMapOfJsonNode == null) {
-			extensionsAsMapOfJsonNode = getMapper().convertValue(extensions,
-					new TypeReference<Map<String, JsonNode>>() {
-						// Empty block
-					});
-		}
-		return extensionsAsMapOfJsonNode;
+		return getMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			// Empty block
+		});
 	}
 
 	/**
@@ -138,11 +125,13 @@ public class Error implements GraphQLError {
 	 * @return
 	 */
 	public Map<String, String> getExtensionsAsMapStringString() {
-		getExtensionsAsMapOfJsonNode();
+		Map<String, JsonNode> extensionsAsMapOfJsonNode = getExtensionsAsMapOfJsonNode();
 		Map<String, String> extensionsAsMapStringString = new HashMap<>();
 
-		for (String key : extensionsAsMapOfJsonNode.keySet()) {
-			extensionsAsMapStringString.put(key, extensionsAsMapOfJsonNode.get(key).toString());
+		if (extensionsAsMapOfJsonNode != null) {
+			for (String key : extensionsAsMapOfJsonNode.keySet()) {
+				extensionsAsMapStringString.put(key, extensionsAsMapOfJsonNode.get(key).toString());
+			}
 		}
 		return extensionsAsMapStringString;
 	}
