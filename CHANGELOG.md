@@ -90,21 +90,19 @@
 
 ## Not released yet
 
-TODO : spring-boot to 4.2.0
-
 All modes (client and server):
-* Upgrade of spring-boot-starter-parent from 4.0.1 to 4.1.1
-* Upgrade of maven and plexus dependencies (including plexus-utils up to 4.1.0, to solve security issues)c
+* Upgrade of spring-boot-starter-parent from 4.0.1 to 4.2.0
+* Upgrade of maven and plexus dependencies (including plexus-utils up to 4.1.0, to solve security issues)
 * Upgrade of minor other dependencies
 
 Gradle plugin:
-* Issue #26 and #28: remove gradle 10 compatibility warning
+* Issue [#26](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/26) and [#28](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/28): remove gradle 10 compatibility warning
 
 client mode:
 * Issue #241: in some specific case, the client error management would raise this error : Databind Cannot invoke "java.util.Map.keySet()" because "this.extensionsAsMapOfJsonNode" is null
 
 Internal issue:
-* The maven project would not build with java 21
+* The maven project would not build with java 21 or java 25
 * Removed wrong javaagent in pom.xml (would throw errors with running junit under eclipse)
 
 ## 4.0.2
