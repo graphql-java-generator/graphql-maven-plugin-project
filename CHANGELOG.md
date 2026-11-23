@@ -88,7 +88,7 @@
 * Needs at least java 17 (tested with Java 25)
 
 
-## Not released yet
+## 4.0.3
 
 All modes (client and server):
 * Upgrade of spring-boot-starter-parent from 4.0.1 to 4.2.0
